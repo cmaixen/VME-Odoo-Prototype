@@ -1,0 +1,63 @@
+# VME-platform op Odoo: prototype
+
+## Doel
+
+Een werkend prototype van een syndicusplatform op Odoo 19, om te tonen aan een pilotsyndicus (ongeveer 200 VME's) en aan investeerders. Het prototype hoeft niet productieklaar te zijn, maar moet een geloofwaardige demo geven van:
+
+1. VME's, kavels, quotiteiten en verdeelsleutels
+2. Een leveranciersfactuur automatisch verdelen over de eigenaars
+3. Provisieoproepen voor werk- en reservekapitaal
+4. Een jaarafrekening per eigenaar
+5. Een AI-assistent die inkomende mails van eigenaars aan de juiste VME en kavel koppelt en een antwoord voorstelt
+
+## Harde regels
+
+- **Alleen fictieve data.** Nooit echte namen, adressen, e-mailadressen of rekeningnummers van eigenaars of VME's. Gebruik verzonnen gebouwen zoals "Residentie Linde" en eigenaars zoals "Eigenaar A1".
+- **Odoo 19 Community.** Het prototype moet draaien zonder Enterprise-licentie. Gebruik geen code uit het Enterprise-pakket "Property Owner Association" (condominium, licentie OEEL-1) en kopieer er niets uit.
+- **Eén eigen module:** `vme_belgie` in `addons/`. Splits later pas op in meerdere modules als dat nodig is.
+- **Code en technische namen in het Engels**, labels en gebruikersteksten in het Nederlands. Vertalingen naar het Frans komen later via `.po`-bestanden.
+- **Elke stap werkt voor je verder gaat.** Na elke wijziging: module upgraden, Odoo-log nakijken op fouten, en de functie in de browser testen.
+- **Belgische regels zijn nog niet juridisch gevalideerd.** Markeer elke wettelijke regel in de code met een commentaar `# LEGAL-CHECK:` en de bron (artikel Burgerlijk Wetboek of KB).
+
+## Omgeving
+
+- `docker compose up -d` start Odoo op http://localhost:8069 met PostgreSQL.
+- De map `addons/` is gemount als extra addons-pad.
+- Module upgraden: `docker compose run --rm odoo odoo -d vme_demo -u vme_belgie --stop-after-init`. Gebruik `run`, niet `exec`: alleen via `run` geeft het entrypoint de databaseverbinding mee; `exec` blijft hangen.
+- Database opnieuw aanmaken: `docker compose run --rm odoo odoo -d vme_demo -i account,vme_belgie --without-demo=all --load-language=nl_BE --stop-after-init`
+- Logs: `docker compose logs -f odoo`
+- Database voor de demo: `vme_demo`, met de modules `account` en `vme_belgie`.
+
+## Domeinbegrippen
+
+| Begrip | Betekenis | Technisch |
+| --- | --- | --- |
+| VME | Vereniging van mede-eigenaars, eigen rechtspersoon met KBO-nummer | `vme.association`, gekoppeld aan een `res.company` per VME |
+| Kavel | Privatief deel (appartement, garage, berging) | `vme.lot` |
+| Quotiteit | Aandeel in de gemene delen, meestal in duizendsten | veld op `vme.key.line` |
+| Verdeelsleutel | Regel om kosten te verdelen: algemeen, lift, verwarming, op verbruik | `vme.key` met lijnen per kavel |
+| Eigenaar | Partner met eigendom van een kavel, met begin- en einddatum | `vme.ownership` |
+| Werkkapitaal | Voorschotten voor de gewone werking, afgerekend per jaar | apart journaal of rekening |
+| Reservekapitaal | Opbouw voor grote werken, niet terugvorderbaar bij verkoop | apart journaal of rekening |
+| Provisieoproep | Periodieke vraag tot betaling aan elke eigenaar | facturen per eigenaar |
+| Jaarafrekening | Werkelijke kosten per sleutel min betaalde provisies, per eigenaar | QWeb-rapport |
+
+## Belgische regels voor het prototype
+
+- Elke VME is een aparte company met eigen boekhouding. Werk- en reservekapitaal zitten op aparte bankrekeningen. `# LEGAL-CHECK: art. 3.89 §5 BW`
+- Jaarlijkse minimale opbouw van het reservefonds: 5% van de gewone gemeenschappelijke lasten van het vorige jaar, tenzij de AV met 4/5 anders beslist. `# LEGAL-CHECK: art. 3.86 §3 BW`
+- Bij verkoop van een kavel worden kosten pro rata verdeeld tussen verkoper en koper op basis van de eigendomsdatums.
+- De meeste VME's zijn niet btw-plichtig: btw op leveranciersfacturen is voor hen een kost.
+
+## Architectuur van de AI-assistent
+
+- Een los Python-script in `ai/` leest fictieve mails uit `ai/inbox/` (één `.eml` of `.txt` per mail).
+- Het script haalt via de Odoo JSON-RPC-API de VME's, kavels en eigenaars op, laat een taalmodel bepalen over welke VME, kavel en welk onderwerp de mail gaat, en maakt een concept-antwoord.
+- Het resultaat wordt als activiteit of bericht op de juiste VME in Odoo gezet, zodat een medewerker het kan nakijken en versturen. Er wordt nooit automatisch iets verstuurd.
+- De API-sleutel van het taalmodel staat in `ai/.env`, nooit in de code of in git.
+
+## Werkwijze
+
+- Werk met kleine stappen en gebruik plan mode voor elke nieuwe functie.
+- Schrijf voor de rekenlogica (verdeling, provisies, afrekening) unittests in `addons/vme_belgie/tests/`.
+- Hou `docs/beslissingen.md` bij: elke ontwerpkeuze in twee zinnen.
