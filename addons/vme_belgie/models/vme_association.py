@@ -75,7 +75,10 @@ class VmeAssociation(models.Model):
                     # The full Belgian PCMN is the closest standard Odoo chart for now.
                     "chart_template": "be_comp",
                 })
-                self.env.user.sudo().company_ids = [fields.Command.link(company.id)]
+                # Syndic staff work on every VME, so every internal user gets access to it,
+                # not only the user who created it (which may be the system user in a script).
+                internal_users = self.env["res.users"].sudo().search([("share", "=", False)]) | self.env.user
+                internal_users.sudo().write({"company_ids": [fields.Command.link(company.id)]})
                 vals["company_id"] = company.id
         return super().create(vals_list)
 

@@ -9,6 +9,8 @@ from odoo import api, models
 from odoo.exceptions import UserError
 from odoo.fields import Command
 
+from ..models.allocation_tools import largest_remainder
+
 SALE_DATE_END = date(2026, 6, 30)
 SALE_DATE_START = date(2026, 7, 1)
 
@@ -82,14 +84,8 @@ KEY_NAMES = {
 
 
 def distribute_shares(weights, total=1000):
-    """Round weights to whole shares that add up exactly to total (largest remainder)."""
-    weight_sum = sum(weights)
-    exact = [w * total / weight_sum for w in weights]
-    shares = [int(x) for x in exact]
-    by_remainder = sorted(range(len(weights)), key=lambda i: exact[i] - shares[i], reverse=True)
-    for i in by_remainder[: total - sum(shares)]:
-        shares[i] += 1
-    return shares
+    """Round weights to whole shares that add up exactly to total."""
+    return largest_remainder(total, weights)
 
 
 def fake_iban(account_number):

@@ -38,6 +38,13 @@ class TestDataModel(TransactionCase):
         other = self.env["vme.association"].create({"name": "Residentie Andere"})
         self.assertNotEqual(other.company_id, self.vme.company_id)
 
+    def test_all_internal_users_get_access(self):
+        # Created by a script running as another user: admin must still reach the VME.
+        vme = self.env["vme.association"].with_user(self.env.ref("base.user_root")).create(
+            {"name": "Residentie Script"}
+        )
+        self.assertIn(vme.company_id, self.env.ref("base.user_admin").company_ids)
+
     def test_new_vme_gets_belgian_chart_of_accounts(self):
         vme = self.env["vme.association"].create({"name": "Residentie Rekeningen"})
         # The chart is loaded in a precommit hook; run it as a real save would.

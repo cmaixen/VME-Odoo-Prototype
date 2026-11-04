@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="vme_cost_allocation_view_list" model="ir.ui.view">
+        <field name="name">vme.cost.allocation.list</field>
+        <field name="model">vme.cost.allocation</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0" delete="0">
+                <field name="association_id" optional="hide"/>
+                <field name="move_id"/>
+                <field name="supplier_id" optional="show"/>
+                <field name="description" optional="show"/>
+                <field name="key_id"/>
+                <field name="lot_id"/>
+                <field name="partner_id"/>
+                <field name="shares" optional="show"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="days" optional="show"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="amount" sum="Totaal"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_cost_allocation_view_pivot" model="ir.ui.view">
+        <field name="name">vme.cost.allocation.pivot</field>
+        <field name="model">vme.cost.allocation</field>
+        <field name="arch" type="xml">
+            <pivot string="Kostenverdeling">
+                <field name="partner_id" type="row"/>
+                <field name="key_id" type="col"/>
+                <field name="amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="vme_cost_allocation_view_search" model="ir.ui.view">
+        <field name="name">vme.cost.allocation.search</field>
+        <field name="model">vme.cost.allocation</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="partner_id"/>
+                <field name="lot_id"/>
+                <field name="move_id"/>
+                <field name="association_id"/>
+                <field name="supplier_id"/>
+                <filter name="invoice_date" string="Factuurdatum" date="invoice_date"/>
+                <group>
+                    <filter name="group_partner" string="Eigenaar" context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_association" string="VME" context="{'group_by': 'association_id'}"/>
+                    <filter name="group_key" string="Sleutel" context="{'group_by': 'key_id'}"/>
+                    <filter name="group_move" string="Factuur" context="{'group_by': 'move_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="vme_cost_allocation_action" model="ir.actions.act_window">
+        <field name="name">Kostenverdeling</field>
+        <field name="res_model">vme.cost.allocation</field>
+        <field name="view_mode">list,pivot</field>
+        <field name="context">{'search_default_group_association': 1, 'search_default_group_partner': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nog geen verdeelde facturen</p>
+            <p>Open een leveranciersfactuur van een VME, kies per lijn een verdeelsleutel en klik op "Verdeel over eigenaars".</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_vme_cost_allocation" name="Kostenverdeling" parent="menu_vme_root"
+              action="vme_cost_allocation_action" sequence="50"/>
+</odoo>

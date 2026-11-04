@@ -18,6 +18,10 @@ Plak telkens één prompt in Claude Code. Ga pas naar de volgende als de vorige 
 
 > Voeg op leveranciersfacturen een veld toe voor de VME en per factuurlijn een verdeelsleutel. Maak een knop "Verdeel over eigenaars" die per eigenaar het aandeel berekent volgens de quotiteiten, rekening houdend met eigendomsdatums (pro rata bij verkoop). Toon het resultaat in een overzicht per eigenaar. Schrijf unittests voor de verdeling, inclusief de verkoop midden in het jaar.
 
+## 4b. Verdeelregels en automatisch afboeken
+
+> Bouw verder op de kostenverdeling uit stap 4. Voeg per VME "verdeelregels" toe: een leverancier (en optioneel een kostenrekening) met een vaste verdeelsleutel, bijvoorbeeld "Energieleverancier → algemene sleutel" in Residentie Linde. Als een leveranciersfactuur binnenkomt in de company van een VME, vul dan de VME en per lijn de sleutel automatisch in volgens de regel, en verdeel de factuur automatisch over de eigenaars bij het boeken. Lijnen zonder passende regel blijven open voor een medewerker. Maak drie fictieve elektriciteitsfacturen als Peppol-UBL-bestanden (BIS Billing 3.0) in `addons/vme_belgie/demo_data/facturen/`, van een verzonnen leverancier met een fictief btw-nummer, en importeer ze in de demo via de gewone upload van leveranciersfacturen; echte Peppol-registratie kan niet met fictieve VME's. Voeg de verdeelregels toe aan de demodata. Schrijf unittests: een factuur met regel wordt zonder klikken verdeeld, een factuur zonder regel niet, en de verkoop midden in het jaar wordt ook hier pro rata verdeeld. Gebruik plan mode.
+
 ## 5. Provisieoproepen
 
 > Maak een wizard "Provisieoproep" die voor een of meer VME's tegelijk per eigenaar een factuur maakt voor werkkapitaal en reservekapitaal, op basis van het jaarbudget en de algemene sleutel, met een Belgische gestructureerde mededeling. Voeg de 5%-regel voor het reservefonds toe als waarschuwing, met een `# LEGAL-CHECK:`-commentaar.
@@ -30,6 +34,10 @@ Plak telkens één prompt in Claude Code. Ga pas naar de volgende als de vorige 
 
 > Bouw in `ai/` een Python-script volgens de architectuur in CLAUDE.md. Maak eerst vijf fictieve mails van eigenaars in `ai/inbox/` (een lek, een vraag over de afrekening, een verhuis, een klacht over de lift, een vraag over de volgende AV). Het script koppelt elke mail aan de juiste VME en kavel, bepaalt het onderwerp, stelt een antwoord voor en zet dat als activiteit op de VME in Odoo. Er wordt niets automatisch verstuurd. Lees de API-sleutel uit `ai/.env`.
 
+## 7b. Leveranciersfacturen per e-mail
+
+> Geef elke VME een eigen e-mailadres voor leveranciersfacturen via een alias op het aankoopdagboek van haar company, zodat een mail met een factuur als bijlage een conceptfactuur in de juiste VME wordt. Als de bijlage een UBL-bestand is, worden de lijnen ingelezen en passen de verdeelregels uit stap 4b. Gebruik in het prototype geen echte mailbox: maak drie fictieve `.eml`-bestanden in `ai/facturen_inbox/` en lever ze aan Odoo zoals een inkomende mailserver dat zou doen. Leg in `docs/beslissingen.md` vast wat er nodig is voor een echte mailbox (inkomende mailserver, domein, SPF/DKIM). Gebruik plan mode.
+
 ## 8. Demoscenario
 
-> Schrijf in `docs/demo.md` een demoscenario van 10 minuten voor een syndicus: van een binnenkomende factuur tot de jaarafrekening, en van een mail van een eigenaar tot een voorgesteld antwoord. Controleer dat elke stap werkt op een verse database met de demodata.
+> Schrijf in `docs/demo.md` een demoscenario van 10 minuten voor een syndicus: van een elektriciteitsfactuur die binnenkomt en automatisch verdeeld wordt, via een factuur die een medewerker zelf verdeelt, tot de jaarafrekening; en van een mail van een eigenaar tot een voorgesteld antwoord. Controleer dat elke stap werkt op een verse database met de demodata.

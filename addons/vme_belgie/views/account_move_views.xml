@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_move_form_vme" model="ir.ui.view">
+        <field name="name">account.move.form.vme</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_vme_distribute" type="object" string="Verdeel over eigenaars"
+                        class="btn-secondary"
+                        invisible="not vme_association_id or move_type not in ('in_invoice', 'in_refund')"/>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_vme_open_allocations" type="object" class="oe_stat_button" icon="fa-pie-chart"
+                        invisible="not vme_allocation_owner_count">
+                    <field name="vme_allocation_owner_count" widget="statinfo" string="Verdeling"/>
+                </button>
+            </xpath>
+            <xpath expr="//group[@id='header_left_group']" position="inside">
+                <field name="vme_association_id"
+                       invisible="not vme_association_id or move_type not in ('in_invoice', 'in_refund')"/>
+                <label for="vme_period_start" string="Kostperiode"
+                       invisible="not vme_association_id or move_type not in ('in_invoice', 'in_refund')"/>
+                <div class="o_row" invisible="not vme_association_id or move_type not in ('in_invoice', 'in_refund')">
+                    <field name="vme_period_start" nolabel="1"/>
+                    <span>tot</span>
+                    <field name="vme_period_end" nolabel="1"/>
+                </div>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/list/field[@name='account_id']" position="after">
+                <field name="vme_key_id" optional="show"
+                       column_invisible="parent.move_type not in ('in_invoice', 'in_refund') or not parent.vme_association_id"
+                       options="{'no_create': True}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
