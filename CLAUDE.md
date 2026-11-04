@@ -24,9 +24,10 @@ Een werkend prototype van een syndicusplatform op Odoo 19, om te tonen aan een p
 - `docker compose up -d` start Odoo op http://localhost:8069 met PostgreSQL.
 - De map `addons/` is gemount als extra addons-pad.
 - Module upgraden: `docker compose run --rm odoo odoo -d vme_demo -u vme_belgie --stop-after-init`. Gebruik `run`, niet `exec`: alleen via `run` geeft het entrypoint de databaseverbinding mee; `exec` blijft hangen.
-- Database opnieuw aanmaken: `docker compose run --rm odoo odoo -d vme_demo -i account,vme_belgie --without-demo=all --load-language=nl_BE --stop-after-init`
+- Database opnieuw aanmaken: `docker compose run --rm odoo odoo -d vme_demo -i vme_belgie --load-language=nl_BE --stop-after-init` (installeert ook `account`, `l10n_be` en `account_peppol`)
 - Logs: `docker compose logs -f odoo`
-- Database voor de demo: `vme_demo`, met de modules `account` en `vme_belgie`.
+- Database voor de demo: `vme_demo`, met de modules `account`, `l10n_be`, `account_peppol` en `vme_belgie`.
+- Unittests op een aparte database: `docker compose run --rm odoo odoo -d vme_test -u vme_belgie --test-enable --test-tags /vme_belgie --stop-after-init`
 
 ## Domeinbegrippen
 

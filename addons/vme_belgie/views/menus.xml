@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_vme_root" name="VME" web_icon="vme_belgie,static/description/icon.png" sequence="40"/>
+
+    <menuitem id="menu_vme_association" name="VME's" parent="menu_vme_root" action="vme_association_action" sequence="10"/>
+    <menuitem id="menu_vme_lot" name="Kavels" parent="menu_vme_root" action="vme_lot_action" sequence="20"/>
+    <menuitem id="menu_vme_key" name="Verdeelsleutels" parent="menu_vme_root" action="vme_key_action" sequence="30"/>
+    <menuitem id="menu_vme_ownership" name="Eigendommen" parent="menu_vme_root" action="vme_ownership_action" sequence="40"/>
+</odoo>

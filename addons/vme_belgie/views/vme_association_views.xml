@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="vme_association_view_list" model="ir.ui.view">
+        <field name="name">vme.association.list</field>
+        <field name="model">vme.association</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="kbo_number"/>
+                <field name="city"/>
+                <field name="lot_count"/>
+                <field name="owner_count"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_association_view_form" model="ir.ui.view">
+        <field name="name">vme.association.form</field>
+        <field name="model">vme.association</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_lots" type="object" class="oe_stat_button" icon="fa-building">
+                            <field name="lot_count" widget="statinfo" string="Kavels"/>
+                        </button>
+                        <button name="action_open_ownerships" type="object" class="oe_stat_button" icon="fa-users">
+                            <field name="owner_count" widget="statinfo" string="Eigenaars"/>
+                        </button>
+                        <button name="action_open_keys" type="object" class="oe_stat_button" icon="fa-pie-chart">
+                            <field name="key_count" widget="statinfo" string="Sleutels"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Gearchiveerd" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="bv. Residentie Linde" required="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Gegevens">
+                            <field name="kbo_number" placeholder="0123.456.749"/>
+                            <field name="company_id" readonly="id" groups="base.group_no_one"/>
+                            <field name="partner_id" invisible="1"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group string="Adres">
+                            <field name="street"/>
+                            <field name="zip"/>
+                            <field name="city"/>
+                            <field name="country_id"/>
+                        </group>
+                    </group>
+                    <group string="Bankrekeningen">
+                        <field name="working_capital_bank_id" context="{'default_partner_id': partner_id}" readonly="not id"/>
+                        <field name="reserve_capital_bank_id" context="{'default_partner_id': partner_id}" readonly="not id"/>
+                        <div colspan="2" class="text-muted" invisible="id">Sla de VME eerst op om bankrekeningen toe te voegen.</div>
+                    </group>
+                    <notebook>
+                        <page string="Kavels" name="lots">
+                            <field name="lot_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="lot_type"/>
+                                    <field name="floor"/>
+                                    <field name="current_owner_id"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Verdeelsleutels" name="keys">
+                            <field name="key_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="key_type"/>
+                                    <field name="total_shares"/>
+                                    <field name="shares_sum"/>
+                                    <field name="is_balanced"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notities" name="notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="vme_association_view_search" model="ir.ui.view">
+        <field name="name">vme.association.search</field>
+        <field name="model">vme.association</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="kbo_number"/>
+                <field name="city"/>
+                <filter name="archived" string="Gearchiveerd" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="vme_association_action" model="ir.actions.act_window">
+        <field name="name">VME's</field>
+        <field name="res_model">vme.association</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Maak je eerste VME aan</p>
+            <p>Elke VME krijgt automatisch een eigen bedrijf met eigen boekhouding.</p>
+        </field>
+    </record>
+</odoo>

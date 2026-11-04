@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="vme_ownership_view_list" model="ir.ui.view">
+        <field name="name">vme.ownership.list</field>
+        <field name="model">vme.ownership</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="association_id"/>
+                <field name="lot_id"/>
+                <field name="partner_id"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_ownership_view_search" model="ir.ui.view">
+        <field name="name">vme.ownership.search</field>
+        <field name="model">vme.ownership</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="partner_id"/>
+                <field name="lot_id"/>
+                <field name="association_id"/>
+                <filter name="current" string="Huidige eigenaars"
+                        domain="[('date_start', '&lt;=', context_today().strftime('%Y-%m-%d')), '|', ('date_end', '=', False), ('date_end', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <group>
+                    <filter name="group_association" string="VME" context="{'group_by': 'association_id'}"/>
+                    <filter name="group_partner" string="Eigenaar" context="{'group_by': 'partner_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="vme_ownership_action" model="ir.actions.act_window">
+        <field name="name">Eigendommen</field>
+        <field name="res_model">vme.ownership</field>
+        <field name="view_mode">list</field>
+        <field name="context">{'search_default_group_association': 1}</field>
+    </record>
+</odoo>
