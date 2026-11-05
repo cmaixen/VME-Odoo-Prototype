@@ -86,8 +86,7 @@ class VmeInstallation(models.Model):
     )
 
     maintenance_partner_id = fields.Many2one("res.partner", string="Onderhoudsfirma", tracking=True)
-    maintenance_contract_ref = fields.Char(string="Onderhoudscontract")
-    maintenance_contract_end = fields.Date(string="Einde onderhoudscontract")
+    # The maintenance contract itself (reference, end, notice) is a vme.contract, see vme_contract.py.
     inspection_partner_id = fields.Many2one(
         "res.partner", string="Keuringsorganisme", tracking=True,
         help="Bij een lift: de erkende dienst voor technische controle (EDTC).",

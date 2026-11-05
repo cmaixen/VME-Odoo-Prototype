@@ -23,6 +23,8 @@ HISTORY_SUPPLIERS = {
     "cleaning": ("Schoonmaak Voorbeeld BV", "BE0000000592", "general", "611000"),
     "insurance": ("Verzekeringen Voorbeeld NV", "BE0000000691", "general", "614000"),
     "gas": ("Gasleverancier Voorbeeld NV", "BE0000000790", "heating", "612500"),
+    # Wage costs of the concierge of Hof ter Beuken, invoiced by an external social secretariat.
+    "payroll": ("Sociaal Secretariaat Voorbeeld vzw", "BE0000018014", "general", "620300"),  # Bezoldigingen arbeiders
 }
 
 # Bills per VME: supplier code, invoice date, cost period, [(description, amount excl. VAT)], VAT.
@@ -31,6 +33,10 @@ QUARTERS = [(date(2026, 3, 31), date(2026, 1, 1), date(2026, 3, 31)),
             (date(2026, 6, 30), date(2026, 4, 1), date(2026, 6, 30)),
             (date(2026, 9, 30), date(2026, 7, 1), date(2026, 9, 30))]
 YEAR_PERIOD = (date(2026, 1, 1), date(2026, 12, 31))
+MONTH_NAMES = ["januari", "februari", "maart", "april", "mei", "juni", "juli", "augustus", "september"]
+# Month m of 2026 runs from day one to the day before the first of month m + 1.
+MONTHS = [(date(2026, m + 1, 1) - timedelta(days=1), date(2026, m, 1), date(2026, m + 1, 1) - timedelta(days=1))
+          for m in range(1, 10)]
 
 HISTORY_BILLS = {
     "Residentie Linde": [
@@ -43,6 +49,9 @@ HISTORY_BILLS = {
         *[("gas", d, s, e, [("Aardgas centrale verwarming", 12000)], True) for d, s, e in QUARTERS],
         *[("cleaning", d, s, e, [("Schoonmaak gemene delen", 2400)], True) for d, s, e in QUARTERS],
         ("insurance", date(2026, 1, 20), *YEAR_PERIOD, [("Brandverzekering gebouw 2026", 6500)], False),
+        # Wages carry no VAT. October comes as a Peppol file to upload during the demo.
+        *[("payroll", d, s, e, [(f"Loonkost conciërge {month} 2026: brutoloon en werkgeversbijdragen RSZ", 3250)], False)
+          for month, (d, s, e) in zip(MONTH_NAMES, MONTHS)],
     ],
     "Kaaihuis": [
         *[("cleaning", d, s, e, [("Schoonmaak gemene delen", 600)], True) for d, s, e in QUARTERS],
@@ -116,14 +125,20 @@ class VmeAssociation(models.Model):
                         "group_payment": False,
                     }).action_create_payments()
 
+    @api.model
+    def _demo_history_supplier(self, code):
+        """Supplier of the demo history; the demo contracts may have created it already."""
+        name, vat, _key, _account = HISTORY_SUPPLIERS[code]
+        Partner = self.env["res.partner"]
+        return Partner.search([("vat", "=", vat)], limit=1) or Partner.create({
+            "name": name, "vat": vat, "is_company": True,
+            "email": f"facturen@{name.split()[0].lower()}.example.com",
+            "country_id": self.env.ref("base.be").id,
+        })
+
     def _demo_history_bills(self, vmes):
         Partner = self.env["res.partner"]
-        suppliers = {
-            code: Partner.create({"name": name, "vat": vat, "is_company": True,
-                                  "email": f"facturen@{name.split()[0].lower()}.example.com",
-                                  "country_id": self.env.ref("base.be").id})
-            for code, (name, vat, _key, _account) in HISTORY_SUPPLIERS.items()
-        }
+        suppliers = {code: self._demo_history_supplier(code) for code in HISTORY_SUPPLIERS}
         suppliers["energy"] = Partner.search([("vat", "=", "BE0000000394")], limit=1)
         suppliers["elevator"] = Partner.search([("vat", "=", "BE0000000493")], limit=1)
 

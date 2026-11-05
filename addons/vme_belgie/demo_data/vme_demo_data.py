@@ -124,11 +124,12 @@ INSPECTION_SUPPLIERS = {
 }
 
 # Installations per VME (relative to the demo date 5 November 2026):
-# name, type, location, maintenance supplier, inspection body, contract (ref, end), reports.
+# name, type, location, maintenance supplier, inspection body, reports.
+# The maintenance contracts themselves are in vme_demo_contracts.py.
 # A report is (date, kind, result, [(remark, severity, deadline, responsible)]).
 INSTALLATIONS = {
     "Residentie Linde": [
-        ("Lift blok A", "elevator", "Trappenhal", "elevator", "inspection_body", ("LO-2023-117", date(2027, 12, 31)), [
+        ("Lift blok A", "elevator", "Trappenhal", "elevator", "inspection_body", [
             (date(2012, 1, 15), "risk_analysis", "compliant", []),  # next risk analysis 15-01-2027
             (date(2025, 11, 10), "inspection", "compliant", []),
             (date(2026, 5, 12), "inspection", "remarks", [  # next inspection 12-11-2026
@@ -136,26 +137,26 @@ INSTALLATIONS = {
                 ("Smering van de geleiders onvoldoende", "minor", date(2026, 12, 31), "maintenance"),
             ]),
         ]),
-        ("Brandblussers", "fire_extinguishers", "Alle verdiepingen", "fire_safety", "fire_safety", None, [
+        ("Brandblussers", "fire_extinguishers", "Alle verdiepingen", "fire_safety", "fire_safety", [
             (date(2025, 10, 1), "inspection", "compliant", []),  # overdue since 01-10-2026
         ]),
-        ("Elektrische installatie gemene delen", "electrical", "Kelder", None, "inspection_body", None, [
+        ("Elektrische installatie gemene delen", "electrical", "Kelder", None, "inspection_body", [
             (date(2022, 3, 10), "inspection", "compliant", []),
         ]),
     ],
     "Hof ter Beuken": [
-        ("Centrale verwarmingsketel", "heating_boiler", "Stookplaats", "heating", "heating", ("CV-2024-031", date(2027, 6, 30)), [
+        ("Centrale verwarmingsketel", "heating_boiler", "Stookplaats", "heating", "heating", [
             (date(2025, 9, 15), "inspection", "compliant", []),
         ]),
-        ("Brandblussers", "fire_extinguishers", "Alle verdiepingen", "fire_safety", "fire_safety", None, [
+        ("Brandblussers", "fire_extinguishers", "Alle verdiepingen", "fire_safety", "fire_safety", [
             (date(2025, 12, 20), "inspection", "compliant", []),  # due within 60 days
         ]),
-        ("Rookluiken", "smoke_vents", "Dak trappenhal", "fire_safety", "fire_safety", None, [
+        ("Rookluiken", "smoke_vents", "Dak trappenhal", "fire_safety", "fire_safety", [
             (date(2025, 11, 25), "inspection", "compliant", []),  # due within 30 days
         ]),
     ],
     "Kaaihuis": [
-        ("Brandblussers", "fire_extinguishers", "Gelijkvloers", "fire_safety", "fire_safety", None, [
+        ("Brandblussers", "fire_extinguishers", "Gelijkvloers", "fire_safety", "fire_safety", [
             (date(2026, 3, 1), "inspection", "compliant", []),
         ]),
     ],
@@ -274,15 +275,13 @@ class VmeAssociation(models.Model):
 
     def _demo_installations(self, vme, suppliers):
         installations = self.env["vme.installation"]
-        for name, kind, location, maintenance, body, contract, reports in INSTALLATIONS.get(vme.name, []):
+        for name, kind, location, maintenance, body, reports in INSTALLATIONS.get(vme.name, []):
             installation = self.env["vme.installation"].create({
                 "association_id": vme.id,
                 "name": name,
                 "installation_type": kind,
                 "location": location,
                 "maintenance_partner_id": suppliers[maintenance].id if maintenance else False,
-                "maintenance_contract_ref": contract[0] if contract else False,
-                "maintenance_contract_end": contract[1] if contract else False,
                 "inspection_partner_id": suppliers[body].id,
             })
             for report_date, report_kind, result, remarks in reports:
@@ -440,6 +439,7 @@ class VmeAssociation(models.Model):
         self._load_demo_assembly_blocks()
         self._load_demo_assembly_2026()
         self._load_demo_sale()
+        self._load_demo_contracts(suppliers)
 
         def set_rule_accounts():
             # Runs at commit, after the chart of accounts of the new companies is loaded.
@@ -449,8 +449,10 @@ class VmeAssociation(models.Model):
                 )
         self.env.cr.precommit.add(set_rule_accounts)
 
-        # Tasks for inspections that are (nearly) due, as the daily cron would create them.
+        # Tasks for inspections, notice deadlines and evaluations that are (nearly) due,
+        # as the daily crons would create them.
         self.env["vme.installation"]._cron_schedule_inspection_activities()
+        self.env["vme.contract"]._cron_schedule_contract_activities()
 
         return {
             "type": "ir.actions.client",

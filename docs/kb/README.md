@@ -29,21 +29,22 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 ### Gebouw en installaties
 
 10. [Keuringen en liften opvolgen](keuringen.md)
+11. [Contracten en personeel opvolgen](contracten.md)
 
 ### Algemene vergaderingen
 
-11. [Algemene vergaderingen plannen in blokken](av-planner.md)
-12. [De algemene vergadering: oproeping, stemming en notulen](algemene-vergadering.md)
+12. [Algemene vergaderingen plannen in blokken](av-planner.md)
+13. [De algemene vergadering: oproeping, stemming en notulen](algemene-vergadering.md)
 
 ### Post en mails
 
-13. [Leveranciersfacturen per e-mail ontvangen](facturen-per-mail.md)
-14. [Een antwoord behandelen dat de AI-assistent voorstelt](ai-voorstellen-mails.md)
-15. [Bankafschriften inlezen en betalingen koppelen](bankafschriften.md)
+14. [Leveranciersfacturen per e-mail ontvangen](facturen-per-mail.md)
+15. [Een antwoord behandelen dat de AI-assistent voorstelt](ai-voorstellen-mails.md)
+16. [Bankafschriften inlezen en betalingen koppelen](bankafschriften.md)
 
 ### Overstappen
 
-16. [Een VME overnemen uit een ander syndicuspakket](migratie.md)
+17. [Een VME overnemen uit een ander syndicuspakket](migratie.md)
 
 ## Zo is het platform opgebouwd
 
@@ -58,7 +59,7 @@ De demo bevat drie verzonnen gebouwen:
 | VME | Kavels | Verdeelsleutels | Bijzonder |
 | --- | --- | --- | --- |
 | Residentie Linde | 12 appartementen (A1–A12) en 8 garages (G1–G8) | Algemene sleutel, liftsleutel | A5 en G5 zijn op 1 juli 2026 verkocht; A3 en G3 zijn in verkoop (vraag van de notaris) |
-| Hof ter Beuken | 24 appartementen (B1–B24) | Algemene sleutel, verwarmingssleutel | Eén eigenaar heeft B23 en B24; het reservefonds zit onder de 5% |
+| Hof ter Beuken | 24 appartementen (B1–B24) | Algemene sleutel, verwarmingssleutel | Eén eigenaar heeft B23 en B24; het reservefonds zit onder de 5%; een conciërge via een sociaal secretariaat |
 | Kaaihuis | 6 appartementen (K1–K6) | Algemene sleutel | Klein gebouw zonder lift |
 
 Een beheerder laadt de demo via **VME > Configuratie > Demodata laden** en daarna **Demohistoriek 2026 laden** (provisieoproepen, betalingen, leveranciersfacturen en invorderingen van een volledig jaar). De schermafbeeldingen in deze kennisbank komen uit die demo.

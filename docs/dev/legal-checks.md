@@ -3,7 +3,7 @@
 Automatisch gemaakt door `python3 tools/legal_checks.py`; niet met de hand bewerken.
 Elke rij is een wettelijke regel in de code die nog juridisch gevalideerd moet worden.
 
-Aantal punten: 50.
+Aantal punten: 54.
 
 ## Per bron
 
@@ -13,6 +13,7 @@ Aantal punten: 50.
 - **KB 9 maart 2003 betreffende de beveiliging van liften**: [vme_installation.py:17](../../addons/vme_belgie/models/vme_installation.py#L17)
 - **NBN S21-050**: [vme_installation.py:20](../../addons/vme_belgie/models/vme_installation.py#L20)
 - **Vlaamse regelgeving verwarmingsaudit/onderhoud**: [vme_installation.py:25](../../addons/vme_belgie/models/vme_installation.py#L25)
+- **art. 18 §2/3 Elektriciteitswet 29 april 1999**: [vme_contract.py:27](../../addons/vme_belgie/models/vme_contract.py#L27)
 - **art. 3.85 §1 BW**: [vme_key.py:60](../../addons/vme_belgie/models/vme_key.py#L60), [vme_migration.py:739](../../addons/vme_belgie/models/vme_migration.py#L739)
 - **art. 3.86 §3 BW**: [vme_budget.py:5](../../addons/vme_belgie/models/vme_budget.py#L5), [vme_migration.py:445](../../addons/vme_belgie/models/vme_migration.py#L445)
 - **art. 3.87 §10 BW**: [vme_assembly_meeting.py:232](../../addons/vme_belgie/models/vme_assembly_meeting.py#L232)
@@ -23,7 +24,7 @@ Aantal punten: 50.
 - **art. 3.87 §7 BW**: [vme_assembly_meeting.py:25](../../addons/vme_belgie/models/vme_assembly_meeting.py#L25), [vme_assembly_meeting.py:381](../../addons/vme_belgie/models/vme_assembly_meeting.py#L381)
 - **art. 3.88 §1-3 BW**: [vme_assembly_meeting.py:8](../../addons/vme_belgie/models/vme_assembly_meeting.py#L8)
 - **art. 3.88 §3 BW**: [vme_assembly_meeting.py:302](../../addons/vme_belgie/models/vme_assembly_meeting.py#L302)
-- **art. 3.89 §5 BW**: [account_bank_statement_line.py:154](../../addons/vme_belgie/models/account_bank_statement_line.py#L154), [account_move.py:55](../../addons/vme_belgie/models/account_move.py#L55), [vme_association.py:15](../../addons/vme_belgie/models/vme_association.py#L15), [vme_association.py:34](../../addons/vme_belgie/models/vme_association.py#L34), [vme_association.py:170](../../addons/vme_belgie/models/vme_association.py#L170), [vme_association.py:193](../../addons/vme_belgie/models/vme_association.py#L193), [vme_migration.py:621](../../addons/vme_belgie/models/vme_migration.py#L621), [vme_provision_call_wizard.py:115](../../addons/vme_belgie/wizard/vme_provision_call_wizard.py#L115)
+- **art. 3.89 §5 BW**: [account_bank_statement_line.py:154](../../addons/vme_belgie/models/account_bank_statement_line.py#L154), [account_move.py:55](../../addons/vme_belgie/models/account_move.py#L55), [vme_association.py:15](../../addons/vme_belgie/models/vme_association.py#L15), [vme_association.py:34](../../addons/vme_belgie/models/vme_association.py#L34), [vme_association.py:170](../../addons/vme_belgie/models/vme_association.py#L170), [vme_association.py:193](../../addons/vme_belgie/models/vme_association.py#L193), [vme_contract.py:39](../../addons/vme_belgie/models/vme_contract.py#L39), [vme_migration.py:621](../../addons/vme_belgie/models/vme_migration.py#L621), [vme_provision_call_wizard.py:115](../../addons/vme_belgie/wizard/vme_provision_call_wizard.py#L115)
 - **art. 3.93 §4 BW**: [vme_assembly_meeting.py:212](../../addons/vme_belgie/models/vme_assembly_meeting.py#L212)
 - **art. 3.94 BW**: [account_move.py:161](../../addons/vme_belgie/models/account_move.py#L161)
 - **art. 3.94 §1 BW**: [vme_sale_file.py:10](../../addons/vme_belgie/models/vme_sale_file.py#L10), [vme_sale_file.py:16](../../addons/vme_belgie/models/vme_sale_file.py#L16)
@@ -31,6 +32,8 @@ Aantal punten: 50.
 - **art. 3.94 §1, 2° en §2 BW**: [vme_sale_file.py:278](../../addons/vme_belgie/models/vme_sale_file.py#L278)
 - **art. 3.94 §1, 3° BW**: [vme_sale_file.py:270](../../addons/vme_belgie/models/vme_sale_file.py#L270)
 - **art. 3.94 §2 BW**: [vme_sale_file.py:12](../../addons/vme_belgie/models/vme_sale_file.py#L12)
+- **art. 37/2 Arbeidsovereenkomstenwet 3 juli 1978**: [vme_contract.py:32](../../addons/vme_belgie/models/vme_contract.py#L32)
+- **art. 85 Wet van 4 april 2014 betreffende de verzekeringen**: [vme_contract.py:23](../../addons/vme_belgie/models/vme_contract.py#L23)
 - **art. III.88 WER**: [vme_migration.py:476](../../addons/vme_belgie/models/vme_migration.py#L476)
 - **art. XIX.2 §1 WER**: [vme_collection.py:108](../../addons/vme_belgie/models/vme_collection.py#L108), [vme_collection.py:401](../../addons/vme_belgie/models/vme_collection.py#L401)
 - **art. XIX.4 §1 WER**: [vme_collection.py:139](../../addons/vme_belgie/models/vme_collection.py#L139)
@@ -75,6 +78,10 @@ Aantal punten: 50.
 | [addons/vme_belgie/models/vme_collection.py](../../addons/vme_belgie/models/vme_collection.py#L139) | 139 | art. XIX.4 §1 WER | at most the legal interest rate plus 8 percentage points. |
 | [addons/vme_belgie/models/vme_collection.py](../../addons/vme_belgie/models/vme_collection.py#L401) | 401 | art. XIX.2 §1 WER | the first reminder is free; interest and damages only run from the end of a term of at least 14 days after it was sent. Check whether interest may run from the due date instead when the reglement van mede-eigendom says so. |
 | [addons/vme_belgie/models/vme_collection.py](../../addons/vme_belgie/models/vme_collection.py#L437) | 437 | reglement van mede-eigendom (art. 3.85 BW) | simple interest per year of 365 days. |
+| [addons/vme_belgie/models/vme_contract.py](../../addons/vme_belgie/models/vme_contract.py#L23) | 23 | art. 85 Wet van 4 april 2014 betreffende de verzekeringen | an insurance contract runs for at most one year, is renewed tacitly and can be cancelled at least three months before its due date. |
+| [addons/vme_belgie/models/vme_contract.py](../../addons/vme_belgie/models/vme_contract.py#L27) | 27 | art. 18 §2/3 Elektriciteitswet 29 april 1999 | households and small businesses can cancel an energy contract at any time with one month notice (also in the regional energy decrees); whether that applies to a VME is to be confirmed. |
+| [addons/vme_belgie/models/vme_contract.py](../../addons/vme_belgie/models/vme_contract.py#L32) | 32 | art. 37/2 Arbeidsovereenkomstenwet 3 juli 1978 | the notice period of an employment contract depends on seniority and is not computed here; the default is for the contract with the social secretariat. |
+| [addons/vme_belgie/models/vme_contract.py](../../addons/vme_belgie/models/vme_contract.py#L39) | 39 | art. 3.89 §5 BW | the syndic evaluates the contracts for regular supplies of goods and services every year and submits that evaluation to the general assembly (numbering of the point to be confirmed). |
 | [addons/vme_belgie/models/vme_installation.py](../../addons/vme_belgie/models/vme_installation.py#L17) | 17 | KB 9 maart 2003 betreffende de beveiliging van liften | preventive inspection by an accredited inspection body (EDTC). |
 | [addons/vme_belgie/models/vme_installation.py](../../addons/vme_belgie/models/vme_installation.py#L20) | 20 | NBN S21-050 | yearly maintenance check of portable fire extinguishers and hoses. |
 | [addons/vme_belgie/models/vme_installation.py](../../addons/vme_belgie/models/vme_installation.py#L22) | 22 | AREI (Algemeen Reglement op de Elektrische Installaties) | periodic inspection of the common parts of residential buildings. |

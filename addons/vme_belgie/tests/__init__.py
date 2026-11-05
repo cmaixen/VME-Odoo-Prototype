@@ -12,3 +12,4 @@ from . import test_sale_file
 from . import test_collection
 from . import test_bank_statements
 from . import test_migration
+from . import test_contracts

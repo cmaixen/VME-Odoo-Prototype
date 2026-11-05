@@ -12,6 +12,7 @@
                 <field name="location" optional="hide"/>
                 <field name="inspection_partner_id" optional="show"/>
                 <field name="maintenance_partner_id" optional="hide"/>
+                <field name="maintenance_contract_end" optional="hide"/>
                 <field name="last_inspection_date"/>
                 <field name="next_inspection_date"/>
                 <field name="due_state" widget="badge"
@@ -56,7 +57,7 @@
                         </group>
                         <group string="Onderhoud">
                             <field name="maintenance_partner_id"/>
-                            <field name="maintenance_contract_ref"/>
+                            <field name="maintenance_contract_id"/>
                             <field name="maintenance_contract_end"/>
                         </group>
                         <group string="Lift" invisible="installation_type != 'elevator'">
