@@ -64,6 +64,12 @@
         <field name="state">code</field>
         <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/bankafschriften.md"}</field>
     </record>
+    <record id="action_help_payments" model="ir.actions.server">
+        <field name="name">Help: leveranciers betalen en domiciliëren</field>
+        <field name="model_id" ref="model_vme_association"/>
+        <field name="state">code</field>
+        <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/betalingen.md"}</field>
+    </record>
     <record id="action_help_inspections" model="ir.actions.server">
         <field name="name">Help: keuringen en liften</field>
         <field name="model_id" ref="model_vme_association"/>
@@ -126,6 +132,7 @@
     <menuitem id="menu_vme_help_provisions" name="Budget en provisieoproepen" parent="menu_vme_help" action="action_help_provisions" sequence="60"/>
     <menuitem id="menu_vme_help_statement" name="Jaarafrekening" parent="menu_vme_help" action="action_help_statement" sequence="70"/>
     <menuitem id="menu_vme_help_bank" name="Bankafschriften en betalingen" parent="menu_vme_help" action="action_help_bank" sequence="75"/>
+    <menuitem id="menu_vme_help_payments" name="Leveranciers betalen en domiciliëren" parent="menu_vme_help" action="action_help_payments" sequence="76"/>
     <menuitem id="menu_vme_help_inspections" name="Keuringen en liften" parent="menu_vme_help" action="action_help_inspections" sequence="80"/>
     <menuitem id="menu_vme_help_planner" name="Algemene vergaderingen plannen" parent="menu_vme_help" action="action_help_planner" sequence="90"/>
     <menuitem id="menu_vme_help_assembly" name="De algemene vergadering" parent="menu_vme_help" action="action_help_assembly" sequence="100"/>

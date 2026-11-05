@@ -69,6 +69,12 @@ De test met een volledig demojaar (`vme_slow`) doet ongeveer 300 betalingen in Ã
 - In Community kan alleen de verborgen groep `account.group_account_basic` bankregels wijzigen; de module geeft `group_account_invoice` schrijfrecht.
 - Meer in [bankafschriften.md](bankafschriften.md#valkuilen).
 
+## Betalingsverkeer (stap 20)
+
+- **Een betaling maakt in Community de factuur meteen betaald.** Daarom geen `account.payment` bij het versturen, maar eigen batchregels; zie [betalingsverkeer.md](betalingsverkeer.md#waarom-geen-accountpayment).
+- **`with_user()` neemt de bedrijvenkiezer mee.** Een andere gebruiker met de geselecteerde bedrijven van de beheerder gaf "Toegang tot ongeautoriseerde of ongeldige bedrijven"; zet `allowed_company_ids` op de bedrijven van de VME.
+- **Een SEPA-domiciliÃ«ring na de vervaldag is niet "te laat".** De koppeling van stap 12 zou dagen te laat tellen; bij een inning uit een batch staat `vme_days_late` op 0.
+
 ## Bekende problemen (nog open)
 
 - Geen op dit moment.

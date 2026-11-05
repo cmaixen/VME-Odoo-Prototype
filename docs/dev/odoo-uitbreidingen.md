@@ -22,6 +22,8 @@ We blijven zo dicht mogelijk bij standaard Odoo: elke override roept eerst `supe
 | Serveracties `action_load_demo_data`, `action_load_demo_history` | `data/demo_actions.xml` | Alleen voor `base.group_system`; roepen `_load_demo_data()` en `_load_demo_history()` aan. |
 | `account.bank.statement.line` (nieuwe velden en methodes) | `models/account_bank_statement_line.py` | Koppelt bankregels zelf: vervangt de regel op de wachtrekening door tegenregels en lettert af met `reconcile()`. Gebruikt Odoo's `_seek_for_lines()`, `action_undo_reconciliation()` en `_find_or_create_bank_account()`. Zie [bankafschriften.md](bankafschriften.md). |
 | Toegangsrecht op `account.bank.statement.line` voor `account.group_account_invoice` | `security/ir.model.access.csv` | Lezen en schrijven (niet aanmaken of verwijderen): in Community kan anders alleen de verborgen groep `group_account_basic` bankregels wijzigen. |
+| `account.move.button_draft()` | `models/vme_payment.py` | Wist de goedkeuring voor betaling voor de factuur naar concept gaat | Een gewijzigde factuur moet opnieuw goedgekeurd worden (stap 20). |
+| `account.bank.statement.line._vme_match()` en `_vme_reconcile()` | `models/account_bank_statement_line.py` | Eerst `_vme_match_payment_batch()`; na een uitgaande koppeling worden overschrijvingen uit een batch bevestigd | Terugkoppeling van onze SEPA-bestanden (stap 20, zie [betalingsverkeer.md](betalingsverkeer.md)). |
 | Serveracties `action_help_*` | `data/help_menu.xml` | Geven een `ir.actions.act_url` terug naar `vme_belgie.help_url` + artikel. |
 
 ## Wat we bewust niet overschrijven

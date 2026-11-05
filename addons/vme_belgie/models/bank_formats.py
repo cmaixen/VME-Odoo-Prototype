@@ -28,6 +28,8 @@ class Transaction:
     counterparty_name: str = ""
     counterparty_account: str = ""
     bank_reference: str = ""
+    end_to_end_id: str = ""  # SEPA reference of our own payment file (CAMT only)
+    return_reason: str = ""  # ISO reason code of a returned direct debit or transfer (CAMT only), e.g. AM04
 
 
 @dataclass
@@ -302,7 +304,12 @@ def parse_camt053(data):
             booking = _text(entry, "BookgDt/Dt") or _text(entry, "ValDt/Dt")
             details = _find(entry, "NtryDtls/TxDtls")
             communication, structured, name, account = "", False, "", ""
+            end_to_end_id, return_reason = "", ""
             if details is not None:
+                end_to_end_id = _text(details, "Refs/EndToEndId")
+                if end_to_end_id == "NOTPROVIDED":
+                    end_to_end_id = ""
+                return_reason = _text(details, "RtrInf/Rsn/Cd")
                 structured_ref = _text(details, "RmtInf/Strd/CdtrRefInf/Ref")
                 if structured_ref:
                     digits, _valid = find_structured(structured_ref)
@@ -324,6 +331,8 @@ def parse_camt053(data):
                 counterparty_name=name,
                 counterparty_account=account,
                 bank_reference=_text(entry, "AcctSvcrRef"),
+                end_to_end_id=end_to_end_id,
+                return_reason=return_reason,
             ))
         total = statement.balance_start + sum(t.amount for t in statement.transactions)
         if total != statement.balance_end:
@@ -333,6 +342,55 @@ def parse_camt053(data):
             )
         statements.append(statement)
     return statements
+
+
+def write_camt053(statement, holder="", message_id=None):
+    """Write one Statement as a camt.053.001.02 file (str), for tests and fictitious demo statements.
+
+    A transaction with a return_reason is written as a returned SEPA payment (reversal with RtrInf).
+    """
+    def esc(value):
+        return (value or "").replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+    def amount(value):
+        return f'<Amt Ccy="{statement.currency}">{abs(value):.2f}</Amt><CdtDbtInd>{"DBIT" if value < 0 else "CRDT"}</CdtDbtInd>'
+
+    def balance(code, value):
+        return (f"<Bal><Tp><CdOrPrtry><Cd>{code}</Cd></CdOrPrtry></Tp>{amount(value)}"
+                f"<Dt><Dt>{statement.date.isoformat()}</Dt></Dt></Bal>")
+
+    entries = []
+    for t in statement.transactions:
+        # Like parse_camt053: the counterparty is the creditor of money out, the debtor of money in.
+        party = "Cdtr" if t.amount < 0 else "Dbtr"
+        digits, valid = find_structured(t.communication) if t.structured else (None, False)
+        if digits and valid:
+            remittance = (f"<Strd><CdtrRefInf><Tp><CdOrPrtry><Cd>SCOR</Cd></CdOrPrtry><Issr>BBA</Issr></Tp>"
+                          f"<Ref>{digits}</Ref></CdtrRefInf></Strd>")
+        else:
+            remittance = f"<Ustrd>{esc(t.communication)}</Ustrd>"
+        refs = f"<Refs><EndToEndId>{esc(t.end_to_end_id)}</EndToEndId></Refs>" if t.end_to_end_id else ""
+        returned = (f"<RtrInf><Rsn><Cd>{esc(t.return_reason)}</Cd></Rsn></RtrInf>" if t.return_reason else "")
+        entries.append(
+            f"<Ntry>{amount(t.amount)}{'<RvslInd>true</RvslInd>' if t.return_reason else ''}<Sts>BOOK</Sts>"
+            f"<BookgDt><Dt>{t.date.isoformat()}</Dt></BookgDt><ValDt><Dt>{t.date.isoformat()}</Dt></ValDt>"
+            f"<AcctSvcrRef>{esc(t.bank_reference)}</AcctSvcrRef>"
+            f"<NtryDtls><TxDtls>{refs}<RltdPties><{party}><Nm>{esc(t.counterparty_name)}</Nm></{party}>"
+            f"<{party}Acct><Id><IBAN>{t.counterparty_account}</IBAN></Id></{party}Acct></RltdPties>"
+            f"<RmtInf>{remittance}</RmtInf>{returned}</TxDtls></NtryDtls></Ntry>"
+        )
+    message_id = message_id or f"{statement.account_number[-8:]}-{statement.date:%Y%m%d}-{statement.number}"
+    return (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<Document xmlns="urn:iso:std:iso:20022:tech:xsd:camt.053.001.02">\n<BkToCstmrStmt>\n'
+        f"<GrpHdr><MsgId>{esc(message_id)}</MsgId><CreDtTm>{statement.date.isoformat()}T18:00:00</CreDtTm></GrpHdr>\n"
+        f"<Stmt><Id>{esc(message_id)}</Id><ElctrncSeqNb>{statement.number}</ElctrncSeqNb>"
+        f"<CreDtTm>{statement.date.isoformat()}T18:00:00</CreDtTm>"
+        f"<Acct><Id><IBAN>{statement.account_number}</IBAN></Id><Ccy>{statement.currency}</Ccy>"
+        f"<Ownr><Nm>{esc(holder)}</Nm></Ownr></Acct>\n"
+        f"{balance('OPBD', statement.balance_start)}\n{balance('CLBD', statement.balance_end)}\n"
+        + "\n".join(entries) + "\n</Stmt>\n</BkToCstmrStmt>\n</Document>\n"
+    )
 
 
 def parse_statement_file(data):

@@ -9,12 +9,12 @@ Legende: ✅ gebouwd · 🔨 wordt nu gebouwd · 📋 gepland · ➖ bewust late
 | Aankoopfacturen verwerken | UBL en Peppol | ✅ | stap 4b, 7b |
 | | Facturen per mail | ✅ | stap 7b |
 | | OCR van PDF-facturen zonder UBL | 📋 | stap 21 |
-| | Goedkeuren vóór betaling | 📋 | stap 20 |
+| | Goedkeuren vóór betaling | ✅ | stap 20 |
 | Boekhouding | Eén boekhouding per VME, Belgisch rekeningstelsel, boekingsregels (verdeelregels), opvragingen | ✅ | stap 1–6 |
 | | Minimumrekeningstelsel VME (KB 12 juli 2012) nakijken | 📋 | LEGAL-CHECK |
 | Betalingsverkeer | Bankafschriften inlezen (CODA/CAMT) en koppelen | ✅ | stap 12 |
-| | Betaalbatches voor leveranciers (SEPA) | 📋 | stap 20 |
-| | Domiciliëringen van provisies | 📋 | stap 20 |
+| | Betaalbatches voor leveranciers (SEPA) | ✅ | stap 20 |
+| | Domiciliëringen van provisies | ✅ | stap 20 |
 | | Rechtstreekse bankkoppeling (bv. Swan, Ponto, Isabel) | ➖ | na het prototype, vraagt een contract met de bank of aggregator |
 | Kapitaalbeheer | Werk- en reservekapitaal apart, 5%-regel | ✅ | stap 5 |
 | | Stand en verloop per VME | 📋 | stap 22 |

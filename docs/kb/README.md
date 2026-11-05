@@ -40,10 +40,11 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 13. [Leveranciersfacturen per e-mail ontvangen](facturen-per-mail.md)
 14. [Een antwoord behandelen dat de AI-assistent voorstelt](ai-voorstellen-mails.md)
 15. [Bankafschriften inlezen en betalingen koppelen](bankafschriften.md)
+16. [Leveranciers betalen en provisies domiciliëren](betalingen.md)
 
 ### Overstappen
 
-16. [Een VME overnemen uit een ander syndicuspakket](migratie.md)
+17. [Een VME overnemen uit een ander syndicuspakket](migratie.md)
 
 ## Zo is het platform opgebouwd
 

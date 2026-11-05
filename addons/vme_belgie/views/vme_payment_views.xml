@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="seq_vme_payment_batch_transfer" model="ir.sequence">
+        <field name="name">Betaalbatch overschrijvingen</field>
+        <field name="code">vme.payment.batch.transfer</field>
+        <field name="prefix">BET/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="seq_vme_payment_batch_debit" model="ir.sequence">
+        <field name="name">Betaalbatch domiciliëringen</field>
+        <field name="code">vme.payment.batch.debit</field>
+        <field name="prefix">DOM/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <!-- Vendor bills: approval before payment -->
+    <record id="view_move_form_vme_payment" model="ir.ui.view">
+        <field name="name">account.move.form.vme.payment</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_vme_approve" type="object" string="Goedkeuren voor betaling" class="btn-primary"
+                        invisible="state != 'posted' or vme_approval_state != 'to_approve' or payment_state in ('paid', 'reversed')"/>
+                <button name="action_vme_approve" type="object" string="Tweede goedkeuring" class="btn-primary"
+                        invisible="state != 'posted' or vme_approval_state != 'first_approved' or payment_state in ('paid', 'reversed')"/>
+                <button name="action_vme_reset_approval" type="object" string="Goedkeuring intrekken" class="btn-secondary"
+                        invisible="vme_approval_state in (False, 'to_approve') or payment_state in ('paid', 'reversed')"/>
+            </xpath>
+            <xpath expr="//group[@id='header_right_group']" position="inside">
+                <field name="vme_approval_state" widget="badge" invisible="not vme_approval_state"
+                       decoration-success="vme_approval_state == 'approved'"
+                       decoration-warning="vme_approval_state == 'first_approved'"
+                       decoration-info="vme_approval_state == 'to_approve'"/>
+                <field name="vme_needs_second_approval" invisible="1"/>
+                <field name="vme_approved_by_id" invisible="not vme_approved_by_id"/>
+                <field name="vme_second_approved_by_id" invisible="not vme_second_approved_by_id"/>
+                <field name="vme_payment_status" invisible="not vme_payment_status" widget="badge"/>
+                <field name="vme_fund" string="Te betalen uit" placeholder="Werkkapitaal"
+                       invisible="move_type != 'in_invoice' or not vme_association_id"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="vme_bill_approval_view_list" model="ir.ui.view">
+        <field name="name">account.move.vme.approval.list</field>
+        <field name="model">account.move</field>
+        <field name="priority">90</field>
+        <field name="arch" type="xml">
+            <list string="Leveranciersfacturen" create="0">
+                <field name="vme_association_id" string="VME"/>
+                <field name="name"/>
+                <field name="partner_id" string="Leverancier"/>
+                <field name="ref" optional="show"/>
+                <field name="invoice_date_due"/>
+                <field name="amount_total" sum="Totaal" string="Bedrag"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="vme_fund" string="Fonds" optional="hide"/>
+                <field name="vme_approval_state" widget="badge"
+                       decoration-success="vme_approval_state == 'approved'"
+                       decoration-warning="vme_approval_state == 'first_approved'"
+                       decoration-info="vme_approval_state == 'to_approve'"/>
+                <field name="vme_approved_by_id" optional="show"/>
+                <field name="vme_second_approved_by_id" optional="hide"/>
+                <field name="vme_payment_status" optional="show"/>
+                <field name="payment_state" widget="badge" optional="show"/>
+                <field name="state" column_invisible="1"/>
+                <button name="action_vme_approve" type="object" string="Goedkeuren" icon="fa-check"
+                        invisible="state != 'posted' or vme_approval_state not in ('to_approve', 'first_approved')"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_bill_approval_view_search" model="ir.ui.view">
+        <field name="name">account.move.vme.approval.search</field>
+        <field name="model">account.move</field>
+        <field name="priority">90</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="partner_id" string="Leverancier"/>
+                <field name="vme_association_id"/>
+                <filter name="to_approve" string="Te keuren" domain="[('vme_approval_state', '=', 'to_approve')]"/>
+                <filter name="first_approved" string="Wacht op tweede goedkeuring" domain="[('vme_approval_state', '=', 'first_approved')]"/>
+                <filter name="approved" string="Goedgekeurd" domain="[('vme_approval_state', '=', 'approved')]"/>
+                <separator/>
+                <filter name="open" string="Nog te betalen" domain="[('payment_state', 'in', ('not_paid', 'partial'))]"/>
+                <filter name="mine" string="Wacht op mij"
+                        domain="[('vme_approval_state', '=', 'first_approved'), ('vme_association_id.payment_second_approver_id', '=', uid)]"/>
+                <group>
+                    <filter name="group_vme" string="VME" context="{'group_by': 'vme_association_id'}"/>
+                    <filter name="group_approval" string="Goedkeuring" context="{'group_by': 'vme_approval_state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="vme_bill_approval_action" model="ir.actions.act_window">
+        <field name="name">Facturen goedkeuren</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('vme_association_id', '!=', False), ('move_type', '=', 'in_invoice'), ('state', '=', 'posted')]</field>
+        <field name="context">{'search_default_open': 1, 'search_default_group_approval': 1, 'default_move_type': 'in_invoice'}</field>
+        <field name="search_view_id" ref="vme_bill_approval_view_search"/>
+        <field name="view_ids" eval="[Command.clear(),
+            Command.create({'view_mode': 'list', 'view_id': ref('vme_bill_approval_view_list')}),
+            Command.create({'view_mode': 'form', 'view_id': ref('account.view_move_form')})]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Geen leveranciersfacturen om goed te keuren</p>
+            <p>Bevestigde leveranciersfacturen moeten goedgekeurd zijn voor ze in een betaalvoorstel komen. Boven het
+               bedrag dat op de VME ingesteld is, keurt ook de tweede goedkeurder ze goed.</p>
+        </field>
+    </record>
+
+    <!-- VME: payment settings and mandates -->
+    <record id="vme_association_view_form_payment" model="ir.ui.view">
+        <field name="name">vme.association.form.payment</field>
+        <field name="model">vme.association</field>
+        <field name="inherit_id" ref="vme_belgie.vme_association_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='notes']" position="before">
+                <page string="Betalingen" name="payments">
+                    <group>
+                        <group string="Goedkeuren vóór betaling">
+                            <field name="currency_id" invisible="1"/>
+                            <field name="payment_approval_threshold"/>
+                            <field name="payment_second_approver_id" options="{'no_create': True}"/>
+                        </group>
+                        <group string="Domiciliëring">
+                            <field name="sepa_creditor_identifier" placeholder="BE00ZZZ0123456789"/>
+                        </group>
+                    </group>
+                    <field name="mandate_ids" context="{'default_association_id': id}">
+                        <list editable="bottom">
+                            <field name="partner_id"/>
+                            <field name="partner_bank_id" context="{'default_partner_id': partner_id}"/>
+                            <field name="reference"/>
+                            <field name="signature_date"/>
+                            <field name="state"/>
+                            <field name="first_collection_done"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="vme_sepa_mandate_view_list" model="ir.ui.view">
+        <field name="name">vme.sepa.mandate.list</field>
+        <field name="model">vme.sepa.mandate</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'revoked'">
+                <field name="association_id"/>
+                <field name="partner_id"/>
+                <field name="partner_bank_id"/>
+                <field name="reference"/>
+                <field name="signature_date"/>
+                <field name="last_collection_date" optional="show"/>
+                <field name="state" widget="badge" decoration-success="state == 'active'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_sepa_mandate_view_form" model="ir.ui.view">
+        <field name="name">vme.sepa.mandate.form</field>
+        <field name="model">vme.sepa.mandate</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_revoke" type="object" string="Intrekken" invisible="state != 'active'"
+                            confirm="Na het intrekken wordt deze eigenaar niet meer geïnd. Doorgaan?"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="association_id"/>
+                            <field name="partner_id"/>
+                            <field name="partner_bank_id" context="{'default_partner_id': partner_id}"/>
+                        </group>
+                        <group>
+                            <field name="reference" placeholder="Automatisch"/>
+                            <field name="signature_date"/>
+                            <field name="first_collection_done"/>
+                            <field name="last_collection_date"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="vme_sepa_mandate_action" model="ir.actions.act_window">
+        <field name="name">SEPA-mandaten</field>
+        <field name="res_model">vme.sepa.mandate</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nog geen mandaten</p>
+            <p>Een eigenaar die zijn provisies wil laten domiciliëren, ondertekent een SEPA-mandaat. Leg het hier vast met
+               zijn rekeningnummer; daarna komen zijn provisies in het incassobestand van elke provisieoproep.</p>
+        </field>
+    </record>
+
+    <!-- Payment batches -->
+    <record id="vme_payment_batch_view_list" model="ir.ui.view">
+        <field name="name">vme.payment.batch.list</field>
+        <field name="model">vme.payment.batch</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state in ('done', 'cancel')" decoration-info="state == 'draft'">
+                <field name="name"/>
+                <field name="association_id"/>
+                <field name="batch_type"/>
+                <field name="fund" optional="show"/>
+                <field name="provision_call_id" optional="hide"/>
+                <field name="execution_date"/>
+                <field name="line_count"/>
+                <field name="amount_total" sum="Totaal"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="paid_count" optional="show"/>
+                <field name="rejected_count" optional="show"/>
+                <field name="state" widget="badge" decoration-success="state == 'done'" decoration-warning="state in ('generated', 'sent')"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_payment_batch_view_form" model="ir.ui.view">
+        <field name="name">vme.payment.batch.form</field>
+        <field name="model">vme.payment.batch</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_fill_proposal" type="object" string="Betaalvoorstel vullen" class="btn-primary"
+                            invisible="state != 'draft' or batch_type != 'transfer' or line_ids"/>
+                    <button name="action_fill_proposal" type="object" string="Voorstel opnieuw vullen"
+                            invisible="state != 'draft' or batch_type != 'transfer' or not line_ids"/>
+                    <button name="action_fill_proposal" type="object" string="Provisies met mandaat ophalen" class="btn-primary"
+                            invisible="state != 'draft' or batch_type != 'direct_debit' or line_ids"/>
+                    <button name="action_generate_file" type="object" string="SEPA-bestand maken" class="btn-primary"
+                            invisible="state != 'draft' or not line_ids"/>
+                    <button name="action_download" type="object" string="Bestand downloaden" class="btn-primary"
+                            invisible="state != 'generated'"/>
+                    <button name="action_mark_sent" type="object" string="Opgeladen in de bank"
+                            invisible="state != 'generated'"
+                            confirm="Bevestig dat u het bestand in de bankapplicatie opgeladen en ondertekend hebt. Odoo stuurt zelf niets naar de bank."/>
+                    <button name="action_download" type="object" string="Bestand downloaden"
+                            invisible="state not in ('sent', 'done')"/>
+                    <button name="action_back_to_draft" type="object" string="Terug naar concept" invisible="state != 'generated'"/>
+                    <button name="action_cancel" type="object" string="Annuleren" invisible="state not in ('draft', 'generated')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,generated,sent,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+                    <div class="alert alert-info" role="alert" invisible="state != 'generated'">
+                        Het bestand is gevalideerd tegen het SEPA-schema. Download het, laad het op in de bankapplicatie
+                        van de VME en onderteken het daar. Klik daarna op "Opgeladen in de bank".
+                    </div>
+                    <div class="alert alert-warning" role="alert" invisible="state != 'sent'">
+                        Verstuurd: de betalingen worden bevestigd zodra het rekeninguittreksel ingelezen is (Bank &gt; Bankafschriften inlezen).
+                    </div>
+                    <group>
+                        <group>
+                            <field name="association_id" readonly="state != 'draft'" options="{'no_create': True}"/>
+                            <field name="batch_type" readonly="state != 'draft' or line_ids"/>
+                            <field name="fund" readonly="state != 'draft'" invisible="batch_type != 'transfer'"
+                                   required="batch_type == 'transfer'"/>
+                            <field name="provision_call_id" readonly="state != 'draft'" invisible="batch_type != 'direct_debit'"
+                                   required="batch_type == 'direct_debit'" options="{'no_create': True}"/>
+                            <field name="due_until" readonly="state != 'draft'" invisible="batch_type != 'transfer'"/>
+                        </group>
+                        <group>
+                            <field name="execution_date" readonly="state != 'draft'"
+                                   string="Uitvoerings- of inningsdatum"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="amount_total"/>
+                            <field name="line_count"/>
+                            <field name="file_name" invisible="1"/>
+                            <field name="file_data" filename="file_name" invisible="not file_data"/>
+                            <field name="message_ref" invisible="not message_ref"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Betalingen" name="lines">
+                            <field name="line_ids" readonly="state != 'draft'">
+                                <list create="0" editable="bottom" decoration-success="state == 'paid'" decoration-danger="state == 'rejected'">
+                                    <field name="move_id" readonly="1"/>
+                                    <field name="partner_id" readonly="1"/>
+                                    <field name="partner_bank_id" readonly="1"/>
+                                    <field name="mandate_id" readonly="1" optional="show"
+                                           column_invisible="parent.batch_type != 'direct_debit'"/>
+                                    <field name="date_due" optional="show"/>
+                                    <field name="communication" readonly="1"/>
+                                    <field name="amount" sum="Totaal" readonly="1"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="end_to_end_id" optional="hide"/>
+                                    <field name="state" widget="badge" decoration-success="state == 'paid'"
+                                           decoration-danger="state == 'rejected'" decoration-warning="state == 'sent'"/>
+                                    <field name="return_reason" optional="show"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Niet opgenomen" name="skipped" invisible="not proposal_note">
+                            <field name="proposal_note" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="vme_payment_batch_view_search" model="ir.ui.view">
+        <field name="name">vme.payment.batch.search</field>
+        <field name="model">vme.payment.batch</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="association_id"/>
+                <filter name="transfer" string="Overschrijvingen" domain="[('batch_type', '=', 'transfer')]"/>
+                <filter name="direct_debit" string="Domiciliëringen" domain="[('batch_type', '=', 'direct_debit')]"/>
+                <separator/>
+                <filter name="open" string="Lopend" domain="[('state', 'in', ('draft', 'generated', 'sent'))]"/>
+                <group>
+                    <filter name="group_vme" string="VME" context="{'group_by': 'association_id'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="vme_payment_batch_action" model="ir.actions.act_window">
+        <field name="name">Betaalbatches</field>
+        <field name="res_model">vme.payment.batch</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_transfer': 1, 'default_batch_type': 'transfer'}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nog geen betaalbatches</p>
+            <p>Maak een betaalbatch per VME en per fondsrekening. Het betaalvoorstel neemt de goedgekeurde
+               leveranciersfacturen die vervallen; daarna maakt u het SEPA-bestand om in de bank op te laden.</p>
+        </field>
+    </record>
+
+    <record id="vme_direct_debit_batch_action" model="ir.actions.act_window">
+        <field name="name">Domiciliëringen</field>
+        <field name="res_model">vme.payment.batch</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_direct_debit': 1, 'default_batch_type': 'direct_debit'}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nog geen incassobestanden</p>
+            <p>Open een provisieoproep en klik op "Domiciliëren" om de provisies van eigenaars met een SEPA-mandaat te innen.</p>
+        </field>
+    </record>
+
+    <!-- Provision call: collect by direct debit -->
+    <record id="vme_provision_call_view_form_payment" model="ir.ui.view">
+        <field name="name">vme.provision.call.form.payment</field>
+        <field name="model">vme.provision.call</field>
+        <field name="inherit_id" ref="vme_belgie.vme_provision_call_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <header>
+                    <button name="action_create_direct_debit_batch" type="object" string="Domiciliëren" class="btn-primary"
+                            invisible="not open_count"/>
+                </header>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_direct_debit_batches" type="object" class="oe_stat_button" icon="fa-university"
+                        invisible="not direct_debit_batch_count">
+                    <field name="direct_debit_batch_count" widget="statinfo" string="Incasso's"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Bank movement: the SEPA reference and the payment it confirms or returns -->
+    <record id="vme_bank_line_view_form_payment" model="ir.ui.view">
+        <field name="name">account.bank.statement.line.vme.form.payment</field>
+        <field name="model">account.bank.statement.line</field>
+        <field name="inherit_id" ref="vme_belgie.vme_bank_line_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='vme_structured_reference']" position="after">
+                <field name="vme_end_to_end_id" invisible="not vme_end_to_end_id" readonly="1"/>
+                <field name="vme_return_reason" invisible="not vme_return_reason" readonly="1"/>
+            </xpath>
+            <xpath expr="//field[@name='vme_matched_move_ids']" position="after">
+                <field name="vme_payment_batch_line_ids" invisible="not vme_payment_batch_line_ids" readonly="1">
+                    <list>
+                        <field name="batch_id"/>
+                        <field name="move_id"/>
+                        <field name="state"/>
+                    </list>
+                </field>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_load_demo_payments" model="ir.actions.server">
+        <field name="name">Demo betalingsverkeer laden</field>
+        <field name="model_id" ref="model_vme_association"/>
+        <field name="state">code</field>
+        <field name="code">action = model._load_demo_payments()</field>
+    </record>
+    <record id="action_load_demo_payment_statement" model="ir.actions.server">
+        <field name="name">Demo-afschrift voor betaalbatches</field>
+        <field name="model_id" ref="model_vme_association"/>
+        <field name="state">code</field>
+        <field name="code">action = model._load_demo_payment_statement()</field>
+    </record>
+
+    <menuitem id="menu_vme_payments" name="Betalingen" parent="menu_vme_root" sequence="49" groups="account.group_account_invoice"/>
+    <menuitem id="menu_vme_bill_approval" name="Facturen goedkeuren" parent="menu_vme_payments" action="vme_bill_approval_action" sequence="10"/>
+    <menuitem id="menu_vme_payment_batches" name="Betaalbatches" parent="menu_vme_payments" action="vme_payment_batch_action" sequence="20"/>
+    <menuitem id="menu_vme_direct_debit_batches" name="Domiciliëringen" parent="menu_vme_payments" action="vme_direct_debit_batch_action" sequence="30"/>
+    <menuitem id="menu_vme_sepa_mandates" name="SEPA-mandaten" parent="menu_vme_payments" action="vme_sepa_mandate_action" sequence="40"/>
+    <menuitem id="menu_vme_load_demo_payments" name="Demo betalingsverkeer laden" parent="menu_vme_configuration" action="action_load_demo_payments" sequence="13"/>
+    <menuitem id="menu_vme_load_demo_payment_statement" name="Demo-afschrift voor betaalbatches" parent="menu_vme_configuration" action="action_load_demo_payment_statement" sequence="14"/>
+</odoo>
