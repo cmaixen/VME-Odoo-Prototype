@@ -33,6 +33,7 @@ Een werkend prototype van een syndicusplatform op Odoo 19, om te tonen aan een p
 - Demohistoriek 2026 laden (provisieoproepen, betalingen en leveranciersfacturen; ongeveer een minuut), ná de demodata: **VME > Configuratie > Demohistoriek 2026 laden**, of `echo "env = env(user=env.ref('base.user_admin')); env['vme.association']._load_demo_history(); env.cr.commit()" | docker compose run --rm -T odoo odoo shell -d vme_demo --no-http`. Daarna toont **VME > Jaarafrekening** voor 2026 een volledig jaar.
 - Het demoscenario van tien minuten, met de voorbereiding, staat in `docs/demo.md`.
 - De lopende server dient alleen `vme_demo` (`--db-filter` in `docker-compose.yml`); tests en shell-commando's via `docker compose run` geven hun eigen database mee.
+- Fictieve exportbestanden voor een overstap uit een ander pakket (Residentie Esdoorn, met en zonder bewuste fouten) staan in `addons/vme_belgie/demo_data/migratie/`. Laad ze op via **VME > Configuratie > Overstap uit ander pakket**; het formaat staat in `docs/dev/migratie.md`.
 - Fictieve Peppol-facturen (UBL BIS Billing 3.0) voor de demo staan in `addons/vme_belgie/demo_data/facturen/`, één per VME. Importeer ze in de company van die VME via **Facturatie > Leveranciers > Facturen > Upload**; de verdeelregels vullen sleutel en rekening in en bij "Bevestigen" wordt automatisch verdeeld.
 
 ## Domeinbegrippen

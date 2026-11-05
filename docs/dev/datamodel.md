@@ -24,6 +24,8 @@ erDiagram
     vme_cost_allocation }o--|| vme_lot : lot_id
     vme_cost_allocation }o--|| res_partner : "partner_id (eigenaar)"
     vme_cost_allocation }o--|| vme_key : key_id
+    vme_migration }o--o| vme_association : "association_id (na import)"
+    vme_migration }o--o| account_move : "opening_move_id (openingsboeking)"
 ```
 
 ## Eigen modellen
@@ -43,6 +45,7 @@ erDiagram
 | `vme.arrears` | Achterstal (SQL-view) | Open, vervallen debiteurenlijnen van alle VME's met ouderdom; zie [invordering.md](invordering.md). |
 | `vme.collection` | Invorderingsdossier | Per VME en eigenaar; niveau, kosten, doorsturen. Eén niet-afgesloten dossier per VME en eigenaar. |
 | `vme.collection.reminder` | Herinnering | Niveau 1-3, concept of verstuurd, momentopname van de open bedragen en de tekst. |
+| `vme.migration` | Overstap uit een ander pakket | `attachment_ids` (exportbestanden), `source_format`, `state` (nieuw, proefrun gedaan, geïmporteerd), `report_html`, `error_count`, `warning_count`, `transition_date`, `association_id`, `opening_move_id`. Zie [migratie.md](migratie.md). |
 
 Wizards (transient): `vme.provision.call.wizard` en `vme.annual.statement.wizard`, elk met een HTML-voorbeeld (`preview_html`).
 

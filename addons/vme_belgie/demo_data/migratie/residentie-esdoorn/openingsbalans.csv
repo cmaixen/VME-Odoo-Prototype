@@ -1,0 +1,10 @@
+soort;code;bedrag;omschrijving
+bank_werkkapitaal;;8.432,15;Saldo rekening werkkapitaal op 31/12/2026
+bank_reservekapitaal;;24.600,00;Saldo rekening reservekapitaal op 31/12/2026
+eigenaar;E03;412,50;Openstaande provisies 2026
+eigenaar;E07;-150,00;Vooruitbetaald
+eigenaar;E09;236,40;Saldo jaarafrekening 2025 (nalatenschap vorige eigenaar)
+leverancier;L01;1.284,30;Elektriciteit november en december 2026
+leverancier;L02;465,85;Onderhoud lift vierde kwartaal 2026
+fonds_werkkapitaal;;7.180,90;Werkkapitaal op 31/12/2026
+fonds_reservekapitaal;;24.600,00;Reservekapitaal op 31/12/2026

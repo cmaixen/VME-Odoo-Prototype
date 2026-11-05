@@ -1,0 +1,11 @@
+code;naam;email;telefoon;straat;postcode;gemeente
+E01;Eigenaar Esdoorn A1;eigenaar.esdoorn.a1@example.com;+32 470 00 01 01;Esdoornlaan 5 bus 1;3000;Voorbeeldstad
+E02;Eigenaar Esdoorn A2;eigenaar.esdoorn.a2@example.com;+32 470 00 01 02;Esdoornlaan 5 bus 2;3000;Voorbeeldstad
+E03;Eigenaar Esdoorn A3;eigenaar.esdoorn.a3@example.com;;Esdoornlaan 5 bus 3;3000;Voorbeeldstad
+E04;Vorige eigenaar Esdoorn A4;vorige.eigenaar.esdoorn.a4@example.com;;Voorbeeldweg 40;3000;Voorbeeldstad
+E05;Eigenaar Esdoorn A5;eigenaar.esdoorn.a5@example.com;+32 470 00 01 05;Esdoornlaan 5 bus 5;3000;Voorbeeldstad
+E06;Eigenaar Esdoorn A6;eigenaar.esdoorn.a6@example.com;;Esdoornlaan 5 bus 6;3000;Voorbeeldstad
+E07;Eigenaar Esdoorn A7;;+32 470 00 01 07;Esdoornlaan 5 bus 7;3000;Voorbeeldstad
+E08;Eigenaar Esdoorn A8;eigenaar.esdoorn.a8@example.com;;Esdoornlaan 5 bus 8;3000;Voorbeeldstad
+E09;Erfgenaam Esdoorn;erfgenaam.esdoorn@example.com;;Voorbeeldplein 2;3000;Voorbeeldstad
+E10;Eigenaar Esdoorn A4;eigenaar.esdoorn.a4@example.com;+32 470 00 01 04;Esdoornlaan 5 bus 4;3000;Voorbeeldstad

@@ -3,7 +3,7 @@
 Automatisch gemaakt door `python3 tools/legal_checks.py`; niet met de hand bewerken.
 Elke rij is een wettelijke regel in de code die nog juridisch gevalideerd moet worden.
 
-Aantal punten: 46.
+Aantal punten: 50.
 
 ## Per bron
 
@@ -13,8 +13,8 @@ Aantal punten: 46.
 - **KB 9 maart 2003 betreffende de beveiliging van liften**: [vme_installation.py:17](../../addons/vme_belgie/models/vme_installation.py#L17)
 - **NBN S21-050**: [vme_installation.py:20](../../addons/vme_belgie/models/vme_installation.py#L20)
 - **Vlaamse regelgeving verwarmingsaudit/onderhoud**: [vme_installation.py:25](../../addons/vme_belgie/models/vme_installation.py#L25)
-- **art. 3.85 §1 BW**: [vme_key.py:60](../../addons/vme_belgie/models/vme_key.py#L60)
-- **art. 3.86 §3 BW**: [vme_budget.py:5](../../addons/vme_belgie/models/vme_budget.py#L5)
+- **art. 3.85 §1 BW**: [vme_key.py:60](../../addons/vme_belgie/models/vme_key.py#L60), [vme_migration.py:739](../../addons/vme_belgie/models/vme_migration.py#L739)
+- **art. 3.86 §3 BW**: [vme_budget.py:5](../../addons/vme_belgie/models/vme_budget.py#L5), [vme_migration.py:445](../../addons/vme_belgie/models/vme_migration.py#L445)
 - **art. 3.87 §10 BW**: [vme_assembly_meeting.py:232](../../addons/vme_belgie/models/vme_assembly_meeting.py#L232)
 - **art. 3.87 §2 BW**: [vme_assembly.py:13](../../addons/vme_belgie/models/vme_assembly.py#L13), [vme_assembly.py:38](../../addons/vme_belgie/models/vme_assembly.py#L38)
 - **art. 3.87 §3 BW**: [vme_assembly.py:17](../../addons/vme_belgie/models/vme_assembly.py#L17), [vme_assembly.py:42](../../addons/vme_belgie/models/vme_assembly.py#L42), [vme_assembly.py:234](../../addons/vme_belgie/models/vme_assembly.py#L234), [vme_assembly_meeting.py:168](../../addons/vme_belgie/models/vme_assembly_meeting.py#L168)
@@ -23,7 +23,7 @@ Aantal punten: 46.
 - **art. 3.87 §7 BW**: [vme_assembly_meeting.py:25](../../addons/vme_belgie/models/vme_assembly_meeting.py#L25), [vme_assembly_meeting.py:381](../../addons/vme_belgie/models/vme_assembly_meeting.py#L381)
 - **art. 3.88 §1-3 BW**: [vme_assembly_meeting.py:8](../../addons/vme_belgie/models/vme_assembly_meeting.py#L8)
 - **art. 3.88 §3 BW**: [vme_assembly_meeting.py:302](../../addons/vme_belgie/models/vme_assembly_meeting.py#L302)
-- **art. 3.89 §5 BW**: [account_bank_statement_line.py:154](../../addons/vme_belgie/models/account_bank_statement_line.py#L154), [account_move.py:55](../../addons/vme_belgie/models/account_move.py#L55), [vme_association.py:15](../../addons/vme_belgie/models/vme_association.py#L15), [vme_association.py:34](../../addons/vme_belgie/models/vme_association.py#L34), [vme_association.py:170](../../addons/vme_belgie/models/vme_association.py#L170), [vme_association.py:193](../../addons/vme_belgie/models/vme_association.py#L193), [vme_provision_call_wizard.py:115](../../addons/vme_belgie/wizard/vme_provision_call_wizard.py#L115)
+- **art. 3.89 §5 BW**: [account_bank_statement_line.py:154](../../addons/vme_belgie/models/account_bank_statement_line.py#L154), [account_move.py:55](../../addons/vme_belgie/models/account_move.py#L55), [vme_association.py:15](../../addons/vme_belgie/models/vme_association.py#L15), [vme_association.py:34](../../addons/vme_belgie/models/vme_association.py#L34), [vme_association.py:170](../../addons/vme_belgie/models/vme_association.py#L170), [vme_association.py:193](../../addons/vme_belgie/models/vme_association.py#L193), [vme_migration.py:621](../../addons/vme_belgie/models/vme_migration.py#L621), [vme_provision_call_wizard.py:115](../../addons/vme_belgie/wizard/vme_provision_call_wizard.py#L115)
 - **art. 3.93 §4 BW**: [vme_assembly_meeting.py:212](../../addons/vme_belgie/models/vme_assembly_meeting.py#L212)
 - **art. 3.94 BW**: [account_move.py:161](../../addons/vme_belgie/models/account_move.py#L161)
 - **art. 3.94 §1 BW**: [vme_sale_file.py:10](../../addons/vme_belgie/models/vme_sale_file.py#L10), [vme_sale_file.py:16](../../addons/vme_belgie/models/vme_sale_file.py#L16)
@@ -31,6 +31,7 @@ Aantal punten: 46.
 - **art. 3.94 §1, 2° en §2 BW**: [vme_sale_file.py:278](../../addons/vme_belgie/models/vme_sale_file.py#L278)
 - **art. 3.94 §1, 3° BW**: [vme_sale_file.py:270](../../addons/vme_belgie/models/vme_sale_file.py#L270)
 - **art. 3.94 §2 BW**: [vme_sale_file.py:12](../../addons/vme_belgie/models/vme_sale_file.py#L12)
+- **art. III.88 WER**: [vme_migration.py:476](../../addons/vme_belgie/models/vme_migration.py#L476)
 - **art. XIX.2 §1 WER**: [vme_collection.py:108](../../addons/vme_belgie/models/vme_collection.py#L108), [vme_collection.py:401](../../addons/vme_belgie/models/vme_collection.py#L401)
 - **art. XIX.4 §1 WER**: [vme_collection.py:139](../../addons/vme_belgie/models/vme_collection.py#L139)
 - **art. XIX.4 §2 WER (wet 4 mei 2023)**: [vme_collection.py:47](../../addons/vme_belgie/models/vme_collection.py#L47)
@@ -81,6 +82,10 @@ Aantal punten: 46.
 | [addons/vme_belgie/models/vme_installation.py](../../addons/vme_belgie/models/vme_installation.py#L28) | 28 | no general legal interval found; manufacturer and fire department advice | - |
 | [addons/vme_belgie/models/vme_installation.py](../../addons/vme_belgie/models/vme_installation.py#L33) | 33 | KB 9 maart 2003 | risk analysis of an elevator at least every 15 years. |
 | [addons/vme_belgie/models/vme_key.py](../../addons/vme_belgie/models/vme_key.py#L60) | 60 | art. 3.85 §1 BW | the deed of division sets each lot's share in the common parts; the shares of a key must add up to its total. |
+| [addons/vme_belgie/models/vme_migration.py](../../addons/vme_belgie/models/vme_migration.py#L445) | 445 | art. 3.86 §3 BW | the reserve fund belongs to the VME and goes over in full; it is not settled with the owners. |
+| [addons/vme_belgie/models/vme_migration.py](../../addons/vme_belgie/models/vme_migration.py#L476) | 476 | art. III.88 WER | accounting documents are kept for 7 years (check whether 10 years applies); art. 3.89 §5, 13° BW - the previous syndic hands over the archive. |
+| [addons/vme_belgie/models/vme_migration.py](../../addons/vme_belgie/models/vme_migration.py#L621) | 621 | art. 3.89 §5 BW | working and reserve capital on separate accounts. |
+| [addons/vme_belgie/models/vme_migration.py](../../addons/vme_belgie/models/vme_migration.py#L739) | 739 | art. 3.85 §1 BW | the shares of a key must add up to its total. |
 | [addons/vme_belgie/models/vme_sale_file.py](../../addons/vme_belgie/models/vme_sale_file.py#L10) | 10 | art. 3.94 §1 BW | the syndic answers the notary's first request within 15 days. |
 | [addons/vme_belgie/models/vme_sale_file.py](../../addons/vme_belgie/models/vme_sale_file.py#L12) | 12 | art. 3.94 §2 BW | the syndic answers the second request (after the compromise) within 30 days. |
 | [addons/vme_belgie/models/vme_sale_file.py](../../addons/vme_belgie/models/vme_sale_file.py#L16) | 16 | art. 3.94 §1 BW | the notary receives the minutes of the assemblies of the last three years. |

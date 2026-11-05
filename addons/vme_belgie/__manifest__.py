@@ -37,6 +37,7 @@
         "report/vme_collection_reports.xml",
         "views/vme_collection_views.xml",
         "views/vme_bank_views.xml",
+        "views/vme_migration_views.xml",
     ],
     "installable": True,
     "application": True,

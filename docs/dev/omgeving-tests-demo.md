@@ -48,6 +48,7 @@ docker compose run --rm odoo odoo -d vme_test -u vme_belgie --test-enable --test
 | `test_distribution_rules.py` | Regel vult sleutel en rekening, handmatige sleutel blijft, automatisch verdelen bij boeken, geen regel geen verdeling, mislukte verdeling blokkeert boeken niet, één regel per leverancier; import van de Peppol-factuur van Residentie Linde |
 | `test_provision_call.py` | Bedragen, bankrekeningen en rekeningen per fonds, één factuur per fonds voor een eigenaar met twee kavels, eigenaar op factuurdatum, gestructureerde mededeling, concept zonder boeken, weigeringen (dubbele oproep, onbevestigde rekening, nummer buiten budget), andere company geselecteerd, voorbeeld in een open formulier, VME zonder budget, 5%-regel |
 | `test_annual_statement.py` | Saldo's, reservekapitaal niet afgerekend, controle op niet-verdeelde facturen, rapport; `TestAnnualStatementDemo` met een volledig demojaar (tag `vme_slow`) |
+| `test_migration.py` | Overstap uit een ander pakket: parsing, proefrun schrijft niets, verwachte fouten en waarschuwingen, openingsbalans in evenwicht, volledige import met openingsboeking, zip met Excel |
 
 De trage test met een volledig demojaar (meer dan 10 minuten) draai je apart, vóór een demo en na wijzigingen aan de verdeling of de afrekening:
 
