@@ -49,3 +49,8 @@ access_vme_request_type_user,vme.request.type user,model_vme_request_type,base.g
 access_vme_request_type_system,vme.request.type system,model_vme_request_type,base.group_system,1,1,1,1
 access_vme_request_user,vme.request user,model_vme_request,base.group_user,1,1,1,0
 access_vme_request_check_user,vme.request.check user,model_vme_request_check,base.group_user,1,1,1,1
+access_vme_sepa_mandate_user,vme.sepa.mandate user,model_vme_sepa_mandate,base.group_user,1,1,1,0
+access_vme_payment_batch_user,vme.payment.batch user,model_vme_payment_batch,account.group_account_invoice,1,1,1,1
+access_vme_payment_batch_line_user,vme.payment.batch.line user,model_vme_payment_batch_line,account.group_account_invoice,1,1,1,1
+access_vme_payment_batch_read,vme.payment.batch read,model_vme_payment_batch,base.group_user,1,0,0,0
+access_vme_payment_batch_line_read,vme.payment.batch.line read,model_vme_payment_batch_line,base.group_user,1,0,0,0

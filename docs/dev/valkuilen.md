@@ -76,6 +76,11 @@ Browsers bewaren cookies per hostnaam, niet per poort. Draaien er meerdere demo'
 ## Facturen van een VME in Odoo's eigen portaal (stap 15)
 
 Odoo's lijst `/my/invoices` zoekt met de rechten van de portaalgebruiker, en de multi-company-regel op `account.move` laat alleen facturen uit zijn eigen companies door. Provisiefacturen staan in de company van de VME, dus die lijst blijft leeg. We tonen de provisies in `/my/vme/<id>` (sudo, gefilterd op de eigenaar) en linken naar de PDF met het toegangstoken van de factuur.
+## Betalingsverkeer (stap 20)
+
+- **Een betaling maakt in Community de factuur meteen betaald.** Daarom geen `account.payment` bij het versturen, maar eigen batchregels; zie [betalingsverkeer.md](betalingsverkeer.md#waarom-geen-accountpayment).
+- **`with_user()` neemt de bedrijvenkiezer mee.** Een andere gebruiker met de geselecteerde bedrijven van de beheerder gaf "Toegang tot ongeautoriseerde of ongeldige bedrijven"; zet `allowed_company_ids` op de bedrijven van de VME.
+- **Een SEPA-domiciliëring na de vervaldag is niet "te laat".** De koppeling van stap 12 zou dagen te laat tellen; bij een inning uit een batch staat `vme_days_late` op 0.
 
 ## Bekende problemen (nog open)
 

@@ -32,6 +32,8 @@ We blijven zo dicht mogelijk bij standaard Odoo: elke override roept eerst `supe
 | Template `portal.portal_my_home` | `views/portal_templates.xml` | Tegel "Mijn mede-eigendom"; Odoo's tegel "Je facturen" verborgen voor eigenaars (provisies staan in de VME-company, die lijst bleef leeg). |
 | Record rules voor `group_vme_auditor` | `security/vme_council_security.xml` | Per VME-model een leesregel op `company_ids` en een regel die schrijven, aanmaken en verwijderen weigert; een leesregel op `res.partner`. Gelden alleen voor de commissaris. Zie [raad-commissaris.md](raad-commissaris.md). |
 | `check_not_auditor(env)` | `models/vme_access.py` | Bovenaan knoppen die met `sudo()` schrijven (invordering, bankregels): record rules gelden niet voor wat `sudo()` doet. |
+| `account.move.button_draft()` | `models/vme_payment.py` | Wist de goedkeuring voor betaling voor de factuur naar concept gaat | Een gewijzigde factuur moet opnieuw goedgekeurd worden (stap 20). |
+| `account.bank.statement.line._vme_match()` en `_vme_reconcile()` | `models/account_bank_statement_line.py` | Eerst `_vme_match_payment_batch()`; na een uitgaande koppeling worden overschrijvingen uit een batch bevestigd | Terugkoppeling van onze SEPA-bestanden (stap 20, zie [betalingsverkeer.md](betalingsverkeer.md)). |
 | Serveracties `action_help_*` | `data/help_menu.xml` | Geven een `ir.actions.act_url` terug naar `vme_belgie.help_url` + artikel. |
 
 | `account.move._vme_auto_distribute()` | `models/vme_request.py` | Slaat facturen met `vme_request_id` over | De factuur van de slotenmaker voor een privé-aanvraag wordt aan één eigenaar aangerekend, niet verdeeld (stap 19). |

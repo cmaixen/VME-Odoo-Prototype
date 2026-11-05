@@ -47,6 +47,8 @@ CODA/CAMT-bestand
             anders -> voorstel
 ```
 
+Sinds stap 20 kijkt `_vme_match()` eerst of de beweging een betaling of inning uit een eigen SEPA-batch is (op EndToEndId, of op bedrag en mededeling); zie [betalingsverkeer.md](betalingsverkeer.md#terugkoppeling-via-het-afschrift).
+
 ### Afletteren zonder Enterprise
 
 `_vme_reconcile(moves, state)` doet wat het Enterprise-afletterscherm doet, op de boeking van de bankregel zelf:

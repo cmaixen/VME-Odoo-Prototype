@@ -83,6 +83,14 @@ Testklassen zijn `post_install` en `-at_install`, zodat het rekeningstelsel en P
 
    Ze passen alleen bij een demo die met deze versie van de module opgebouwd is (mededelingen uit de factuurnummers, zie [bankafschriften.md](bankafschriften.md)).
 
+5. Demo betalingsverkeer (na de historiek, als de gebruiker die de tweede goedkeuringen geeft): **VME > Configuratie > Demo betalingsverkeer laden**, of:
+
+   ```bash
+   echo "env = env(user=env.ref('base.user_admin')); env['vme.association']._load_demo_payments(); env.cr.commit()" | docker compose run --rm -T odoo odoo shell -d vme_demo --no-http
+   ```
+
+   Maak daarna betaalbatches en een domiciliëring in het scherm; **VME > Configuratie > Demo-afschrift voor betaalbatches** leest een verzonnen afschrift in dat ze bevestigt (zie [betalingsverkeer.md](betalingsverkeer.md)).
+
 Wat er dan in de demo zit:
 
 | Onderdeel | Inhoud |
@@ -93,6 +101,7 @@ Wat er dan in de demo zit:
 | Leveranciers | Energie (alle VME's), lift (Linde); in de historiek ook schoonmaak, verzekering en gas |
 | Budgetten | 2026 en 2027, per kwartaal; Hof ter Beuken onder de 5% |
 | Historiek 2026 | Vier provisieoproepen, betalingen behalve A3 (oproep 4) en B7 (oproepen 3 en 4), leveranciersfacturen, drie Peppol-facturen elektriciteit |
+| Betalingsverkeer | Na stap 5: goedkeuringen door "Medewerker Syndicus (demo)", de ingelogde gebruiker als tweede goedkeurder, bevestigde rekeningen van leveranciers, vijf SEPA-mandaten |
 | Bankafschriften | Afschriften van 5 november 2026 (drie CODA-bestanden, één CAMT.053) met bewuste uitzonderingen, in `demo_data/bankafschriften/` |
 
 De Peppol-voorbeeldfacturen staan in `addons/vme_belgie/demo_data/facturen/`; importeer ze in de company van de juiste VME via **Facturatie > Leveranciers > Facturen > Upload**. Na de demohistoriek zijn ze al ingelezen.

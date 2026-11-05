@@ -82,6 +82,10 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 
 ### Overstappen
 
+25. [Leveranciers betalen en provisies domiciliëren](betalingen.md)
+
+### Overstappen
+
 
 ## Zo is het platform opgebouwd
 

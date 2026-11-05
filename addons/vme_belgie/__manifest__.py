@@ -53,6 +53,7 @@
         "data/request_data.xml",
         "report/vme_request_reports.xml",
         "views/vme_request_views.xml",
+        "views/vme_payment_views.xml",
     ],
     "installable": True,
     "application": True,

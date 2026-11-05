@@ -6,3 +6,4 @@ from . import vme_demo_works
 from . import vme_demo_portal
 from . import vme_demo_contracts
 from . import vme_demo_requests
+from . import vme_demo_payments

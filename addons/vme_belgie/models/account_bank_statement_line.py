@@ -6,6 +6,7 @@ from odoo.fields import Command
 
 from .bank_formats import find_structured, format_structured
 from .vme_access import check_not_auditor
+from .vme_payment import RETURN_REASONS
 
 MATCH_STATES = [
     ("auto", "Automatisch gekoppeld"),
@@ -21,6 +22,7 @@ EXCEPTIONS = [
     ("underpaid", "Te weinig betaald"),
     ("overpaid", "Te veel betaald"),
     ("unknown", "Onbekende betaling"),
+    ("dd_returned", "Domiciliëring teruggekomen"),
 ]
 OPEN_ACCOUNT_TYPES = ("asset_receivable", "liability_payable")
 
@@ -52,6 +54,12 @@ class AccountBankStatementLine(models.Model):
     vme_matched_move_ids = fields.Many2many(
         "account.move", string="Gekoppeld met", compute="_compute_vme_matched_move_ids",
     )
+    vme_end_to_end_id = fields.Char(
+        string="SEPA-referentie", copy=False, index="btree_not_null",
+        help="EndToEndId van een betaling uit een betaalbatch van de VME, zoals de bank ze teruggeeft.")
+    vme_return_reason = fields.Char(string="Reden terugboeking", copy=False)
+    vme_payment_batch_line_ids = fields.One2many(
+        "vme.payment.batch.line", "statement_line_id", string="Betaling uit batch", readonly=True)
     vme_follow_up = fields.Boolean(
         string="Op te volgen", compute="_compute_vme_follow_up", store=True,
         help="Nog te koppelen, of gekoppeld maar te laat, te weinig of te veel betaald.",
@@ -77,7 +85,7 @@ class AccountBankStatementLine(models.Model):
         for line in self:
             line.vme_follow_up = (
                 line.vme_match_state in ("todo", "suggested")
-                or line.vme_exception in ("underpaid", "overpaid", "wrong_fund")
+                or line.vme_exception in ("underpaid", "overpaid", "wrong_fund", "dd_returned")
                 or line.vme_days_late > 0
             )
 
@@ -101,6 +109,8 @@ class AccountBankStatementLine(models.Model):
                 "vme_match_state": "todo", "vme_exception": False, "vme_days_late": 0,
                 "vme_match_note": False, "vme_candidate_move_ids": [Command.clear()],
             })
+            if line._vme_match_payment_batch():
+                continue
             if line.amount > 0:
                 line._vme_match_receipt()
             elif line.amount < 0:
@@ -289,6 +299,111 @@ class AccountBankStatementLine(models.Model):
         })
 
     # ------------------------------------------------------------------
+    # Payments from our own SEPA files (stap 20)
+    # ------------------------------------------------------------------
+
+    def _vme_batch_lines(self, moves, batch_type, states=("draft", "sent")):
+        """Lines of active payment batches (file made or uploaded) for these invoices."""
+        return self.env["vme.payment.batch.line"].sudo().search([
+            ("move_id", "in", moves.ids), ("batch_type", "=", batch_type), ("state", "in", states),
+            ("batch_id.state", "in", ("generated", "sent", "done")),
+        ])
+
+    def _vme_find_batch_line(self):
+        """The payment of a batch this movement is about: by SEPA reference, else by amount and communication."""
+        self.ensure_one()
+        Line = self.env["vme.payment.batch.line"].sudo()
+        domain = [("company_id", "=", self.company_id.id), ("batch_id.state", "in", ("generated", "sent", "done"))]
+        if self.vme_end_to_end_id:
+            return Line.search(domain + [("end_to_end_id", "=", self.vme_end_to_end_id)], limit=1)
+        if self.amount > 0:
+            # Collected provision: its structured communication comes back as the communication.
+            domain += [("batch_type", "=", "direct_debit"), ("state", "in", ("draft", "sent"))]
+        elif self.vme_return_reason:
+            domain += [("batch_type", "=", "direct_debit"), ("state", "in", ("sent", "paid"))]
+        else:
+            domain += [("batch_type", "=", "transfer"), ("state", "in", ("draft", "sent"))]
+        digits, valid = find_structured(self.payment_ref)
+        text = (self.payment_ref or "").lower()
+        for line in Line.search(domain, order="id"):
+            if not self.currency_id.is_zero(line.amount - abs(self.amount)):
+                continue
+            line_digits, _valid = find_structured(line.communication)
+            if (digits and valid and line_digits == digits) or (
+                    not line_digits and line.communication and line.communication.lower() in text):
+                return line
+        return Line
+
+    def _vme_match_payment_batch(self):
+        """Confirm or return a payment of one of our SEPA files. Returns True if this line was one."""
+        self.ensure_one()
+        batch_line = self._vme_find_batch_line()
+        if not batch_line:
+            return False
+        if not self.partner_id:
+            self.partner_id = batch_line.partner_id  # before reconciling: it rewrites the journal items
+        is_return = self.amount < 0 and batch_line.batch_type == "direct_debit"
+        if is_return:
+            self._vme_return_direct_debit(batch_line)
+            return True
+        if batch_line.state not in ("draft", "sent") or (self.amount > 0) != (batch_line.batch_type == "direct_debit"):
+            return False
+        invoice = batch_line.move_id
+        if invoice.payment_state in ("paid", "in_payment", "reversed"):
+            self.write({"vme_exception": "already_paid", "vme_match_note": self.env._(
+                "%(invoice)s uit %(batch)s was al betaald: dubbele betaling?", invoice=invoice.name,
+                batch=batch_line.batch_id.name)})
+            if self.amount > 0:
+                self._vme_suggest_receipt()
+            return True
+        self._vme_reconcile(invoice, state="auto")
+        if batch_line.batch_type == "direct_debit":
+            self.vme_days_late = 0  # the syndic chose the collection date, not the owner
+        if self.vme_match_note:
+            self.vme_match_note = self.env._("%(batch)s: %(note)s", batch=batch_line.batch_id.name, note=self.vme_match_note)
+        else:
+            self.vme_match_note = self.env._("Betaling uit %s bevestigd door de bank.", batch_line.batch_id.name)
+        batch_line._mark_paid(self)
+        return True
+
+    def _vme_return_direct_debit(self, batch_line):
+        """A collection came back: reopen the provision and hand it to the collection of arrears (stap 10).
+
+        The return is matched with the earlier collection on the owner's receivable account, so both bank
+        movements are settled and the provision is open again with its own due date.
+        """
+        self.ensure_one()
+        invoice = batch_line.move_id
+        reason = self.vme_return_reason or ""
+        label = " ".join(filter(None, [reason, RETURN_REASONS.get(reason)]))
+        collected = batch_line.statement_line_id
+        if collected and collected.is_reconciled:
+            receivable = invoice.line_ids.filtered(lambda l: l.account_id.account_type == "asset_receivable")
+            counterparts = collected.move_id.line_ids.filtered(
+                lambda l: l.account_id.account_type == "asset_receivable"
+                and (l.matched_debit_ids.debit_move_id | l.matched_credit_ids.credit_move_id) & receivable)
+            counterparts.remove_move_reconcile()
+            self._vme_reconcile(collected.move_id, state="auto")
+            note = self.env._(
+                "Domiciliëring teruggekomen (%(reason)s): %(invoice)s is weer open en staat in de invordering.",
+                reason=label or self.env._("geen reden"), invoice=invoice.name)
+        else:
+            note = self.env._(
+                "Domiciliëring van %(invoice)s teruggekomen (%(reason)s), maar de inning zelf is nog niet gekoppeld: "
+                "koppel eerst de inning en daarna deze terugboeking.", invoice=invoice.name, reason=label or "-")
+        self.write({"vme_exception": "dd_returned", "vme_match_note": note,
+                    "vme_match_state": "auto" if self.is_reconciled else "todo"})
+        batch_line._mark_returned(self, reason)
+        invoice.message_post(body=note)
+        vme = invoice.vme_association_id
+        Collection = self.env["vme.collection"].sudo()
+        collection = Collection.search([("association_id", "=", vme.id), ("partner_id", "=", batch_line.partner_id.id),
+                                        ("state", "!=", "closed")], limit=1)
+        if not collection:
+            collection = Collection.create({"association_id": vme.id, "partner_id": batch_line.partner_id.id})
+        collection.message_post(body=note)
+
+    # ------------------------------------------------------------------
     # Reconciliation
     # ------------------------------------------------------------------
 
@@ -357,6 +472,10 @@ class AccountBankStatementLine(models.Model):
         if sign > 0 and due and self.date > due:
             vals["vme_days_late"] = (self.date - due).days
         self.write(vals)
+        if sign < 0:
+            # A bill paid from a batch file, matched on its reference or supplier: the bank confirmed it.
+            self._vme_batch_lines(moves, "transfer").filtered(
+                lambda l: l.move_id.payment_state in ("paid", "in_payment"))._mark_paid(self)
 
     def _vme_counterpart_vals(self, account, partner, balance, name):
         return {

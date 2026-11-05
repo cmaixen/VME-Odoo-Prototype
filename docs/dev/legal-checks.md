@@ -3,15 +3,17 @@
 Automatisch gemaakt door `python3 tools/legal_checks.py`; niet met de hand bewerken.
 Elke rij is een wettelijke regel in de code die nog juridisch gevalideerd moet worden.
 
-Aantal punten: 70.
+Aantal punten: 73.
 
 ## Per bron
 
 - **AREI (Algemeen Reglement op de Elektrische Installaties)**: [vme_installation.py:22](../../addons/vme_belgie/models/vme_installation.py#L22)
+- **Boek VII WER (omzetting art. 76 PSD2, richtlijn 2015/2366)**: [vme_payment.py:45](../../addons/vme_belgie/models/vme_payment.py#L45)
 - **KB 12 juli 2012 (minimum chart of accounts for VMEs)**: [account_chart_template.py:6](../../addons/vme_belgie/models/account_chart_template.py#L6), [vme_association.py:87](../../addons/vme_belgie/models/vme_association.py#L87)
 - **KB 9 maart 2003**: [vme_installation.py:33](../../addons/vme_belgie/models/vme_installation.py#L33)
 - **KB 9 maart 2003 betreffende de beveiliging van liften**: [vme_installation.py:17](../../addons/vme_belgie/models/vme_installation.py#L17)
 - **NBN S21-050**: [vme_installation.py:20](../../addons/vme_belgie/models/vme_installation.py#L20)
+- **SEPA Core Direct Debit Rulebook (EPC)**: [vme_payment.py:22](../../addons/vme_belgie/models/vme_payment.py#L22)
 - **Vlaamse regelgeving verwarmingsaudit/onderhoud**: [vme_installation.py:25](../../addons/vme_belgie/models/vme_installation.py#L25)
 - **art. 1792 en 2270 oud BW**: [vme_works.py:18](../../addons/vme_belgie/models/vme_works.py#L18)
 - **art. 18 §2/3 Elektriciteitswet 29 april 1999**: [vme_contract.py:27](../../addons/vme_belgie/models/vme_contract.py#L27)
@@ -28,10 +30,11 @@ Aantal punten: 70.
 - **art. 3.88 §1, 1°, c) BW**: [vme_works.py:11](../../addons/vme_belgie/models/vme_works.py#L11), [vme_works.py:195](../../addons/vme_belgie/models/vme_works.py#L195)
 - **art. 3.88 §1-3 BW**: [vme_assembly_meeting.py:8](../../addons/vme_belgie/models/vme_assembly_meeting.py#L8)
 - **art. 3.88 §3 BW**: [vme_assembly_meeting.py:302](../../addons/vme_belgie/models/vme_assembly_meeting.py#L302)
-- **art. 3.89 §5 BW**: [account_bank_statement_line.py:155](../../addons/vme_belgie/models/account_bank_statement_line.py#L155), [account_move.py:56](../../addons/vme_belgie/models/account_move.py#L56), [vme_association.py:15](../../addons/vme_belgie/models/vme_association.py#L15), [vme_association.py:34](../../addons/vme_belgie/models/vme_association.py#L34), [vme_association.py:170](../../addons/vme_belgie/models/vme_association.py#L170), [vme_association.py:193](../../addons/vme_belgie/models/vme_association.py#L193), [vme_contract.py:39](../../addons/vme_belgie/models/vme_contract.py#L39), [vme_migration.py:621](../../addons/vme_belgie/models/vme_migration.py#L621), [vme_provision_call_wizard.py:115](../../addons/vme_belgie/wizard/vme_provision_call_wizard.py#L115)
+- **art. 3.89 §5 BW**: [account_bank_statement_line.py:165](../../addons/vme_belgie/models/account_bank_statement_line.py#L165), [account_move.py:56](../../addons/vme_belgie/models/account_move.py#L56), [vme_association.py:15](../../addons/vme_belgie/models/vme_association.py#L15), [vme_association.py:34](../../addons/vme_belgie/models/vme_association.py#L34), [vme_association.py:170](../../addons/vme_belgie/models/vme_association.py#L170), [vme_association.py:193](../../addons/vme_belgie/models/vme_association.py#L193), [vme_contract.py:39](../../addons/vme_belgie/models/vme_contract.py#L39), [vme_migration.py:621](../../addons/vme_belgie/models/vme_migration.py#L621), [vme_provision_call_wizard.py:115](../../addons/vme_belgie/wizard/vme_provision_call_wizard.py#L115)
 - **art. 3.89 §5, 12° BW**: [vme_document.py:17](../../addons/vme_belgie/models/vme_document.py#L17)
 - **art. 3.90 §1 BW**: [vme_council.py:16](../../addons/vme_belgie/models/vme_council.py#L16), [vme_council.py:104](../../addons/vme_belgie/models/vme_council.py#L104)
 - **art. 3.90 §1 en art. 3.91 BW**: [vme_council.py:35](../../addons/vme_belgie/models/vme_council.py#L35)
+- **art. 3.90 §3 BW**: [vme_payment.py:69](../../addons/vme_belgie/models/vme_payment.py#L69)
 - **art. 3.91 BW**: [vme_council.py:270](../../addons/vme_belgie/models/vme_council.py#L270)
 - **art. 3.93 BW**: [vme_request.py:702](../../addons/vme_belgie/models/vme_request.py#L702)
 - **art. 3.93 §4 BW**: [vme_assembly_meeting.py:212](../../addons/vme_belgie/models/vme_assembly_meeting.py#L212)
@@ -57,7 +60,7 @@ Aantal punten: 70.
 
 | Bestand | Regel | Bron | Tekst |
 | --- | --- | --- | --- |
-| [addons/vme_belgie/models/account_bank_statement_line.py](../../addons/vme_belgie/models/account_bank_statement_line.py#L155) | 155 | art. 3.89 §5 BW | working and reserve capital on separate accounts: never book a provision of one fund silently on the account of the other. |
+| [addons/vme_belgie/models/account_bank_statement_line.py](../../addons/vme_belgie/models/account_bank_statement_line.py#L165) | 165 | art. 3.89 §5 BW | working and reserve capital on separate accounts: never book a provision of one fund silently on the account of the other. |
 | [addons/vme_belgie/models/account_chart_template.py](../../addons/vme_belgie/models/account_chart_template.py#L6) | 6 | KB 12 juli 2012 (minimum chart of accounts for VMEs) | align these codes. |
 | [addons/vme_belgie/models/account_move.py](../../addons/vme_belgie/models/account_move.py#L56) | 56 | art. 3.89 §5 BW | a provision is paid to the bank account of its fund. |
 | [addons/vme_belgie/models/account_move.py](../../addons/vme_belgie/models/account_move.py#L155) | 155 | art. 3.94 BW | between seller and buyer, the consumption of each one's ownership period; without a reading at the deed, pro rata per day between two readings. |
@@ -114,6 +117,9 @@ Aantal punten: 70.
 | [addons/vme_belgie/models/vme_migration.py](../../addons/vme_belgie/models/vme_migration.py#L476) | 476 | art. III.88 WER | accounting documents are kept for 7 years (check whether 10 years applies); art. 3.89 §5, 13° BW - the previous syndic hands over the archive. |
 | [addons/vme_belgie/models/vme_migration.py](../../addons/vme_belgie/models/vme_migration.py#L621) | 621 | art. 3.89 §5 BW | working and reserve capital on separate accounts. |
 | [addons/vme_belgie/models/vme_migration.py](../../addons/vme_belgie/models/vme_migration.py#L739) | 739 | art. 3.85 §1 BW | the shares of a key must add up to its total. |
+| [addons/vme_belgie/models/vme_payment.py](../../addons/vme_belgie/models/vme_payment.py#L22) | 22 | SEPA Core Direct Debit Rulebook (EPC) | the debtor is told the amount and date at least 14 calendar days before the collection, unless the mandate agrees on a shorter term. |
+| [addons/vme_belgie/models/vme_payment.py](../../addons/vme_belgie/models/vme_payment.py#L45) | 45 | Boek VII WER (omzetting art. 76 PSD2, richtlijn 2015/2366) | an owner can ask his bank to refund an authorised direct debit up to eight weeks after the collection; that comes back as MD06. |
+| [addons/vme_belgie/models/vme_payment.py](../../addons/vme_belgie/models/vme_payment.py#L69) | 69 | art. 3.90 §3 BW | the council of co-ownership supervises the syndic; a second approval by a council member is an agreement of the AV or the syndic contract, not a legal obligation. |
 | [addons/vme_belgie/models/vme_request.py](../../addons/vme_belgie/models/vme_request.py#L71) | 71 | art. 3.88 §1, 1°, b) BW | works on the common parts need a two-thirds majority of the assembly; some works (charging points, art. 3.82 §1 BW) follow their own procedure. To be confirmed. |
 | [addons/vme_belgie/models/vme_request.py](../../addons/vme_belgie/models/vme_request.py#L702) | 702 | art. 3.93 BW | the house rules (reglement van orde) bind tenants and occupants once they are made known to them; the checklist asks to send them to the new tenant. To be confirmed. |
 | [addons/vme_belgie/models/vme_sale_file.py](../../addons/vme_belgie/models/vme_sale_file.py#L10) | 10 | art. 3.94 §1 BW | the syndic answers the notary's first request within 15 days. |

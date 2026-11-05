@@ -96,6 +96,8 @@ Wizards (transient): `vme.provision.call.wizard` en `vme.annual.statement.wizard
 | `vme.association` / `vme.lot` | `document_ids`, `document_count` | Documenten van de VME en van de kavel. |
 | `res.partner` | `vme_ownership_ids`, `vme_mandate_ids` | Omgekeerde relaties, gebruikt in de leesregel van de commissaris. |
 | `res.users` | `_vme_sync_auditor_access()` | Toegestane companies van een commissaris volgen zijn lopende mandaten. |
+| `account.move` | `vme_approval_state`, `vme_approved_by_id`, `vme_second_approved_by_id` (+ datums), `vme_payment_status`, `vme_payment_line_ids` | Goedkeuring vóór betaling en de laatste betaalopdracht van een leveranciersfactuur; `vme_fund` zegt op een leveranciersfactuur uit welk fonds ze betaald wordt (stap 20, zie [betalingsverkeer.md](betalingsverkeer.md)). |
+| `account.bank.statement.line` | `vme_end_to_end_id`, `vme_return_reason`, `vme_payment_batch_line_ids` | SEPA-referentie en terugboekreden uit CAMT.053, en de batchbetaling die de beweging bevestigt (stap 20). |
 | `account.move.line` | `vme_key_id` | Verdeelsleutel per regel; opgeslagen compute die alleen een lege sleutel invult vanuit de verdeelregel. |
 
 ## Rekeningen
@@ -112,3 +114,12 @@ De codes 100100 en 100200 zijn eigen keuzes en moeten nog afgestemd worden op he
 ## Bankdagboeken
 
 `vme.association._ensure_fund_bank_journals()` zorgt voor één bankdagboek per fonds, gekoppeld aan de bankrekening van dat fonds: **WK Werkkapitaal** (hergebruikt het standaard bankdagboek van het rekeningstelsel) en **RK Reservekapitaal**. De demohistoriek gebruikt die dagboeken voor de betalingen. Het inlezen van bankafschriften (stap 12) zoekt het dagboek op het rekeningnummer in het bestand en maakt de dagboeken aan als ze nog niet bestaan.
+
+## Betalingsverkeer (stap 20)
+
+| Model | Belangrijkste velden | Uitleg |
+| --- | --- | --- |
+| `vme.association` | `payment_approval_threshold`, `payment_second_approver_id`, `sepa_creditor_identifier`, `mandate_ids` | Bedrag vanaf wanneer een tweede goedkeuring nodig is, wie ze geeft, en de schuldeiseridentificatie (standaard uit het KBO-nummer). |
+| `vme.sepa.mandate` | `association_id`, `partner_id`, `partner_bank_id`, `reference`, `signature_date`, `state`, `first_collection_done` | SEPA-mandaat van een eigenaar bij een VME; één actief mandaat per eigenaar en VME. |
+| `vme.payment.batch` | `batch_type`, `association_id`, `fund`, `provision_call_id`, `due_until`, `execution_date`, `state`, `file_data`, `message_ref` | Een SEPA-bestand: overschrijvingen per fondsrekening of domiciliëringen per provisieoproep. |
+| `vme.payment.batch.line` | `move_id`, `partner_id`, `partner_bank_id`, `mandate_id`, `amount`, `communication`, `end_to_end_id`, `state`, `statement_line_id`, `return_statement_line_id`, `return_reason` | Eén betaling of inning; status Concept, Verstuurd, Bevestigd door de bank of Teruggekomen. |

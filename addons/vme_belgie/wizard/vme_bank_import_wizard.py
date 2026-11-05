@@ -57,6 +57,8 @@ class VmeBankImportWizard(models.TransientModel):
                     "partner_name": transaction.counterparty_name or False,
                     "account_number": transaction.counterparty_account or False,
                     "ref": transaction.bank_reference or False,
+                    "vme_end_to_end_id": transaction.end_to_end_id or False,
+                    "vme_return_reason": transaction.return_reason or False,
                 }) for transaction in parsed.transactions],
             })
             lines |= statement.line_ids

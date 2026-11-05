@@ -1,5 +1,6 @@
-from datetime import date
+from datetime import date, timedelta
 
+from odoo import fields
 from odoo.fields import Command
 from odoo.tests import TransactionCase, tagged
 
@@ -190,3 +191,35 @@ class TestAnnualStatementDemo(TransactionCase):
             ("Kaaihuis", "working", 423.0, "todo", "already_paid", 0),
             ("Kaaihuis", "reserve", 250.0, "todo", "no_reference", 0),
         ]))
+
+    def test_demo_payments(self):
+        """Stap 20 on the demo: approvals, a transfer batch per VME, a direct debit and the demo statement."""
+        admin = self.env.ref("base.user_admin")
+        VME = self.env["vme.association"].with_user(admin)
+        VME._load_demo_bank_statements()
+        VME._load_demo_payments()
+        bills = self.env["account.move"].search([("vme_approval_state", "=", "first_approved")])
+        self.assertTrue(bills)
+        bills.with_user(admin).action_vme_approve()
+        Batch = self.env["vme.payment.batch"].with_user(admin)
+        tomorrow = fields.Date.today() + timedelta(days=1)
+        for vme in VME.search([]):
+            batch = Batch.create({"association_id": vme.id, "batch_type": "transfer", "fund": "working",
+                                  "due_until": date(2026, 12, 31), "execution_date": tomorrow})
+            batch.action_fill_proposal()
+            self.assertTrue(batch.line_ids, vme.name)
+            # The electricity supplier's account from the demo data was never trusted: left out.
+            self.assertIn("niet bevestigd", batch.proposal_note)
+            batch.action_generate_file()
+            batch.action_mark_sent()
+        call = self.env["vme.provision.call"].search([("association_id.name", "=", "Hof ter Beuken"), ("number", "=", 4)])
+        debit = Batch.browse(call.with_user(admin).action_create_direct_debit_batch()["res_id"])
+        self.assertEqual(debit.line_ids.partner_id.name, "Eigenaar Beuken B7")
+        debit.action_generate_file()
+        debit.action_mark_sent()
+        VME._load_demo_payment_statement()
+        batches = self.env["vme.payment.batch"].search([])
+        self.assertEqual(set(batches.mapped("state")), {"done"})
+        self.assertEqual(debit.rejected_count, 1)
+        self.assertEqual(sum(batches.mapped("paid_count")), sum(batches.mapped("line_count")) - 1)
+        self.assertTrue(self.env["vme.collection"].search([("partner_id.name", "=", "Eigenaar Beuken B7"), ("state", "=", "open")]))
