@@ -5,6 +5,7 @@ from odoo.exceptions import UserError
 from odoo.fields import Command
 
 from .bank_formats import find_structured, format_structured
+from .vme_access import check_not_auditor
 
 MATCH_STATES = [
     ("auto", "Automatisch gekoppeld"),
@@ -373,6 +374,7 @@ class AccountBankStatementLine(models.Model):
 
     def action_vme_reconcile(self):
         """Link with the moves in the proposal (possibly changed by the user)."""
+        check_not_auditor(self.env)
         self.check_access("write")
         for line in self.sudo():
             if not line.vme_candidate_move_ids:
@@ -390,6 +392,7 @@ class AccountBankStatementLine(models.Model):
 
     def action_vme_book_on_partner(self):
         """Book the whole amount as a credit (receipt) or debt (payment) of the partner, without invoice."""
+        check_not_auditor(self.env)
         self.check_access("write")
         for line in self.sudo():
             if not line.partner_id:
@@ -401,6 +404,7 @@ class AccountBankStatementLine(models.Model):
         return True
 
     def action_vme_undo(self):
+        check_not_auditor(self.env)
         self.check_access("write")
         lines = self.sudo()
         lines.action_undo_reconciliation()
@@ -409,6 +413,7 @@ class AccountBankStatementLine(models.Model):
         return True
 
     def action_vme_rematch(self):
+        check_not_auditor(self.env)
         self.check_access("write")
         self._vme_match()
         return True

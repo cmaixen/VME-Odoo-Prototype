@@ -115,3 +115,17 @@ class TestDemoData(TransactionCase):
         self.assertEqual(len(info["works"]), 1)
         self.assertTrue(info["works"][0]["share"] > 0)
         self.assertIn("gevelwerken", info["legal_proceedings"])
+
+    def test_council_and_auditors(self):
+        beuken = self.vmes.filtered(lambda v: v.name == "Hof ter Beuken")
+        self.assertTrue(beuken.council_required)
+        self.assertEqual(sorted(beuken.council_member_ids.mapped("role")), ["chair", "member", "member"])
+        self.assertTrue(all(beuken.council_member_ids.mapped("is_owner")))
+        self.assertFalse(beuken.auditor_mandate_ids.is_owner)  # an outside auditor
+        self.assertFalse(beuken.auditor_mandate_ids.user_id)
+        # The auditor of Residentie Linde is the owner of A2, with a read-only login on Linde only.
+        mandate = self.linde.auditor_mandate_ids
+        self.assertEqual(mandate.assembly_item_id.name, "Benoeming van de commissaris van de rekeningen")
+        self.assertEqual(mandate.user_id.login, "eigenaar.linde.a2@example.com")
+        self.assertEqual(mandate.user_id.company_ids, self.linde.company_id)
+        self.assertEqual(self.env["vme.association"].with_user(mandate.user_id).search([]), self.linde)

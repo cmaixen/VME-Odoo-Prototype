@@ -43,11 +43,12 @@ docker compose run --rm odoo odoo -d vme_test -u vme_belgie --test-enable --test
 | Bestand | Wat |
 | --- | --- |
 | `test_data_model.py` | Eigen company en Belgisch rekeningstelsel per VME, toegang voor alle gebruikers, KBO-controle, aparte bankrekeningen, som van sleutels (ook bij herschikken in één keer), kavel uit andere VME, verkoop en overlappende eigendommen |
-| `test_demo_data.py` | Demodata: aantallen, sleutels die kloppen, verkoop midden in het jaar, eigenaar met meerdere kavels, fictieve contactgegevens, niet twee keer laden, hulpfuncties (`distribute_shares`, `fake_iban`) |
+| `test_demo_data.py` | Demodata: aantallen, sleutels die kloppen, verkoop midden in het jaar, eigenaar met meerdere kavels, fictieve contactgegevens, niet twee keer laden, hulpfuncties (`distribute_shares`, `fake_iban`), raad en commissarissen met de login van de commissaris van Linde |
 | `test_cost_allocation.py` | `largest_remainder`, VME uit de company, standaardkostenrekening, kostperiode, volledig jaar met verkoop, exacte afronding, btw inbegrepen, creditnota, opnieuw verdelen, weigeringen; liftfactuur op de demodata |
 | `test_distribution_rules.py` | Regel vult sleutel en rekening, handmatige sleutel blijft, automatisch verdelen bij boeken, geen regel geen verdeling, mislukte verdeling blokkeert boeken niet, één regel per leverancier; import van de Peppol-factuur van Residentie Linde |
 | `test_provision_call.py` | Bedragen, bankrekeningen en rekeningen per fonds, één factuur per fonds voor een eigenaar met twee kavels, eigenaar op factuurdatum, gestructureerde mededeling, concept zonder boeken, weigeringen (dubbele oproep, onbevestigde rekening, nummer buiten budget), andere company geselecteerd, voorbeeld in een open formulier, VME zonder budget, 5%-regel |
 | `test_annual_statement.py` | Saldo's, reservekapitaal niet afgerekend, controle op niet-verdeelde facturen, rapport; `TestAnnualStatementDemo` met een volledig demojaar (tag `vme_slow`) |
+| `test_council.py` | Raad en commissaris: mandaat van een jaar, raad alleen met eigenaars, één voorzitter, raad verplicht vanaf 20 kavels; leesrechten van de commissaris (zijn VME wel, andere VME niet), niets wijzigen, knoppen met `sudo` geweigerd, schermen zonder Nieuw/Bewerken, medewerkers houden hun rechten, toegang volgt de mandaten, overzicht voor de raad, verslag |
 | `test_migration.py` | Overstap uit een ander pakket: parsing, proefrun schrijft niets, verwachte fouten en waarschuwingen, openingsbalans in evenwicht, volledige import met openingsboeking, zip met Excel |
 
 De trage test met een volledig demojaar (meer dan 10 minuten) draai je apart, vóór een demo en na wijzigingen aan de verdeling of de afrekening:

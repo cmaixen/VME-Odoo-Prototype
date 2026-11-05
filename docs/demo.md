@@ -152,6 +152,15 @@ Draai dit ongeveer 15 minuten voor de demo, in de map van het project. Docker (O
 
 > Boodschap: "Een vraag van de notaris is twee minuten werk in plaats van een half uur zoeken, en de termijn ontsnapt u niet."
 
+### Extra: de commissaris van de rekeningen kijkt mee (1 minuut)
+
+1. Open Residentie Linde, tabblad **Raad en commissaris**: eigenaar Linde A2 is commissaris sinds de AV van 10 maart, met een eigen login. Hof ter Beuken heeft 24 appartementen en dus een raad (B1 voorzitter, B6 en B11).
+2. Meld je in een privévenster aan als `eigenaar.linde.a2@example.com` (wachtwoord: `DEMO_AUDITOR_PASSWORD` in `demo_data/vme_demo_data.py`). In **VME > Commissaris** ziet hij de facturen, provisies en bankbewegingen van Linde, en niets van de andere gebouwen. Knoppen om iets te wijzigen zijn er niet.
+3. **VME > Raad en commissaris > Lopende dossiers**: de verkoop van A3, de invordering, de keuringsopmerkingen en de dakwerken uit de AV, met hun termijnen.
+4. In **Mijn mandaten en verslag** drukt hij het sjabloon voor zijn verslag aan de AV af, met de cijfers van 2026 al ingevuld.
+
+> Boodschap: "De commissaris kijkt zelf na, wanneer het hem past, zonder dat u mappen moet kopiëren."
+
 ## Na de demo
 
 - De demo is daarna niet meer "vers": de factuur, de provisieoproep 2027, de AV-planning, de AI-taken en eventueel het antwoord aan de notaris staan erin. Bouw de database opnieuw op met de commando's hierboven voor een volgende demo.

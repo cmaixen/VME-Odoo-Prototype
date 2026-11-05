@@ -238,6 +238,22 @@ DEMO_SALE = {
 
 STAFF_USER = {"name": "Medewerker Voorbeeld", "login": "medewerker.voorbeeld@example.com"}
 
+# Council and auditors (step 16), appointed at the assembly of 10 March 2026. Hof ter Beuken has 24
+# apartments, so a council is mandatory there. The auditor of Residentie Linde gets a read-only login
+# for the demo; the password is a fictitious demo value, only for a local demo database.
+DEMO_COUNCIL = {
+    "Residentie Linde": {
+        "auditor": {"lot": "A2", "login": True},
+    },
+    "Hof ter Beuken": {
+        "chair": "B1",
+        "members": ["B6", "B11"],
+        "auditor": {"partner": {"name": "Commissaris Voorbeeld Beuken", "email": "commissaris.beuken@example.com"}},
+    },
+}
+DEMO_COUNCIL_START = date(2026, 3, 10)
+DEMO_AUDITOR_PASSWORD = "commissaris-demo"
+
 KEY_NAMES = {
     "general": "Algemene sleutel",
     "elevator": "Liftsleutel",
@@ -440,6 +456,7 @@ class VmeAssociation(models.Model):
         self._load_demo_assembly_blocks()
         self._load_demo_assembly_2026()
         self._load_demo_sale()
+        self._load_demo_council()
 
         def set_rule_accounts():
             # Runs at commit, after the chart of accounts of the new companies is loaded.
@@ -462,6 +479,29 @@ class VmeAssociation(models.Model):
                 "next": self.env["ir.actions.act_window"]._for_xml_id("vme_belgie.vme_association_action"),
             },
         }
+
+    @api.model
+    def _load_demo_council(self):
+        """Council members and auditors; the auditor of Residentie Linde gets a read-only user."""
+        Mandate = self.env["vme.mandate"]
+        for vme_name, spec in DEMO_COUNCIL.items():
+            vme = self.search([("name", "=", vme_name)])
+            owners = {lot.name: lot._get_owner_on(DEMO_COUNCIL_START) for lot in vme.lot_ids}
+            appointment = self.env["vme.assembly.item"].search([
+                ("association_id", "=", vme.id), ("assembly_id.year", "=", DEMO_COUNCIL_START.year),
+                ("name", "=", "Benoeming van de commissaris van de rekeningen")], limit=1)
+            vals = [{"role": "chair", "partner_id": owners[spec["chair"]].id}] if spec.get("chair") else []
+            vals += [{"role": "member", "partner_id": owners[lot].id} for lot in spec.get("members", [])]
+            auditor = spec["auditor"]
+            partner = owners[auditor["lot"]] if auditor.get("lot") else self.env["res.partner"].create(auditor["partner"])
+            vals.append({"role": "auditor", "partner_id": partner.id, "assembly_item_id": appointment.id})
+            mandates = Mandate.create([{
+                **v, "association_id": vme.id, "date_start": DEMO_COUNCIL_START,
+            } for v in vals])
+            if auditor.get("login"):
+                auditor_mandate = mandates.filtered(lambda m: m.role == "auditor")
+                auditor_mandate.action_grant_access()
+                auditor_mandate.user_id.sudo().password = DEMO_AUDITOR_PASSWORD
 
     @api.model
     def _load_demo_sale(self):

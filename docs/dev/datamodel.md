@@ -45,6 +45,8 @@ erDiagram
 | `vme.arrears` | Achterstal (SQL-view) | Open, vervallen debiteurenlijnen van alle VME's met ouderdom; zie [invordering.md](invordering.md). |
 | `vme.collection` | Invorderingsdossier | Per VME en eigenaar; niveau, kosten, doorsturen. Eén niet-afgesloten dossier per VME en eigenaar. |
 | `vme.collection.reminder` | Herinnering | Niveau 1-3, concept of verstuurd, momentopname van de open bedragen en de tekst. |
+| `vme.mandate` | Mandaat in de raad of als commissaris | `association_id`, `role` (voorzitter, lid, commissaris), `partner_id`, `date_start`, `date_end` (standaard één jaar), `assembly_item_id`, `audit_year`, `user_id`; berekend `is_current`, `is_owner`. Leden van de raad moeten eigenaar zijn, één voorzitter tegelijk. Zie [raad-commissaris.md](raad-commissaris.md). |
+| `vme.council.dossier` | Lopend dossier voor de raad (SQL-view) | Verkopen, invorderingen, open keuringsopmerkingen en opvolgtaken van de AV; `dossier_type`, `status`, `date_deadline`, `res_model`, `res_id`. Uitbreidbaar via `_dossier_queries()`. |
 | `vme.migration` | Overstap uit een ander pakket | `attachment_ids` (exportbestanden), `source_format`, `state` (nieuw, proefrun gedaan, geïmporteerd), `report_html`, `error_count`, `warning_count`, `transition_date`, `association_id`, `opening_move_id`. Zie [migratie.md](migratie.md). |
 
 Wizards (transient): `vme.provision.call.wizard` en `vme.annual.statement.wizard`, elk met een HTML-voorbeeld (`preview_html`).
@@ -59,6 +61,8 @@ Wizards (transient): `vme.provision.call.wizard` en `vme.annual.statement.wizard
 | `account.move` | `vme_provision_call_id`, `vme_fund` | Op provisiefacturen: de oproep en het fonds (`working` of `reserve`). |
 | `account.move` | `vme_collection_id` | Op een factuur met nalatigheidsinterest en schadevergoeding: het invorderingsdossier. |
 | `account.bank.statement.line` | `vme_bank_fund`, `vme_match_state`, `vme_exception`, `vme_days_late`, `vme_match_note`, `vme_structured_reference`, `vme_candidate_move_ids`, `vme_matched_move_ids`, `vme_follow_up` | Koppeling van bankbewegingen met provisies en leveranciersfacturen (stap 12, zie [bankafschriften.md](bankafschriften.md)). |
+| `res.partner` | `vme_ownership_ids`, `vme_mandate_ids` | Omgekeerde relaties, gebruikt in de leesregel van de commissaris. |
+| `res.users` | `_vme_sync_auditor_access()` | Toegestane companies van een commissaris volgen zijn lopende mandaten. |
 | `account.move.line` | `vme_key_id` | Verdeelsleutel per regel; opgeslagen compute die alleen een lege sleutel invult vanuit de verdeelregel. |
 
 ## Rekeningen

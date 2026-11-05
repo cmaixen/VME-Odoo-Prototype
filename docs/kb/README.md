@@ -34,16 +34,17 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 
 11. [Algemene vergaderingen plannen in blokken](av-planner.md)
 12. [De algemene vergadering: oproeping, stemming en notulen](algemene-vergadering.md)
+13. [De raad van mede-eigendom en de commissaris van de rekeningen](raad-en-commissaris.md)
 
 ### Post en mails
 
-13. [Leveranciersfacturen per e-mail ontvangen](facturen-per-mail.md)
-14. [Een antwoord behandelen dat de AI-assistent voorstelt](ai-voorstellen-mails.md)
-15. [Bankafschriften inlezen en betalingen koppelen](bankafschriften.md)
+14. [Leveranciersfacturen per e-mail ontvangen](facturen-per-mail.md)
+15. [Een antwoord behandelen dat de AI-assistent voorstelt](ai-voorstellen-mails.md)
+16. [Bankafschriften inlezen en betalingen koppelen](bankafschriften.md)
 
 ### Overstappen
 
-16. [Een VME overnemen uit een ander syndicuspakket](migratie.md)
+17. [Een VME overnemen uit een ander syndicuspakket](migratie.md)
 
 ## Zo is het platform opgebouwd
 
