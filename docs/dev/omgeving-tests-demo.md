@@ -72,6 +72,14 @@ Testklassen zijn `post_install` en `-at_install`, zodat het rekeningstelsel en P
    echo "env = env(user=env.ref('base.user_admin')); env['vme.association']._load_demo_history(); env.cr.commit()" | docker compose run --rm -T odoo odoo shell -d vme_demo --no-http
    ```
 
+4. Demobankafschriften inlezen (na de historiek): **VME > Configuratie > Demobankafschriften inlezen**, of:
+
+   ```bash
+   echo "env = env(user=env.ref('base.user_admin')); env['vme.association']._load_demo_bank_statements(); env.cr.commit()" | docker compose run --rm -T odoo odoo shell -d vme_demo --no-http
+   ```
+
+   Ze passen alleen bij een demo die met deze versie van de module opgebouwd is (mededelingen uit de factuurnummers, zie [bankafschriften.md](bankafschriften.md)).
+
 Wat er dan in de demo zit:
 
 | Onderdeel | Inhoud |
@@ -82,6 +90,7 @@ Wat er dan in de demo zit:
 | Leveranciers | Energie (alle VME's), lift (Linde); in de historiek ook schoonmaak, verzekering en gas |
 | Budgetten | 2026 en 2027, per kwartaal; Hof ter Beuken onder de 5% |
 | Historiek 2026 | Vier provisieoproepen, betalingen behalve A3 (oproep 4) en B7 (oproepen 3 en 4), leveranciersfacturen, drie Peppol-facturen elektriciteit |
+| Bankafschriften | Afschriften van 5 november 2026 (drie CODA-bestanden, één CAMT.053) met bewuste uitzonderingen, in `demo_data/bankafschriften/` |
 
 De Peppol-voorbeeldfacturen staan in `addons/vme_belgie/demo_data/facturen/`; importeer ze in de company van de juiste VME via **Facturatie > Leveranciers > Facturen > Upload**. Na de demohistoriek zijn ze al ingelezen.
 

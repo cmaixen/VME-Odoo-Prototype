@@ -169,3 +169,24 @@ class TestAnnualStatementDemo(TransactionCase):
         data = beuken._get_annual_statement(2026)
         self.assertTrue(data["is_complete"])
         self.assertTrue(all(st["balance"] > 0 for st in data["statements"] if st["working"]["open"] == 0))
+
+    def test_demo_bank_statements(self):
+        """The fictitious CODA/CAMT files (stap 12) still match the invoice numbers of the demo history."""
+        self.env["vme.association"].with_user(self.env.ref("base.user_admin"))._load_demo_bank_statements()
+        lines = self.env["account.bank.statement.line"].search([("vme_association_id", "!=", False)])
+        outcome = sorted((line.vme_association_id.name, line.vme_bank_fund, float(line.amount), line.vme_match_state,
+                          line.vme_exception or "", line.vme_days_late) for line in lines)
+        self.assertEqual(outcome, sorted([
+            ("Residentie Linde", "working", -1815.0, "auto", "", 0),
+            ("Residentie Linde", "working", -1815.0, "auto", "", 0),
+            ("Residentie Linde", "working", 432.0, "auto", "", 1),
+            ("Residentie Linde", "reserve", 43.2, "suggested", "no_reference", 0),
+            ("Hof ter Beuken", "working", 420.0, "suggested", "wrong_reference", 0),
+            ("Hof ter Beuken", "working", -14520.0, "auto", "", 0),
+            ("Hof ter Beuken", "working", 200.0, "auto", "underpaid", 0),
+            ("Hof ter Beuken", "working", 15.75, "suggested", "wrong_fund", 0),
+            ("Hof ter Beuken", "reserve", 15.75, "auto", "", 0),
+            ("Kaaihuis", "working", -726.0, "auto", "", 0),
+            ("Kaaihuis", "working", 423.0, "todo", "already_paid", 0),
+            ("Kaaihuis", "reserve", 250.0, "todo", "no_reference", 0),
+        ]))

@@ -26,3 +26,5 @@ access_vme_arrears_user,vme.arrears user,model_vme_arrears,base.group_user,1,0,0
 access_vme_collection_user,vme.collection user,model_vme_collection,base.group_user,1,1,1,0
 access_vme_collection_reminder_user,vme.collection.reminder user,model_vme_collection_reminder,base.group_user,1,1,1,0
 access_vme_collection_reminder_line_user,vme.collection.reminder.line user,model_vme_collection_reminder_line,base.group_user,1,1,1,1
+access_vme_bank_import_wizard_user,vme.bank.import.wizard user,model_vme_bank_import_wizard,base.group_user,1,1,1,1
+access_account_bank_statement_line_vme_invoice,account.bank.statement.line vme invoice,account.model_account_bank_statement_line,account.group_account_invoice,1,1,0,0

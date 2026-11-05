@@ -63,6 +63,12 @@ De test met een volledig demojaar (`vme_slow`) doet ongeveer 300 betalingen in �
 - **De waarschuwing noemde de schakelaar "Geld verzenden"**; in de Nederlandse interface heet die **Betalen**.
 - **Een provisieoproep voor volgend jaar met factuurdatum in dit jaar telde mee in de afrekening van dit jaar.** De jaarafrekening telt provisies nu per budgetjaar van hun oproep. Test: `test_next_year_call_sent_this_year_is_not_counted`.
 
+## Bankregels en afletteren (stap 12)
+
+- Een gewijzigde partner op een afgeletterde bankregel wist de tegenregels (`_synchronize_to_moves`). Zet de partner vóór het afletteren.
+- In Community kan alleen de verborgen groep `account.group_account_basic` bankregels wijzigen; de module geeft `group_account_invoice` schrijfrecht.
+- Meer in [bankafschriften.md](bankafschriften.md#valkuilen).
+
 ## Bekende problemen (nog open)
 
 - Geen op dit moment.

@@ -10,3 +10,4 @@ from . import test_bill_mail
 from . import test_assembly_meeting
 from . import test_sale_file
 from . import test_collection
+from . import test_bank_statements
