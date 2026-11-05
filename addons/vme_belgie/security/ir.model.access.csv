@@ -54,3 +54,4 @@ access_vme_payment_batch_user,vme.payment.batch user,model_vme_payment_batch,acc
 access_vme_payment_batch_line_user,vme.payment.batch.line user,model_vme_payment_batch_line,account.group_account_invoice,1,1,1,1
 access_vme_payment_batch_read,vme.payment.batch read,model_vme_payment_batch,base.group_user,1,0,0,0
 access_vme_payment_batch_line_read,vme.payment.batch.line read,model_vme_payment_batch_line,base.group_user,1,0,0,0
+access_vme_bill_ai_check_user,vme.bill.ai.check user,model_vme_bill_ai_check,base.group_user,1,1,1,1

@@ -20,3 +20,4 @@ from . import test_consumption
 from . import test_contracts
 from . import test_requests
 from . import test_payments
+from . import test_bill_ai_reading

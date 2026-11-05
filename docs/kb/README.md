@@ -86,6 +86,10 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 
 ### Overstappen
 
+26. [PDF-facturen en documenten laten lezen door de AI-assistent](pdf-facturen-ai.md)
+
+### Overstappen
+
 
 ## Zo is het platform opgebouwd
 

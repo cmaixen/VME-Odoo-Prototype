@@ -20,7 +20,7 @@ Het adres volgt altijd hetzelfde patroon: `facturen-` gevolgd door de naam van d
 4. Kijk na: leverancier, factuurdatum, bedrag, **Kostperiode** en de **Verdeelsleutel** per lijn. Is er een verdeelregel voor deze leverancier, dan zijn sleutel en rekening al ingevuld.
 5. Klik op **Bevestigen**. De factuur wordt geboekt en meteen over de eigenaars verdeeld.
 
-Was de bijlage een gewone PDF en geen e-factuur, dan staat de PDF naast een lege conceptfactuur en vult u de gegevens zelf in.
+Was de bijlage een gewone PDF en geen e-factuur, dan leest de AI-assistent de factuur en vult hij het concept in, met per veld een controle: zie [PDF-facturen en documenten laten lezen door de AI-assistent](pdf-facturen-ai.md).
 
 ## Voorbeeld uit de demodata
 

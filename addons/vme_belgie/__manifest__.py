@@ -20,6 +20,7 @@
         "views/vme_meter_views.xml",
         "views/vme_cost_allocation_views.xml",
         "views/account_move_views.xml",
+        "views/account_move_ai_views.xml",
         "data/demo_actions.xml",
         "data/help_menu.xml",
         "views/vme_distribution_rule_views.xml",

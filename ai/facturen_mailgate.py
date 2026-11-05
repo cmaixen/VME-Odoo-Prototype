@@ -7,6 +7,8 @@ mail becomes a draft vendor bill in that VME, with its UBL attachment read in.
 
     python facturen_mailgate.py              # deliver all mails in ai/facturen_inbox/
     python facturen_mailgate.py --dry-run    # only show where each mail would go
+    python facturen_mailgate.py --inbox facturen_pdf_inbox --lees-pdf --mock
+                                             # PDF invoices without UBL: also read them (step 21)
 
 Odoo ignores a mail whose Message-ID it already processed, so running twice is harmless.
 """
@@ -17,6 +19,7 @@ import os
 import sys
 from pathlib import Path
 
+import pdf_facturen
 from assistant import load_env
 from odoo_api import OdooClient, OdooError
 
@@ -43,9 +46,11 @@ def bill_summary(odoo, move_id, context):
     move = odoo.execute(
         "account.move", "read", [move_id],
         fields=["company_id", "partner_id", "ref", "amount_total", "state", "vme_period_start", "vme_period_end",
-                "invoice_line_ids"],
+                "invoice_line_ids", "vme_ai_state"],
         context=context,
     )[0]
+    if move.get("vme_ai_state") == "to_read":
+        return f"{move['company_id'][1]}: conceptfactuur {move_id}, PDF zonder UBL: wacht op de AI-lezing"
     lines = odoo.execute("account.move.line", "read", move["invoice_line_ids"], fields=["vme_key_id"], context=context)
     keys = sorted({line["vme_key_id"][1] for line in lines if line["vme_key_id"]}) or ["geen sleutel"]
     return (
@@ -87,6 +92,8 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description="Lever factuurmails aan Odoo zoals een inkomende mailserver.")
     parser.add_argument("--inbox", type=Path, default=HERE / "facturen_inbox", help="map met .eml-bestanden")
     parser.add_argument("--dry-run", action="store_true", help="niets aanleveren, alleen tonen")
+    parser.add_argument("--lees-pdf", action="store_true", help="PDF-facturen zonder UBL meteen laten lezen (stap 21)")
+    parser.add_argument("--mock", action="store_true", help="met --lees-pdf: regels in plaats van Claude")
     args = parser.parse_args(argv)
     load_env(HERE / ".env")
 
@@ -109,7 +116,15 @@ def main(argv=None):
     except (OSError, OdooError) as error:
         print(f"Kan Odoo niet bereiken op {url}: {error}")
         return 1
-    run(odoo, mails)
+    results = run(odoo, mails)
+    if args.lees_pdf:
+        if not args.mock and not os.environ.get("ANTHROPIC_API_KEY"):
+            print("ANTHROPIC_API_KEY ontbreekt in ai/.env. Gebruik --mock om zonder taalmodel te lezen.")
+            return 2
+        ids = [record_id for record_id in results.values() if record_id]
+        if ids:
+            print("AI-lezing van de PDF-facturen:")
+            pdf_facturen.run(odoo, pdf_facturen.make_reader(args.mock), ids=ids)
     return 0
 
 

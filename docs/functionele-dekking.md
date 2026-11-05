@@ -10,6 +10,8 @@ Legende: ✅ gebouwd · 🔨 wordt nu gebouwd · 📋 gepland · ➖ bewust late
 | | Facturen per mail | ✅ | stap 7b |
 | | OCR van PDF-facturen zonder UBL | 📋 | stap 21 |
 | | Goedkeuren vóór betaling | ✅ | stap 20 |
+| | OCR van PDF-facturen zonder UBL | ✅ | stap 21 |
+| | Goedkeuren vóór betaling | 📋 | stap 20 |
 | Boekhouding | Eén boekhouding per VME, Belgisch rekeningstelsel, boekingsregels (verdeelregels), opvragingen | ✅ | stap 1–6 |
 | | Minimumrekeningstelsel VME (KB 12 juli 2012) nakijken | 📋 | LEGAL-CHECK |
 | Betalingsverkeer | Bankafschriften inlezen (CODA/CAMT) en koppelen | ✅ | stap 12 |
@@ -50,7 +52,7 @@ Legende: ✅ gebouwd · 🔨 wordt nu gebouwd · 📋 gepland · ➖ bewust late
 | Leveranciersbeheer | Leveranciers, verdeelregels, facturen | ✅ | stap 4b |
 | | Leverancierskaart met contracten, keuringen, lopende werken en facturen | 📋 | stap 22 |
 | Documentbeheer | Mappen per VME en kavel, delen of niet delen | 🔨 | stap 15 |
-| | Automatisch ordenen met AI | 📋 | stap 21 |
+| | Automatisch ordenen met AI | 🔨 | stap 21 (soort en VME), de map volgt met stap 15 |
 | | Acties op meerdere documenten tegelijk | 🔨 | stap 15 |
 | Huurcontractbeheer | Huurcontracten opmaken, huurders, waarborg, huur | 📋 | stap 25 |
 | Centraal communicatiebeheer | Brieven, e-mail, sms, aangetekend, push | 📋 | stap 23 |
