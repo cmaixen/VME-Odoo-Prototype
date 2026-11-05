@@ -6,6 +6,8 @@ from odoo.exceptions import ValidationError
 
 class VmeAssociation(models.Model):
     _name = "vme.association"
+    # Chatter and activities: the AI mail assistant (ai/) puts its proposed replies here as to-dos.
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     _description = "Vereniging van mede-eigenaars"
     _order = "name"
 
