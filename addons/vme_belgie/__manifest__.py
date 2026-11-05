@@ -10,6 +10,7 @@
     "depends": ["account", "l10n_be", "account_peppol", "mail"],
     "data": [
         "security/ir.model.access.csv",
+        "data/mail_alias_domain.xml",
         "views/vme_association_views.xml",
         "views/vme_lot_views.xml",
         "views/vme_key_views.xml",
@@ -24,6 +25,7 @@
         "views/provision_menus.xml",
         "wizard/vme_annual_statement_wizard_views.xml",
         "report/vme_annual_statement_report.xml",
+        "data/bill_aliases.xml",
     ],
     "installable": True,
     "application": True,

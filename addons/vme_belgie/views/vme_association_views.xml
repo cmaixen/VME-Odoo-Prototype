@@ -42,6 +42,7 @@
                     <group>
                         <group string="Gegevens">
                             <field name="kbo_number" placeholder="0123.456.749"/>
+                            <field name="bill_alias_email" widget="CopyClipboardChar" invisible="not bill_alias_email"/>
                             <field name="company_id" readonly="id" groups="base.group_no_one"/>
                             <field name="partner_id" invisible="1"/>
                             <field name="active" invisible="1"/>

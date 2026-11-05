@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Runs on every install and upgrade, so VME's created before step 7b get their address too. -->
+    <function model="vme.association" name="_ensure_all_bill_aliases"/>
+</odoo>
