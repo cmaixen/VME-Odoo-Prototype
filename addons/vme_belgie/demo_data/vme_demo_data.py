@@ -102,6 +102,15 @@ RULES = [
     ("elevator", "elevator", "611000"),  # Onderhoudskosten en herstellingen
 ]
 
+# Yearly budgets (working capital, reserve contribution) for 2026 and 2027, called per quarter.
+# Hof ter Beuken deliberately stays under the 5% reserve minimum to show the warning.
+BUDGETS = {
+    "Residentie Linde": (24000, 2400),
+    "Hof ter Beuken": (48000, 1800),
+    "Kaaihuis": (9000, 900),
+}
+BUDGET_YEARS = (2026, 2027)
+
 KEY_NAMES = {
     "general": "Algemene sleutel",
     "elevator": "Liftsleutel",
@@ -165,6 +174,10 @@ class VmeAssociation(models.Model):
             ])
             account_number += 2
             vme.write({"working_capital_bank_id": banks[0].id, "reserve_capital_bank_id": banks[1].id})
+            # Odoo only lets a person with the right permissions trust bank accounts, never a
+            # script running as the system user; then the VME form asks to confirm them.
+            if all(bank._user_can_trust() for bank in banks):
+                banks.allow_out_payment = True
 
             lots = self.env["vme.lot"].create([
                 {
@@ -203,6 +216,15 @@ class VmeAssociation(models.Model):
                         "key_id": key_by_type[key_type].id,
                     })
                     rule_accounts.append((rule, account_code))
+
+            working, reserve = BUDGETS[building["name"]]
+            self.env["vme.budget"].create([{
+                "association_id": vme.id,
+                "year": year,
+                "working_capital_budget": working,
+                "reserve_capital_contribution": reserve,
+                "calls_per_year": "4",
+            } for year in BUDGET_YEARS])
 
             short_name = building["name"].split()[-1]
             owner_by_lot = {}

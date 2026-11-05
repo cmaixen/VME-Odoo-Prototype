@@ -6,3 +6,5 @@ from . import vme_cost_allocation
 from . import account_move
 from . import account_chart_template
 from . import vme_distribution_rule
+from . import vme_budget
+from . import vme_provision_call

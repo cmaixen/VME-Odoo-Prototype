@@ -50,6 +50,11 @@
                             <field name="country_id"/>
                         </group>
                     </group>
+                    <field name="untrusted_fund_bank_ids" invisible="1"/>
+                    <div class="alert alert-warning" role="alert" invisible="not untrusted_fund_bank_ids">
+                        Een rekening voor werk- of reservekapitaal is nog niet bevestigd. Open de rekening en zet
+                        "Geld verzenden" aan; pas dan komt ze op de provisieoproepen.
+                    </div>
                     <group string="Bankrekeningen">
                         <field name="working_capital_bank_id" context="{'default_partner_id': partner_id}" readonly="not id"/>
                         <field name="reserve_capital_bank_id" context="{'default_partner_id': partner_id}" readonly="not id"/>
@@ -75,6 +80,18 @@
                                     <field name="total_shares"/>
                                     <field name="shares_sum"/>
                                     <field name="is_balanced"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Budgetten" name="budgets">
+                            <field name="budget_ids" readonly="not id">
+                                <list>
+                                    <field name="year" options="{'enable_formatting': false}"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="working_capital_budget"/>
+                                    <field name="reserve_capital_contribution"/>
+                                    <field name="calls_per_year"/>
+                                    <field name="reserve_warning" string="5%-regel" widget="badge" decoration-warning="reserve_warning"/>
                                 </list>
                             </field>
                         </page>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="vme_provision_call_wizard_view_form" model="ir.ui.view">
+        <field name="name">vme.provision.call.wizard.form</field>
+        <field name="model">vme.provision.call.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Provisieoproep">
+                <group>
+                    <group>
+                        <field name="association_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                        <field name="year" options="{'enable_formatting': false}"/>
+                        <field name="number"/>
+                    </group>
+                    <group>
+                        <field name="invoice_date"/>
+                        <field name="date_due"/>
+                        <field name="post_invoices"/>
+                    </group>
+                </group>
+                <field name="preview_html" nolabel="1" invisible="not association_ids"/>
+                <footer>
+                    <button name="action_create_calls" type="object" string="Maak provisieoproepen" class="btn-primary"/>
+                    <button string="Annuleren" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="vme_provision_call_wizard_action" model="ir.actions.act_window">
+        <field name="name">Nieuwe provisieoproep</field>
+        <field name="res_model">vme.provision.call.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

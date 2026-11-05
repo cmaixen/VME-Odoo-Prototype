@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_vme_budget" name="Budgetten" parent="menu_vme_root" action="vme_budget_action" sequence="45"/>
+    <menuitem id="menu_vme_provision_call" name="Provisieoproepen" parent="menu_vme_root" action="vme_provision_call_action" sequence="47"/>
+</odoo>

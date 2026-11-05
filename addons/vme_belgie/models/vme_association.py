@@ -40,9 +40,14 @@ class VmeAssociation(models.Model):
         domain="[('partner_id', '=', partner_id)]",
     )
 
+    untrusted_fund_bank_ids = fields.Many2many(
+        "res.partner.bank", string="Niet-bevestigde rekeningen", compute="_compute_untrusted_fund_bank_ids"
+    )
+
     lot_ids = fields.One2many("vme.lot", "association_id", string="Kavels")
     key_ids = fields.One2many("vme.key", "association_id", string="Verdeelsleutels")
     distribution_rule_ids = fields.One2many("vme.distribution.rule", "association_id", string="Verdeelregels")
+    budget_ids = fields.One2many("vme.budget", "association_id", string="Budgetten")
     lot_count = fields.Integer(string="Aantal kavels", compute="_compute_counts")
     key_count = fields.Integer(string="Aantal sleutels", compute="_compute_counts")
     owner_count = fields.Integer(string="Aantal eigenaars", compute="_compute_counts")
@@ -109,6 +114,15 @@ class VmeAssociation(models.Model):
                 raise ValidationError(self.env._(
                     "Werkkapitaal en reservekapitaal moeten op aparte bankrekeningen staan."
                 ))
+
+    @api.depends("working_capital_bank_id.allow_out_payment", "reserve_capital_bank_id.allow_out_payment")
+    def _compute_untrusted_fund_bank_ids(self):
+        # Odoo only puts a company bank account on customer invoices once a person with the
+        # right permissions has trusted it ("Send Money"); scripts may not do that on purpose.
+        for vme in self:
+            vme.untrusted_fund_bank_ids = (vme.working_capital_bank_id | vme.reserve_capital_bank_id).filtered(
+                lambda bank: not bank.allow_out_payment
+            )
 
     def _action_open_related(self, model, name):
         self.ensure_one()

@@ -27,6 +27,10 @@
                     <field name="vme_period_end" nolabel="1"/>
                 </div>
             </xpath>
+            <xpath expr="//group[@id='header_right_group']" position="inside">
+                <field name="vme_provision_call_id" invisible="not vme_provision_call_id" readonly="1"/>
+                <field name="vme_fund" invisible="not vme_fund" readonly="1"/>
+            </xpath>
             <xpath expr="//field[@name='invoice_line_ids']/list/field[@name='account_id']" position="after">
                 <field name="vme_key_id" optional="show"
                        column_invisible="parent.move_type not in ('in_invoice', 'in_refund') or not parent.vme_association_id"

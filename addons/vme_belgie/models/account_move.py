@@ -28,6 +28,12 @@ class AccountMove(models.Model):
         string="Kostperiode tot", compute="_compute_vme_period", store=True, readonly=False
     )
     vme_allocation_ids = fields.One2many("vme.cost.allocation", "move_id", string="Kostenverdeling")
+    vme_provision_call_id = fields.Many2one(
+        "vme.provision.call", string="Provisieoproep", index=True, ondelete="restrict", copy=False
+    )
+    vme_fund = fields.Selection(
+        [("working", "Werkkapitaal"), ("reserve", "Reservekapitaal")], string="Fonds", copy=False
+    )
     vme_allocation_owner_count = fields.Integer(compute="_compute_vme_allocation_owner_count")
 
     @api.depends("company_id")
@@ -39,6 +45,19 @@ class AccountMove(models.Model):
         by_company = {vme.company_id: vme for vme in associations}
         for move in self:
             move.vme_association_id = by_company.get(move.company_id, False)
+
+    @api.depends("vme_fund", "vme_association_id")
+    def _compute_partner_bank_id(self):
+        super()._compute_partner_bank_id()
+        # LEGAL-CHECK: art. 3.89 §5 BW - a provision is paid to the bank account of its fund.
+        for move in self.filtered("vme_fund"):
+            # Look the VME up by company: vme_association_id may not be computed yet on create.
+            vme = move.vme_association_id or self.env["vme.association"].sudo().search(
+                [("company_id", "=", move.company_id.id)], limit=1
+            )
+            move.partner_bank_id = (
+                vme.working_capital_bank_id if move.vme_fund == "working" else vme.reserve_capital_bank_id
+            )
 
     @api.depends("invoice_date")
     def _compute_vme_period(self):

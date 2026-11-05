@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="vme_budget_view_list" model="ir.ui.view">
+        <field name="name">vme.budget.list</field>
+        <field name="model">vme.budget</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="association_id"/>
+                <field name="year" options="{'enable_formatting': false}"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="working_capital_budget"/>
+                <field name="reserve_capital_contribution"/>
+                <field name="calls_per_year"/>
+                <field name="reserve_warning" string="5%-regel" widget="badge" decoration-warning="reserve_warning"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_budget_view_form" model="ir.ui.view">
+        <field name="name">vme.budget.form</field>
+        <field name="model">vme.budget</field>
+        <field name="arch" type="xml">
+            <form>
+                <div class="alert alert-warning mb-0" role="alert" invisible="not reserve_warning">
+                    <field name="reserve_warning"/>
+                </div>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="association_id"/>
+                            <field name="year" options="{'enable_formatting': false}"/>
+                            <field name="calls_per_year"/>
+                        </group>
+                        <group>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="working_capital_budget"/>
+                            <field name="reserve_capital_contribution"/>
+                        </group>
+                    </group>
+                    <group string="Reservefonds (5%-regel)">
+                        <field name="previous_year_charges"/>
+                        <field name="previous_year_charges_estimated" string="Geschat (geen geboekte lasten vorig jaar)" readonly="1"/>
+                        <field name="reserve_minimum"/>
+                        <field name="reserve_exception_by_general_assembly"/>
+                    </group>
+                    <field name="provision_call_ids" readonly="1">
+                        <list>
+                            <field name="number"/>
+                            <field name="date"/>
+                            <field name="date_due"/>
+                            <field name="currency_id" column_invisible="1"/>
+                            <field name="amount_working"/>
+                            <field name="amount_reserve"/>
+                            <field name="paid_count"/>
+                            <field name="open_count"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="vme_budget_action" model="ir.actions.act_window">
+        <field name="name">Budgetten</field>
+        <field name="res_model">vme.budget</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="vme_provision_call_view_list" model="ir.ui.view">
+        <field name="name">vme.provision.call.list</field>
+        <field name="model">vme.provision.call</field>
+        <field name="arch" type="xml">
+            <list create="0">
+                <header>
+                    <button name="%(vme_provision_call_wizard_action)d" type="action" string="Nieuwe provisieoproep"
+                            class="btn-primary" display="always"/>
+                </header>
+                <field name="association_id"/>
+                <field name="display_name" string="Oproep"/>
+                <field name="date"/>
+                <field name="date_due"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="amount_working" sum="Totaal"/>
+                <field name="amount_reserve" sum="Totaal"/>
+                <field name="invoice_count"/>
+                <field name="paid_count"/>
+                <field name="open_count"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_provision_call_view_form" model="ir.ui.view">
+        <field name="name">vme.provision.call.form</field>
+        <field name="model">vme.provision.call</field>
+        <field name="arch" type="xml">
+            <form create="0">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_invoices" type="object" class="oe_stat_button" icon="fa-file-text-o">
+                            <field name="invoice_count" widget="statinfo" string="Facturen"/>
+                        </button>
+                    </div>
+                    <div class="oe_title"><h1><field name="display_name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="budget_id" readonly="1"/>
+                            <field name="number" readonly="1"/>
+                            <field name="date" readonly="1"/>
+                            <field name="date_due" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="amount_working"/>
+                            <field name="amount_reserve"/>
+                            <field name="paid_count"/>
+                            <field name="open_count"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="vme_provision_call_action" model="ir.actions.act_window">
+        <field name="name">Provisieoproepen</field>
+        <field name="res_model">vme.provision.call</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nog geen provisieoproepen</p>
+            <p>Klik op "Nieuwe provisieoproep" om voor een of meer VME's tegelijk de voorschotten op te vragen.</p>
+        </field>
+    </record>
+</odoo>
