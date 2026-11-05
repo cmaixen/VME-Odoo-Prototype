@@ -208,8 +208,8 @@ class TestAnnualStatementDemo(TransactionCase):
                                   "due_until": date(2026, 12, 31), "execution_date": tomorrow})
             batch.action_fill_proposal()
             self.assertTrue(batch.line_ids, vme.name)
-            # The electricity supplier's account from the demo data was never trusted: left out.
-            self.assertIn("niet bevestigd", batch.proposal_note)
+            # Only trusted supplier accounts end up in a batch (Odoo's own check, never bypassed).
+            self.assertTrue(all(batch.line_ids.partner_bank_id.mapped("allow_out_payment")), vme.name)
             batch.action_generate_file()
             batch.action_mark_sent()
         call = self.env["vme.provision.call"].search([("association_id.name", "=", "Hof ter Beuken"), ("number", "=", 4)])

@@ -20,6 +20,7 @@ SUPPLIER_ACCOUNTS = {
     "Schoonmaak Voorbeeld BV": 2002,
     "Gasleverancier Voorbeeld NV": 2003,
     "Verzekeringen Voorbeeld NV": 2004,
+    "Sociaal Secretariaat Voorbeeld vzw": 2005,  # wage costs of the concierge (step 18)
 }
 # Owners who signed a SEPA mandate: (VME, owner, account number).
 MANDATES = [
