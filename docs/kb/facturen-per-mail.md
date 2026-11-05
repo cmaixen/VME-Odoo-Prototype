@@ -32,7 +32,9 @@ In de demo stuurt "Energieleverancier Voorbeeld NV" drie mails, één per gebouw
 | facturen-hof-ter-beuken@syndicus.example.com | conceptfactuur EV-2026-110302 in Hof ter Beuken | 6.231,50 € |
 | facturen-kaaihuis@syndicus.example.com | conceptfactuur EV-2026-110303 in Kaaihuis | 1.500,40 € |
 
-Elke factuur heeft als kostperiode 1 november 2025 tot 31 oktober 2026 en de algemene sleutel. Bij Residentie Linde wordt appartement A5 na het bevestigen pro rata verdeeld tussen de verkoper en de koper.
+Elke factuur heeft als kostperiode 1 november 2025 tot 31 oktober 2026 en de algemene sleutel.
+
+> Let op: deze drie elektriciteitsfacturen zitten ook al in de **demohistoriek 2026**. Lever ze alleen aan op een demo zonder historiek, anders worden ze dubbel geboekt. Voor een demo mét historiek staat in `ai/demo_inbox/` een aparte mail: de factuur van de liftinspectie van Residentie Linde (zie het [demoscenario](../demo.md)). Bij Residentie Linde wordt appartement A5 na het bevestigen pro rata verdeeld tussen de verkoper en de koper.
 
 ## Veelgestelde vragen
 

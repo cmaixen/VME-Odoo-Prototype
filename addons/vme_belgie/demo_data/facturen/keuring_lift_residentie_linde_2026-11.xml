@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Fictitious demo invoice for the VME prototype. Supplier, buyer, VAT number and IBAN are made up. -->
+<Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
+         xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+         xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
+  <cbc:CustomizationID>urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0</cbc:CustomizationID>
+  <cbc:ProfileID>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</cbc:ProfileID>
+  <cbc:ID>KD-2026-1105</cbc:ID>
+  <cbc:IssueDate>2026-11-05</cbc:IssueDate>
+  <cbc:DueDate>2026-12-05</cbc:DueDate>
+  <cbc:InvoiceTypeCode>380</cbc:InvoiceTypeCode>
+  <cbc:Note>Halfjaarlijkse preventieve inspectie van de lift (blok A), uitgevoerd op 5 november 2026.</cbc:Note>
+  <cbc:DocumentCurrencyCode>EUR</cbc:DocumentCurrencyCode>
+  <cbc:BuyerReference>Residentie Linde</cbc:BuyerReference>
+  <cac:AccountingSupplierParty>
+    <cac:Party>
+      <cbc:EndpointID schemeID="9925">BE0000000889</cbc:EndpointID>
+      <cac:PartyName><cbc:Name>Keuringsdienst Voorbeeld vzw</cbc:Name></cac:PartyName>
+      <cac:PostalAddress>
+        <cbc:StreetName>Controleweg 9</cbc:StreetName>
+        <cbc:CityName>Voorbeeldstad</cbc:CityName>
+        <cbc:PostalZone>1000</cbc:PostalZone>
+        <cac:Country><cbc:IdentificationCode>BE</cbc:IdentificationCode></cac:Country>
+      </cac:PostalAddress>
+      <cac:PartyTaxScheme>
+        <cbc:CompanyID>BE0000000889</cbc:CompanyID>
+        <cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme>
+      </cac:PartyTaxScheme>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>Keuringsdienst Voorbeeld vzw</cbc:RegistrationName>
+        <cbc:CompanyID schemeID="0208">0000000889</cbc:CompanyID>
+      </cac:PartyLegalEntity>
+      <cac:Contact><cbc:ElectronicMail>verslagen@keuringsdienst.example.com</cbc:ElectronicMail></cac:Contact>
+    </cac:Party>
+  </cac:AccountingSupplierParty>
+  <cac:AccountingCustomerParty>
+    <cac:Party>
+      <cbc:EndpointID schemeID="0208">0000000097</cbc:EndpointID>
+      <cac:PartyName><cbc:Name>VME Residentie Linde</cbc:Name></cac:PartyName>
+      <cac:PostalAddress>
+        <cbc:StreetName>Lindedreef 12</cbc:StreetName>
+        <cbc:CityName>Voorbeeldstad</cbc:CityName>
+        <cbc:PostalZone>2000</cbc:PostalZone>
+        <cac:Country><cbc:IdentificationCode>BE</cbc:IdentificationCode></cac:Country>
+      </cac:PostalAddress>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>VME Residentie Linde</cbc:RegistrationName>
+        <cbc:CompanyID schemeID="0208">0000000097</cbc:CompanyID>
+      </cac:PartyLegalEntity>
+    </cac:Party>
+  </cac:AccountingCustomerParty>
+  <cac:TaxTotal>
+    <cbc:TaxAmount currencyID="EUR">37.80</cbc:TaxAmount>
+    <cac:TaxSubtotal>
+      <cbc:TaxableAmount currencyID="EUR">180.00</cbc:TaxableAmount>
+      <cbc:TaxAmount currencyID="EUR">37.80</cbc:TaxAmount>
+      <cac:TaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>21</cbc:Percent>
+        <cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme>
+      </cac:TaxCategory>
+    </cac:TaxSubtotal>
+  </cac:TaxTotal>
+  <cac:LegalMonetaryTotal>
+    <cbc:LineExtensionAmount currencyID="EUR">180.00</cbc:LineExtensionAmount>
+    <cbc:TaxExclusiveAmount currencyID="EUR">180.00</cbc:TaxExclusiveAmount>
+    <cbc:TaxInclusiveAmount currencyID="EUR">217.80</cbc:TaxInclusiveAmount>
+    <cbc:PayableAmount currencyID="EUR">217.80</cbc:PayableAmount>
+  </cac:LegalMonetaryTotal>
+  <cac:InvoiceLine>
+    <cbc:ID>1</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="C62">1</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">180.00</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Name>Preventieve inspectie lift blok A</cbc:Name>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID>
+        <cbc:Percent>21</cbc:Percent>
+        <cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price><cbc:PriceAmount currencyID="EUR">180.00</cbc:PriceAmount></cac:Price>
+  </cac:InvoiceLine>
+</Invoice>
