@@ -45,6 +45,11 @@ erDiagram
 | `vme.arrears` | Achterstal (SQL-view) | Open, vervallen debiteurenlijnen van alle VME's met ouderdom; zie [invordering.md](invordering.md). |
 | `vme.collection` | Invorderingsdossier | Per VME en eigenaar; niveau, kosten, doorsturen. Eén niet-afgesloten dossier per VME en eigenaar. |
 | `vme.collection.reminder` | Herinnering | Niveau 1-3, concept of verstuurd, momentopname van de open bedragen en de tekst. |
+| `vme.request` | Aanvraag van een bewoner | VME, kavel, `request_type_id`, `channel`, `requester_id` en `requester_role` (herkend aan het e-mailadres), `owner_id`, `state`, bewijs, bestelling, levering, checklist. Zie [aanvragen.md](aanvragen.md). |
+| `vme.request.type` | Soort aanvraag | `code` (uniek, één per procedure), `needs_verification`, `checklist` (tekst). |
+| `vme.request.check` | Stap van de checklist | `request_id`, `name`, `done`, `done_date`. |
+| `vme.lot.contact` | Huurder of bewoner van een kavel | `lot_id`, `partner_id`, `role` (huurder, bewoner, contactpersoon), `date_start`, `date_end`. |
+| `vme.lot.key` | Sleutelregister | `lot_id`, `kind`, `number`, `issue_date`, `partner_id` (in handen van), `state` (in gebruik, geblokkeerd, ingeleverd), `request_id`. |
 | `vme.migration` | Overstap uit een ander pakket | `attachment_ids` (exportbestanden), `source_format`, `state` (nieuw, proefrun gedaan, geïmporteerd), `report_html`, `error_count`, `warning_count`, `transition_date`, `association_id`, `opening_move_id`. Zie [migratie.md](migratie.md). |
 
 Wizards (transient): `vme.provision.call.wizard` en `vme.annual.statement.wizard`, elk met een HTML-voorbeeld (`preview_html`).
@@ -57,6 +62,7 @@ Wizards (transient): `vme.provision.call.wizard` en `vme.annual.statement.wizard
 | `account.move` | `vme_period_start`, `vme_period_end` | Kostperiode. Standaard de factuurdatum; bij een UBL-factuur de `InvoicePeriod`. Bewerkbaar. |
 | `account.move` | `vme_allocation_ids` | De kostenverdeling van deze factuur. |
 | `account.move` | `vme_provision_call_id`, `vme_fund` | Op provisiefacturen: de oproep en het fonds (`working` of `reserve`). |
+| `account.move` | `vme_request_id` | Privé-kost van een aanvraag: de factuur aan de eigenaar, of de factuur van de slotenmaker. Niet verdeeld en niet in de jaarafrekening. |
 | `account.move` | `vme_collection_id` | Op een factuur met nalatigheidsinterest en schadevergoeding: het invorderingsdossier. |
 | `account.bank.statement.line` | `vme_bank_fund`, `vme_match_state`, `vme_exception`, `vme_days_late`, `vme_match_note`, `vme_structured_reference`, `vme_candidate_move_ids`, `vme_matched_move_ids`, `vme_follow_up` | Koppeling van bankbewegingen met provisies en leveranciersfacturen (stap 12, zie [bankafschriften.md](bankafschriften.md)). |
 | `account.move.line` | `vme_key_id` | Verdeelsleutel per regel; opgeslagen compute die alleen een lege sleutel invult vanuit de verdeelregel. |
@@ -68,6 +74,7 @@ Wizards (transient): `vme.provision.call.wizard` en `vme.annual.statement.wizard
 | 611000 | Onderhoudskosten en herstellingen | Standaardrekening van het aankoopdagboek van elke VME |
 | 100100 | Werkkapitaal | Opbrengstzijde van provisiefacturen werkkapitaal (eigen vermogen) |
 | 100200 | Reservekapitaal | Idem voor reservekapitaal |
+| 416100 | Door te rekenen privékosten | Privé-aanrekening van een aanvraag (factuur aan de eigenaar, credit) en de factuur van de slotenmaker (debet); wordt de eerste keer aangemaakt. Zie [aanvragen.md](aanvragen.md). |
 
 De codes 100100 en 100200 zijn eigen keuzes en moeten nog afgestemd worden op het minimumrekeningenstelsel voor VME's (`# LEGAL-CHECK: KB 12 juli 2012`).
 

@@ -29,3 +29,9 @@ access_vme_collection_reminder_line_user,vme.collection.reminder.line user,model
 access_vme_bank_import_wizard_user,vme.bank.import.wizard user,model_vme_bank_import_wizard,base.group_user,1,1,1,1
 access_account_bank_statement_line_vme_invoice,account.bank.statement.line vme invoice,account.model_account_bank_statement_line,account.group_account_invoice,1,1,0,0
 access_vme_migration_system,vme.migration system,model_vme_migration,base.group_system,1,1,1,1
+access_vme_lot_contact_user,vme.lot.contact user,model_vme_lot_contact,base.group_user,1,1,1,1
+access_vme_lot_key_user,vme.lot.key user,model_vme_lot_key,base.group_user,1,1,1,1
+access_vme_request_type_user,vme.request.type user,model_vme_request_type,base.group_user,1,0,0,0
+access_vme_request_type_system,vme.request.type system,model_vme_request_type,base.group_system,1,1,1,1
+access_vme_request_user,vme.request user,model_vme_request,base.group_user,1,1,1,0
+access_vme_request_check_user,vme.request.check user,model_vme_request_check,base.group_user,1,1,1,1

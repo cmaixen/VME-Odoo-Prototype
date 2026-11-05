@@ -110,6 +110,26 @@
             <p class="small text-muted">De notulen zijn bijgevoegd of op aanvraag beschikbaar.</p>
         </t>
         <p t-else="">Er werd in de laatste drie jaar geen algemene vergadering gehouden.</p>
+
+        <h5 class="mt-4">8. Uitgereikte sleutels en badges</h5>
+        <table t-if="info['keys_issued']" class="table table-sm">
+            <thead>
+                <tr><th>Kavel</th><th>Soort</th><th>Nummer</th><th>Uitgereikt op</th><th>In handen van</th></tr>
+            </thead>
+            <tbody>
+                <tr t-foreach="info['keys_issued']" t-as="key">
+                    <td t-out="key.lot_id.name"/>
+                    <td t-out="dict(key._fields['kind'].selection).get(key.kind)"/>
+                    <td t-out="key.number"/>
+                    <td t-out="format_date(key.issue_date)"/>
+                    <td t-out="key.partner_id.name"/>
+                </tr>
+            </tbody>
+        </table>
+        <p t-if="info['keys_issued']" class="small text-muted">
+            De verkoper bezorgt deze sleutels en badges aan de koper bij de akte. Bijkomende exemplaren bestelt alleen de syndicus.
+        </p>
+        <p t-else="">Er zijn geen sleutels of badges geregistreerd voor deze kavels.</p>
     </template>
 
     <template id="report_notary_information">

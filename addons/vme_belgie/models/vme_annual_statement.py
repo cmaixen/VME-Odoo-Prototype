@@ -27,6 +27,8 @@ class VmeAssociation(models.Model):
             ("state", "=", "posted"),
             ("invoice_date", ">=", start),
             ("invoice_date", "<=", end),
+            # Private costs of a request (e.g. a key for one owner) are charged to that owner, not distributed.
+            ("vme_request_id", "=", False),
         ])
         allocations = bills.vme_allocation_ids
         # Provisions belong to the year of their budget, not of their invoice date: a call

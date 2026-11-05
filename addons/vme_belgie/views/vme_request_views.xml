@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Requests -->
+    <record id="vme_request_view_list" model="ir.ui.view">
+        <field name="name">vme.request.list</field>
+        <field name="model">vme.request</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state in ('done', 'refused', 'cancelled')" decoration-warning="reminder_due">
+                <field name="reminder_due" column_invisible="1"/>
+                <field name="name"/>
+                <field name="request_date"/>
+                <field name="association_id"/>
+                <field name="lot_id"/>
+                <field name="request_type_id"/>
+                <field name="title"/>
+                <field name="requester_id"/>
+                <field name="requester_role" optional="show"/>
+                <field name="channel" optional="hide"/>
+                <field name="checks_progress" optional="show"/>
+                <field name="state" widget="badge" decoration-info="state in ('new', 'in_progress')"
+                       decoration-warning="state == 'waiting_proof'" decoration-success="state == 'done'"/>
+                <field name="user_id" widget="many2one_avatar_user" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_request_view_form" model="ir.ui.view">
+        <field name="name">vme.request.form</field>
+        <field name="model">vme.request</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_send_proof_request" type="object" string="Bewijs opvragen" class="btn-primary"
+                            invisible="state != 'waiting_proof' or proof_requested_date"
+                            help="Verstuurt de bewijsvraag uit het tabblad Berichten naar de aanvrager."/>
+                    <button name="action_send_proof_reminder" type="object" string="Herinnering versturen"
+                            class="btn-primary" invisible="not reminder_due"/>
+                    <button name="action_send_proof_reminder" type="object" string="Herinnering versturen"
+                            invisible="reminder_due or state != 'waiting_proof' or not proof_requested_date or proof_reminder_date"/>
+                    <button name="action_verify" type="object" string="Bewijs goedkeuren" class="btn-primary"
+                            invisible="state != 'waiting_proof' or not proof_requested_date"/>
+                    <button name="action_verify" type="object" string="Bewijs goedkeuren"
+                            invisible="state != 'waiting_proof' or proof_requested_date"/>
+                    <button name="action_send_order" type="object" string="Bestelling versturen" class="btn-primary"
+                            invisible="not order_ready"
+                            help="Verstuurt de bestelling met de bestelbon naar de slotenmaker van de VME."/>
+                    <button name="action_prepare_order" type="object" string="Bestelling opnieuw opmaken"
+                            invisible="type_code != 'key' or state != 'in_progress'"/>
+                    <button name="action_register_delivery" type="object" string="Levering registreren" class="btn-primary"
+                            invisible="state != 'ordered'"/>
+                    <button name="action_block_keys" type="object" string="Blokkeren" class="btn-primary"
+                            invisible="type_code != 'badge_lost' or state != 'in_progress'"/>
+                    <button name="action_register_tenant" type="object" string="Huurder registreren" class="btn-primary"
+                            invisible="type_code != 'new_tenant' or state != 'in_progress'"/>
+                    <button name="action_add_to_assembly" type="object" string="Op de volgende AV zetten"
+                            invisible="type_code != 'works_permission' or state != 'in_progress' or assembly_item_id"/>
+                    <button name="action_done" type="object" string="Afgehandeld"
+                            invisible="type_code == 'key' or state != 'in_progress'"/>
+                    <button name="action_refuse" type="object" string="Weigeren"
+                            invisible="state not in ('waiting_proof', 'in_progress')"/>
+                    <button name="action_reset" type="object" string="Opnieuw starten"
+                            invisible="state not in ('waiting_proof', 'refused', 'cancelled')"
+                            help="Start de procedure opnieuw, bijvoorbeeld nadat je de rol van de aanvrager hebt aangepast."/>
+                    <button name="action_cancel" type="object" string="Annuleren"
+                            invisible="state in ('done', 'refused', 'cancelled')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="new,waiting_proof,in_progress,ordered,done"/>
+                </header>
+                <sheet>
+                    <field name="type_code" invisible="1"/>
+                    <field name="order_ready" invisible="1"/>
+                    <field name="reminder_due" invisible="1"/>
+                    <field name="needs_verification" invisible="1"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="company_id" invisible="1"/>
+                    <div class="alert alert-warning" role="alert" invisible="state != 'waiting_proof'">
+                        Wacht op bewijs: <field name="missing_proofs" class="d-inline"/>.
+                        <span invisible="not reminder_due">Al 7 dagen geen antwoord: verstuur een herinnering.</span>
+                    </div>
+                    <div class="alert alert-info" role="alert" invisible="not order_ready">
+                        De bestelling voor de slotenmaker staat klaar als concept (tabblad Berichten).
+                        Er wordt niets verstuurd voor je op "Bestelling versturen" klikt.
+                    </div>
+                    <div class="alert alert-danger" role="alert"
+                         invisible="type_code != 'key' or state != 'in_progress' or locksmith_id">
+                        Deze VME heeft nog geen slotenmaker. Vul hem in op de VME en klik op "Bestelling opnieuw opmaken".
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                        <h3><field name="title" placeholder="bv. Extra badge voor de inkom"/></h3>
+                    </div>
+                    <group>
+                        <group string="Aanvraag">
+                            <field name="association_id" options="{'no_create': True}" readonly="state != 'new'"/>
+                            <field name="lot_id" options="{'no_create': True}" readonly="state in ('done', 'cancelled')"/>
+                            <field name="request_type_id" options="{'no_create': True}" readonly="state != 'new'"/>
+                            <field name="request_date"/>
+                            <field name="channel"/>
+                            <field name="user_id" options="{'no_create': True}"/>
+                        </group>
+                        <group string="Aanvrager">
+                            <field name="requester_id" readonly="state in ('done', 'cancelled')"/>
+                            <field name="requester_email" readonly="1"/>
+                            <field name="requester_role" readonly="state not in ('new', 'waiting_proof')"/>
+                            <field name="owner_id"/>
+                            <field name="verified_date" invisible="not verified_date"/>
+                        </group>
+                    </group>
+                    <field name="description" placeholder="De vraag van de bewoner"/>
+                    <notebook>
+                        <page string="Bewijs" name="proof" invisible="not needs_verification">
+                            <group>
+                                <group>
+                                    <field name="proof_ownership" invisible="requester_role != 'unknown'"
+                                           readonly="state != 'waiting_proof'"/>
+                                    <field name="proof_owner_consent" invisible="requester_role != 'tenant'"
+                                           readonly="state != 'waiting_proof'"/>
+                                    <field name="proof_lease" invisible="requester_role != 'tenant'"
+                                           readonly="state != 'waiting_proof'"/>
+                                </group>
+                                <group>
+                                    <field name="proof_requested_date"/>
+                                    <field name="proof_reminder_date"/>
+                                </group>
+                            </group>
+                            <field name="proof_attachment_ids" widget="many2many_binary"/>
+                        </page>
+                        <page string="Sleutel of badge" name="key" invisible="type_code != 'key'">
+                            <group>
+                                <group string="Bestelling">
+                                    <field name="key_kind" required="type_code == 'key'" readonly="state not in ('new', 'waiting_proof', 'in_progress')"/>
+                                    <field name="quantity" readonly="state not in ('new', 'waiting_proof', 'in_progress')"/>
+                                    <field name="unit_price" readonly="state == 'done'"/>
+                                    <field name="amount"/>
+                                    <field name="locksmith_id"/>
+                                    <field name="order_attachment_id" invisible="not order_attachment_id"/>
+                                    <field name="order_sent_date"/>
+                                </group>
+                                <group string="Levering">
+                                    <field name="key_numbers" readonly="state == 'done'" placeholder="bv. B-0451, B-0452"/>
+                                    <field name="delivery_date" readonly="state == 'done'"/>
+                                    <field name="invoice_id"/>
+                                </group>
+                            </group>
+                            <field name="key_ids" readonly="1">
+                                <list>
+                                    <field name="kind"/>
+                                    <field name="number"/>
+                                    <field name="issue_date"/>
+                                    <field name="partner_id"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Blokkeren" name="block" invisible="type_code != 'badge_lost'">
+                            <field name="blocked_key_ids" widget="many2many_tags" options="{'no_create': True}"
+                                   placeholder="Kies de verloren of gestolen badges van deze kavel"/>
+                        </page>
+                        <page string="Details" name="details"
+                              invisible="type_code not in ('move', 'new_tenant', 'works_permission')">
+                            <group>
+                                <field name="planned_date" invisible="type_code not in ('move', 'new_tenant')"/>
+                                <field name="tenant_partner_id" invisible="type_code != 'new_tenant'"/>
+                                <field name="decision_route" invisible="type_code != 'works_permission'"/>
+                                <field name="assembly_item_id" invisible="not assembly_item_id"/>
+                            </group>
+                        </page>
+                        <page string="Checklist" name="checklist">
+                            <field name="check_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="done" widget="boolean_toggle"/>
+                                    <field name="name"/>
+                                    <field name="done_date" optional="show"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Berichten" name="drafts">
+                            <div class="text-muted mb-2">
+                                Concepten: pas ze aan waar nodig. Ze vertrekken pas als je op de knop klikt; verstuurde berichten staan in de chatter.
+                            </div>
+                            <group string="Bewijsvraag aan de aanvrager" invisible="not proof_mail_body">
+                                <field name="proof_mail_body" nolabel="1" colspan="2" readonly="state != 'waiting_proof'"/>
+                            </group>
+                            <group string="Bestelling aan de slotenmaker" invisible="not order_mail_body">
+                                <field name="order_mail_subject" readonly="not order_ready"/>
+                                <field name="order_mail_body" nolabel="1" colspan="2" readonly="not order_ready"/>
+                            </group>
+                        </page>
+                        <page string="Weigering" name="refuse" invisible="state not in ('waiting_proof', 'in_progress', 'refused')">
+                            <group><field name="refuse_reason" readonly="state == 'refused'"/></group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="vme_request_view_search" model="ir.ui.view">
+        <field name="name">vme.request.search</field>
+        <field name="model">vme.request</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="title"/>
+                <field name="association_id"/>
+                <field name="lot_id"/>
+                <field name="requester_id"/>
+                <field name="source_reference"/>
+                <filter name="open" string="Open" domain="[('state', 'not in', ('done', 'refused', 'cancelled'))]"/>
+                <filter name="waiting_proof" string="Wacht op bewijs" domain="[('state', '=', 'waiting_proof')]"/>
+                <filter name="reminder" string="Herinnering nodig"
+                        domain="[('state', '=', 'waiting_proof'), ('proof_reminder_date', '=', False),
+                                 ('proof_requested_date', '&lt;=', (context_today() - relativedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <filter name="to_order" string="Te bestellen" domain="[('type_code', '=', 'key'), ('state', '=', 'in_progress')]"/>
+                <filter name="ordered" string="Besteld" domain="[('state', '=', 'ordered')]"/>
+                <separator/>
+                <filter name="mine" string="Mijn aanvragen" domain="[('user_id', '=', uid)]"/>
+                <group>
+                    <filter name="group_association" string="VME" context="{'group_by': 'association_id'}"/>
+                    <filter name="group_type" string="Soort" context="{'group_by': 'request_type_id'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="vme_request_action" model="ir.actions.act_window">
+        <field name="name">Aanvragen</field>
+        <field name="res_model">vme.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_open': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nog geen aanvragen</p>
+            <p>Aanvragen van eigenaars en huurders komen binnen via de AI-assistent (mail), later via het portaal, of maak er hier een aan.
+               Elke soort aanvraag volgt een vaste procedure met een checklist.</p>
+        </field>
+    </record>
+
+    <!-- Request types -->
+    <record id="vme_request_type_view_list" model="ir.ui.view">
+        <field name="name">vme.request.type.list</field>
+        <field name="model">vme.request.type</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="needs_verification"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_request_type_view_form" model="ir.ui.view">
+        <field name="name">vme.request.type.form</field>
+        <field name="model">vme.request.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="code"/>
+                        <field name="needs_verification"/>
+                        <field name="active"/>
+                    </group>
+                    <group string="Werkwijze"><field name="description" nolabel="1" colspan="2"/></group>
+                    <group string="Checklist (één stap per regel)"><field name="checklist" nolabel="1" colspan="2"/></group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="vme_request_type_action" model="ir.actions.act_window">
+        <field name="name">Soorten aanvragen</field>
+        <field name="res_model">vme.request.type</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Key register -->
+    <record id="vme_lot_key_view_list" model="ir.ui.view">
+        <field name="name">vme.lot.key.list</field>
+        <field name="model">vme.lot.key</field>
+        <field name="arch" type="xml">
+            <list editable="bottom" decoration-muted="state != 'active'">
+                <field name="association_id" optional="show" readonly="1"/>
+                <field name="lot_id" options="{'no_create': True}"/>
+                <field name="kind"/>
+                <field name="number"/>
+                <field name="issue_date"/>
+                <field name="partner_id"/>
+                <field name="state" widget="badge" decoration-success="state == 'active'" decoration-danger="state == 'blocked'"/>
+                <field name="blocked_date" optional="hide"/>
+                <field name="request_id" optional="show"/>
+                <field name="note" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_lot_key_view_search" model="ir.ui.view">
+        <field name="name">vme.lot.key.search</field>
+        <field name="model">vme.lot.key</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="number"/>
+                <field name="lot_id"/>
+                <field name="partner_id"/>
+                <field name="association_id"/>
+                <filter name="active_keys" string="In gebruik" domain="[('state', '=', 'active')]"/>
+                <filter name="blocked" string="Geblokkeerd" domain="[('state', '=', 'blocked')]"/>
+                <group>
+                    <filter name="group_association" string="VME" context="{'group_by': 'association_id'}"/>
+                    <filter name="group_lot" string="Kavel" context="{'group_by': 'lot_id'}"/>
+                    <filter name="group_kind" string="Soort" context="{'group_by': 'kind'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="vme_lot_key_action" model="ir.actions.act_window">
+        <field name="name">Sleutelregister</field>
+        <field name="res_model">vme.lot.key</field>
+        <field name="view_mode">list</field>
+        <field name="context">{'search_default_active_keys': 1, 'search_default_group_association': 1}</field>
+    </record>
+
+    <!-- Tenants and occupants -->
+    <record id="vme_lot_contact_view_list" model="ir.ui.view">
+        <field name="name">vme.lot.contact.list</field>
+        <field name="model">vme.lot.contact</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="association_id" optional="show" readonly="1"/>
+                <field name="lot_id" options="{'no_create': True}"/>
+                <field name="partner_id"/>
+                <field name="email"/>
+                <field name="phone" optional="hide"/>
+                <field name="role"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_lot_contact_action" model="ir.actions.act_window">
+        <field name="name">Huurders en bewoners</field>
+        <field name="res_model">vme.lot.contact</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <menuitem id="menu_vme_requests_root" name="Aanvragen" parent="menu_vme_root" sequence="45"/>
+    <menuitem id="menu_vme_requests" name="Aanvragen" parent="menu_vme_requests_root" action="vme_request_action" sequence="10"/>
+    <menuitem id="menu_vme_lot_keys" name="Sleutelregister" parent="menu_vme_requests_root" action="vme_lot_key_action" sequence="20"/>
+    <menuitem id="menu_vme_lot_contacts" name="Huurders en bewoners" parent="menu_vme_requests_root" action="vme_lot_contact_action" sequence="30"/>
+    <menuitem id="menu_vme_request_types" name="Soorten aanvragen" parent="menu_vme_configuration" action="vme_request_type_action" sequence="40"/>
+
+    <!-- Lot: tenants, key register and requests -->
+    <record id="vme_lot_view_form_requests" model="ir.ui.view">
+        <field name="name">vme.lot.form.requests</field>
+        <field name="model">vme.lot</field>
+        <field name="inherit_id" ref="vme_lot_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='ownerships']" position="after">
+                <page string="Huurders en bewoners" name="contacts">
+                    <field name="contact_ids">
+                        <list editable="bottom">
+                            <field name="partner_id"/>
+                            <field name="email"/>
+                            <field name="role"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                        </list>
+                    </field>
+                </page>
+                <page string="Sleutels en badges" name="key_register">
+                    <field name="key_register_ids">
+                        <list editable="bottom" decoration-muted="state != 'active'">
+                            <field name="kind"/>
+                            <field name="number"/>
+                            <field name="issue_date"/>
+                            <field name="partner_id"/>
+                            <field name="state"/>
+                            <field name="request_id" readonly="1"/>
+                        </list>
+                    </field>
+                </page>
+                <page string="Aanvragen" name="requests">
+                    <field name="request_ids" readonly="1">
+                        <list>
+                            <field name="name"/>
+                            <field name="request_date"/>
+                            <field name="request_type_id"/>
+                            <field name="title"/>
+                            <field name="requester_id"/>
+                            <field name="state"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- VME: locksmith, key certificate, open requests -->
+    <record id="vme_association_view_form_requests" model="ir.ui.view">
+        <field name="name">vme.association.form.requests</field>
+        <field name="model">vme.association</field>
+        <field name="inherit_id" ref="vme_association_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_requests" type="object" class="oe_stat_button" icon="fa-inbox">
+                    <field name="open_request_count" widget="statinfo" string="Aanvragen"/>
+                </button>
+            </xpath>
+            <xpath expr="//page[@name='notes']" position="before">
+                <page string="Sleutels en aanvragen" name="requests">
+                    <group>
+                        <group string="Slotenmaker">
+                            <field name="locksmith_partner_id"/>
+                            <field name="key_certificate_ref"/>
+                            <field name="key_certificate_filename" invisible="1"/>
+                            <field name="key_certificate_file" filename="key_certificate_filename"/>
+                        </group>
+                    </group>
+                    <div class="text-muted">
+                        Bestellingen van sleutels en badges gaan naar deze slotenmaker, met het sleutelcertificaat.
+                        Alleen de syndicus mag veiligheidssleutels bestellen.
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Vendor or owner invoice of a request -->
+    <record id="view_move_form_vme_request" model="ir.ui.view">
+        <field name="name">account.move.form.vme.request</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="view_move_form_vme"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@id='header_right_group']" position="inside">
+                <field name="vme_request_id" invisible="not vme_association_id or move_type not in ('in_invoice', 'out_invoice')"
+                       options="{'no_create': True}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

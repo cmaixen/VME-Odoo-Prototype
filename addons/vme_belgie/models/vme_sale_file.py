@@ -117,6 +117,10 @@ class VmeSaleFile(models.Model):
         string="Lopende gerechtelijke procedures", compute="_compute_legal_proceedings", store=True, readonly=False,
     )
     information_html = fields.Html(string="Voorbeeld antwoord", compute="_compute_information_html", sanitize=False)
+    key_register_ids = fields.Many2many(
+        "vme.lot.key", string="Sleutels en badges", compute="_compute_key_register_ids",
+        help="Uitgereikte sleutels en badges van de verkochte kavels die nog in gebruik zijn.",
+    )
 
     @api.depends("lot_ids.name", "association_id.name")
     def _compute_name(self):
@@ -162,6 +166,11 @@ class VmeSaleFile(models.Model):
                     date=format_date(self.env, deadline), days=(deadline - today).days)
             else:
                 sale.deadline_state = "ok"
+
+    @api.depends("lot_ids.key_register_ids.state")
+    def _compute_key_register_ids(self):
+        for sale in self:
+            sale.key_register_ids = sale.lot_ids.key_register_ids.filtered(lambda k: k.state == "active")
 
     @api.depends("association_id")
     def _compute_legal_proceedings(self):
@@ -304,6 +313,8 @@ class VmeSaleFile(models.Model):
                        "share": lot_share(item.works_key_id, item.works_amount)} for item in works],
             "legal_proceedings": sale.legal_proceedings,
             "assemblies": assemblies,
+            "keys_issued": lots.sudo().key_register_ids.filtered(lambda k: k.state == "active").sorted(
+                lambda k: (k.lot_id.sequence, k.lot_id.name, k.kind, k.number)),
         }
 
     def _render_answer(self, which):
@@ -367,12 +378,20 @@ class VmeSaleFile(models.Model):
                         lot=lot.display_name, date=format_date(self.env, sale.deed_date), seller=sale.seller_id.name))
                 current.date_end = sale.deed_date - timedelta(days=1)
                 Ownership.create({"lot_id": lot.id, "partner_id": sale.buyer_id.id, "date_start": sale.deed_date})
+            # Keys and badges of the seller go to the buyer; those of a tenant stay with the tenant.
+            keys = sale.key_register_ids.filtered(lambda k: k.partner_id == sale.seller_id)
+            keys._transfer_to(sale.buyer_id, self.env._(
+                "Overgedragen aan %(buyer)s bij de akte van %(date)s.",
+                buyer=sale.buyer_id.name, date=format_date(self.env, sale.deed_date)))
             sale.activity_ids.action_feedback(feedback=self.env._("Akte verleden."))
             sale.state = "done"
             message = self.env._(
                 "Akte verleden op %(date)s: %(lots)s gaat van %(seller)s naar %(buyer)s.",
                 date=format_date(self.env, sale.deed_date), lots=", ".join(sale.lot_ids.mapped("name")),
                 seller=sale.seller_id.name, buyer=sale.buyer_id.name)
+            if keys:
+                message += " " + self.env._("Over te dragen sleutels en badges: %s.",
+                                            ", ".join(keys.mapped("display_name")))
             sale.message_post(body=message)
             sale.association_id.message_post(body=message)
         return True

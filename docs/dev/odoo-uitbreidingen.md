@@ -24,6 +24,10 @@ We blijven zo dicht mogelijk bij standaard Odoo: elke override roept eerst `supe
 | Toegangsrecht op `account.bank.statement.line` voor `account.group_account_invoice` | `security/ir.model.access.csv` | Lezen en schrijven (niet aanmaken of verwijderen): in Community kan anders alleen de verborgen groep `group_account_basic` bankregels wijzigen. |
 | Serveracties `action_help_*` | `data/help_menu.xml` | Geven een `ir.actions.act_url` terug naar `vme_belgie.help_url` + artikel. |
 
+| `account.move._vme_auto_distribute()` | `models/vme_request.py` | Slaat facturen met `vme_request_id` over | De factuur van de slotenmaker voor een privé-aanvraag wordt aan één eigenaar aangerekend, niet verdeeld (stap 19). |
+| Domein in `vme.association._get_annual_statement()` | `models/vme_annual_statement.py` | `("vme_request_id", "=", False)` op de leveranciersfacturen | Een privé-kost hoort niet in de kosten van de jaarafrekening en ook niet bij de niet-verdeelde facturen. |
+| `vme.sale.file.action_deed_done()` | `models/vme_sale_file.py` | Draagt de sleutels van de verkoper over aan de koper | Het sleutelregister volgt de eigendom (stap 19). |
+
 ## Wat we bewust niet overschrijven
 
 - **Bevestigen van bankrekeningen** (`res.partner.bank.allow_out_payment`, `_user_can_trust`). Odoo laat dat alleen toe voor een mens met de juiste rechten; we tonen een waarschuwing en de wizard weigert, maar we zetten het nooit zelf aan vanuit code die als systeemgebruiker draait.

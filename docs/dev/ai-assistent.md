@@ -18,6 +18,10 @@ ai/inbox/*.eml|*.txt ──> mails.py ──> assistant.run() ──> classifier
 
 Zonder VME maakt het script niets aan (een activiteit heeft een record nodig) en meldt het de mail als manueel te behandelen.
 
+## Aanvragen met een vaste procedure (stap 19)
+
+De classificatie heeft een veld `request_type` (`REQUEST_TYPES` in `classifier.py`, dezelfde codes als `vme.request.type`, of `none`). Is het niet `none`, dan maakt `run()` geen activiteit maar roept `VmeDirectory.create_request()` → `vme.request.create_from_intake` aan, met de bijlagen van de mail (base64) en het voorgestelde antwoord als notitie. Odoo herkent de aanvrager zelf aan het e-mailadres en start de procedure; zie [aanvragen.md](aanvragen.md). `load()` leest daarvoor ook de huurders van vandaag (`vme.lot.contact`, rol `tenant`) en zet ze per kavel onder `tenants`. Een mail met een aanvraag of een activiteit wordt bij een tweede run overgeslagen (`find_request` op `source_reference`).
+
 ## Nooit iets versturen
 
 Het script heeft geen code om mails te versturen: het maakt alleen `mail.activity`-records. `activity_schedule` stuurt ook geen mail naar de eigenaar; hoogstens krijgt de toegewezen medewerker de gewone Odoo-melding van een nieuwe activiteit. Wie later "Bericht verzenden" gebruikt, doet dat bewust zelf.
@@ -55,7 +59,8 @@ cd ai && .venv/bin/pytest -q
 
 De tests draaien zonder API-sleutel en zonder Odoo:
 
-- de vijf mails in `ai/inbox/` worden gelezen en door de mock aan de juiste VME, kavel en onderwerp gekoppeld;
+- de acht mails in `ai/inbox/` worden gelezen (ook de PDF-bijlagen) en door de mock aan de juiste VME, kavel, onderwerp en soort aanvraag gekoppeld, ook een huurder via zijn adres;
+- `run()` maakt voor de drie aanvragen een aanvraag in plaats van een activiteit; `VmeDirectory` leest de huurders en geeft de bijlagen door aan `create_from_intake`;
 - `validate()` gooit onbekende of niet-passende id's weg;
 - `ClaudeClassifier` met een nagebootste client (vorm van het verzoek, validatie, weigering) en met de echte SDK achter een nagebootste HTTP-laag (de SDK aanvaardt `fallbacks`, `betas` en `output_config`);
 - `run()` met een nagebootste Odoo: één activiteit per mail, vervaldatum per dringendheid, overslaan bij een tweede run, niets schrijven bij `--dry-run` of zonder VME, HTML ge-escapet;

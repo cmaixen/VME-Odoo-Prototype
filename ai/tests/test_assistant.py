@@ -1,3 +1,4 @@
+import base64
 import io
 import json
 from datetime import date
@@ -22,6 +23,15 @@ EXPECTED = {
     "03_verhuis_verkoop.eml": (3, "K4", "move", "normal"),
     "04_klacht_lift.eml": (1, "A11", "elevator", "high"),
     "05_vraag_av.txt": (2, "B23", "general_meeting", "normal"),
+    "06_badge_eigenaar.eml": (1, "A4", "other", "normal"),
+    "07_sleutel_huurder.eml": (1, "A6", "other", "normal"),
+    "08_badge_huurder_toestemming.eml": (2, "B12", "other", "normal"),
+}
+# Mails that are a request with a fixed procedure in Odoo, and their type; the others are "none".
+EXPECTED_REQUESTS = {
+    "06_badge_eigenaar.eml": "key",
+    "07_sleutel_huurder.eml": "key",
+    "08_badge_huurder_toestemming.eml": "key",
 }
 
 
@@ -31,7 +41,7 @@ def lot_names(vmes):
 
 # --- Reading mails ---------------------------------------------------------------------
 
-def test_inbox_has_five_fictitious_mails():
+def test_inbox_has_eight_fictitious_mails():
     mails = read_inbox(INBOX)
     assert [m.path.name for m in mails] == list(EXPECTED)
     for mail in mails:
@@ -46,6 +56,17 @@ def test_read_eml():
     assert mail.subject.startswith("Dringend")
     assert mail.reference == "lek-a4-20261102@example.com"
     assert "badkamer" in mail.body
+    assert mail.attachments == []
+
+
+def test_read_eml_with_attachments():
+    mail = read_mail(INBOX / "08_badge_huurder_toestemming.eml")
+    assert mail.sender_email == "huurder.beuken.b12@example.com"
+    assert "toestemming van de eigenaar" in mail.body
+    assert [(name, mimetype) for name, _content, mimetype in mail.attachments] == [
+        ("toestemming_eigenaar_B12.pdf", "application/pdf"), ("huurcontract_B12.pdf", "application/pdf"),
+    ]
+    assert all(content.startswith(b"%PDF") for _name, content, _mimetype in mail.attachments)
 
 
 def test_read_txt_with_dutch_headers():
@@ -73,7 +94,28 @@ def test_mock_links_each_mail(vmes, filename):
     assert result.association_id == vme_id
     assert lot_names(vmes)[result.lot_id] == lot
     assert (result.topic, result.urgency) == (topic, urgency)
+    assert result.request_type == EXPECTED_REQUESTS.get(filename, "none")
     assert result.reply_body.startswith("Beste ")
+
+
+def test_mock_recognises_a_tenant(vmes):
+    result = MockClassifier(vmes).classify(read_mail(INBOX / "07_sleutel_huurder.eml"))
+    assert "huurder van kavel A6" in result.matching_reason
+
+
+@pytest.mark.parametrize("text, request_type", [
+    ("Ik ben mijn badge verloren op de parking.", "badge_lost"),
+    ("Mag ik een extra afstandsbediening voor de garage bestellen?", "key"),
+    ("Ik meld u een nieuwe huurder vanaf 1 december.", "new_tenant"),
+    ("Mag ik een buitenunit van een airco op mijn terras plaatsen? Ik vraag toestemming.", "works_permission"),
+    ("Er is elke nacht lawaai bij de buren.", "nuisance"),
+    ("Kunt u mij een kopie van de notulen van de laatste AV bezorgen?", "document"),
+    ("Wanneer komt de afrekening?", "none"),
+])
+def test_mock_request_types(vmes, tmp_path, text, request_type):
+    path = tmp_path / "aanvraag.txt"
+    path.write_text(f"Van: eigenaar.linde.a4@example.com\nOnderwerp: Vraag\n\n{text}", encoding="utf-8")
+    assert MockClassifier(vmes).classify(read_mail(path)).request_type == request_type
 
 
 def test_mock_unknown_sender_found_by_building_name(vmes):
@@ -113,6 +155,11 @@ def test_validate_drops_lot_of_other_vme(vmes):
     assert result.association_id == 1
     assert result.lot_id is None
     assert result.confidence == "low"
+
+
+def test_validate_drops_unknown_request_type(vmes):
+    assert validate(make_result(request_type="parking"), vmes).request_type == "none"
+    assert validate(make_result(request_type="key"), vmes).request_type == "key"
 
 
 def test_validate_keeps_correct_ids(vmes):
@@ -184,7 +231,7 @@ def test_claude_refusal(vmes):
 
 # --- The whole run --------------------------------------------------------------------------
 
-def test_run_creates_one_activity_per_mail(vmes, directory):
+def test_run_creates_an_activity_or_a_request_per_mail(vmes, directory):
     mails = read_inbox(INBOX)
     output = io.StringIO()
     run(mails, directory, MockClassifier(vmes), vmes, today=TODAY, out=lambda line: output.write(line + "\n"))
@@ -197,6 +244,14 @@ def test_run_creates_one_activity_per_mail(vmes, directory):
     assert "nog niet verstuurd" in leak["note"]
     assert "lek-a4-20261102@example.com" in leak["note"]
 
+    # The three requests become a vme.request in Odoo, with the attachments of the mail.
+    assert [(r["association_id"], r["lot_id"], r["request_type"]) for r in directory.requests] == [
+        (1, 11, "key"), (1, 14, "key"), (2, 24, "key"),
+    ]
+    assert len(directory.requests[2]["mail"].attachments) == 2
+    assert directory.requests[0]["proposed_reply"].startswith("Beste ")
+    assert "Aanvraag 100 aangemaakt op Residentie Linde." in output.getvalue()
+
 
 def test_run_skips_mails_already_processed(vmes, directory):
     mails = read_inbox(INBOX)
@@ -204,12 +259,14 @@ def test_run_skips_mails_already_processed(vmes, directory):
     lines = []
     run(mails, directory, MockClassifier(vmes), vmes, today=TODAY, out=lines.append)
     assert len(directory.activities) == 5
+    assert len(directory.requests) == 3
     assert all("al verwerkt" in line for line in lines)
 
 
 def test_run_dry_run_writes_nothing(vmes, directory):
     run(read_inbox(INBOX), directory, MockClassifier(vmes), vmes, dry_run=True, out=lambda line: None)
     assert directory.activities == []
+    assert directory.requests == []
 
 
 def test_run_without_vme_writes_nothing(vmes, directory, tmp_path):
@@ -329,3 +386,55 @@ def test_main_odoo_unreachable(monkeypatch, capsys):
     monkeypatch.setenv("ODOO_URL", "http://127.0.0.1:9")
     assert assistant.main(["--mock"]) == 1
     assert "Kan Odoo niet bereiken" in capsys.readouterr().out
+
+
+# --- VmeDirectory against a fake Odoo ---------------------------------------------------------
+
+class RecordingOdoo:
+    """Answers the reads of VmeDirectory with fixed data and records every call."""
+
+    uid = 2
+
+    def __init__(self):
+        self.calls = []
+
+    def execute(self, model, method, *args, **kwargs):
+        self.calls.append((model, method, args, kwargs))
+        if method == "read":
+            return [{"id": 2, "company_ids": [1, 2]}]
+        if method == "create_from_intake":
+            return 42
+        data = {
+            "vme.association": [{"id": 1, "name": "Residentie Linde", "street": "Lindedreef 12", "zip": "2000", "city": "Voorbeeldstad"}],
+            "vme.lot": [{"id": 14, "name": "A6", "association_id": [1, "Residentie Linde"], "lot_type": "apartment",
+                         "floor": "Verdieping 1", "current_owner_id": [104, "Eigenaar Linde A6"]}],
+            "vme.lot.contact": [{"id": 1, "lot_id": [14, "A6"], "partner_id": [501, "Huurder Linde A6"]}],
+            "res.partner": [{"id": 104, "name": "Eigenaar Linde A6", "email": "eigenaar.linde.a6@example.com"},
+                            {"id": 501, "name": "Huurder Linde A6", "email": "huurder.linde.a6@example.com"}],
+        }
+        return data.get(model, [])
+
+
+def test_directory_loads_tenants():
+    odoo = RecordingOdoo()
+    vmes = odoo_api.VmeDirectory(odoo).load(today=TODAY)
+    lot = vmes[0]["lots"][0]
+    assert lot["owner"]["email"] == "eigenaar.linde.a6@example.com"
+    assert lot["tenants"] == [{"id": 501, "name": "Huurder Linde A6", "email": "huurder.linde.a6@example.com"}]
+    domain = next(args[0] for model, method, args, _ in odoo.calls if model == "vme.lot.contact")
+    assert ("role", "=", "tenant") in domain and ("date_start", "<=", "2026-11-05") in domain
+
+
+def test_directory_creates_request_with_attachments():
+    odoo = RecordingOdoo()
+    directory = odoo_api.VmeDirectory(odoo)
+    mail = read_mail(INBOX / "08_badge_huurder_toestemming.eml")
+    assert directory.create_request(2, "key", mail, lot_id=24, summary="Extra badge") == 42
+    model, method, args, kwargs = odoo.calls[-1]
+    assert (model, method, args) == ("vme.request", "create_from_intake", ())
+    assert kwargs["email"] == "huurder.beuken.b12@example.com"
+    assert kwargs["reference"] == "badge-b12-20261105@example.com"
+    assert kwargs["channel"] == "mail"
+    assert [a["name"] for a in kwargs["attachments"]] == ["toestemming_eigenaar_B12.pdf", "huurcontract_B12.pdf"]
+    assert base64.b64decode(kwargs["attachments"][0]["datas"]).startswith(b"%PDF")
+    assert kwargs["context"] == {"allowed_company_ids": [1, 2]}
