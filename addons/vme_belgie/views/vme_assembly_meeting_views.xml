@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Agenda item with its votes (opened as a dialog from the assembly) -->
+    <record id="vme_assembly_item_view_form" model="ir.ui.view">
+        <field name="name">vme.assembly.item.form</field>
+        <field name="model">vme.assembly.item</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_all_for" type="object" string="Iedereen voor" invisible="majority == 'none'"/>
+                    <field name="outcome" widget="statusbar" statusbar_visible="pending,adopted,rejected"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h2><field name="name" placeholder="Agendapunt"/></h2></div>
+                    <group>
+                        <group>
+                            <field name="assembly_id" readonly="1"/>
+                            <field name="sequence"/>
+                            <field name="majority"/>
+                            <field name="decision_number"/>
+                        </group>
+                        <group>
+                            <field name="votes_for"/>
+                            <field name="votes_against"/>
+                            <field name="votes_abstain"/>
+                        </group>
+                    </group>
+                    <field name="description" placeholder="Toelichting bij het agendapunt"/>
+                    <field name="vote_ids" invisible="majority == 'none'">
+                        <list editable="bottom" create="0" decoration-danger="vote == 'against'" decoration-muted="vote == 'abstain'">
+                            <field name="partner_id"/>
+                            <field name="lot_names"/>
+                            <field name="attendance"/>
+                            <field name="shares" sum="Totaal"/>
+                            <field name="vote" widget="radio" options="{'horizontal': true}"/>
+                        </list>
+                    </field>
+                    <group string="Beslissing en opvolging">
+                        <field name="decision" placeholder="Tekst van de beslissing voor de notulen"/>
+                        <field name="follow_up_summary"/>
+                        <field name="follow_up_user_id" options="{'no_create': True}"/>
+                        <field name="follow_up_deadline"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Register of decisions over all VMEs -->
+    <record id="vme_assembly_item_view_list_register" model="ir.ui.view">
+        <field name="name">vme.assembly.item.list.register</field>
+        <field name="model">vme.assembly.item</field>
+        <field name="arch" type="xml">
+            <list create="0" decoration-success="outcome == 'adopted'" decoration-danger="outcome == 'rejected'">
+                <field name="decision_number"/>
+                <field name="association_id"/>
+                <field name="assembly_date"/>
+                <field name="name"/>
+                <field name="majority" optional="show"/>
+                <field name="votes_for" optional="hide"/>
+                <field name="votes_against" optional="hide"/>
+                <field name="outcome" widget="badge" decoration-success="outcome == 'adopted'" decoration-danger="outcome == 'rejected'"/>
+                <field name="decision" optional="show"/>
+                <field name="follow_up_summary" optional="show"/>
+                <field name="activity_ids" widget="list_activity" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_assembly_item_view_search" model="ir.ui.view">
+        <field name="name">vme.assembly.item.search</field>
+        <field name="model">vme.assembly.item</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="association_id"/>
+                <field name="decision_number"/>
+                <filter name="adopted" string="Aangenomen" domain="[('outcome', '=', 'adopted')]"/>
+                <filter name="rejected" string="Verworpen" domain="[('outcome', '=', 'rejected')]"/>
+                <filter name="follow_up" string="Met opvolgtaak" domain="[('follow_up_summary', '!=', False)]"/>
+                <group>
+                    <filter name="group_vme" string="VME" context="{'group_by': 'association_id'}"/>
+                    <filter name="group_year" string="Jaar" context="{'group_by': 'year'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="vme_assembly_item_register_action" model="ir.actions.act_window">
+        <field name="name">Register van beslissingen</field>
+        <field name="res_model">vme.assembly.item</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('decision_number', '!=', False)]</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('vme_assembly_item_view_list_register')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('vme_assembly_item_view_form')})]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nog geen beslissingen</p>
+            <p>Beslissingen komen in het register zodra een AV op "Gehouden" staat.</p>
+        </field>
+    </record>
+
+    <!-- Convocations -->
+    <record id="vme_assembly_convocation_view_list" model="ir.ui.view">
+        <field name="name">vme.assembly.convocation.list</field>
+        <field name="model">vme.assembly.convocation</field>
+        <field name="arch" type="xml">
+            <list create="0" decoration-muted="state == 'sent'">
+                <field name="association_id" optional="hide"/>
+                <field name="partner_id"/>
+                <field name="lot_names"/>
+                <field name="shares"/>
+                <field name="email"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-success="state == 'sent'"/>
+                <field name="sent_date"/>
+                <button name="action_open_composer" type="object" string="Versturen" icon="fa-envelope" invisible="state != 'draft'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_assembly_convocation_view_form" model="ir.ui.view">
+        <field name="name">vme.assembly.convocation.form</field>
+        <field name="model">vme.assembly.convocation</field>
+        <field name="arch" type="xml">
+            <form create="0">
+                <header>
+                    <button name="action_open_composer" type="object" string="Versturen" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_print" type="object" string="Afdrukken"/>
+                    <button name="action_mark_sent" type="object" string="Per post verstuurd" invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="assembly_id" readonly="1"/>
+                            <field name="partner_id" readonly="1"/>
+                            <field name="email"/>
+                        </group>
+                        <group>
+                            <field name="lot_names" readonly="1"/>
+                            <field name="shares" readonly="1"/>
+                            <field name="sent_date"/>
+                        </group>
+                    </group>
+                    <field name="attachment_ids" widget="many2many_binary"/>
+                    <div class="text-muted">
+                        Niets wordt automatisch verstuurd: "Versturen" opent een e-mail met de oproeping, het
+                        volmachtformulier en de jaarafrekening, die u nakijkt en zelf verstuurt.
+                    </div>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <menuitem id="menu_vme_assembly_register" name="Register van beslissingen" parent="menu_vme_assembly_root"
+              action="vme_assembly_item_register_action" sequence="25"/>
+</odoo>

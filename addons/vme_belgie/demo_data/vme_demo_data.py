@@ -134,6 +134,27 @@ ASSEMBLY_BLOCKS = [
     (date(2027, 4, 20), 19.0, 1, "staff", 2),
     (date(2027, 5, 11), 19.0, None, "admin", 2),
 ]
+# A held assembly of Residentie Linde in 2026 (step 11): attendance per apartment, votes and decisions.
+# Garage owners are the owners of the apartment with the same number. Apartment numbers that are
+# not listed are absent; "represented" maps an apartment to the apartment of its proxy holder.
+DEMO_ASSEMBLY_2026 = {
+    "vme": "Residentie Linde",
+    "block": (date(2026, 3, 10), 19.0, 0),
+    "present": ["A1", "A2", "A3", "A4", "A6", "A8", "A10"],
+    "represented": {"A5": "A1", "A7": "A1", "A11": "A2"},
+    "chair": "A2",
+    "secretary": "A6",
+    "convocation_sent": date(2026, 2, 18),
+    # (title, majority, apartments voting against, apartments abstaining, decision, follow-up)
+    "extra_items": [
+        ("Dakwerken: renovatie van het platte dak, raming 38.000 euro uit het reservekapitaal", "two_thirds",
+         ["A8"], ["A10"], "De AV beslist het platte dak te renoveren, gefinancierd uit het reservekapitaal.",
+         "Drie offertes vragen voor de dakwerken"),
+        ("Statutenwijziging: gemeenschappelijke tuin enkel voor bewoners van het gelijkvloers", "four_fifths",
+         ["A4", "A6", "A8", "A10"], [], "Het voorstel haalt de vereiste vier vijfde niet.", False),
+    ],
+}
+
 STAFF_USER = {"name": "Medewerker Voorbeeld", "login": "medewerker.voorbeeld@example.com"}
 
 KEY_NAMES = {
@@ -297,6 +318,7 @@ class VmeAssociation(models.Model):
             vmes |= vme
 
         self._load_demo_assembly_blocks()
+        self._load_demo_assembly_2026()
 
         def set_rule_accounts():
             # Runs at commit, after the chart of accounts of the new companies is loaded.
@@ -334,3 +356,49 @@ class VmeAssociation(models.Model):
             "user_id": users[user].id,
             "max_assemblies": capacity,
         } for day, hour, room_index, user, capacity in ASSEMBLY_BLOCKS])
+
+    @api.model
+    def _load_demo_assembly_2026(self):
+        """The ordinary assembly of Residentie Linde held on 10 March 2026, with votes and decisions."""
+        spec = DEMO_ASSEMBLY_2026
+        vme = self.search([("name", "=", spec["vme"])])
+        day, hour, room_index = spec["block"]
+        room = self.env["vme.assembly.room"].search([("name", "=", ASSEMBLY_ROOMS[room_index][0])])
+        slot = self.env["vme.assembly.slot"].create({
+            "date": day, "time_start": hour, "room_id": room.id, "user_id": self.env.ref("base.user_admin").id,
+        })
+        assembly = self.env["vme.assembly"].create({"association_id": vme.id, "year": day.year, "slot_id": slot.id})
+        assembly.action_confirm()
+        assembly.convocation_sent_date = spec["convocation_sent"]
+        assembly.action_create_attendance_list()
+        # The first lot of each attendee is its apartment (lots are sorted, garages come last).
+        by_apartment = {a.lot_names.split(", ")[0]: a for a in assembly.attendee_ids}
+        for apartment in spec["present"]:
+            by_apartment[apartment].attendance = "present"
+        for apartment, holder in spec["represented"].items():
+            by_apartment[apartment].write({
+                "attendance": "represented", "proxy_holder_id": by_apartment[holder].partner_id.id})
+        assembly.write({
+            "chair_id": by_apartment[spec["chair"]].partner_id.id,
+            "secretary_id": by_apartment[spec["secretary"]].partner_id.id,
+        })
+        next_sequence = max(assembly.item_ids.mapped("sequence")) + 1
+        votes_against, votes_abstain = {}, {}
+        for offset, (title, majority, against, abstain, decision, follow_up) in enumerate(spec["extra_items"]):
+            item = self.env["vme.assembly.item"].create({
+                "assembly_id": assembly.id, "sequence": next_sequence + offset, "name": title,
+                "majority": majority, "decision": decision, "follow_up_summary": follow_up,
+                "follow_up_deadline": date(2026, 5, 15) if follow_up else False,
+                "follow_up_user_id": self.env.ref("base.user_admin").id if follow_up else False,
+            })
+            votes_against[item], votes_abstain[item] = against, abstain
+        assembly.action_prepare_votes()
+        for item, against in votes_against.items():
+            for vote in item.vote_ids:
+                apartment = vote.lot_names.split(", ")[0]
+                if apartment in against:
+                    vote.vote = "against"
+                elif apartment in votes_abstain[item]:
+                    vote.vote = "abstain"
+        assembly.action_mark_held()
+        return assembly

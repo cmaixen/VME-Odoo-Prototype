@@ -14,3 +14,7 @@ access_vme_assembly_room_user,vme.assembly.room user,model_vme_assembly_room,bas
 access_vme_assembly_slot_user,vme.assembly.slot user,model_vme_assembly_slot,base.group_user,1,1,1,1
 access_vme_assembly_user,vme.assembly user,model_vme_assembly,base.group_user,1,1,1,1
 access_vme_assembly_planner_wizard_user,vme.assembly.planner.wizard user,model_vme_assembly_planner_wizard,base.group_user,1,1,1,1
+access_vme_assembly_item_user,vme.assembly.item user,model_vme_assembly_item,base.group_user,1,1,1,1
+access_vme_assembly_attendee_user,vme.assembly.attendee user,model_vme_assembly_attendee,base.group_user,1,1,1,1
+access_vme_assembly_vote_user,vme.assembly.vote user,model_vme_assembly_vote,base.group_user,1,1,1,1
+access_vme_assembly_convocation_user,vme.assembly.convocation user,model_vme_assembly_convocation,base.group_user,1,1,1,1

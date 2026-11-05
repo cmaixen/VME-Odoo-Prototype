@@ -25,6 +25,8 @@
         "wizard/vme_annual_statement_wizard_views.xml",
         "report/vme_annual_statement_report.xml",
         "views/vme_assembly_views.xml",
+        "report/vme_assembly_reports.xml",
+        "views/vme_assembly_meeting_views.xml",
     ],
     "installable": True,
     "application": True,
