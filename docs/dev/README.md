@@ -13,6 +13,7 @@ Interne documentatie voor wie aan de module `vme_belgie` werkt. De gebruikersdoc
 | [keuringen.md](keuringen.md) | Installaties, keuringsverslagen, opmerkingen, cron en factuurkoppeling (stap 6b) |
 | [av-planner.md](av-planner.md) | AV-periodes, blokken en de planner (stap 6c) |
 | [algemene-vergadering.md](algemene-vergadering.md) | Agenda, oproeping, quorum, stemming en notulen (stap 11) |
+| [bankafschriften.md](bankafschriften.md) | CODA en CAMT.053 inlezen, betalingen koppelen, wat Community niet kan (stap 12) |
 | [facturen-per-mail.md](facturen-per-mail.md) | Mailalias per VME op het aankoopdagboek (stap 7b) |
 | [ai-assistent.md](ai-assistent.md) | Het losse script in `ai/` voor mails van eigenaars (stap 7) |
 | [legal-checks.md](legal-checks.md) | Alle `LEGAL-CHECK`-punten uit de code (gegenereerd) |

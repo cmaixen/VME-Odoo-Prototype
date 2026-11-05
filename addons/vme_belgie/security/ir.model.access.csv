@@ -21,3 +21,5 @@ access_vme_assembly_item_user,vme.assembly.item user,model_vme_assembly_item,bas
 access_vme_assembly_attendee_user,vme.assembly.attendee user,model_vme_assembly_attendee,base.group_user,1,1,1,1
 access_vme_assembly_vote_user,vme.assembly.vote user,model_vme_assembly_vote,base.group_user,1,1,1,1
 access_vme_assembly_convocation_user,vme.assembly.convocation user,model_vme_assembly_convocation,base.group_user,1,1,1,1
+access_vme_bank_import_wizard_user,vme.bank.import.wizard user,model_vme_bank_import_wizard,base.group_user,1,1,1,1
+access_account_bank_statement_line_vme_invoice,account.bank.statement.line vme invoice,account.model_account_bank_statement_line,account.group_account_invoice,1,1,0,0

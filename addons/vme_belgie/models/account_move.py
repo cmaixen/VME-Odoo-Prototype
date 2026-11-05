@@ -1,7 +1,10 @@
+import re
+
 from odoo import api, fields, models
 from odoo.exceptions import UserError
 
 from .allocation_tools import largest_remainder
+from .bank_formats import make_structured
 
 AMOUNT_DIGITS = 2
 
@@ -71,6 +74,20 @@ class AccountMove(models.Model):
     def _compute_vme_allocation_owner_count(self):
         for move in self:
             move.vme_allocation_owner_count = len(move.vme_allocation_ids.partner_id)
+
+    def _get_invoice_reference_be_invoice(self):
+        """Structured communication from the invoice number instead of the database id, for VME invoices.
+
+        F/2026/00075 becomes +++120/2600/075xx+++ (1 = invoice, 2 = credit note, then year and number):
+        the syndic can read the invoice in the communication, and the same demo always gives the
+        same communications, so the fictitious bank statements match.
+        """
+        self.ensure_one()
+        match = re.fullmatch(r"\D*(\d{4})\D+(\d{1,5})", self.name or "")
+        if not self.vme_association_id or not match:
+            return super()._get_invoice_reference_be_invoice()
+        kind = 2 if self.move_type in ("out_refund", "in_refund") else 1
+        return make_structured(f"{kind}{match[1]}{int(match[2]):05d}")
 
     def _vme_distributable_lines(self):
         self.ensure_one()

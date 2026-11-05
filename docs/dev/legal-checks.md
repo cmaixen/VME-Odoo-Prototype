@@ -3,7 +3,7 @@
 Automatisch gemaakt door `python3 tools/legal_checks.py`; niet met de hand bewerken.
 Elke rij is een wettelijke regel in de code die nog juridisch gevalideerd moet worden.
 
-Aantal punten: 33.
+Aantal punten: 34.
 
 ## Per bron
 
@@ -23,18 +23,19 @@ Aantal punten: 33.
 - **art. 3.87 §7 BW**: [vme_assembly_meeting.py:25](../../addons/vme_belgie/models/vme_assembly_meeting.py#L25), [vme_assembly_meeting.py:381](../../addons/vme_belgie/models/vme_assembly_meeting.py#L381)
 - **art. 3.88 §1-3 BW**: [vme_assembly_meeting.py:8](../../addons/vme_belgie/models/vme_assembly_meeting.py#L8)
 - **art. 3.88 §3 BW**: [vme_assembly_meeting.py:302](../../addons/vme_belgie/models/vme_assembly_meeting.py#L302)
-- **art. 3.89 §5 BW**: [account_move.py:52](../../addons/vme_belgie/models/account_move.py#L52), [vme_association.py:15](../../addons/vme_belgie/models/vme_association.py#L15), [vme_association.py:34](../../addons/vme_belgie/models/vme_association.py#L34), [vme_association.py:170](../../addons/vme_belgie/models/vme_association.py#L170), [vme_association.py:193](../../addons/vme_belgie/models/vme_association.py#L193), [vme_provision_call_wizard.py:115](../../addons/vme_belgie/wizard/vme_provision_call_wizard.py#L115)
+- **art. 3.89 §5 BW**: [account_bank_statement_line.py:154](../../addons/vme_belgie/models/account_bank_statement_line.py#L154), [account_move.py:55](../../addons/vme_belgie/models/account_move.py#L55), [vme_association.py:15](../../addons/vme_belgie/models/vme_association.py#L15), [vme_association.py:34](../../addons/vme_belgie/models/vme_association.py#L34), [vme_association.py:170](../../addons/vme_belgie/models/vme_association.py#L170), [vme_association.py:193](../../addons/vme_belgie/models/vme_association.py#L193), [vme_provision_call_wizard.py:115](../../addons/vme_belgie/wizard/vme_provision_call_wizard.py#L115)
 - **art. 3.93 §4 BW**: [vme_assembly_meeting.py:212](../../addons/vme_belgie/models/vme_assembly_meeting.py#L212)
-- **art. 3.94 BW**: [account_move.py:144](../../addons/vme_belgie/models/account_move.py#L144)
+- **art. 3.94 BW**: [account_move.py:161](../../addons/vme_belgie/models/account_move.py#L161)
 - **no general legal interval found; manufacturer and fire department advice**: [vme_installation.py:28](../../addons/vme_belgie/models/vme_installation.py#L28)
 
 ## Alle punten
 
 | Bestand | Regel | Bron | Tekst |
 | --- | --- | --- | --- |
+| [addons/vme_belgie/models/account_bank_statement_line.py](../../addons/vme_belgie/models/account_bank_statement_line.py#L154) | 154 | art. 3.89 §5 BW | working and reserve capital on separate accounts: never book a provision of one fund silently on the account of the other. |
 | [addons/vme_belgie/models/account_chart_template.py](../../addons/vme_belgie/models/account_chart_template.py#L6) | 6 | KB 12 juli 2012 (minimum chart of accounts for VMEs) | align these codes. |
-| [addons/vme_belgie/models/account_move.py](../../addons/vme_belgie/models/account_move.py#L52) | 52 | art. 3.89 §5 BW | a provision is paid to the bank account of its fund. |
-| [addons/vme_belgie/models/account_move.py](../../addons/vme_belgie/models/account_move.py#L144) | 144 | art. 3.94 BW | costs are split between seller and buyer by the number of days each one owned the lot within the cost period. |
+| [addons/vme_belgie/models/account_move.py](../../addons/vme_belgie/models/account_move.py#L55) | 55 | art. 3.89 §5 BW | a provision is paid to the bank account of its fund. |
+| [addons/vme_belgie/models/account_move.py](../../addons/vme_belgie/models/account_move.py#L161) | 161 | art. 3.94 BW | costs are split between seller and buyer by the number of days each one owned the lot within the cost period. |
 | [addons/vme_belgie/models/vme_assembly.py](../../addons/vme_belgie/models/vme_assembly.py#L13) | 13 | art. 3.87 §2 BW | the ordinary general assembly takes place every year within the period of fifteen days fixed in the rules of co-ownership. |
 | [addons/vme_belgie/models/vme_assembly.py](../../addons/vme_belgie/models/vme_assembly.py#L17) | 17 | art. 3.87 §3 BW | the convocation is sent at least fifteen days before the meeting, unless the rules of co-ownership set another term. |
 | [addons/vme_belgie/models/vme_assembly.py](../../addons/vme_belgie/models/vme_assembly.py#L38) | 38 | art. 3.87 §2 BW | fifteen-day period from the rules of co-ownership. |

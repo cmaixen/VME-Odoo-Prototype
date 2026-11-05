@@ -23,20 +23,21 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 
 6. [Budget en provisieoproepen, met de 5%-regel voor het reservefonds](budget-en-provisieoproepen.md)
 7. [De jaarafrekening lezen en afdrukken](jaarafrekening.md)
+8. [Bankafschriften inlezen en betalingen koppelen](bankafschriften.md)
 
 ### Gebouw en installaties
 
-8. [Keuringen en liften opvolgen](keuringen.md)
+9. [Keuringen en liften opvolgen](keuringen.md)
 
 ### Algemene vergaderingen
 
-9. [Algemene vergaderingen plannen in blokken](av-planner.md)
-10. [De algemene vergadering: oproeping, stemming en notulen](algemene-vergadering.md)
+10. [Algemene vergaderingen plannen in blokken](av-planner.md)
+11. [De algemene vergadering: oproeping, stemming en notulen](algemene-vergadering.md)
 
 ### Post en mails
 
-11. [Leveranciersfacturen per e-mail ontvangen](facturen-per-mail.md)
-12. [Een antwoord behandelen dat de AI-assistent voorstelt](ai-voorstellen-mails.md)
+12. [Leveranciersfacturen per e-mail ontvangen](facturen-per-mail.md)
+13. [Een antwoord behandelen dat de AI-assistent voorstelt](ai-voorstellen-mails.md)
 
 ## Zo is het platform opgebouwd
 
