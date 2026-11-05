@@ -30,6 +30,10 @@ erDiagram
     vme_address_request }o--|| res_partner : "partner_id (eigenaar)"
     vme_lot ||--o{ vme_meter : meter_ids
     vme_meter ||--o{ vme_meter_reading : reading_ids
+    vme_association ||--o{ vme_installation : installation_ids
+    vme_association ||--o{ vme_contract : contract_ids
+    vme_contract ||--o{ vme_contract_evaluation : evaluation_ids
+    vme_contract }o--o| vme_installation : "installation_id (onderhoudscontract)"
     vme_migration }o--o| vme_association : "association_id (na import)"
     vme_migration }o--o| account_move : "opening_move_id (openingsboeking)"
 ```
@@ -57,6 +61,8 @@ erDiagram
 | `vme.collection.reminder` | Herinnering | Niveau 1-3, concept of verstuurd, momentopname van de open bedragen en de tekst. |
 | `vme.mandate` | Mandaat in de raad of als commissaris | `association_id`, `role` (voorzitter, lid, commissaris), `partner_id`, `date_start`, `date_end` (standaard één jaar), `assembly_item_id`, `audit_year`, `user_id`; berekend `is_current`, `is_owner`. Leden van de raad moeten eigenaar zijn, één voorzitter tegelijk. Zie [raad-commissaris.md](raad-commissaris.md). |
 | `vme.council.dossier` | Lopend dossier voor de raad (SQL-view) | Verkopen, invorderingen, open keuringsopmerkingen en opvolgtaken van de AV; `dossier_type`, `status`, `date_deadline`, `res_model`, `res_id`. Uitbreidbaar via `_dossier_queries()`. |
+| `vme.contract` | Contract | VME, soort, leverancier, optioneel de installatie; `date_end` (einde huidige periode), `auto_renew`, `renewal_months`, `notice_period_months`; opgeslagen `notice_deadline` en `next_evaluation_date`, niet opgeslagen `notice_state`, verdeelregel en `billed_this_year`. Zie [contracten.md](contracten.md). |
+| `vme.contract.evaluation` | Jaarlijkse evaluatie | Contract, datum, beoordeling, voorstel, optioneel de AV. |
 | `vme.migration` | Overstap uit een ander pakket | `attachment_ids` (exportbestanden), `source_format`, `state` (nieuw, proefrun gedaan, geïmporteerd), `report_html`, `error_count`, `warning_count`, `transition_date`, `association_id`, `opening_move_id`. Zie [migratie.md](migratie.md). |
 
 Wizards (transient): `vme.provision.call.wizard` en `vme.annual.statement.wizard`, elk met een HTML-voorbeeld (`preview_html`).

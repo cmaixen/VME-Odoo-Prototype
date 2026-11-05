@@ -19,7 +19,7 @@ Elke VME heeft installaties die op vaste tijdstippen gekeurd moeten worden: de l
 
 1. Open de VME en ga naar het tabblad **Installaties**, of klik in **VME > Keuringen** op **Nieuw**.
 2. Vul de naam in (bv. "Lift blok A"), de soort, de plaats en de verantwoordelijke medewerker.
-3. Vul de onderhoudsfirma en het contract in, en het keuringsorganisme. Voor een lift is dat de erkende dienst voor technische controle (EDTC).
+3. Vul de onderhoudsfirma en het keuringsorganisme in. Voor een lift is dat de erkende dienst voor technische controle (EDTC). Het onderhoudscontract zelf, met einddatum en opzegtermijn, voegt u toe onder **VME > Contracten** met deze installatie erbij (zie [Contracten en personeel](contracten.md)). Het verschijnt dan hier.
 4. De **keuringsfrequentie** wordt automatisch ingevuld volgens de soort (bv. 6 maanden voor een lift). U kunt ze per installatie aanpassen.
 
 ## Hoe registreer ik een keuring en de opmerkingen?

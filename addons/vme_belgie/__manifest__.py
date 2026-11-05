@@ -49,6 +49,7 @@
         "views/vme_council_views.xml",
         "report/vme_council_reports.xml",
         "data/council_data.xml",
+        "views/vme_contract_views.xml",
     ],
     "installable": True,
     "application": True,

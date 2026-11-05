@@ -12,6 +12,7 @@ erDiagram
 ```
 
 - **`vme.installation`** (`mail.thread`, `mail.activity.mixin`): soort, firma's, frequentie (`inspection_interval_months`, standaard uit `DEFAULT_INTERVAL_MONTHS`, aanpasbaar).
+  - Het onderhoudscontract is sinds stap 18 een `vme.contract` met `installation_id`; de installatie toont het via `maintenance_contract_id` en `maintenance_contract_end` (zie [contracten.md](contracten.md)).
   - Opgeslagen berekende datums:
     - `last_inspection_date` = max datum van verslagen met soort in `PERIODIC_KINDS` (inspectie en herkeuring; een onderhoudsbezoek telt niet)
     - `next_inspection_date` = laatste + frequentie

@@ -22,3 +22,4 @@ from . import vme_damage
 from . import vme_document
 from . import vme_portal
 from . import vme_council
+from . import vme_contract

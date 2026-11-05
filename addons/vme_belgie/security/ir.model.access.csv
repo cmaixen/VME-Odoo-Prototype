@@ -41,3 +41,5 @@ access_vme_council_dossier_user,vme.council.dossier user,model_vme_council_dossi
 access_vme_meter_user,vme.meter user,model_vme_meter,base.group_user,1,1,1,1
 access_vme_meter_reading_user,vme.meter.reading user,model_vme_meter_reading,base.group_user,1,1,1,1
 access_vme_meter_import_wizard_user,vme.meter.import.wizard user,model_vme_meter_import_wizard,base.group_user,1,1,1,1
+access_vme_contract_user,vme.contract user,model_vme_contract,base.group_user,1,1,1,1
+access_vme_contract_evaluation_user,vme.contract.evaluation user,model_vme_contract_evaluation,base.group_user,1,1,1,1

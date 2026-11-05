@@ -17,3 +17,4 @@ from . import test_damage
 from . import test_portal
 from . import test_council
 from . import test_consumption
+from . import test_contracts

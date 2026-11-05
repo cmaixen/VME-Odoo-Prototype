@@ -148,3 +148,17 @@ class TestDemoData(TransactionCase):
         self.assertEqual(mandate.user_id.login, "eigenaar.linde.a2@example.com")
         self.assertEqual(mandate.user_id.company_ids, self.linde.company_id)
         self.assertEqual(self.env["vme.association"].with_user(mandate.user_id).search([]), self.linde)
+    def test_demo_contracts(self):
+        contracts = self.env["vme.contract"].search([("association_id", "in", self.vmes.ids)])
+        self.assertEqual(set(contracts.mapped("association_id.name")), set(self.vmes.mapped("name")))
+        # At least one notice deadline within 60 days after the demo date of 5 November 2026.
+        soon = contracts.filtered(lambda c: c.notice_deadline and date(2026, 11, 5) <= c.notice_deadline <= date(2027, 1, 4))
+        self.assertGreaterEqual(len(soon), 2)
+        lift = self.linde.installation_ids.filtered(lambda i: i.name == "Lift blok A")
+        self.assertEqual(lift.maintenance_contract_id.reference, "LO-2023-117")
+        concierge = contracts.filtered(lambda c: c.contract_type == "staff")
+        self.assertEqual(concierge.association_id.name, "Hof ter Beuken")
+        self.assertFalse(concierge.notice_deadline)
+        self.assertEqual(concierge.partner_id.vat, "BE0000018014")
+        linde_evaluation = contracts.filtered(lambda c: c.association_id == self.linde).evaluation_ids[:1]
+        self.assertEqual(linde_evaluation.assembly_id.slot_id.date, date(2026, 3, 10))
