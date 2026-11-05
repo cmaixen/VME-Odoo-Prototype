@@ -16,3 +16,5 @@ from . import vme_sale_file
 from . import vme_collection
 from . import account_bank_statement_line
 from . import vme_migration
+from . import vme_document
+from . import vme_portal

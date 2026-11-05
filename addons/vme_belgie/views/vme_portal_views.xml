@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Register of owners: current owners with their contact details -->
+    <record id="vme_ownership_view_list_register" model="ir.ui.view">
+        <field name="name">vme.ownership.list.register</field>
+        <field name="model">vme.ownership</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <list create="0">
+                <field name="association_id"/>
+                <field name="lot_id"/>
+                <field name="partner_id"/>
+                <field name="date_start"/>
+                <field name="date_end" optional="hide"/>
+                <field name="contact_address"/>
+                <field name="email"/>
+                <field name="phone" optional="show"/>
+                <field name="has_portal" string="Portaal"/>
+                <button name="action_vme_grant_portal" type="object" string="Portaaltoegang" icon="fa-key"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_ownership_register_action" model="ir.actions.act_window">
+        <field name="name">Register van eigenaars</field>
+        <field name="res_model">vme.ownership</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="vme_ownership_view_list_register"/>
+        <field name="domain">[('is_current', '=', True)]</field>
+        <field name="context">{'search_default_group_association': 1}</field>
+        <field name="help" type="html">
+            <p>Alle huidige eigenaars met hun contactgegevens. Eigenaars wijzigen hun adres in het portaal; de wijziging komt bij Adreswijzigingen ter goedkeuring.</p>
+        </field>
+    </record>
+
+    <record id="vme_address_request_view_list" model="ir.ui.view">
+        <field name="name">vme.address.request.list</field>
+        <field name="model">vme.address.request</field>
+        <field name="arch" type="xml">
+            <list create="0" decoration-info="state == 'to_approve'" decoration-muted="state != 'to_approve'">
+                <field name="create_date" string="Ingediend op"/>
+                <field name="partner_id"/>
+                <field name="association_names"/>
+                <field name="street"/>
+                <field name="zip"/>
+                <field name="city"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_address_request_view_form" model="ir.ui.view">
+        <field name="name">vme.address.request.form</field>
+        <field name="model">vme.address.request</field>
+        <field name="arch" type="xml">
+            <form create="0">
+                <header>
+                    <button name="action_approve" type="object" string="Goedkeuren" class="btn-primary" invisible="state != 'to_approve'"/>
+                    <button name="action_refuse" type="object" string="Weigeren" invisible="state != 'to_approve'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="partner_id"/></h1></div>
+                    <field name="association_names" class="text-muted"/>
+                    <group>
+                        <group string="Nieuwe gegevens">
+                            <field name="street" readonly="state != 'to_approve'"/>
+                            <field name="street2" readonly="state != 'to_approve'"/>
+                            <field name="zip" readonly="state != 'to_approve'"/>
+                            <field name="city" readonly="state != 'to_approve'"/>
+                            <field name="country_id" readonly="state != 'to_approve'"/>
+                            <field name="phone" readonly="state != 'to_approve'"/>
+                            <field name="email" readonly="state != 'to_approve'"/>
+                        </group>
+                        <group string="Huidige gegevens bij de aanvraag">
+                            <field name="old_address" nolabel="1" colspan="2"/>
+                            <field name="refusal_reason" invisible="state == 'approved'"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="vme_address_request_view_search" model="ir.ui.view">
+        <field name="name">vme.address.request.search</field>
+        <field name="model">vme.address.request</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="partner_id"/>
+                <filter name="to_approve" string="Te keuren" domain="[('state', '=', 'to_approve')]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="vme_address_request_action" model="ir.actions.act_window">
+        <field name="name">Adreswijzigingen</field>
+        <field name="res_model">vme.address.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_to_approve': 1}</field>
+    </record>
+
+    <menuitem id="menu_vme_owner_register_root" name="Eigenaars" parent="menu_vme_root" sequence="41"/>
+    <menuitem id="menu_vme_owner_register" name="Register van eigenaars" parent="menu_vme_owner_register_root"
+              action="vme_ownership_register_action" sequence="10"/>
+    <menuitem id="menu_vme_address_request" name="Adreswijzigingen" parent="menu_vme_owner_register_root"
+              action="vme_address_request_action" sequence="20"/>
+</odoo>

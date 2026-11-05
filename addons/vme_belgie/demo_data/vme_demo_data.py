@@ -440,6 +440,7 @@ class VmeAssociation(models.Model):
         self._load_demo_assembly_blocks()
         self._load_demo_assembly_2026()
         self._load_demo_sale()
+        self._load_demo_portal()
 
         def set_rule_accounts():
             # Runs at commit, after the chart of accounts of the new companies is loaded.

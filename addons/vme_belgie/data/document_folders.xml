@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Fixed folders. The syndic can rename them or hide one from the portal, so noupdate. -->
+    <data noupdate="1">
+        <record id="folder_deed" model="vme.document.folder">
+            <field name="name">Basisakte en reglement van mede-eigendom</field>
+            <field name="sequence">10</field>
+        </record>
+        <record id="folder_minutes" model="vme.document.folder">
+            <field name="name">Notulen</field>
+            <field name="sequence">20</field>
+        </record>
+        <record id="folder_statements" model="vme.document.folder">
+            <field name="name">Jaarafrekeningen</field>
+            <field name="sequence">30</field>
+        </record>
+        <record id="folder_insurance" model="vme.document.folder">
+            <field name="name">Verzekeringspolissen</field>
+            <field name="sequence">40</field>
+        </record>
+        <record id="folder_inspections" model="vme.document.folder">
+            <field name="name">Keuringsverslagen</field>
+            <field name="sequence">50</field>
+        </record>
+        <record id="folder_pid" model="vme.document.folder">
+            <field name="name">Postinterventiedossier</field>
+            <field name="sequence">60</field>
+        </record>
+        <record id="folder_contracts" model="vme.document.folder">
+            <field name="name">Contracten</field>
+            <field name="sequence">70</field>
+        </record>
+        <record id="folder_lot_property" model="vme.document.folder">
+            <field name="name">Eigendomsdocumenten</field>
+            <field name="scope">lot</field>
+            <field name="sequence">10</field>
+        </record>
+        <record id="folder_lot_letters" model="vme.document.folder">
+            <field name="name">Briefwisseling</field>
+            <field name="scope">lot</field>
+            <field name="sequence">20</field>
+        </record>
+    </data>
+</odoo>
