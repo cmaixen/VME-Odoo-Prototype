@@ -17,10 +17,10 @@ Legende: ✅ gebouwd · 🔨 wordt nu gebouwd · 📋 gepland · ➖ bewust late
 | | Domiciliëringen van provisies | 📋 | stap 20 |
 | | Rechtstreekse bankkoppeling (bv. Swan, Ponto, Isabel) | ➖ | na het prototype, vraagt een contract met de bank of aggregator |
 | Kapitaalbeheer | Werk- en reservekapitaal apart, 5%-regel | ✅ | stap 5 |
-| | Stand en verloop per VME | 📋 | stap 22 |
-| | Live inzicht voor eigenaars in het portaal | 🔨 | stap 15 |
+| | Stand en verloop per VME | ✅ | stap 22 |
+| | Live inzicht voor eigenaars in het portaal | ✅ | stap 15 en 22 (kapitalen en budget tegenover werkelijk) |
 | Budgetbeheer | Budget en provisieberekening | ✅ | stap 5 |
-| | Budgetopvolging (budget tegenover werkelijk, per rekening en sleutel) | 📋 | stap 22 |
+| | Budgetopvolging (budget tegenover werkelijk, per rekening en sleutel) | ✅ | stap 22 |
 | Inlichtingen inzake verkoop | Notarismodule met termijnen | ✅ | stap 9 |
 | | Kavelwissel bij de akte | ✅ | stap 9 |
 | | Welkomstcommunicatie voor de nieuwe eigenaar | 📋 | stap 23 |
@@ -42,12 +42,12 @@ Legende: ✅ gebouwd · 🔨 wordt nu gebouwd · 📋 gepland · ➖ bewust late
 | | Agenda, oproeping, stemming, notulen en opvolging | ✅ | stap 11 |
 | | Hybride en digitaal vergaderen, elektronisch stemmen en tekenen | 📋 | stap 24 |
 | Gebouwbeheer en eigendomsbeheer | Gebouwen, kavels, quotiteiten, eigenaars | ✅ | stap 2 |
-| | Gebouwkaart met de financiële toestand en een overzicht van de portefeuille | 📋 | stap 22 |
+| | Gebouwkaart met de financiële toestand en een overzicht van de portefeuille | ✅ | stap 22 |
 | Beheer mede-eigenaars en huurders | Eigenaars met historiek | ✅ | stap 2 |
 | | Profiel in het portaal | 🔨 | stap 15 |
 | | Huurders als volwaardige contacten per kavel | 📋 | stap 19 en 25 |
 | Leveranciersbeheer | Leveranciers, verdeelregels, facturen | ✅ | stap 4b |
-| | Leverancierskaart met contracten, keuringen, lopende werken en facturen | 📋 | stap 22 |
+| | Leverancierskaart met contracten, keuringen, lopende werken en facturen | ✅ | stap 22 |
 | Documentbeheer | Mappen per VME en kavel, delen of niet delen | 🔨 | stap 15 |
 | | Automatisch ordenen met AI | 📋 | stap 21 |
 | | Acties op meerdere documenten tegelijk | 🔨 | stap 15 |
@@ -61,6 +61,7 @@ Legende: ✅ gebouwd · 🔨 wordt nu gebouwd · 📋 gepland · ➖ bewust late
 ## Waar het prototype verder gaat
 
 - AI-assistent die mails van eigenaars aan VME en kavel koppelt en een antwoord voorstelt (stap 7).
+- Portefeuille met signalen over alle VME's (reservefonds onder 5%, achterstallen, AV buiten de periode, vervallen keuring), live berekend (stap 22).
 - AV-planner die het hele AV-seizoen in blokken plant met de wettelijke periodes en oproepingstermijnen (stap 6c).
 - Kosten per dag verdeeld bij een verkoop, met de kostperiode uit de Peppol-factuur (stap 4b).
 - Alles op Odoo Community, zonder licentiekosten per gebruiker.

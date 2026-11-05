@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- The auditor reads the building card of his VMEs, like the rest of their books (see vme_council_security.xml). -->
+    <record id="rule_auditor_read_budget_line" model="ir.rule">
+        <field name="name">Commissaris: vme.budget.line van zijn VME's</field>
+        <field name="model_id" ref="model_vme_budget_line"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_auditor_read_budget_analysis" model="ir.rule">
+        <field name="name">Commissaris: vme.budget.analysis van zijn VME's</field>
+        <field name="model_id" ref="model_vme_budget_analysis"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_auditor_read_capital_movement" model="ir.rule">
+        <field name="name">Commissaris: vme.capital.movement van zijn VME's</field>
+        <field name="model_id" ref="model_vme_capital_movement"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_auditor_no_write_budget_line" model="ir.rule">
+        <field name="name">Commissaris: vme.budget.line alleen lezen</field>
+        <field name="model_id" ref="model_vme_budget_line"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+</odoo>

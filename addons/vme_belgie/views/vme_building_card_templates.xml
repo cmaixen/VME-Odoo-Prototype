@@ -1,0 +1,524 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Reusable pieces: a monetary amount and a link to a record in the back office. -->
+    <template id="card_amount">
+        <span class="text-nowrap" t-out="amount" t-options="{'widget': 'monetary', 'display_currency': currency}"/>
+    </template>
+
+    <template id="card_link">
+        <a t-attf-href="/odoo/#{record._name}/#{record.id}" t-out="label or record.display_name"/>
+    </template>
+
+    <template id="card_budget_table">
+        <table class="table table-sm table-hover o_vme_card_table mb-3">
+            <thead>
+                <tr>
+                    <th t-out="title"/>
+                    <th class="text-end">Budget jaar</th>
+                    <th class="text-end">Budget tot vandaag</th>
+                    <th class="text-end">Werkelijk</th>
+                    <th class="text-end">Verschil</th>
+                    <th class="text-end">Verbruikt</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr t-foreach="rows" t-as="row" t-att-class="'table-danger' if row['status'] == 'over' else ('table-warning' if row['status'] == 'no_budget' else '')">
+                    <td>
+                        <t t-if="field == 'account'">
+                            <t t-if="row['account']"><t t-out="row['account'].code"/> <t t-out="row['account'].name"/></t>
+                            <t t-else="">Niet ingedeeld</t>
+                        </t>
+                        <t t-else="">
+                            <t t-if="row['key']" t-out="row['key'].name"/>
+                            <t t-else="">Zonder sleutel</t>
+                        </t>
+                        <span t-if="row['status'] == 'over'" class="badge text-bg-danger ms-1">overschreden</span>
+                        <span t-if="row['status'] == 'no_budget'" class="badge text-bg-warning ms-1">geen budget</span>
+                    </td>
+                    <td class="text-end"><t t-call="vme_belgie.card_amount"><t t-set="amount" t-value="row['budget']"/></t></td>
+                    <td class="text-end"><t t-call="vme_belgie.card_amount"><t t-set="amount" t-value="row['budget_to_date']"/></t></td>
+                    <td class="text-end"><t t-call="vme_belgie.card_amount"><t t-set="amount" t-value="row['actual']"/></t></td>
+                    <td t-att-class="'text-end' + (' text-danger' if row['difference'] &lt; 0 else '')"><t t-call="vme_belgie.card_amount"><t t-set="amount" t-value="row['difference']"/></t></td>
+                    <td class="text-end"><t t-if="row['budget_to_date']" t-out="str(round(row['usage'] * 100)) + ' %'"/></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr class="fw-bold">
+                    <td>Totaal</td>
+                    <td class="text-end"><t t-call="vme_belgie.card_amount"><t t-set="amount" t-value="total['budget']"/></t></td>
+                    <td class="text-end"><t t-call="vme_belgie.card_amount"><t t-set="amount" t-value="total['budget_to_date']"/></t></td>
+                    <td class="text-end"><t t-call="vme_belgie.card_amount"><t t-set="amount" t-value="total['actual']"/></t></td>
+                    <td t-att-class="'text-end' + (' text-danger' if total['difference'] &lt; 0 else '')"><t t-call="vme_belgie.card_amount"><t t-set="amount" t-value="total['difference']"/></t></td>
+                    <td class="text-end"><t t-if="total['budget_to_date']" t-out="str(round(total['usage'] * 100)) + ' %'"/></td>
+                </tr>
+            </tfoot>
+        </table>
+    </template>
+
+    <!-- The building card: one screen per VME. Rendered server side into an Html field. -->
+    <template id="building_card_content">
+        <div class="o_vme_building_card">
+            <div t-if="signals" class="alert alert-warning" role="alert">
+                <div class="fw-bold mb-1">Signalen</div>
+                <ul class="mb-0">
+                    <li t-foreach="signals" t-as="signal"><span class="fw-bold" t-out="signal['label']"/>: <t t-out="signal['message']"/></li>
+                </ul>
+            </div>
+            <div t-else="" class="alert alert-success" role="status">Geen signalen: reservefonds, achterstallen, AV en keuringen zijn in orde.</div>
+            <div class="row g-3">
+                <!-- Core data -->
+                <div class="col-lg-4">
+                    <div class="card h-100">
+                        <div class="card-header fw-bold">Kerngegevens</div>
+                        <div class="card-body">
+                            <dl class="row mb-0">
+                                <dt class="col-5">Adres</dt>
+                                <dd class="col-7"><t t-out="vme.street"/>, <t t-out="vme.zip"/> <t t-out="vme.city"/></dd>
+                                <dt class="col-5">KBO-nummer</dt>
+                                <dd class="col-7" t-out="vme.kbo_number or '-'"/>
+                                <dt class="col-5">Kavels</dt>
+                                <dd class="col-7">
+                                    <t t-out="len(vme.lot_ids)"/>
+                                    <t t-if="lot_summary">(<t t-out="', '.join('%s %s' % (count, label.lower()) for label, count in lot_summary)"/>)</t>
+                                </dd>
+                                <dt class="col-5">Eigenaars</dt>
+                                <dd class="col-7" t-out="owner_count"/>
+                                <dt class="col-5">Werkkapitaal</dt>
+                                <dd class="col-7" t-out="vme.working_capital_bank_id.acc_number or '-'"/>
+                                <dt class="col-5">Reservekapitaal</dt>
+                                <dd class="col-7" t-out="vme.reserve_capital_bank_id.acc_number or '-'"/>
+                                <dt class="col-5">Periode gewone AV</dt>
+                                <dd class="col-7" t-out="vme.assembly_period_display or '-'"/>
+                                <dt class="col-5">Volgende AV</dt>
+                                <dd class="col-7">
+                                    <t t-if="next_assembly">
+                                        <t t-call="vme_belgie.card_link"><t t-set="record" t-value="next_assembly"/><t t-set="label" t-value="False"/></t>
+                                        <t t-if="next_assembly.date">op <t t-out="next_assembly.date" t-options="{'widget': 'date'}"/></t>
+                                        <t t-else="">(nog niet gepland)</t>
+                                    </t>
+                                    <t t-else="">-</t>
+                                </dd>
+                                <dt class="col-5">Raad en commissaris</dt>
+                                <dd class="col-7">
+                                    <t t-if="council">
+                                        <div t-foreach="council" t-as="mandate"><t t-out="mandate.partner_id.name"/> <span class="text-muted">(<t t-out="selection_label(mandate, 'role').lower()"/>)</span></div>
+                                    </t>
+                                    <t t-else="">-</t>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Capitals -->
+                <div class="col-lg-8">
+                    <div class="card h-100">
+                        <div class="card-header fw-bold">Werk- en reservekapitaal</div>
+                        <div class="card-body">
+                            <div class="row text-center mb-3">
+                                <div class="col-6">
+                                    <div class="text-muted small">Werkkapitaal (opgevraagd min kosten)</div>
+                                    <div class="fs-4"><t t-call="vme_belgie.card_amount"><t t-set="amount" t-value="capital['working']"/></t></div>
+                                    <div class="text-muted small" t-if="capital['bank']['working'] is not False">Op de rekening: <t t-call="vme_belgie.card_amount"><t t-set="amount" t-value="capital['bank']['working']"/></t></div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="text-muted small">Reservekapitaal (opgevraagd min besteed)</div>
+                                    <div class="fs-4"><t t-call="vme_belgie.card_amount"><t t-set="amount" t-value="capital['reserve']"/></t></div>
+                                    <div class="text-muted small" t-if="capital['bank']['reserve'] is not False">Op de rekening: <t t-call="vme_belgie.card_amount"><t t-set="amount" t-value="capital['bank']['reserve']"/></t></div>
+                                </div>
+                            </div>
+                            <table class="table table-sm o_vme_card_table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Jaar</th>
+                                        <th class="text-end">Werkkapitaal opgevraagd</th>
+                                        <th class="text-end">Kosten</th>
+                                        <th class="text-end">Stand</th>
+                                        <th class="text-end">Reserve opgevraagd</th>
+                                        <th class="text-end">Besteed</th>
+                                        <th class="text-end">Stand</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="capital['years']" t-as="entry">
+                                        <td t-out="entry['year']"/>
+                                        <td class="text-end"><t t-call="vme_belgie.card_amount"><t t-set="amount" t-value="entry['working']['in']"/></t></td>
+                                        <td class="text-end"><t t-call="vme_belgie.card_amount"><t t-set="amount" t-value="entry['working']['out']"/></t></td>
+                                        <td class="text-end fw-bold"><t t-call="vme_belgie.card_amount"><t t-set="amount" t-value="entry['working']['closing']"/></t></td>
+                                        <td class="text-end"><t t-call="vme_belgie.card_amount"><t t-set="amount" t-value="entry['reserve']['in']"/></t></td>
+                                        <td class="text-end"><t t-call="vme_belgie.card_amount"><t t-set="amount" t-value="entry['reserve']['out']"/></t></td>
+                                        <td class="text-end fw-bold"><t t-call="vme_belgie.card_amount"><t t-set="amount" t-value="entry['reserve']['closing']"/></t></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Budget -->
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header fw-bold">
+                            Budget tegenover werkelijk <t t-out="budget['year']"/>, tot <t t-out="budget['date_to']" t-options="{'widget': 'date'}"/>
+                            <span class="text-muted fw-normal">(<t t-out="round(budget['ratio'] * 100)"/> % van het jaar)</span>
+                        </div>
+                        <div class="card-body">
+                            <p t-if="not budget['budget']" class="text-muted">Nog geen budget voor <t t-out="budget['year']"/>.</p>
+                            <div class="row">
+                                <div class="col-xl-7">
+                                    <t t-call="vme_belgie.card_budget_table">
+                                        <t t-set="title" t-value="'Per rekening'"/>
+                                        <t t-set="field" t-value="'account'"/>
+                                        <t t-set="rows" t-value="budget['by_account']"/>
+                                        <t t-set="total" t-value="budget['total']"/>
+                                    </t>
+                                </div>
+                                <div class="col-xl-5">
+                                    <t t-call="vme_belgie.card_budget_table">
+                                        <t t-set="title" t-value="'Per sleutel'"/>
+                                        <t t-set="field" t-value="'key'"/>
+                                        <t t-set="rows" t-value="budget['by_key']"/>
+                                        <t t-set="total" t-value="budget['total']"/>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Arrears -->
+                <div class="col-lg-5">
+                    <div class="card h-100">
+                        <div class="card-header fw-bold">Achterstallen: <t t-call="vme_belgie.card_amount"><t t-set="amount" t-value="arrears_total"/></t></div>
+                        <div class="card-body">
+                            <p t-if="not arrears_partners" class="text-muted mb-0">Geen achterstallen.</p>
+                            <t t-else="">
+                                <div class="d-flex flex-wrap gap-3 mb-2 small">
+                                    <div t-foreach="arrears_by_aging" t-as="bucket"><span class="text-muted" t-out="bucket[0]"/>: <t t-call="vme_belgie.card_amount"><t t-set="amount" t-value="bucket[1]"/></t></div>
+                                </div>
+                                <table class="table table-sm o_vme_card_table mb-0">
+                                    <thead><tr><th>Eigenaar</th><th class="text-end">Openstaand</th><th class="text-end">Dagen te laat</th></tr></thead>
+                                    <tbody>
+                                        <tr t-foreach="arrears_partners" t-as="entry">
+                                            <td t-out="entry['partner'].name"/>
+                                            <td class="text-end"><t t-call="vme_belgie.card_amount"><t t-set="amount" t-value="entry['amount']"/></t></td>
+                                            <td class="text-end" t-out="entry['days']"/>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Running files -->
+                <div class="col-lg-7">
+                    <div class="card h-100">
+                        <div class="card-header fw-bold">Lopende dossiers</div>
+                        <div class="card-body">
+                            <p t-if="not (works or damage or sales or collections)" class="text-muted mb-0">Geen lopende dossiers.</p>
+                            <table t-else="" class="table table-sm o_vme_card_table mb-0">
+                                <thead><tr><th>Soort</th><th>Dossier</th><th>Stand van zaken</th><th>Termijn</th></tr></thead>
+                                <tbody>
+                                    <tr t-foreach="works" t-as="rec">
+                                        <td>Werken</td>
+                                        <td><t t-call="vme_belgie.card_link"><t t-set="record" t-value="rec"/><t t-set="label" t-value="False"/></t></td>
+                                        <td><t t-out="selection_label(rec, 'state')"/><t t-if="rec.contractor_id">, <t t-out="rec.contractor_id.name"/></t></td>
+                                        <td><t t-if="rec.planned_end" t-out="rec.planned_end" t-options="{'widget': 'date'}"/></td>
+                                    </tr>
+                                    <tr t-foreach="damage" t-as="rec">
+                                        <td>Schade</td>
+                                        <td><t t-call="vme_belgie.card_link"><t t-set="record" t-value="rec"/><t t-set="label" t-value="False"/></t></td>
+                                        <td t-out="selection_label(rec, 'state')"/>
+                                        <td><t t-if="rec.declaration_deadline and not rec.declaration_date">aangifte uiterlijk <t t-out="rec.declaration_deadline" t-options="{'widget': 'date'}"/></t></td>
+                                    </tr>
+                                    <tr t-foreach="sales" t-as="rec">
+                                        <td>Verkoop</td>
+                                        <td><t t-call="vme_belgie.card_link"><t t-set="record" t-value="rec"/><t t-set="label" t-value="False"/></t></td>
+                                        <td t-out="selection_label(rec, 'state')"/>
+                                        <td><t t-if="rec.answer_deadline or rec.deed_date" t-out="rec.answer_deadline or rec.deed_date" t-options="{'widget': 'date'}"/></td>
+                                    </tr>
+                                    <tr t-foreach="collections" t-as="rec">
+                                        <td>Invordering</td>
+                                        <td><t t-call="vme_belgie.card_link"><t t-set="record" t-value="rec"/><t t-set="label" t-value="rec.partner_id.name"/></t></td>
+                                        <td><t t-out="selection_label(rec, 'state')"/>, <t t-call="vme_belgie.card_amount"><t t-set="amount" t-value="rec.amount_due"/></t> achterstallig</td>
+                                        <td/>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Inspections -->
+                <div class="col-lg-6">
+                    <div class="card h-100">
+                        <div class="card-header fw-bold">Keuringen die vervallen (90 dagen)</div>
+                        <div class="card-body">
+                            <p t-if="not installations" class="text-muted mb-0">Alle keuringen zijn in orde.</p>
+                            <table t-else="" class="table table-sm o_vme_card_table mb-0">
+                                <thead><tr><th>Installatie</th><th>Volgende keuring</th><th>Status</th></tr></thead>
+                                <tbody>
+                                    <tr t-foreach="installations" t-as="rec" t-att-class="'table-danger' if 'overdue' in (rec.due_state, rec.risk_analysis_due_state) else ''">
+                                        <td><t t-call="vme_belgie.card_link"><t t-set="record" t-value="rec"/><t t-set="label" t-value="False"/></t></td>
+                                        <td>
+                                            <t t-if="rec.next_inspection_date" t-out="rec.next_inspection_date" t-options="{'widget': 'date'}"/>
+                                            <div t-if="rec.next_risk_analysis_date" class="small text-muted">risicoanalyse <t t-out="rec.next_risk_analysis_date" t-options="{'widget': 'date'}"/></div>
+                                        </td>
+                                        <td>
+                                            <t t-out="selection_label(rec, 'due_state')"/>
+                                            <div t-if="rec.overdue_remark_count" class="small text-danger"><t t-out="rec.overdue_remark_count"/> opmerking(en) over termijn</div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contracts -->
+                <div class="col-lg-6">
+                    <div class="card h-100">
+                        <div class="card-header fw-bold">Contracten en opzegtermijnen</div>
+                        <div class="card-body">
+                            <p t-if="not contracts" class="text-muted mb-0">Geen lopende contracten met een opzegtermijn.</p>
+                            <table t-else="" class="table table-sm o_vme_card_table mb-0">
+                                <thead><tr><th>Contract</th><th>Leverancier</th><th>Opzeggen uiterlijk</th><th>Status</th></tr></thead>
+                                <tbody>
+                                    <tr t-foreach="contracts" t-as="rec" t-att-class="'table-warning' if rec.notice_state in ('due_30', 'due_60') else ''">
+                                        <td><t t-call="vme_belgie.card_link"><t t-set="record" t-value="rec"/><t t-set="label" t-value="False"/></t></td>
+                                        <td t-out="rec.partner_id.name"/>
+                                        <td t-out="rec.notice_deadline" t-options="{'widget': 'date'}"/>
+                                        <td t-out="selection_label(rec, 'notice_state')"/>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bills to pay (payment batches from step 20 when installed) -->
+                <div class="col-lg-7">
+                    <div class="card h-100">
+                        <div class="card-header fw-bold">Te betalen facturen</div>
+                        <div class="card-body">
+                            <p t-if="not bills_to_pay" class="text-muted mb-0">Geen openstaande leveranciersfacturen.</p>
+                            <table t-else="" class="table table-sm o_vme_card_table mb-0">
+                                <thead><tr><th>Factuur</th><th>Leverancier</th><th>Vervaldag</th><th class="text-end">Te betalen</th></tr></thead>
+                                <tbody>
+                                    <tr t-foreach="bills_to_pay" t-as="rec" t-att-class="'table-danger' if rec.invoice_date_due and rec.invoice_date_due &lt; today else ''">
+                                        <td><t t-call="vme_belgie.card_link"><t t-set="record" t-value="rec"/><t t-set="label" t-value="rec.ref or rec.name"/></t></td>
+                                        <td t-out="rec.partner_id.name"/>
+                                        <td><t t-if="rec.invoice_date_due" t-out="rec.invoice_date_due" t-options="{'widget': 'date'}"/></td>
+                                        <td class="text-end"><t t-call="vme_belgie.card_amount"><t t-set="amount" t-value="rec.amount_residual"/></t></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div t-if="payment_batches" class="mt-2 small">
+                                Betaalbatches in behandeling:
+                                <t t-foreach="payment_batches" t-as="batch"><t t-call="vme_belgie.card_link"><t t-set="record" t-value="batch"/><t t-set="label" t-value="False"/></t><t t-if="not batch_last">, </t></t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Open requests of residents (step 19 when installed) -->
+                <div class="col-lg-5">
+                    <div class="card h-100">
+                        <div class="card-header fw-bold">Open aanvragen</div>
+                        <div class="card-body">
+                            <p t-if="requests is None" class="text-muted mb-0">Aanvragen van bewoners (sleutels, badges) komen hier zodra die functie geïnstalleerd is.</p>
+                            <p t-elif="not requests" class="text-muted mb-0">Geen open aanvragen.</p>
+                            <ul t-else="" class="mb-0">
+                                <li t-foreach="requests" t-as="rec">
+                                    <t t-call="vme_belgie.card_link"><t t-set="record" t-value="rec"/><t t-set="label" t-value="False"/></t>
+                                    <span t-if="'state' in rec._fields" class="text-muted">(<t t-out="selection_label(rec, 'state')"/>)</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- The supplier card: contracts, installations, works and bills of one supplier in all VMEs. -->
+    <template id="supplier_card_content">
+        <div class="o_vme_supplier_card">
+            <div class="row g-3">
+                <div class="col-lg-5">
+                    <div class="card h-100">
+                        <div class="card-header fw-bold">Gegevens en betaaltermijn</div>
+                        <div class="card-body">
+                            <dl class="row">
+                                <dt class="col-5">Btw-nummer</dt>
+                                <dd class="col-7" t-out="partner.vat or '-'"/>
+                                <dt class="col-5">E-mail</dt>
+                                <dd class="col-7" t-out="partner.email or '-'"/>
+                                <dt class="col-5">Bankrekening</dt>
+                                <dd class="col-7"><t t-out="', '.join(partner.bank_ids.mapped('acc_number')) or '-'"/></dd>
+                                <dt class="col-5">Gefactureerd dit jaar</dt>
+                                <dd class="col-7">
+                                    <t t-if="not year_totals">-</t>
+                                    <div t-foreach="year_totals" t-as="total"><t t-call="vme_belgie.card_amount"><t t-set="amount" t-value="total[1]"/><t t-set="currency" t-value="total[0]"/></t></div>
+                                </dd>
+                            </dl>
+                            <table t-if="payment_terms" class="table table-sm o_vme_card_table mb-0">
+                                <thead><tr><th>VME</th><th>Betaaltermijn</th></tr></thead>
+                                <tbody>
+                                    <tr t-foreach="payment_terms" t-as="entry">
+                                        <td t-out="entry['vme'].name"/>
+                                        <td t-out="entry['term'].name or 'Vervaldag op de factuur'"/>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-7">
+                    <div class="card h-100">
+                        <div class="card-header fw-bold">Contracten</div>
+                        <div class="card-body">
+                            <p t-if="not contracts" class="text-muted mb-0">Geen contracten.</p>
+                            <table t-else="" class="table table-sm o_vme_card_table mb-0">
+                                <thead><tr><th>VME</th><th>Contract</th><th>Looptijd</th><th>Opzeggen uiterlijk</th><th class="text-end">Jaarkost</th></tr></thead>
+                                <tbody>
+                                    <tr t-foreach="contracts" t-as="rec" t-att-class="'table-warning' if rec.notice_state in ('due_30', 'due_60') else ''">
+                                        <td t-out="rec.association_id.name"/>
+                                        <td><t t-call="vme_belgie.card_link"><t t-set="record" t-value="rec"/><t t-set="label" t-value="False"/></t> <span class="text-muted">(<t t-out="selection_label(rec, 'state').lower()"/>)</span></td>
+                                        <td><t t-if="rec.date_start" t-out="rec.date_start" t-options="{'widget': 'date'}"/> - <t t-if="rec.date_end" t-out="rec.date_end" t-options="{'widget': 'date'}"/></td>
+                                        <td><t t-if="rec.notice_deadline" t-out="rec.notice_deadline" t-options="{'widget': 'date'}"/></td>
+                                        <td class="text-end"><t t-call="vme_belgie.card_amount"><t t-set="amount" t-value="rec.annual_amount"/><t t-set="currency" t-value="rec.currency_id"/></t></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-7">
+                    <div class="card h-100">
+                        <div class="card-header fw-bold">Installaties en keuringen</div>
+                        <div class="card-body">
+                            <p t-if="not installations" class="text-muted mb-0">Geen installaties in onderhoud of keuring.</p>
+                            <table t-else="" class="table table-sm o_vme_card_table">
+                                <thead><tr><th>VME</th><th>Installatie</th><th>Rol</th><th>Volgende keuring</th><th>Status</th></tr></thead>
+                                <tbody>
+                                    <tr t-foreach="installations" t-as="rec" t-att-class="'table-danger' if rec.due_state == 'overdue' else ''">
+                                        <td t-out="rec.association_id.name"/>
+                                        <td><t t-call="vme_belgie.card_link"><t t-set="record" t-value="rec"/><t t-set="label" t-value="False"/></t></td>
+                                        <td>
+                                            <t t-if="rec.maintenance_partner_id.commercial_partner_id == partner">onderhoud</t>
+                                            <t t-if="rec.maintenance_partner_id.commercial_partner_id == partner and rec.inspection_partner_id.commercial_partner_id == partner"> en </t>
+                                            <t t-if="rec.inspection_partner_id.commercial_partner_id == partner">keuring</t>
+                                        </td>
+                                        <td><t t-if="rec.next_inspection_date" t-out="rec.next_inspection_date" t-options="{'widget': 'date'}"/></td>
+                                        <td t-out="selection_label(rec, 'due_state')"/>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <t t-if="inspections">
+                                <h6>Laatste verslagen</h6>
+                                <ul class="mb-0">
+                                    <li t-foreach="inspections" t-as="rec"><t t-out="rec.date" t-options="{'widget': 'date'}"/>: <t t-out="rec.display_name"/> (<t t-out="rec.association_id.name"/>)</li>
+                                </ul>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-5">
+                    <div class="card h-100">
+                        <div class="card-header fw-bold">Lopende werken</div>
+                        <div class="card-body">
+                            <p t-if="not works" class="text-muted mb-0">Geen lopende werken.</p>
+                            <ul t-else="" class="mb-0">
+                                <li t-foreach="works" t-as="rec">
+                                    <t t-call="vme_belgie.card_link"><t t-set="record" t-value="rec"/><t t-set="label" t-value="False"/></t>
+                                    (<t t-out="rec.association_id.name"/>, <t t-out="selection_label(rec, 'state').lower()"/>)
+                                </li>
+                            </ul>
+                            <t t-if="rules">
+                                <h6 class="mt-3">Verdeelregels</h6>
+                                <ul class="mb-0">
+                                    <li t-foreach="rules" t-as="rule"><t t-out="rule['vme'].name"/>: <t t-out="rule['key'].name"/><t t-if="rule['account']">, rekening <t t-out="rule['account'].code"/> <t t-out="rule['account'].name"/></t></li>
+                                </ul>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header fw-bold">Facturen</div>
+                        <div class="card-body">
+                            <p t-if="not (open_bills or recent_bills)" class="text-muted mb-0">Geen geboekte facturen.</p>
+                            <table t-else="" class="table table-sm o_vme_card_table mb-0">
+                                <thead><tr><th>VME</th><th>Factuur</th><th>Datum</th><th>Vervaldag</th><th class="text-end">Totaal</th><th class="text-end">Te betalen</th></tr></thead>
+                                <tbody>
+                                    <tr t-foreach="open_bills | recent_bills" t-as="rec" t-att-class="'table-danger' if rec.amount_residual and rec.invoice_date_due and rec.invoice_date_due &lt; today else ''">
+                                        <td t-out="vme_by_company.get(rec.company_id) and vme_by_company[rec.company_id].name"/>
+                                        <td><t t-call="vme_belgie.card_link"><t t-set="record" t-value="rec"/><t t-set="label" t-value="rec.ref or rec.name"/></t></td>
+                                        <td><t t-if="rec.invoice_date" t-out="rec.invoice_date" t-options="{'widget': 'date'}"/></td>
+                                        <td><t t-if="rec.invoice_date_due" t-out="rec.invoice_date_due" t-options="{'widget': 'date'}"/></td>
+                                        <td class="text-end"><t t-call="vme_belgie.card_amount"><t t-set="amount" t-value="rec.amount_total"/><t t-set="currency" t-value="rec.currency_id"/></t></td>
+                                        <td class="text-end"><t t-if="rec.amount_residual"><t t-call="vme_belgie.card_amount"><t t-set="amount" t-value="rec.amount_residual"/><t t-set="currency" t-value="rec.currency_id"/></t></t></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Portal: the owner sees the capitals and the budget against the costs up to today. -->
+    <template id="portal_my_vme_detail_finances" name="Financiële toestand in het portaal" inherit_id="vme_belgie.portal_my_vme_detail">
+        <xpath expr="//h4[text()='Provisies']" position="before">
+            <t t-set="finances" t-value="vme._get_portal_finances()"/>
+            <t t-set="currency" t-value="finances['currency']"/>
+            <h4>Financiële toestand van het gebouw</h4>
+            <div class="card mb-4 o_vme_portal_finances">
+                <div class="card-body">
+                    <div class="row text-center mb-3">
+                        <div class="col-6">
+                            <div class="text-muted small">Werkkapitaal</div>
+                            <div class="fs-4"><t t-call="vme_belgie.card_amount"><t t-set="amount" t-value="finances['working']"/></t></div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-muted small">Reservekapitaal</div>
+                            <div class="fs-4"><t t-call="vme_belgie.card_amount"><t t-set="amount" t-value="finances['reserve']"/></t></div>
+                        </div>
+                    </div>
+                    <t t-set="budget" t-value="finances['budget']"/>
+                    <h6>Kosten <t t-out="budget['year']"/> tot <t t-out="budget['date_to']" t-options="{'widget': 'date'}"/>, tegenover het budget</h6>
+                    <p t-if="not budget['budget']" class="text-muted mb-0">Er is nog geen budget voor <t t-out="budget['year']"/>.</p>
+                    <t t-else="" t-call="portal.portal_table">
+                        <thead>
+                            <tr>
+                                <th>Verdeelsleutel</th>
+                                <th class="text-end">Budget tot vandaag</th>
+                                <th class="text-end">Werkelijke kosten</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="budget['by_key']" t-as="row">
+                                <td><t t-if="row['key']" t-out="row['key'].name"/><t t-else="">Andere kosten</t></td>
+                                <td class="text-end"><t t-call="vme_belgie.card_amount"><t t-set="amount" t-value="row['budget_to_date']"/></t></td>
+                                <td class="text-end"><t t-call="vme_belgie.card_amount"><t t-set="amount" t-value="row['actual']"/></t></td>
+                            </tr>
+                            <tr class="fw-bold">
+                                <td>Totaal</td>
+                                <td class="text-end"><t t-call="vme_belgie.card_amount"><t t-set="amount" t-value="budget['total']['budget_to_date']"/></t></td>
+                                <td class="text-end"><t t-call="vme_belgie.card_amount"><t t-set="amount" t-value="budget['total']['actual']"/></t></td>
+                            </tr>
+                        </tbody>
+                    </t>
+                    <p class="small text-muted mt-2 mb-0">Het budget tot vandaag is het jaarbudget verspreid over de dagen van het jaar. Uw eigen aandeel ziet u in de jaarafrekening.</p>
+                </div>
+            </div>
+        </xpath>
+    </template>
+</odoo>

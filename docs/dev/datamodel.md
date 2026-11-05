@@ -63,6 +63,9 @@ erDiagram
 | `vme.council.dossier` | Lopend dossier voor de raad (SQL-view) | Verkopen, invorderingen, open keuringsopmerkingen en opvolgtaken van de AV; `dossier_type`, `status`, `date_deadline`, `res_model`, `res_id`. Uitbreidbaar via `_dossier_queries()`. |
 | `vme.contract` | Contract | VME, soort, leverancier, optioneel de installatie; `date_end` (einde huidige periode), `auto_renew`, `renewal_months`, `notice_period_months`; opgeslagen `notice_deadline` en `next_evaluation_date`, niet opgeslagen `notice_state`, verdeelregel en `billed_this_year`. Zie [contracten.md](contracten.md). |
 | `vme.contract.evaluation` | Jaarlijkse evaluatie | Contract, datum, beoordeling, voorstel, optioneel de AV. |
+| `vme.budget.line` | Budget per rekening en sleutel | `budget_id`, `account_id`, `key_id` (optioneel), `name`, `amount`; op `vme.budget` berekend `lines_total` en `unassigned_amount`. Zie [gebouwkaart.md](gebouwkaart.md). |
+| `vme.budget.analysis` | Budgetopvolging (SQL-view) | Budgetregels, niet-ingedeeld budget en werkelijke kosten per VME, jaar, rekening en sleutel; `budget_to_date` gespreid per dag tot vandaag. |
+| `vme.capital.movement` | Verloop kapitalen (SQL-view) | Provisies en gebruik van werk- en reservekapitaal per datum, voor een gecumuleerde lijngrafiek. |
 | `vme.migration` | Overstap uit een ander pakket | `attachment_ids` (exportbestanden), `source_format`, `state` (nieuw, proefrun gedaan, geïmporteerd), `report_html`, `error_count`, `warning_count`, `transition_date`, `association_id`, `opening_move_id`. Zie [migratie.md](migratie.md). |
 
 Wizards (transient): `vme.provision.call.wizard` en `vme.annual.statement.wizard`, elk met een HTML-voorbeeld (`preview_html`).
@@ -90,6 +93,8 @@ Wizards (transient): `vme.provision.call.wizard` en `vme.annual.statement.wizard
 | `vme.association` / `vme.lot` | `document_ids`, `document_count` | Documenten van de VME en van de kavel. |
 | `res.partner` | `vme_ownership_ids`, `vme_mandate_ids` | Omgekeerde relaties, gebruikt in de leesregel van de commissaris. |
 | `res.users` | `_vme_sync_auditor_access()` | Toegestane companies van een commissaris volgen zijn lopende mandaten. |
+| `vme.association` | `arrears_signal_threshold`, berekend: `working_capital_balance`, `reserve_capital_balance`, `arrears_amount`, `budget_usage`, `signal_*`, `signal_count`, `building_card_html` | Gebouwkaart en portefeuille (stap 22); de signalen zijn zoekbaar. |
+| `res.partner` | `vme_is_supplier` (zoekbaar), `vme_supplier_contract_count`, `vme_supplier_open_amount`, `vme_supplier_card_html` | Leverancierskaart (stap 22), beperkt tot de VME's die de gebruiker mag lezen. |
 | `account.move.line` | `vme_key_id` | Verdeelsleutel per regel; opgeslagen compute die alleen een lege sleutel invult vanuit de verdeelregel. |
 
 ## Rekeningen

@@ -162,3 +162,14 @@ class TestDemoData(TransactionCase):
         self.assertEqual(concierge.partner_id.vat, "BE0000018014")
         linde_evaluation = contracts.filtered(lambda c: c.association_id == self.linde).evaluation_ids[:1]
         self.assertEqual(linde_evaluation.assembly_id.slot_id.date, date(2026, 3, 10))
+
+    def test_demo_portfolio_signals(self):
+        # On the demo date: Hof ter Beuken builds too little reserve and, like Kaaihuis, held no
+        # assembly in its period; the fire extinguishers of Linde are overdue since 1 October 2026.
+        signals = {vme.name: {s["code"] for s in vme._get_signals(date(2026, 11, 5))} for vme in self.vmes}
+        self.assertIn("reserve", signals["Hof ter Beuken"])
+        self.assertIn("assembly", signals["Hof ter Beuken"])
+        self.assertIn("assembly", signals["Kaaihuis"])
+        self.assertNotIn("assembly", signals["Residentie Linde"])
+        self.assertIn("inspection", signals["Residentie Linde"])
+        self.assertEqual(self.linde.arrears_signal_threshold, 250)

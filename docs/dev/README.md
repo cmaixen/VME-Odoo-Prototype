@@ -23,6 +23,7 @@ Interne documentatie voor wie aan de module `vme_belgie` werkt. De gebruikersdoc
 | [raad-commissaris.md](raad-commissaris.md) | Mandaten, leesrechten van de commissaris met record rules, overzicht voor de raad, verslagsjabloon (stap 16) |
 | [verbruik.md](verbruik.md) | Tellers, meterstanden, CSV-import en verdeling vast/variabel op verbruik (stap 17) |
 | [contracten.md](contracten.md) | Contracten, opzegtermijnen, jaarlijkse evaluatie, conciërge via het sociaal secretariaat (stap 18) |
+| [gebouwkaart.md](gebouwkaart.md) | Gebouwkaart, budget per rekening en sleutel, budgetopvolging, kapitalen, signalen, portefeuille, leverancierskaart (stap 22) |
 | [migratie.md](migratie.md) | Overstap uit een ander pakket: importformaat, proefrun, openingsboeking, omzetters (stap 13) |
 | [legal-checks.md](legal-checks.md) | Alle `LEGAL-CHECK`-punten uit de code (gegenereerd) |
 

@@ -43,3 +43,6 @@ access_vme_meter_reading_user,vme.meter.reading user,model_vme_meter_reading,bas
 access_vme_meter_import_wizard_user,vme.meter.import.wizard user,model_vme_meter_import_wizard,base.group_user,1,1,1,1
 access_vme_contract_user,vme.contract user,model_vme_contract,base.group_user,1,1,1,1
 access_vme_contract_evaluation_user,vme.contract.evaluation user,model_vme_contract_evaluation,base.group_user,1,1,1,1
+access_vme_budget_line_user,vme.budget.line user,model_vme_budget_line,base.group_user,1,1,1,1
+access_vme_budget_analysis_user,vme.budget.analysis user,model_vme_budget_analysis,base.group_user,1,0,0,0
+access_vme_capital_movement_user,vme.capital.movement user,model_vme_capital_movement,base.group_user,1,0,0,0
