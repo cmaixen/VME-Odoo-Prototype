@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="vme_installation_view_list" model="ir.ui.view">
+        <field name="name">vme.installation.list</field>
+        <field name="model">vme.installation</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="due_state == 'overdue'" decoration-warning="due_state == 'due_30'"
+                  decoration-info="due_state in ('due_60', 'due_90')" decoration-muted="due_state == 'unknown'">
+                <field name="association_id"/>
+                <field name="name"/>
+                <field name="installation_type"/>
+                <field name="location" optional="hide"/>
+                <field name="inspection_partner_id" optional="show"/>
+                <field name="maintenance_partner_id" optional="hide"/>
+                <field name="last_inspection_date"/>
+                <field name="next_inspection_date"/>
+                <field name="due_state" widget="badge"
+                       decoration-danger="due_state == 'overdue'" decoration-warning="due_state == 'due_30'"
+                       decoration-info="due_state in ('due_60', 'due_90')" decoration-success="due_state == 'ok'"/>
+                <field name="next_risk_analysis_date" optional="show"/>
+                <field name="open_remark_count" optional="show"/>
+                <field name="overdue_remark_count" optional="show" decoration-danger="overdue_remark_count &gt; 0"/>
+                <field name="retest_required" optional="show"/>
+                <field name="responsible_user_id" widget="many2one_avatar_user" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_installation_view_form" model="ir.ui.view">
+        <field name="name">vme.installation.form</field>
+        <field name="model">vme.installation</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <widget name="web_ribbon" title="Herkeuring nodig" bg_color="text-bg-danger" invisible="not retest_required"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="bv. Lift blok A"/></h1>
+                    </div>
+                    <group>
+                        <group string="Installatie">
+                            <field name="association_id"/>
+                            <field name="installation_type"/>
+                            <field name="location"/>
+                            <field name="responsible_user_id" widget="many2one_avatar_user"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group string="Keuring">
+                            <field name="inspection_partner_id"/>
+                            <field name="inspection_interval_months"/>
+                            <field name="last_inspection_date"/>
+                            <field name="next_inspection_date"/>
+                            <field name="due_state" widget="badge"
+                                   decoration-danger="due_state == 'overdue'" decoration-warning="due_state == 'due_30'"
+                                   decoration-info="due_state in ('due_60', 'due_90')" decoration-success="due_state == 'ok'"/>
+                        </group>
+                        <group string="Onderhoud">
+                            <field name="maintenance_partner_id"/>
+                            <field name="maintenance_contract_ref"/>
+                            <field name="maintenance_contract_end"/>
+                        </group>
+                        <group string="Lift" invisible="installation_type != 'elevator'">
+                            <field name="last_risk_analysis_date"/>
+                            <field name="next_risk_analysis_date"/>
+                            <field name="risk_analysis_due_state" widget="badge"
+                                   decoration-danger="risk_analysis_due_state == 'overdue'"
+                                   decoration-warning="risk_analysis_due_state in ('due_30', 'due_60', 'due_90')"
+                                   decoration-success="risk_analysis_due_state == 'ok'"/>
+                            <field name="retest_required"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Keuringsverslagen" name="inspections">
+                            <field name="inspection_ids" context="{'default_partner_id': inspection_partner_id}">
+                                <list>
+                                    <field name="date"/>
+                                    <field name="kind"/>
+                                    <field name="partner_id"/>
+                                    <field name="result"/>
+                                    <field name="report_filename"/>
+                                    <field name="move_id" optional="show"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Opmerkingen" name="remarks">
+                            <field name="remark_ids" readonly="1">
+                                <list decoration-danger="is_overdue" decoration-muted="not is_open">
+                                    <field name="inspection_id"/>
+                                    <field name="name"/>
+                                    <field name="severity"/>
+                                    <field name="responsible"/>
+                                    <field name="deadline"/>
+                                    <field name="state"/>
+                                    <field name="is_open" column_invisible="1"/>
+                                    <field name="is_overdue" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="vme_installation_view_calendar" model="ir.ui.view">
+        <field name="name">vme.installation.calendar</field>
+        <field name="model">vme.installation</field>
+        <field name="arch" type="xml">
+            <calendar string="Keuringen" date_start="next_inspection_date" color="installation_type" mode="month" quick_create="0">
+                <field name="association_id"/>
+                <field name="installation_type" filters="1"/>
+                <field name="inspection_partner_id"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="vme_installation_view_search" model="ir.ui.view">
+        <field name="name">vme.installation.search</field>
+        <field name="model">vme.installation</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="association_id"/>
+                <field name="inspection_partner_id"/>
+                <field name="maintenance_partner_id"/>
+                <filter name="overdue" string="Vervallen"
+                        domain="[('next_inspection_date', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="due_30" string="Vervalt binnen 30 dagen"
+                        domain="[('next_inspection_date', '&lt;=', (context_today() + relativedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+                <filter name="due_60" string="Vervalt binnen 60 dagen"
+                        domain="[('next_inspection_date', '&lt;=', (context_today() + relativedelta(days=60)).strftime('%Y-%m-%d'))]"/>
+                <filter name="due_90" string="Vervalt binnen 90 dagen"
+                        domain="[('next_inspection_date', '&lt;=', (context_today() + relativedelta(days=90)).strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter name="retest" string="Herkeuring nodig" domain="[('retest_required', '=', True)]"/>
+                <filter name="elevators" string="Liften" domain="[('installation_type', '=', 'elevator')]"/>
+                <filter name="archived" string="Gearchiveerd" domain="[('active', '=', False)]"/>
+                <group>
+                    <filter name="group_association" string="VME" context="{'group_by': 'association_id'}"/>
+                    <filter name="group_type" string="Soort" context="{'group_by': 'installation_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="vme_installation_action" model="ir.actions.act_window">
+        <field name="name">Keuringen</field>
+        <field name="res_model">vme.installation</field>
+        <field name="view_mode">list,calendar,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nog geen installaties</p>
+            <p>Voeg per VME de liften, brandblussers, elektrische installatie en andere installaties met keuringsplicht toe.</p>
+        </field>
+    </record>
+
+    <record id="vme_inspection_view_form" model="ir.ui.view">
+        <field name="name">vme.inspection.form</field>
+        <field name="model">vme.inspection</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="installation_id"/>
+                            <field name="kind"/>
+                            <field name="date"/>
+                            <field name="partner_id"/>
+                        </group>
+                        <group>
+                            <field name="result"/>
+                            <field name="report" filename="report_filename"/>
+                            <field name="report_filename" invisible="1"/>
+                            <field name="move_id" readonly="1" invisible="not move_id"/>
+                        </group>
+                    </group>
+                    <field name="remark_ids">
+                        <list editable="bottom">
+                            <field name="name"/>
+                            <field name="severity"/>
+                            <field name="responsible"/>
+                            <field name="deadline"/>
+                            <field name="state"/>
+                            <field name="resolved_date" optional="hide"/>
+                        </list>
+                    </field>
+                    <field name="note" placeholder="Notitie bij dit verslag"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="vme_inspection_remark_view_list" model="ir.ui.view">
+        <field name="name">vme.inspection.remark.list</field>
+        <field name="model">vme.inspection.remark</field>
+        <field name="arch" type="xml">
+            <list editable="bottom" create="0" decoration-danger="is_overdue" decoration-muted="not is_open">
+                <field name="association_id"/>
+                <field name="installation_id"/>
+                <field name="inspection_id" optional="hide"/>
+                <field name="name"/>
+                <field name="severity" widget="badge" decoration-danger="severity == 'blocking'" decoration-warning="severity == 'major'"/>
+                <field name="responsible"/>
+                <field name="deadline"/>
+                <field name="state"/>
+                <field name="resolved_date" optional="hide"/>
+                <field name="is_open" column_invisible="1"/>
+                <field name="is_overdue" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_inspection_remark_view_search" model="ir.ui.view">
+        <field name="name">vme.inspection.remark.search</field>
+        <field name="model">vme.inspection.remark</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="association_id"/>
+                <field name="installation_id"/>
+                <filter name="open" string="Open" domain="[('is_open', '=', True)]"/>
+                <filter name="overdue" string="Over termijn" domain="[('is_overdue', '=', True)]"/>
+                <filter name="severe" string="Ernstig of stilstand" domain="[('severity', 'in', ('major', 'blocking'))]"/>
+                <group>
+                    <filter name="group_association" string="VME" context="{'group_by': 'association_id'}"/>
+                    <filter name="group_installation" string="Installatie" context="{'group_by': 'installation_id'}"/>
+                    <filter name="group_responsible" string="Verantwoordelijke" context="{'group_by': 'responsible'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="vme_inspection_remark_action" model="ir.actions.act_window">
+        <field name="name">Opmerkingen keuringen</field>
+        <field name="res_model">vme.inspection.remark</field>
+        <field name="view_mode">list</field>
+        <field name="context">{'search_default_open': 1, 'search_default_group_association': 1}</field>
+    </record>
+
+    <menuitem id="menu_vme_inspections" name="Keuringen" parent="menu_vme_root" sequence="55"/>
+    <menuitem id="menu_vme_installation" name="Installaties en vervaldata" parent="menu_vme_inspections"
+              action="vme_installation_action" sequence="10"/>
+    <menuitem id="menu_vme_inspection_remark" name="Opmerkingen keuringen" parent="menu_vme_inspections"
+              action="vme_inspection_remark_action" sequence="20"/>
+
+    <record id="ir_cron_vme_inspection_activities" model="ir.cron">
+        <field name="name">VME: taken voor keuringen die binnenkort vervallen</field>
+        <field name="model_id" ref="model_vme_installation"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_schedule_inspection_activities()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+    </record>
+</odoo>

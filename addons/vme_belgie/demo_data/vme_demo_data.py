@@ -96,6 +96,71 @@ SUPPLIERS = {
     },
 }
 
+INSPECTION_SUPPLIERS = {
+    "inspection_body": {
+        "name": "Keuringsdienst Voorbeeld vzw",
+        "vat": "BE0000000889",
+        "email": "verslagen@keuringsdienst.example.com",
+        "street": "Controleweg 9",
+        "zip": "1000",
+        "city": "Voorbeeldstad",
+    },
+    "fire_safety": {
+        "name": "Brandbeveiliging Voorbeeld BV",
+        "vat": "BE0000000988",
+        "email": "planning@brandbeveiliging.example.com",
+        "street": "Blusserstraat 2",
+        "zip": "2000",
+        "city": "Voorbeeldstad",
+    },
+    "heating": {
+        "name": "Verwarming Voorbeeld BV",
+        "vat": "BE0000001087",
+        "email": "onderhoud@verwarming.example.com",
+        "street": "Ketellaan 5",
+        "zip": "9000",
+        "city": "Voorbeeldstad",
+    },
+}
+
+# Installations per VME (relative to the demo date 5 November 2026):
+# name, type, location, maintenance supplier, inspection body, contract (ref, end), reports.
+# A report is (date, kind, result, [(remark, severity, deadline, responsible)]).
+INSTALLATIONS = {
+    "Residentie Linde": [
+        ("Lift blok A", "elevator", "Trappenhal", "elevator", "inspection_body", ("LO-2023-117", date(2027, 12, 31)), [
+            (date(2012, 1, 15), "risk_analysis", "compliant", []),  # next risk analysis 15-01-2027
+            (date(2025, 11, 10), "inspection", "compliant", []),
+            (date(2026, 5, 12), "inspection", "remarks", [  # next inspection 12-11-2026
+                ("Noodverlichting in de liftkooi werkt niet", "major", date(2026, 8, 31), "maintenance"),
+                ("Smering van de geleiders onvoldoende", "minor", date(2026, 12, 31), "maintenance"),
+            ]),
+        ]),
+        ("Brandblussers", "fire_extinguishers", "Alle verdiepingen", "fire_safety", "fire_safety", None, [
+            (date(2025, 10, 1), "inspection", "compliant", []),  # overdue since 01-10-2026
+        ]),
+        ("Elektrische installatie gemene delen", "electrical", "Kelder", None, "inspection_body", None, [
+            (date(2022, 3, 10), "inspection", "compliant", []),
+        ]),
+    ],
+    "Hof ter Beuken": [
+        ("Centrale verwarmingsketel", "heating_boiler", "Stookplaats", "heating", "heating", ("CV-2024-031", date(2027, 6, 30)), [
+            (date(2025, 9, 15), "inspection", "compliant", []),
+        ]),
+        ("Brandblussers", "fire_extinguishers", "Alle verdiepingen", "fire_safety", "fire_safety", None, [
+            (date(2025, 12, 20), "inspection", "compliant", []),  # due within 60 days
+        ]),
+        ("Rookluiken", "smoke_vents", "Dak trappenhal", "fire_safety", "fire_safety", None, [
+            (date(2025, 11, 25), "inspection", "compliant", []),  # due within 30 days
+        ]),
+    ],
+    "Kaaihuis": [
+        ("Brandblussers", "fire_extinguishers", "Gelijkvloers", "fire_safety", "fire_safety", None, [
+            (date(2026, 3, 1), "inspection", "compliant", []),
+        ]),
+    ],
+}
+
 # Distribution rules: supplier, key type and PCMN expense account (only where the key exists).
 RULES = [
     ("energy", "general", "612500"),  # Water, elektriciteit en gas
@@ -145,6 +210,33 @@ def _key_weight(key_type, lot, top_floor):
 class VmeAssociation(models.Model):
     _inherit = "vme.association"
 
+    def _demo_installations(self, vme, suppliers):
+        installations = self.env["vme.installation"]
+        for name, kind, location, maintenance, body, contract, reports in INSTALLATIONS.get(vme.name, []):
+            installation = self.env["vme.installation"].create({
+                "association_id": vme.id,
+                "name": name,
+                "installation_type": kind,
+                "location": location,
+                "maintenance_partner_id": suppliers[maintenance].id if maintenance else False,
+                "maintenance_contract_ref": contract[0] if contract else False,
+                "maintenance_contract_end": contract[1] if contract else False,
+                "inspection_partner_id": suppliers[body].id,
+            })
+            for report_date, report_kind, result, remarks in reports:
+                self.env["vme.inspection"].create({
+                    "installation_id": installation.id,
+                    "date": report_date,
+                    "kind": report_kind,
+                    "result": result,
+                    "partner_id": suppliers[body].id,
+                    "remark_ids": [Command.create({
+                        "name": text, "severity": severity, "deadline": deadline, "responsible": responsible,
+                    }) for text, severity, deadline, responsible in remarks],
+                })
+            installations |= installation
+        return installations
+
     @api.model
     def _load_demo_data(self):
         if self.with_context(active_test=False).search_count([("name", "=", BUILDINGS[0]["name"])]):
@@ -156,7 +248,7 @@ class VmeAssociation(models.Model):
         vmes = self.browse()
         suppliers = {
             code: Partner.create({**vals, "is_company": True, "country_id": self.env.ref("base.be").id})
-            for code, vals in SUPPLIERS.items()
+            for code, vals in {**SUPPLIERS, **INSPECTION_SUPPLIERS}.items()
         }
         rule_accounts = []  # (rule, account code): set once the chart of accounts exists
 
@@ -217,6 +309,18 @@ class VmeAssociation(models.Model):
                     })
                     rule_accounts.append((rule, account_code))
 
+            installations = self._demo_installations(vme, suppliers)
+            elevator = installations.filtered(lambda i: i.installation_type == "elevator")
+            if elevator and "elevator" in key_by_type:
+                # Bills of the inspection body register the elevator inspection automatically.
+                rule = self.env["vme.distribution.rule"].create({
+                    "association_id": vme.id,
+                    "partner_id": suppliers["inspection_body"].id,
+                    "key_id": key_by_type["elevator"].id,
+                    "installation_id": elevator.id,
+                })
+                rule_accounts.append((rule, "611000"))
+
             working, reserve = BUDGETS[building["name"]]
             self.env["vme.budget"].create([{
                 "association_id": vme.id,
@@ -276,6 +380,9 @@ class VmeAssociation(models.Model):
                     [("company_ids", "in", rule.company_id.id), ("code", "=", code)], limit=1
                 )
         self.env.cr.precommit.add(set_rule_accounts)
+
+        # Tasks for inspections that are (nearly) due, as the daily cron would create them.
+        self.env["vme.installation"]._cron_schedule_inspection_activities()
 
         return {
             "type": "ir.actions.client",

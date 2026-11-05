@@ -171,10 +171,19 @@ class AccountMove(models.Model):
 
     def _post(self, soft=True):
         posted = super()._post(soft=soft)
-        posted.filtered(
-            lambda m: m.vme_association_id and m.move_type in ("in_invoice", "in_refund")
-        )._vme_auto_distribute()
+        vme_bills = posted.filtered(lambda m: m.vme_association_id and m.move_type in ("in_invoice", "in_refund"))
+        vme_bills._vme_auto_distribute()
+        vme_bills._vme_register_inspections()
         return posted
+
+    def _vme_register_inspections(self):
+        """A posted bill of an installation's inspection body records that inspection."""
+        Rule = self.env["vme.distribution.rule"].sudo()
+        for move in self.filtered(lambda m: m.move_type == "in_invoice"):
+            installation = Rule._find_rule(move.company_id, move.partner_id).installation_id
+            body = installation.inspection_partner_id.commercial_partner_id
+            if installation and body and body == move.partner_id.commercial_partner_id:
+                installation._register_inspection_from_bill(move)
 
     def _vme_auto_distribute(self):
         """Distribute posted bills whose lines all have a key; never block the posting."""

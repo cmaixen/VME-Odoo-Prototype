@@ -10,3 +10,6 @@ access_vme_budget_user,vme.budget user,model_vme_budget,base.group_user,1,1,1,1
 access_vme_provision_call_user,vme.provision.call user,model_vme_provision_call,base.group_user,1,1,1,0
 access_vme_provision_call_wizard_user,vme.provision.call.wizard user,model_vme_provision_call_wizard,base.group_user,1,1,1,1
 access_vme_annual_statement_wizard_user,vme.annual.statement.wizard user,model_vme_annual_statement_wizard,base.group_user,1,1,1,1
+access_vme_installation_user,vme.installation user,model_vme_installation,base.group_user,1,1,1,1
+access_vme_inspection_user,vme.inspection user,model_vme_inspection,base.group_user,1,1,1,1
+access_vme_inspection_remark_user,vme.inspection.remark user,model_vme_inspection_remark,base.group_user,1,1,1,1

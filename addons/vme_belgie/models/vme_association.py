@@ -48,6 +48,7 @@ class VmeAssociation(models.Model):
     key_ids = fields.One2many("vme.key", "association_id", string="Verdeelsleutels")
     distribution_rule_ids = fields.One2many("vme.distribution.rule", "association_id", string="Verdeelregels")
     budget_ids = fields.One2many("vme.budget", "association_id", string="Budgetten")
+    installation_ids = fields.One2many("vme.installation", "association_id", string="Installaties")
     lot_count = fields.Integer(string="Aantal kavels", compute="_compute_counts")
     key_count = fields.Integer(string="Aantal sleutels", compute="_compute_counts")
     owner_count = fields.Integer(string="Aantal eigenaars", compute="_compute_counts")

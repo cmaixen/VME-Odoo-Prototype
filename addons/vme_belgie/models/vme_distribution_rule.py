@@ -25,6 +25,13 @@ class VmeDistributionRule(models.Model):
         domain="[('company_ids', 'in', company_id), ('account_type', 'in', ('expense', 'expense_direct_cost'))]",
         help="Optioneel: factuurlijnen zonder product van deze leverancier worden op deze rekening geboekt.",
     )
+    installation_id = fields.Many2one(
+        "vme.installation",
+        string="Installatie",
+        domain="[('association_id', '=', association_id)]",
+        help="Optioneel: een geboekte factuur van het keuringsorganisme van deze installatie "
+             "registreert automatisch een keuring en verschuift de volgende vervaldatum.",
+    )
     active = fields.Boolean(string="Actief", default=True)
     note = fields.Char(string="Notitie")
 

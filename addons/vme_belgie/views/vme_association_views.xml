@@ -86,6 +86,17 @@
                                 </list>
                             </field>
                         </page>
+                        <page string="Installaties" name="installations">
+                            <field name="installation_ids" readonly="not id" context="{'default_association_id': id}">
+                                <list decoration-danger="due_state == 'overdue'" decoration-warning="due_state == 'due_30'">
+                                    <field name="name"/>
+                                    <field name="installation_type"/>
+                                    <field name="next_inspection_date"/>
+                                    <field name="due_state" widget="badge"/>
+                                    <field name="open_remark_count"/>
+                                </list>
+                            </field>
+                        </page>
                         <page string="Budgetten" name="budgets">
                             <field name="budget_ids" readonly="not id">
                                 <list>

@@ -10,6 +10,7 @@
                 <field name="partner_id" context="{'res_partner_search_mode': 'supplier'}"/>
                 <field name="key_id" options="{'no_create': True}"/>
                 <field name="account_id" options="{'no_create': True}"/>
+                <field name="installation_id" optional="show" options="{'no_create': True}"/>
                 <field name="note" optional="show"/>
                 <field name="active" widget="boolean_toggle" optional="hide"/>
             </list>
