@@ -112,3 +112,46 @@ Na de demo (stap 8) dekken de stappen hieronder de taken af die een syndicus nog
 > - een klacht over overlast
 >
 > **Beslissing vooraf:** de regel "er wordt nooit automatisch iets verstuurd" staat in CLAUDE.md. Leg in `docs/beslissingen.md` vast of de bestelling aan de slotenmaker na verificatie automatisch mag vertrekken (per VME aan te zetten) of als concept klaarstaat voor één klik. Schrijf unittests voor de verificatie (eigenaar, huurder met en zonder toestemming, onbekende), de privé-aanrekening en het sleutelregister. Gebruik plan mode.
+
+## 20. Betalingsverkeer: leveranciers betalen en provisies domiciliëren
+
+> Bouw de uitgaande kant van het betalingsverkeer per VME en per fondsrekening:
+> - **Betaalvoorstel:** te betalen leveranciersfacturen volgens vervaldag. Een factuur moet eerst goedgekeurd zijn door een medewerker en, boven een bedrag dat per VME instelbaar is, ook door een tweede persoon (bv. een lid van de raad uit stap 16).
+> - **Betaalbatch** als SEPA-bestand (pain.001) om in de bank op te laden, met de betalingen in Odoo als "verstuurd" tot het bankafschrift uit stap 12 ze bevestigt.
+> - **Domiciliëringen voor provisies:** SEPA-mandaten per eigenaar en een incassobestand (pain.008) per provisieoproep. Een mislukte incasso komt terug via het bankafschrift en gaat naar de invordering van stap 10.
+>
+> Gebruik wat Odoo Community kan (`account_batch_payment` en `account_sepa` zijn Enterprise) en schrijf de XML zelf, gevalideerd tegen het XSD-schema. Een rechtstreekse bankkoppeling (Swan, Ponto, Isabel) valt buiten het prototype: beschrijf in `docs/beslissingen.md` wat die zou vragen. Er wordt nooit automatisch iets naar een bank gestuurd. Schrijf unittests voor de goedkeuringsregel, het SEPA-bestand en de terugkoppeling via het afschrift. Gebruik plan mode.
+
+## 21. PDF-facturen en documenten lezen met AI
+
+> Veel leveranciers sturen nog een PDF zonder UBL. Breid de facturen per mail uit stap 7b uit: komt er een PDF zonder UBL binnen, dan leest een taalmodel (zoals in `ai/`) leverancier, btw-nummer, factuurnummer, datums, kostperiode, bedragen en IBAN. Het vult de conceptfactuur in, met per veld de zekerheid. De verdeelregels doen daarna hun werk. Een nieuwe leverancier of een ander IBAN dan het gekende is altijd een waarschuwing, nooit automatisch aanvaard (fraude met valse IBAN's). Gebruik dezelfde aanpak om binnenkomende documenten automatisch in de juiste map van stap 15 te zetten (keuringsverslag, polis, offerte). Werkt zonder API-sleutel met een mock, zoals stap 7. Maak fictieve PDF-facturen voor de demo. Schrijf unittests voor de veldcontrole en de IBAN-waarschuwing. Gebruik plan mode.
+
+## 22. Gebouwkaart, budgetopvolging en portefeuille
+
+> Maak per VME een gebouwkaart: één scherm met de kerngegevens, de stand van werk- en reservekapitaal (met het verloop over de jaren), het budget tegenover het werkelijke per rekening en per sleutel tot vandaag, de achterstallen, de lopende dossiers (werken, schade, verkoop, invordering), de keuringen die vervallen, en de contracten met een opzegtermijn. Maak daarnaast een portefeuilleoverzicht voor de syndicus: alle VME's in één lijst met signalen (reservefonds onder 5%, achterstallen boven een drempel, AV buiten de periode, vervallen keuring). Maak ook een leverancierskaart met contracten, keuringen, lopende werken, facturen en betaaltermijn. Gebruik standaard Odoo-views (list, kanban, graph, pivot) en geen Enterprise-dashboards. Schrijf unittests voor de budgetopvolging. Gebruik plan mode.
+
+## 23. Centrale communicatie met eigenaars en huurders
+
+> Bouw verzendingen per VME of per selectie (alle eigenaars, een blok, de huurders): e-mail, brief als PDF voor de post, en aangetekend. Het aangetekende stuk wordt in het prototype als PDF met een verzendregister aangemaakt. Beschrijf hoe een koppeling met een dienst voor elektronisch aangetekend verzenden zou werken (`# LEGAL-CHECK:` geldigheid van elektronisch aangetekend bij invordering en oproeping). Sms en pushberichten krijgen een provider-interface met een mock. Voorzie sjablonen (welkomstbrief voor een nieuwe eigenaar na de akte uit stap 9, mededeling werken, waterafsluiting) en bevragingen met antwoorden per eigenaar (bv. "interesse in laadpalen?"). Houd per eigenaar een communicatielog bij met alle verzendingen. Elke verzending is eerst een concept dat een medewerker bevestigt. Schrijf unittests voor de selectie van ontvangers (eigenaar op datum, huurders, voorkeur papier of e-mail). Gebruik plan mode.
+
+## 24. Digitale en hybride algemene vergadering
+
+> Breid stap 11 uit:
+> - **Online deelnemen:** een link per AV, en de aanwezigheid via het portaal van stap 15.
+> - **Elektronisch stemmen tijdens de vergadering:** per agendapunt opent de syndicus de stemming, en eigenaars stemmen in het portaal met hun quotiteiten.
+> - **Schriftelijke stemming vooraf**, waar de wet dat toelaat (`# LEGAL-CHECK: art. 3.87 BW` over schriftelijke besluitvorming en deelname op afstand).
+> - **Elektronisch ondertekenen van de notulen** door voorzitter, secretaris en aanwezigen. Odoo Sign is Enterprise, dus bouw een eenvoudige ondertekening via het portaal met een auditspoor: wie, wanneer, IP en hash van de PDF.
+>
+> Schrijf unittests voor de stemrechten online (geen dubbele stem met volmacht, sluiten van de stemming) en voor het auditspoor. Gebruik plan mode.
+
+## 25. Rentmeester: huurcontracten, indexering en afrekening aan huurders
+
+> Voeg het beheer voor eigenaars die verhuren toe (de rol rentmeester), los van de VME-boekhouding:
+> - **Huurcontract:** pand of kavel, verhuurder, huurders, begin, duur, huur en lasten, huurwaarborg, gewest (de huurwetgeving verschilt per gewest).
+> - **Maandelijkse huurfacturen.**
+> - **Jaarlijkse indexering** volgens de gezondheidsindex, met de formule en uitzonderingen per gewest en de indexatiebrief als concept (`# LEGAL-CHECK:` indexeringsregels per gewest, bv. de beperking volgens het EPC). Neem de indexcijfers op als tabel die een beheerder bijwerkt.
+> - **Afrekening van lasten aan de huurder:** uit de jaarafrekening van de eigenaar (stap 6) het deel dat de huurder draagt, per rubriek instelbaar (bv. schoonmaak en lift wel, groot onderhoud niet).
+> - **Opzeggingen en einde huur**, met een taak vóór de termijn.
+>
+> Fictieve demo: twee verhuurde appartementen in Residentie Linde en één in Hof ter Beuken. Een bpost-koppeling voor brieven valt buiten het prototype (zie stap 23). Schrijf unittests voor de indexering per gewest en de afrekening aan de huurder. Gebruik plan mode.
+
