@@ -92,3 +92,15 @@ class TestDemoData(TransactionCase):
         for assembly in assemblies:
             self.assertTrue(assembly.period_start <= assembly.date <= assembly.period_end)
         self.assertTrue(self.env["res.users"].search([("login", "=", "medewerker.voorbeeld@example.com")]))
+
+    def test_demo_assembly_linde_2026(self):
+        assembly = self.env["vme.assembly"].search([("association_id", "=", self.linde.id), ("year", "=", 2026)])
+        self.assertEqual(assembly.state, "held")
+        self.assertEqual((assembly.owners_total, assembly.owners_present), (12, 10))
+        self.assertTrue(assembly.quorum_reached)
+        outcome = {item.name.split(":")[0]: item.outcome for item in assembly.item_ids}
+        self.assertEqual(outcome["Dakwerken"], "adopted")
+        self.assertEqual(outcome["Statutenwijziging"], "rejected")
+        roof = assembly.item_ids.filtered(lambda i: i.name.startswith("Dakwerken"))
+        self.assertEqual(roof.activity_ids.summary, "Drie offertes vragen voor de dakwerken")
+        self.assertEqual(len(assembly.item_ids.filtered("decision_number")), 7)

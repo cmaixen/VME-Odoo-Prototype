@@ -28,6 +28,8 @@
         "views/vme_installation_views.xml",
         "views/vme_assembly_views.xml",
         "data/bill_aliases.xml",
+        "report/vme_assembly_reports.xml",
+        "views/vme_assembly_meeting_views.xml",
     ],
     "installable": True,
     "application": True,

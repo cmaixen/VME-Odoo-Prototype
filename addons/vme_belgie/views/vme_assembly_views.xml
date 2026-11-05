@@ -157,8 +157,16 @@
             <form>
                 <header>
                     <button name="action_confirm" type="object" string="Bevestigen" class="btn-primary" invisible="state != 'proposed'"/>
+                    <button name="action_create_convocations" type="object" string="Oproepingen aanmaken"
+                            class="btn-primary" invisible="state != 'confirmed' or convocation_count"/>
                     <button name="action_mark_convocation_sent" type="object" string="Oproeping verstuurd"
                             invisible="state != 'confirmed' or convocation_sent_date"/>
+                    <button name="action_create_attendance_list" type="object" string="Aanwezigheidslijst"
+                            invisible="state != 'confirmed' or attendee_ids"/>
+                    <button name="action_prepare_votes" type="object" string="Stemlijsten aanmaken"
+                            invisible="state != 'confirmed' or not attendee_ids"/>
+                    <button name="action_print_minutes" type="object" string="Notulen (PDF)"
+                            invisible="state not in ('confirmed', 'held') or not attendee_ids"/>
                     <button name="action_mark_held" type="object" string="Gehouden" invisible="state != 'confirmed'"/>
                     <button name="action_reset" type="object" string="Opnieuw plannen" invisible="state not in ('proposed', 'confirmed')"/>
                     <button name="action_cancel" type="object" string="Annuleren" invisible="state in ('held', 'cancelled')"/>
@@ -176,6 +184,10 @@
                         <button name="action_open_calendar_event" type="object" class="oe_stat_button" icon="fa-calendar"
                                 invisible="not calendar_event_id">
                             <div class="o_stat_info"><span class="o_stat_text">Agenda</span></div>
+                        </button>
+                        <button name="action_open_convocations" type="object" class="oe_stat_button" icon="fa-envelope-o"
+                                invisible="not convocation_count">
+                            <field name="convocation_count" widget="statinfo" string="Oproepingen"/>
                         </button>
                     </div>
                     <div class="oe_title"><h1><field name="name"/></h1></div>
@@ -198,7 +210,46 @@
                             <field name="convocation_deadline"/>
                             <field name="convocation_sent_date"/>
                         </group>
+                        <group string="Vergadering" invisible="not attendee_ids">
+                            <field name="quorum_text"/>
+                            <field name="quorum_reached"/>
+                            <field name="second_session" readonly="state in ('held', 'cancelled')"/>
+                            <field name="chair_id" options="{'no_create': True}"/>
+                            <field name="secretary_id" options="{'no_create': True}"/>
+                        </group>
                     </group>
+                    <notebook>
+                        <page string="Agenda" name="agenda">
+                            <field name="item_ids" readonly="state in ('held', 'cancelled')">
+                                <list editable="bottom" decoration-success="outcome == 'adopted'" decoration-danger="outcome in ('rejected', 'no_quorum')">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="sequence" string="Nr."/>
+                                    <field name="name"/>
+                                    <field name="majority"/>
+                                    <field name="votes_for" optional="show"/>
+                                    <field name="votes_against" optional="show"/>
+                                    <field name="votes_abstain" optional="hide"/>
+                                    <field name="outcome" widget="badge" decoration-success="outcome == 'adopted'"
+                                           decoration-danger="outcome in ('rejected', 'no_quorum')" decoration-info="outcome == 'pending'"/>
+                                    <field name="decision_number" optional="show"/>
+                                    <button name="action_open_votes" type="object" string="Stemmen" icon="fa-check-square-o"
+                                            invisible="majority == 'none' or not id"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Aanwezigheid" name="attendance" invisible="not attendee_ids">
+                            <field name="attendee_ids" readonly="state in ('held', 'cancelled')">
+                                <list editable="bottom" create="0" decoration-muted="attendance == 'absent'">
+                                    <field name="partner_id" readonly="1"/>
+                                    <field name="lot_names" readonly="1"/>
+                                    <field name="shares" readonly="1" sum="Totaal"/>
+                                    <field name="attendance"/>
+                                    <field name="proxy_holder_id" options="{'no_create': True}"
+                                           required="attendance == 'represented'" invisible="attendance != 'represented'"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
                 </sheet>
                 <chatter/>
             </form>

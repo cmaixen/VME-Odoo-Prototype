@@ -7,3 +7,4 @@ from . import test_annual_statement
 from . import test_installations
 from . import test_assembly_planner
 from . import test_bill_mail
+from . import test_assembly_meeting
