@@ -7,7 +7,7 @@
     "license": "LGPL-3",
     # l10n_be and account_peppol must be installed up front: otherwise Odoo installs them
     # in the middle of creating the first Belgian company, which breaks that request.
-    "depends": ["account", "l10n_be", "account_peppol"],
+    "depends": ["account", "l10n_be", "account_peppol", "calendar"],
     "data": [
         "security/ir.model.access.csv",
         "views/vme_association_views.xml",
@@ -24,6 +24,7 @@
         "views/provision_menus.xml",
         "wizard/vme_annual_statement_wizard_views.xml",
         "report/vme_annual_statement_report.xml",
+        "views/vme_assembly_views.xml",
     ],
     "installable": True,
     "application": True,

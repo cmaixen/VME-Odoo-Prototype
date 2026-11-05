@@ -75,3 +75,20 @@ class TestDemoData(TransactionCase):
     def test_loading_twice_is_refused(self):
         with self.assertRaises(UserError):
             self.env["vme.association"]._load_demo_data()
+
+    def test_assembly_planner_solves_conflict(self):
+        """Linde and Kaaihuis both fit on 17 March; Linde's period ends first, so it gets that evening."""
+        wizard = self.env["vme.assembly.planner.wizard"].with_context(vme_today=date(2026, 11, 5)).create({"year": 2027})
+        wizard.action_propose()
+        assemblies = self.env["vme.assembly"].search([("year", "=", 2027)])
+        self.assertEqual(len(assemblies), 3)
+        self.assertEqual(set(assemblies.mapped("state")), {"proposed"})
+        day_by_vme = {a.association_id.name: a.date for a in assemblies}
+        self.assertEqual(day_by_vme, {
+            "Residentie Linde": date(2027, 3, 17),
+            "Kaaihuis": date(2027, 3, 23),
+            "Hof ter Beuken": date(2027, 4, 20),
+        })
+        for assembly in assemblies:
+            self.assertTrue(assembly.period_start <= assembly.date <= assembly.period_end)
+        self.assertTrue(self.env["res.users"].search([("login", "=", "medewerker.voorbeeld@example.com")]))
