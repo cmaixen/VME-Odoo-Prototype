@@ -3,7 +3,7 @@
 Automatisch gemaakt door `python3 tools/legal_checks.py`; niet met de hand bewerken.
 Elke rij is een wettelijke regel in de code die nog juridisch gevalideerd moet worden.
 
-Aantal punten: 50.
+Aantal punten: 52.
 
 ## Per bron
 
@@ -13,7 +13,7 @@ Aantal punten: 50.
 - **KB 9 maart 2003 betreffende de beveiliging van liften**: [vme_installation.py:17](../../addons/vme_belgie/models/vme_installation.py#L17)
 - **NBN S21-050**: [vme_installation.py:20](../../addons/vme_belgie/models/vme_installation.py#L20)
 - **Vlaamse regelgeving verwarmingsaudit/onderhoud**: [vme_installation.py:25](../../addons/vme_belgie/models/vme_installation.py#L25)
-- **art. 3.85 §1 BW**: [vme_key.py:60](../../addons/vme_belgie/models/vme_key.py#L60), [vme_migration.py:739](../../addons/vme_belgie/models/vme_migration.py#L739)
+- **art. 3.85 §1 BW**: [vme_key.py:34](../../addons/vme_belgie/models/vme_key.py#L34), [vme_key.py:92](../../addons/vme_belgie/models/vme_key.py#L92), [vme_migration.py:739](../../addons/vme_belgie/models/vme_migration.py#L739)
 - **art. 3.86 §3 BW**: [vme_budget.py:5](../../addons/vme_belgie/models/vme_budget.py#L5), [vme_migration.py:445](../../addons/vme_belgie/models/vme_migration.py#L445)
 - **art. 3.87 §10 BW**: [vme_assembly_meeting.py:232](../../addons/vme_belgie/models/vme_assembly_meeting.py#L232)
 - **art. 3.87 §2 BW**: [vme_assembly.py:13](../../addons/vme_belgie/models/vme_assembly.py#L13), [vme_assembly.py:38](../../addons/vme_belgie/models/vme_assembly.py#L38)
@@ -23,9 +23,9 @@ Aantal punten: 50.
 - **art. 3.87 §7 BW**: [vme_assembly_meeting.py:25](../../addons/vme_belgie/models/vme_assembly_meeting.py#L25), [vme_assembly_meeting.py:381](../../addons/vme_belgie/models/vme_assembly_meeting.py#L381)
 - **art. 3.88 §1-3 BW**: [vme_assembly_meeting.py:8](../../addons/vme_belgie/models/vme_assembly_meeting.py#L8)
 - **art. 3.88 §3 BW**: [vme_assembly_meeting.py:302](../../addons/vme_belgie/models/vme_assembly_meeting.py#L302)
-- **art. 3.89 §5 BW**: [account_bank_statement_line.py:154](../../addons/vme_belgie/models/account_bank_statement_line.py#L154), [account_move.py:55](../../addons/vme_belgie/models/account_move.py#L55), [vme_association.py:15](../../addons/vme_belgie/models/vme_association.py#L15), [vme_association.py:34](../../addons/vme_belgie/models/vme_association.py#L34), [vme_association.py:170](../../addons/vme_belgie/models/vme_association.py#L170), [vme_association.py:193](../../addons/vme_belgie/models/vme_association.py#L193), [vme_migration.py:621](../../addons/vme_belgie/models/vme_migration.py#L621), [vme_provision_call_wizard.py:115](../../addons/vme_belgie/wizard/vme_provision_call_wizard.py#L115)
+- **art. 3.89 §5 BW**: [account_bank_statement_line.py:154](../../addons/vme_belgie/models/account_bank_statement_line.py#L154), [account_move.py:56](../../addons/vme_belgie/models/account_move.py#L56), [vme_association.py:15](../../addons/vme_belgie/models/vme_association.py#L15), [vme_association.py:34](../../addons/vme_belgie/models/vme_association.py#L34), [vme_association.py:170](../../addons/vme_belgie/models/vme_association.py#L170), [vme_association.py:193](../../addons/vme_belgie/models/vme_association.py#L193), [vme_migration.py:621](../../addons/vme_belgie/models/vme_migration.py#L621), [vme_provision_call_wizard.py:115](../../addons/vme_belgie/wizard/vme_provision_call_wizard.py#L115)
 - **art. 3.93 §4 BW**: [vme_assembly_meeting.py:212](../../addons/vme_belgie/models/vme_assembly_meeting.py#L212)
-- **art. 3.94 BW**: [account_move.py:161](../../addons/vme_belgie/models/account_move.py#L161)
+- **art. 3.94 BW**: [account_move.py:155](../../addons/vme_belgie/models/account_move.py#L155), [account_move.py:259](../../addons/vme_belgie/models/account_move.py#L259)
 - **art. 3.94 §1 BW**: [vme_sale_file.py:10](../../addons/vme_belgie/models/vme_sale_file.py#L10), [vme_sale_file.py:16](../../addons/vme_belgie/models/vme_sale_file.py#L16)
 - **art. 3.94 §1, 1° BW**: [vme_sale_file.py:255](../../addons/vme_belgie/models/vme_sale_file.py#L255)
 - **art. 3.94 §1, 2° en §2 BW**: [vme_sale_file.py:278](../../addons/vme_belgie/models/vme_sale_file.py#L278)
@@ -45,8 +45,9 @@ Aantal punten: 50.
 | --- | --- | --- | --- |
 | [addons/vme_belgie/models/account_bank_statement_line.py](../../addons/vme_belgie/models/account_bank_statement_line.py#L154) | 154 | art. 3.89 §5 BW | working and reserve capital on separate accounts: never book a provision of one fund silently on the account of the other. |
 | [addons/vme_belgie/models/account_chart_template.py](../../addons/vme_belgie/models/account_chart_template.py#L6) | 6 | KB 12 juli 2012 (minimum chart of accounts for VMEs) | align these codes. |
-| [addons/vme_belgie/models/account_move.py](../../addons/vme_belgie/models/account_move.py#L55) | 55 | art. 3.89 §5 BW | a provision is paid to the bank account of its fund. |
-| [addons/vme_belgie/models/account_move.py](../../addons/vme_belgie/models/account_move.py#L161) | 161 | art. 3.94 BW | costs are split between seller and buyer by the number of days each one owned the lot within the cost period. |
+| [addons/vme_belgie/models/account_move.py](../../addons/vme_belgie/models/account_move.py#L56) | 56 | art. 3.89 §5 BW | a provision is paid to the bank account of its fund. |
+| [addons/vme_belgie/models/account_move.py](../../addons/vme_belgie/models/account_move.py#L155) | 155 | art. 3.94 BW | between seller and buyer, the consumption of each one's ownership period; without a reading at the deed, pro rata per day between two readings. |
+| [addons/vme_belgie/models/account_move.py](../../addons/vme_belgie/models/account_move.py#L259) | 259 | art. 3.94 BW | costs are split between seller and buyer by the number of days each one owned the lot within the cost period. |
 | [addons/vme_belgie/models/vme_assembly.py](../../addons/vme_belgie/models/vme_assembly.py#L13) | 13 | art. 3.87 §2 BW | the ordinary general assembly takes place every year within the period of fifteen days fixed in the rules of co-ownership. |
 | [addons/vme_belgie/models/vme_assembly.py](../../addons/vme_belgie/models/vme_assembly.py#L17) | 17 | art. 3.87 §3 BW | the convocation is sent at least fifteen days before the meeting, unless the rules of co-ownership set another term. |
 | [addons/vme_belgie/models/vme_assembly.py](../../addons/vme_belgie/models/vme_assembly.py#L38) | 38 | art. 3.87 §2 BW | fifteen-day period from the rules of co-ownership. |
@@ -81,7 +82,8 @@ Aantal punten: 50.
 | [addons/vme_belgie/models/vme_installation.py](../../addons/vme_belgie/models/vme_installation.py#L25) | 25 | Vlaamse regelgeving verwarmingsaudit/onderhoud | gas boilers; differs per region and fuel (fuel oil is yearly). |
 | [addons/vme_belgie/models/vme_installation.py](../../addons/vme_belgie/models/vme_installation.py#L28) | 28 | no general legal interval found; manufacturer and fire department advice | - |
 | [addons/vme_belgie/models/vme_installation.py](../../addons/vme_belgie/models/vme_installation.py#L33) | 33 | KB 9 maart 2003 | risk analysis of an elevator at least every 15 years. |
-| [addons/vme_belgie/models/vme_key.py](../../addons/vme_belgie/models/vme_key.py#L60) | 60 | art. 3.85 §1 BW | the deed of division sets each lot's share in the common parts; the shares of a key must add up to its total. |
+| [addons/vme_belgie/models/vme_key.py](../../addons/vme_belgie/models/vme_key.py#L34) | 34 | art. 3.85 §1 BW | the bylaws (reglement van mede-eigendom) set the criteria and the calculation of the charges, so also a split by consumption and its fixed share. |
+| [addons/vme_belgie/models/vme_key.py](../../addons/vme_belgie/models/vme_key.py#L92) | 92 | art. 3.85 §1 BW | the deed of division sets each lot's share in the common parts; the shares of a key must add up to its total. |
 | [addons/vme_belgie/models/vme_migration.py](../../addons/vme_belgie/models/vme_migration.py#L445) | 445 | art. 3.86 §3 BW | the reserve fund belongs to the VME and goes over in full; it is not settled with the owners. |
 | [addons/vme_belgie/models/vme_migration.py](../../addons/vme_belgie/models/vme_migration.py#L476) | 476 | art. III.88 WER | accounting documents are kept for 7 years (check whether 10 years applies); art. 3.89 §5, 13° BW - the previous syndic hands over the archive. |
 | [addons/vme_belgie/models/vme_migration.py](../../addons/vme_belgie/models/vme_migration.py#L621) | 621 | art. 3.89 §5 BW | working and reserve capital on separate accounts. |

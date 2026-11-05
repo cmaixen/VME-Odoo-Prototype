@@ -36,7 +36,7 @@ Odoo maakt een conceptfactuur met de leverancier, de regels en de bedragen uit h
 
 ## Voorbeeld uit de demo
 
-In de demo heeft elke VME een verdeelregel voor **Energieleverancier Voorbeeld NV** (algemene sleutel, rekening 612500). Residentie Linde heeft er ook een voor **Liftonderhoud Voorbeeld BV** (liftsleutel). De demohistoriek voegt regels toe voor schoonmaak, verzekering en (in Hof ter Beuken) gas op de verwarmingssleutel.
+In de demo heeft elke VME een verdeelregel voor **Energieleverancier Voorbeeld NV** (algemene sleutel, rekening 612500). Residentie Linde heeft er ook een voor **Liftonderhoud Voorbeeld BV** (liftsleutel). De demohistoriek voegt regels toe voor schoonmaak, verzekering en (in Hof ter Beuken) gas op de sleutel **Verwarming op verbruik** (zie [Verwarming of water op verbruik](verbruik-en-meterstanden.md)).
 
 De jaarafrekening elektriciteit van Residentie Linde (factuur EV-2026-110301, 5.324,00 euro) slaat op 1 november 2025 tot 31 oktober 2026. Na het opladen en bevestigen is ze verdeeld over **13 eigenaars**: twaalf eigenaars plus de koper van A5, omdat A5 en G5 midden in die periode verkocht zijn.
 

@@ -29,3 +29,6 @@ access_vme_collection_reminder_line_user,vme.collection.reminder.line user,model
 access_vme_bank_import_wizard_user,vme.bank.import.wizard user,model_vme_bank_import_wizard,base.group_user,1,1,1,1
 access_account_bank_statement_line_vme_invoice,account.bank.statement.line vme invoice,account.model_account_bank_statement_line,account.group_account_invoice,1,1,0,0
 access_vme_migration_system,vme.migration system,model_vme_migration,base.group_system,1,1,1,1
+access_vme_meter_user,vme.meter user,model_vme_meter,base.group_user,1,1,1,1
+access_vme_meter_reading_user,vme.meter.reading user,model_vme_meter_reading,base.group_user,1,1,1,1
+access_vme_meter_import_wizard_user,vme.meter.import.wizard user,model_vme_meter_import_wizard,base.group_user,1,1,1,1

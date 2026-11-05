@@ -43,10 +43,12 @@ class TestDemoData(TransactionCase):
         self.assertEqual(set(lift.line_ids.lot_id.mapped("lot_type")), {"apartment"})
         self.assertFalse(self.vmes.filtered(lambda v: v.name == "Kaaihuis").key_ids.filtered(
             lambda k: k.key_type == "elevator"))
-        # The heating key must really differ from the general key.
+        # The fixed part of the heating (by consumption) must really differ from the general key.
         beuken_keys = keys.filtered(lambda k: k.association_id.name == "Hof ter Beuken")
         shares = {k.key_type: k.line_ids.sorted("lot_id").mapped("shares") for k in beuken_keys}
-        self.assertNotEqual(shares["general"], shares["heating"])
+        self.assertNotEqual(shares["general"], shares["consumption"])
+        heating = beuken_keys.filtered(lambda k: k.key_type == "consumption")
+        self.assertEqual((heating.meter_type, heating.fixed_percent), ("heating", 30.0))
 
     def test_sale_mid_year(self):
         lot_a5 = self.linde.lot_ids.filtered(lambda l: l.name == "A5")

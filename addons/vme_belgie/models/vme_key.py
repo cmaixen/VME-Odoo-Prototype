@@ -2,7 +2,10 @@ from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 from odoo.tools import float_compare, float_round, formatLang
 
+from .vme_meter import METER_TYPES
+
 SHARES_PRECISION = 2
+DEFAULT_FIXED_PERCENT = 30.0
 
 
 class VmeKey(models.Model):
@@ -28,6 +31,22 @@ class VmeKey(models.Model):
         required=True,
         default="general",
     )
+    # LEGAL-CHECK: art. 3.85 §1 BW - the bylaws (reglement van mede-eigendom) set the criteria
+    # and the calculation of the charges, so also a split by consumption and its fixed share.
+    meter_type = fields.Selection(
+        METER_TYPES,
+        string="Tellers",
+        default="heating",
+        help="Welke tellers van de kavels het verbruik geven voor het variabele deel.",
+    )
+    fixed_percent = fields.Float(
+        string="Vast deel (%)",
+        default=DEFAULT_FIXED_PERCENT,
+        digits=(5, 2),
+        help="Dit deel van de kost wordt verdeeld volgens de quotiteiten van deze sleutel, "
+             "de rest volgens het werkelijke verbruik in de kostperiode.",
+    )
+    variable_percent = fields.Float(string="Variabel deel (%)", compute="_compute_variable_percent", digits=(5, 2))
     total_shares = fields.Float(
         string="Totaal", required=True, default=1000.0, digits=(16, SHARES_PRECISION)
     )
@@ -39,6 +58,19 @@ class VmeKey(models.Model):
         string="Verschil", compute="_compute_shares_sum", digits=(16, SHARES_PRECISION)
     )
     is_balanced = fields.Boolean(string="Klopt", compute="_compute_shares_sum")
+
+    @api.depends("fixed_percent")
+    def _compute_variable_percent(self):
+        for key in self:
+            key.variable_percent = 100.0 - key.fixed_percent
+
+    @api.constrains("key_type", "fixed_percent", "meter_type")
+    def _check_consumption_settings(self):
+        for key in self.filtered(lambda k: k.key_type == "consumption"):
+            if not 0 <= key.fixed_percent <= 100:
+                raise ValidationError(self.env._("Het vaste deel moet tussen 0 en 100% liggen."))
+            if not key.meter_type and key.fixed_percent < 100:
+                raise ValidationError(self.env._("Kies welke tellers het verbruik geven."))
 
     @api.depends("line_ids.shares", "total_shares")
     def _compute_shares_sum(self):

@@ -92,7 +92,7 @@ Draai dit ongeveer 15 minuten voor de demo, in de map van het project. Docker (O
 2. Bovenaan staat de **controle** in het groen: de som van alle aandelen is gelijk aan de geboekte kosten (19.240,30 € na stap 2 en 3).
 3. In de tabel: eigenaar A1 krijgt 515,64 € terug, A3 heeft nog 432 € open staan, en de verkoper en de koper van A5 hebben elk hun eigen afrekening.
 4. Klik op **Afdrukken (PDF)** en toon één pagina: kosten per sleutel, provisies, saldo, reservekapitaal apart, detail per factuur.
-5. Kies daarna *Hof ter Beuken*: daar moeten de eigenaars bijbetalen, door de gasfactuur van de centrale verwarming.
+5. Kies daarna *Hof ter Beuken*: daar moeten de eigenaars bijbetalen, door de gasfactuur van de centrale verwarming. Die is verdeeld op verbruik (30% vast, 70% volgens de kostenverdelers): onder de verwarmingssleutel staat per eigenaar zijn verbruik.
 
 > Boodschap: "De afrekening die u nu een week kost, staat klaar zodra de laatste factuur geboekt is."
 

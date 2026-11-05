@@ -17,6 +17,9 @@
                 <field name="date_to"/>
                 <field name="days" optional="show"/>
                 <field name="currency_id" column_invisible="1"/>
+                <field name="consumption" optional="show"/>
+                <field name="fixed_amount" optional="hide" sum="Totaal"/>
+                <field name="variable_amount" optional="hide" sum="Totaal"/>
                 <field name="amount" sum="Totaal"/>
             </list>
         </field>

@@ -3,6 +3,8 @@ from datetime import date
 from odoo import fields, models
 from odoo.tools import float_is_zero
 
+from .vme_meter import METER_UNITS
+
 
 class VmeAssociation(models.Model):
     _inherit = "vme.association"
@@ -61,6 +63,13 @@ class VmeAssociation(models.Model):
                     "total_shares": key.total_shares,
                     "lots": ", ".join(lot.name for lot in lot_shares),
                     "amount": currency.round(sum(key_allocations.mapped("amount"))),
+                    # Keys "op verbruik": the owner's consumption and the split into fixed and variable.
+                    "consumption": key.key_type == "consumption" and {
+                        "used": sum(key_allocations.mapped("consumption")),
+                        "unit": METER_UNITS.get(key.meter_type, ""),
+                        "fixed": currency.round(sum(key_allocations.mapped("fixed_amount"))),
+                        "variable": currency.round(sum(key_allocations.mapped("variable_amount"))),
+                    },
                 })
             bill_lines = []
             for move in own.move_id.sorted(lambda m: (m.invoice_date, m.id)):

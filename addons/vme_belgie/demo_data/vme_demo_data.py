@@ -61,7 +61,8 @@ BUILDINGS = [
         "zip": "9000",
         "city": "Voorbeeldstad",
         "lots": _apartments("B", 6, [85, 110, 78, 92]),
-        "keys": ["general", "heating"],
+        # Heating is split on consumption: heat cost allocators per radiator (readings in demo_data/meterstanden).
+        "keys": ["general", "consumption"],
         # One investor owns both top-floor apartments B23 and B24.
         "shared_owner": {"B24": "B23"},
     },
@@ -242,7 +243,11 @@ KEY_NAMES = {
     "general": "Algemene sleutel",
     "elevator": "Liftsleutel",
     "heating": "Verwarmingssleutel",
+    "consumption": "Verwarming op verbruik",
 }
+
+# Keys "op verbruik" in the demo: which meters, and the fixed part by shares (the rest by consumption).
+CONSUMPTION_KEY = {"meter_type": "heating", "fixed_percent": 30.0}
 
 
 def distribute_shares(weights, total=1000):
@@ -263,7 +268,7 @@ def _key_weight(key_type, lot, top_floor):
         return lot["area"] * TYPE_WEIGHT[lot["lot_type"]]
     if key_type == "elevator":
         return lot["area"] * LIFT_FLOOR_FACTOR[lot["floor_number"]] if lot["lot_type"] == "apartment" else 0
-    if key_type == "heating":
+    if key_type in ("heating", "consumption"):
         outer = lot["floor_number"] in (0, top_floor)
         return lot["area"] * (HEATING_OUTER_FLOOR_FACTOR if outer else 1.0)
     raise ValueError(key_type)
@@ -358,6 +363,7 @@ class VmeAssociation(models.Model):
                     "association_id": vme.id,
                     "key_type": key_type,
                     "total_shares": 1000,
+                    **(CONSUMPTION_KEY if key_type == "consumption" else {}),
                     "line_ids": [
                         Command.create({"lot_id": lot_by_name[lot["name"]].id, "shares": share})
                         for (lot, _weight), share in zip(pairs, shares)
