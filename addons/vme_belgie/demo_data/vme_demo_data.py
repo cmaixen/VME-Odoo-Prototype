@@ -176,6 +176,31 @@ BUDGETS = {
 }
 BUDGET_YEARS = (2026, 2027)
 
+# Fifteen-day period of the ordinary general assembly (month, first day) per VME.
+# Linde (4-18 March) and Kaaihuis (10-24 March) both fit on 17 March, which only has room
+# for one meeting: the planner must give it to Linde, whose period ends first.
+ASSEMBLY_PERIODS = {
+    "Residentie Linde": ("3", 4),
+    "Hof ter Beuken": ("4", 12),
+    "Kaaihuis": ("3", 10),
+}
+
+# Fictitious meeting rooms of the syndic.
+ASSEMBLY_ROOMS = [
+    ("Vergaderzaal kantoor syndicus", "Kantoorlaan 1, 2000 Voorbeeldstad", 40),
+    ("Buurtzaal Voorbeeld", "Pleinstraat 5, 9000 Voorbeeldstad", 80),
+]
+
+# Blocks for the 2027 season: date, start hour, room index (None = online), employee, max meetings.
+# Employee "admin" is the demo administrator, "staff" a fictitious employee of the syndic.
+ASSEMBLY_BLOCKS = [
+    (date(2027, 3, 17), 19.0, 0, "admin", 1),
+    (date(2027, 3, 23), 19.5, None, "staff", 2),
+    (date(2027, 4, 20), 19.0, 1, "staff", 2),
+    (date(2027, 5, 11), 19.0, None, "admin", 2),
+]
+STAFF_USER = {"name": "Medewerker Voorbeeld", "login": "medewerker.voorbeeld@example.com"}
+
 KEY_NAMES = {
     "general": "Algemene sleutel",
     "elevator": "Liftsleutel",
@@ -259,6 +284,8 @@ class VmeAssociation(models.Model):
                 "street": building["street"],
                 "zip": building["zip"],
                 "city": building["city"],
+                "assembly_period_month": ASSEMBLY_PERIODS[building["name"]][0],
+                "assembly_period_day": ASSEMBLY_PERIODS[building["name"]][1],
             })
             banks = self.env["res.partner.bank"].create([
                 {"acc_number": fake_iban(account_number + offset), "partner_id": vme.partner_id.id}
@@ -373,6 +400,8 @@ class VmeAssociation(models.Model):
             self.env["vme.ownership"].create(ownership_vals)
             vmes |= vme
 
+        self._load_demo_assembly_blocks()
+
         def set_rule_accounts():
             # Runs at commit, after the chart of accounts of the new companies is loaded.
             for rule, code in rule_accounts:
@@ -394,3 +423,21 @@ class VmeAssociation(models.Model):
                 "next": self.env["ir.actions.act_window"]._for_xml_id("vme_belgie.vme_association_action"),
             },
         }
+
+    @api.model
+    def _load_demo_assembly_blocks(self):
+        """Rooms, one fictitious employee and free blocks for the 2027 general assemblies."""
+        rooms = self.env["vme.assembly.room"].create([
+            {"name": name, "address": address, "capacity": capacity} for name, address, capacity in ASSEMBLY_ROOMS
+        ])
+        staff = self.env["res.users"].search([("login", "=", STAFF_USER["login"])]) or \
+            self.env["res.users"].with_context(no_reset_password=True).create(STAFF_USER)
+        users = {"admin": self.env.ref("base.user_admin"), "staff": staff}
+        self.env["vme.assembly.slot"].create([{
+            "date": day,
+            "time_start": hour,
+            "location_type": "online" if room_index is None else "room",
+            "room_id": False if room_index is None else rooms[room_index].id,
+            "user_id": users[user].id,
+            "max_assemblies": capacity,
+        } for day, hour, room_index, user, capacity in ASSEMBLY_BLOCKS])

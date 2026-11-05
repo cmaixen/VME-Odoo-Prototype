@@ -5,3 +5,4 @@ from . import test_distribution_rules
 from . import test_provision_call
 from . import test_annual_statement
 from . import test_installations
+from . import test_assembly_planner

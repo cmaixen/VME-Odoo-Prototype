@@ -10,3 +10,4 @@ from . import vme_budget
 from . import vme_provision_call
 from . import vme_annual_statement
 from . import vme_installation
+from . import vme_assembly
