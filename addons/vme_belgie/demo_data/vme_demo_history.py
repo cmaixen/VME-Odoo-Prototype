@@ -75,12 +75,13 @@ class VmeAssociation(models.Model):
         journals = vmes._ensure_fund_bank_journals()
         self._demo_history_provisions(vmes, journals)
         self._demo_history_bills(vmes)
+        self._load_demo_collection()
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
                 "title": self.env._("Demohistoriek geladen"),
-                "message": self.env._("Provisies, betalingen en leveranciersfacturen van %s.", HISTORY_YEAR),
+                "message": self.env._("Provisies, betalingen, leveranciersfacturen en invorderingen van %s.", HISTORY_YEAR),
                 "type": "success",
                 "next": self.env["ir.actions.act_window"]._for_xml_id("vme_belgie.vme_annual_statement_wizard_action"),
             },

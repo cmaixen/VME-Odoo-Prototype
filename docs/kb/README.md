@@ -23,20 +23,21 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 
 6. [Budget en provisieoproepen, met de 5%-regel voor het reservefonds](budget-en-provisieoproepen.md)
 7. [De jaarafrekening lezen en afdrukken](jaarafrekening.md)
+8. [Invordering van achterstallen: herinneringen, interest en doorsturen](invordering.md)
 
 ### Gebouw en installaties
 
-8. [Keuringen en liften opvolgen](keuringen.md)
+9. [Keuringen en liften opvolgen](keuringen.md)
 
 ### Algemene vergaderingen
 
-9. [Algemene vergaderingen plannen in blokken](av-planner.md)
-10. [De algemene vergadering: oproeping, stemming en notulen](algemene-vergadering.md)
+10. [Algemene vergaderingen plannen in blokken](av-planner.md)
+11. [De algemene vergadering: oproeping, stemming en notulen](algemene-vergadering.md)
 
 ### Post en mails
 
-11. [Leveranciersfacturen per e-mail ontvangen](facturen-per-mail.md)
-12. [Een antwoord behandelen dat de AI-assistent voorstelt](ai-voorstellen-mails.md)
+12. [Leveranciersfacturen per e-mail ontvangen](facturen-per-mail.md)
+13. [Een antwoord behandelen dat de AI-assistent voorstelt](ai-voorstellen-mails.md)
 
 ## Zo is het platform opgebouwd
 
@@ -54,4 +55,4 @@ De demo bevat drie verzonnen gebouwen:
 | Hof ter Beuken | 24 appartementen (B1–B24) | Algemene sleutel, verwarmingssleutel | Eén eigenaar heeft B23 en B24; het reservefonds zit onder de 5% |
 | Kaaihuis | 6 appartementen (K1–K6) | Algemene sleutel | Klein gebouw zonder lift |
 
-Een beheerder laadt de demo via **VME > Configuratie > Demodata laden** en daarna **Demohistoriek 2026 laden** (provisieoproepen, betalingen en leveranciersfacturen van een volledig jaar). De schermafbeeldingen in deze kennisbank komen uit die demo.
+Een beheerder laadt de demo via **VME > Configuratie > Demodata laden** en daarna **Demohistoriek 2026 laden** (provisieoproepen, betalingen, leveranciersfacturen en invorderingen van een volledig jaar). De schermafbeeldingen in deze kennisbank komen uit die demo.
