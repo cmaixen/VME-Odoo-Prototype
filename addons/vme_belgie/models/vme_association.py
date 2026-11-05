@@ -124,6 +124,37 @@ class VmeAssociation(models.Model):
                 lambda bank: not bank.allow_out_payment
             )
 
+    def _ensure_fund_bank_journals(self):
+        """One bank journal per fund, linked to its bank account, so payments land on the right fund.
+
+        Returns {vme: {"working": journal, "reserve": journal}}.
+        """
+        # LEGAL-CHECK: art. 3.89 §5 BW - working and reserve capital on separate bank accounts.
+        result = {}
+        for vme in self.sudo():
+            Journal = self.env["account.journal"].sudo().with_company(vme.company_id)
+            bank_journals = Journal.search([("company_id", "=", vme.company_id.id), ("type", "=", "bank")])
+            journals = {}
+            for fund, bank, code, name in (
+                ("working", vme.working_capital_bank_id, "WK", self.env._("Werkkapitaal")),
+                ("reserve", vme.reserve_capital_bank_id, "RK", self.env._("Reservekapitaal")),
+            ):
+                journal = bank_journals.filtered(lambda j, b=bank: j.bank_account_id == b)[:1]
+                if not journal:
+                    # Reuse the default bank journal of the chart for the working capital.
+                    free = bank_journals.filtered(lambda j: not j.bank_account_id and j not in journals.values())
+                    journal = free[:1] if fund == "working" else Journal.browse()
+                    if journal:
+                        journal.write({"bank_account_id": bank.id, "name": name, "code": code})
+                    else:
+                        journal = Journal.create({
+                            "name": name, "code": code, "type": "bank",
+                            "bank_account_id": bank.id, "company_id": vme.company_id.id,
+                        })
+                journals[fund] = journal
+            result[vme] = journals
+        return result
+
     def _action_open_related(self, model, name):
         self.ensure_one()
         return {

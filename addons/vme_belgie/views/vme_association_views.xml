@@ -19,6 +19,9 @@
         <field name="model">vme.association</field>
         <field name="arch" type="xml">
             <form>
+                <header>
+                    <button name="action_open_annual_statement" type="object" string="Jaarafrekening" invisible="not id"/>
+                </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button name="action_open_lots" type="object" class="oe_stat_button" icon="fa-building">

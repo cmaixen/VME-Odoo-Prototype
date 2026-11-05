@@ -11,6 +11,9 @@ services:
 
   odoo:
     image: odoo:19.0
+    # Serve only the demo database: no database picker at login, and PDF reports can load
+    # their stylesheets (the test database vme_test sits next to it).
+    command: ["--db-filter=^vme_demo$"]
     depends_on:
       - db
     ports:

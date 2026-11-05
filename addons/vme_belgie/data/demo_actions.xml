@@ -8,6 +8,15 @@
         <field name="group_ids" eval="[(4, ref('base.group_system'))]"/>
     </record>
 
+    <record id="action_load_demo_history" model="ir.actions.server">
+        <field name="name">Demohistoriek 2026 laden</field>
+        <field name="model_id" ref="model_vme_association"/>
+        <field name="state">code</field>
+        <field name="code">action = model._load_demo_history()</field>
+        <field name="group_ids" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+
     <menuitem id="menu_vme_configuration" name="Configuratie" parent="menu_vme_root" sequence="90" groups="base.group_system"/>
     <menuitem id="menu_vme_load_demo_data" name="Demodata laden" parent="menu_vme_configuration" action="action_load_demo_data" sequence="10"/>
+    <menuitem id="menu_vme_load_demo_history" name="Demohistoriek 2026 laden" parent="menu_vme_configuration" action="action_load_demo_history" sequence="11"/>
 </odoo>

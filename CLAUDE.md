@@ -27,8 +27,11 @@ Een werkend prototype van een syndicusplatform op Odoo 19, om te tonen aan een p
 - Database opnieuw aanmaken: `docker compose run --rm odoo odoo -d vme_demo -i vme_belgie --load-language=nl_BE --stop-after-init` (installeert ook `account`, `l10n_be` en `account_peppol`)
 - Logs: `docker compose logs -f odoo`
 - Database voor de demo: `vme_demo`, met de modules `account`, `l10n_be`, `account_peppol` en `vme_belgie`.
-- Unittests op een aparte database: `docker compose run --rm odoo odoo -d vme_test -u vme_belgie --test-enable --test-tags /vme_belgie --stop-after-init`
+- Unittests op een aparte database: `docker compose run --rm odoo odoo -d vme_test -u vme_belgie --test-enable --test-tags /vme_belgie --stop-after-init` (ongeveer 20 seconden).
+- De trage test met een volledig demojaar staat apart (tag `vme_slow`, meer dan 10 minuten): `docker compose run --rm odoo odoo -d vme_test -u vme_belgie --test-enable --test-tags vme_slow --stop-after-init`. Draai die vóór een demo of na wijzigingen aan de afrekening.
 - Demodata laden (drie fictieve VME's): in Odoo via **VME > Configuratie > Demodata laden**, of op de commandline: `echo "env = env(user=env.ref('base.user_admin')); env['vme.association']._load_demo_data(); env.cr.commit()" | docker compose run --rm -T odoo odoo shell -d vme_demo --no-http`. Draai het als admin: Odoo laat de systeemgebruiker geen bankrekeningen bevestigen, en zonder bevestigde rekeningen staan ze niet op de provisieoproepen. Laadt maar één keer; voor een verse demo eerst de database opnieuw aanmaken (Odoo stoppen, `docker compose exec db dropdb -U odoo vme_demo`, aanmaken, laden, Odoo starten).
+- Demohistoriek 2026 laden (provisieoproepen, betalingen en leveranciersfacturen; ongeveer een minuut), ná de demodata: **VME > Configuratie > Demohistoriek 2026 laden**, of `echo "env = env(user=env.ref('base.user_admin')); env['vme.association']._load_demo_history(); env.cr.commit()" | docker compose run --rm -T odoo odoo shell -d vme_demo --no-http`. Daarna toont **VME > Jaarafrekening** voor 2026 een volledig jaar.
+- De lopende server dient alleen `vme_demo` (`--db-filter` in `docker-compose.yml`); tests en shell-commando's via `docker compose run` geven hun eigen database mee.
 - Fictieve Peppol-facturen (UBL BIS Billing 3.0) voor de demo staan in `addons/vme_belgie/demo_data/facturen/`, één per VME. Importeer ze in de company van die VME via **Facturatie > Leveranciers > Facturen > Upload**; de verdeelregels vullen sleutel en rekening in en bij "Bevestigen" wordt automatisch verdeeld.
 
 ## Domeinbegrippen

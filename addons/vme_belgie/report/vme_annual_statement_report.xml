@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_annual_statement" model="ir.actions.report">
+        <field name="name">Jaarafrekening</field>
+        <field name="model">vme.annual.statement.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">vme_belgie.report_annual_statement</field>
+        <field name="report_file">vme_belgie.report_annual_statement</field>
+        <field name="print_report_name">'Jaarafrekening %s %s' % (object.association_id.name, object.year)</field>
+    </record>
+
+    <template id="report_annual_statement">
+        <t t-call="web.html_container">
+            <t t-foreach="statements" t-as="data">
+                <t t-set="currency" t-value="data['currency']"/>
+                <t t-set="vme" t-value="data['vme']"/>
+                <t t-foreach="data['statements']" t-as="st">
+                    <t t-set="company" t-value="vme.company_id"/>
+                    <t t-set="o" t-value="st['partner']"/>
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <div class="row mb-4">
+                                <div class="col-6">
+                                    <h2 class="mb-0">Jaarafrekening <t t-out="data['year']"/></h2>
+                                    <div class="text-muted">
+                                        VME <t t-out="vme.name"/>
+                                        <t t-if="vme.kbo_number"> · KBO <t t-out="vme.kbo_number"/></t>
+                                    </div>
+                                </div>
+                                <div class="col-5 offset-1">
+                                    <strong t-out="st['partner'].name"/>
+                                    <div t-if="st['partner'].email" t-out="st['partner'].email" class="text-muted"/>
+                                </div>
+                            </div>
+
+                            <h5>Uw kavels</h5>
+                            <table class="table table-sm mb-4">
+                                <thead><tr><th>Kavel</th><th>Type</th><th>Eigenaar van</th><th>tot</th></tr></thead>
+                                <tbody>
+                                    <tr t-foreach="st['ownerships']" t-as="own">
+                                        <td t-out="own.lot_id.name"/>
+                                        <td><span t-field="own.lot_id.lot_type"/></td>
+                                        <td><span t-field="own.date_start"/></td>
+                                        <td><t t-if="own.date_end"><span t-field="own.date_end"/></t><t t-else="">-</t></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <h5>Kosten per verdeelsleutel</h5>
+                            <table class="table table-sm mb-4">
+                                <thead>
+                                    <tr>
+                                        <th>Sleutel</th>
+                                        <th class="text-end">Totale kosten VME</th>
+                                        <th class="text-end">Uw quotiteit</th>
+                                        <th class="text-end">Uw aandeel</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="st['keys']" t-as="k">
+                                        <td t-out="k['key'].name"/>
+                                        <td class="text-end"><t t-out="k['total_vme']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td>
+                                        <td class="text-end"><t t-out="k['shares']"/>/<t t-out="'%g' % k['total_shares']"/> <small class="text-muted">(<t t-out="k['lots']"/>)</small></td>
+                                        <td class="text-end"><t t-out="k['amount']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td>
+                                    </tr>
+                                    <tr class="fw-bold">
+                                        <td colspan="3">Totaal uw aandeel in de kosten</td>
+                                        <td class="text-end"><t t-out="st['cost_total']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <h5>Afrekening werkkapitaal</h5>
+                            <table class="table table-sm mb-2">
+                                <tbody>
+                                    <tr>
+                                        <td>Uw aandeel in de kosten van <t t-out="data['year']"/></td>
+                                        <td class="text-end"><t t-out="st['cost_total']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Betaalde provisies werkkapitaal</td>
+                                        <td class="text-end">- <t t-out="st['working']['paid']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td>
+                                    </tr>
+                                    <tr t-att-class="'fw-bold fs-5 ' + ('text-danger' if st['balance'] &gt; 0 else 'text-success')">
+                                        <td><t t-if="st['balance'] &gt; 0">Saldo: bij te betalen</t><t t-else="">Saldo: in uw voordeel</t></td>
+                                        <td class="text-end"><t t-out="abs(st['balance'])" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <p t-if="st['working']['open']" class="text-danger small">
+                                Opgelet: er staan nog provisies werkkapitaal open voor
+                                <t t-out="st['working']['open']" t-options="{'widget': 'monetary', 'display_currency': currency}"/>
+                                (<t t-out="', '.join(st['working']['open_invoices'].mapped('name'))"/>). Die zijn niet in het saldo verrekend en blijven verschuldigd.
+                            </p>
+                            <p t-if="st['balance'] &gt; 0 and vme.working_capital_bank_id" class="small">
+                                Gelieve het saldo te storten op rekening <strong t-out="vme.working_capital_bank_id.acc_number"/> van VME <t t-out="vme.name"/>.
+                            </p>
+                            <p t-if="st['balance'] &lt;= 0" class="small">
+                                Het saldo in uw voordeel wordt verrekend met de volgende provisieoproep, tenzij u om terugbetaling vraagt.
+                            </p>
+
+                            <h5 class="mt-4">Reservekapitaal</h5>
+                            <table class="table table-sm mb-2">
+                                <tbody>
+                                    <tr>
+                                        <td>Opgevraagd in <t t-out="data['year']"/></td>
+                                        <td class="text-end"><t t-out="st['reserve']['invoiced']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Betaald</td>
+                                        <td class="text-end"><t t-out="st['reserve']['paid']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td>
+                                    </tr>
+                                    <tr t-if="st['reserve']['open']" class="text-danger">
+                                        <td>Nog open</td>
+                                        <td class="text-end"><t t-out="st['reserve']['open']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <p class="small text-muted">
+                                Bijdragen aan het reservekapitaal worden niet afgerekend: ze blijven eigendom van de VME, ook bij verkoop van uw kavel.
+                            </p>
+
+                            <div style="page-break-inside: avoid;">
+                                <h5 class="mt-4">Detail van de kosten</h5>
+                                <table class="table table-sm small">
+                                    <thead>
+                                        <tr>
+                                            <th>Datum</th><th>Leverancier</th><th>Referentie</th><th>Periode</th><th>Sleutel</th>
+                                            <th class="text-end">Factuur</th><th class="text-end">Uw aandeel</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="st['bills']" t-as="b">
+                                            <td><span t-field="b['move'].invoice_date"/></td>
+                                            <td t-out="b['supplier']"/>
+                                            <td t-out="b['description']"/>
+                                            <td>
+                                                <span t-out="b['period'][0].strftime('%d-%m-%Y')"/> - <span t-out="b['period'][1].strftime('%d-%m-%Y')"/>
+                                                <div t-if="b['partial_days']" class="text-muted"><t t-out="b['partial_days']"/> van <t t-out="b['period_days']"/> dagen eigenaar</div>
+                                            </td>
+                                            <td t-out="b['keys']"/>
+                                            <td class="text-end"><t t-out="b['total']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td>
+                                            <td class="text-end"><t t-out="b['amount']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>
