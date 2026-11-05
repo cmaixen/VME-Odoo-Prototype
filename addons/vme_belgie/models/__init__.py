@@ -5,3 +5,4 @@ from . import vme_ownership
 from . import vme_cost_allocation
 from . import account_move
 from . import account_chart_template
+from . import vme_distribution_rule

@@ -78,6 +78,19 @@
                                 </list>
                             </field>
                         </page>
+                        <page string="Verdeelregels" name="distribution_rules">
+                            <field name="distribution_rule_ids" readonly="not id">
+                                <list editable="bottom">
+                                    <field name="association_id" column_invisible="1"/>
+                                    <field name="company_id" column_invisible="1"/>
+                                    <field name="partner_id" context="{'res_partner_search_mode': 'supplier'}"/>
+                                    <field name="key_id" options="{'no_create': True}"/>
+                                    <field name="account_id" options="{'no_create': True}"/>
+                                    <field name="note" optional="show"/>
+                                </list>
+                            </field>
+                            <div class="text-muted">Facturen van deze leveranciers krijgen bij het binnenkomen automatisch de sleutel en rekening, en worden bij het boeken vanzelf verdeeld over de eigenaars.</div>
+                        </page>
                         <page string="Notities" name="notes">
                             <field name="notes"/>
                         </page>

@@ -76,6 +76,32 @@ BUILDINGS = [
     },
 ]
 
+# Fictitious suppliers: VAT numbers start with 0000 (valid check digits, cannot be real).
+SUPPLIERS = {
+    "energy": {
+        "name": "Energieleverancier Voorbeeld NV",
+        "vat": "BE0000000394",
+        "email": "facturen@energieleverancier.example.com",
+        "street": "Stroomlaan 1",
+        "zip": "1000",
+        "city": "Voorbeeldstad",
+    },
+    "elevator": {
+        "name": "Liftonderhoud Voorbeeld BV",
+        "vat": "BE0000000493",
+        "email": "facturen@liftonderhoud.example.com",
+        "street": "Kabelweg 4",
+        "zip": "2000",
+        "city": "Voorbeeldstad",
+    },
+}
+
+# Distribution rules: supplier, key type and PCMN expense account (only where the key exists).
+RULES = [
+    ("energy", "general", "612500"),  # Water, elektriciteit en gas
+    ("elevator", "elevator", "611000"),  # Onderhoudskosten en herstellingen
+]
+
 KEY_NAMES = {
     "general": "Algemene sleutel",
     "elevator": "Liftsleutel",
@@ -119,6 +145,11 @@ class VmeAssociation(models.Model):
         account_number = 1
         start_years = iter(range(2008, 2026))
         vmes = self.browse()
+        suppliers = {
+            code: Partner.create({**vals, "is_company": True, "country_id": self.env.ref("base.be").id})
+            for code, vals in SUPPLIERS.items()
+        }
+        rule_accounts = []  # (rule, account code): set once the chart of accounts exists
 
         for building in BUILDINGS:
             vme = self.create({
@@ -148,11 +179,12 @@ class VmeAssociation(models.Model):
             lot_by_name = dict(zip(lots.mapped("name"), lots))
 
             top_floor = max(lot["floor_number"] for lot in building["lots"])
+            key_by_type = {}
             for key_type in building["keys"]:
                 pairs = [(lot, _key_weight(key_type, lot, top_floor)) for lot in building["lots"]]
                 pairs = [(lot, weight) for lot, weight in pairs if weight]
                 shares = distribute_shares([weight for _lot, weight in pairs])
-                self.env["vme.key"].create({
+                key_by_type[key_type] = self.env["vme.key"].create({
                     "name": KEY_NAMES[key_type],
                     "association_id": vme.id,
                     "key_type": key_type,
@@ -162,6 +194,15 @@ class VmeAssociation(models.Model):
                         for (lot, _weight), share in zip(pairs, shares)
                     ],
                 })
+
+            for supplier_code, key_type, account_code in RULES:
+                if key_type in key_by_type:
+                    rule = self.env["vme.distribution.rule"].create({
+                        "association_id": vme.id,
+                        "partner_id": suppliers[supplier_code].id,
+                        "key_id": key_by_type[key_type].id,
+                    })
+                    rule_accounts.append((rule, account_code))
 
             short_name = building["name"].split()[-1]
             owner_by_lot = {}
@@ -205,6 +246,14 @@ class VmeAssociation(models.Model):
                     })
             self.env["vme.ownership"].create(ownership_vals)
             vmes |= vme
+
+        def set_rule_accounts():
+            # Runs at commit, after the chart of accounts of the new companies is loaded.
+            for rule, code in rule_accounts:
+                rule.account_id = self.env["account.account"].with_company(rule.company_id).search(
+                    [("company_ids", "in", rule.company_id.id), ("code", "=", code)], limit=1
+                )
+        self.env.cr.precommit.add(set_rule_accounts)
 
         return {
             "type": "ir.actions.client",

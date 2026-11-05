@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="vme_distribution_rule_view_list" model="ir.ui.view">
+        <field name="name">vme.distribution.rule.list</field>
+        <field name="model">vme.distribution.rule</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="association_id"/>
+                <field name="company_id" column_invisible="1"/>
+                <field name="partner_id" context="{'res_partner_search_mode': 'supplier'}"/>
+                <field name="key_id" options="{'no_create': True}"/>
+                <field name="account_id" options="{'no_create': True}"/>
+                <field name="note" optional="show"/>
+                <field name="active" widget="boolean_toggle" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_distribution_rule_view_search" model="ir.ui.view">
+        <field name="name">vme.distribution.rule.search</field>
+        <field name="model">vme.distribution.rule</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="partner_id"/>
+                <field name="association_id"/>
+                <filter name="archived" string="Gearchiveerd" domain="[('active', '=', False)]"/>
+                <group>
+                    <filter name="group_association" string="VME" context="{'group_by': 'association_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="vme_distribution_rule_action" model="ir.actions.act_window">
+        <field name="name">Verdeelregels</field>
+        <field name="res_model">vme.distribution.rule</field>
+        <field name="view_mode">list</field>
+        <field name="context">{'search_default_group_association': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nog geen verdeelregels</p>
+            <p>Een verdeelregel koppelt een leverancier aan een vaste sleutel, zodat zijn facturen vanzelf verdeeld worden.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_vme_distribution_rule" name="Verdeelregels" parent="menu_vme_configuration"
+              action="vme_distribution_rule_action" sequence="5"/>
+</odoo>

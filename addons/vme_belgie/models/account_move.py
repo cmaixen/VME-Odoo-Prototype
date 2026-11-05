@@ -150,6 +150,48 @@ class AccountMove(models.Model):
         action["context"] = {"search_default_group_partner": 1}
         return action
 
+    def _post(self, soft=True):
+        posted = super()._post(soft=soft)
+        posted.filtered(
+            lambda m: m.vme_association_id and m.move_type in ("in_invoice", "in_refund")
+        )._vme_auto_distribute()
+        return posted
+
+    def _vme_auto_distribute(self):
+        """Distribute posted bills whose lines all have a key; never block the posting."""
+        for move in self:
+            unkeyed = move._vme_distributable_lines().filtered(lambda line: not line.vme_key_id)
+            if unkeyed:
+                move.message_post(body=self.env._(
+                    "Niet automatisch verdeeld: geen verdeelsleutel op %s. "
+                    "Kies een sleutel en klik op \"Verdeel over eigenaars\".",
+                    ", ".join(unkeyed.mapped("name")),
+                ))
+                continue
+            try:
+                with self.env.cr.savepoint():
+                    allocations = move._vme_distribute()
+            except UserError as error:
+                move.message_post(body=self.env._("Automatische verdeling mislukt: %s", error.args[0]))
+                continue
+            move.message_post(body=self.env._(
+                "Automatisch verdeeld over %s eigenaars.", len(allocations.partner_id)
+            ))
+
+    def _extend_with_attachments(self, files_data, new=False):
+        res = super()._extend_with_attachments(files_data, new)
+        # Peppol/UBL invoices state the period they cover; standard Odoo ignores it.
+        for file_data in files_data:
+            tree = file_data.get("xml_tree")
+            if tree is None:
+                continue
+            start = tree.findtext("./{*}InvoicePeriod/{*}StartDate")
+            end = tree.findtext("./{*}InvoicePeriod/{*}EndDate")
+            for move in self.filtered("vme_association_id"):
+                if start and end:
+                    move.write({"vme_period_start": start, "vme_period_end": end})
+        return res
+
 
 class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
@@ -157,6 +199,31 @@ class AccountMoveLine(models.Model):
     vme_key_id = fields.Many2one(
         "vme.key",
         string="Verdeelsleutel",
+        compute="_compute_vme_key_id",
+        store=True,
+        readonly=False,
         domain="[('association_id.company_id', '=', company_id)]",
         index=True,
     )
+
+    def _vme_rule(self):
+        self.ensure_one()
+        move = self.move_id
+        if (self.display_type != "product" or move.move_type not in ("in_invoice", "in_refund")
+                or not move.vme_association_id):
+            return self.env["vme.distribution.rule"]
+        return self.env["vme.distribution.rule"].sudo()._find_rule(move.company_id, move.partner_id)
+
+    @api.depends("move_id.partner_id", "move_id.company_id", "display_type")
+    def _compute_vme_key_id(self):
+        # Only fill an empty key, so a key chosen by hand is never overwritten.
+        for line in self:
+            if not line.vme_key_id:
+                line.vme_key_id = line._vme_rule().key_id
+
+    def _compute_account_id(self):
+        super()._compute_account_id()
+        for line in self.filtered(lambda l: not l.product_id):
+            rule = line._vme_rule()
+            if rule.account_id:
+                line.account_id = rule.account_id

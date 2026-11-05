@@ -5,3 +5,4 @@ access_vme_key_user,vme.key user,model_vme_key,base.group_user,1,1,1,1
 access_vme_key_line_user,vme.key.line user,model_vme_key_line,base.group_user,1,1,1,1
 access_vme_ownership_user,vme.ownership user,model_vme_ownership,base.group_user,1,1,1,1
 access_vme_cost_allocation_user,vme.cost.allocation user,model_vme_cost_allocation,base.group_user,1,0,0,0
+access_vme_distribution_rule_user,vme.distribution.rule user,model_vme_distribution_rule,base.group_user,1,1,1,1

@@ -29,6 +29,7 @@ Een werkend prototype van een syndicusplatform op Odoo 19, om te tonen aan een p
 - Database voor de demo: `vme_demo`, met de modules `account`, `l10n_be`, `account_peppol` en `vme_belgie`.
 - Unittests op een aparte database: `docker compose run --rm odoo odoo -d vme_test -u vme_belgie --test-enable --test-tags /vme_belgie --stop-after-init`
 - Demodata laden (drie fictieve VME's): in Odoo via **VME > Configuratie > Demodata laden**, of op de commandline: `echo "env['vme.association']._load_demo_data(); env.cr.commit()" | docker compose run --rm -T odoo odoo shell -d vme_demo --no-http`. Laadt maar één keer; voor een verse demo eerst de database opnieuw aanmaken (Odoo stoppen, `docker compose exec db dropdb -U odoo vme_demo`, aanmaken, laden, Odoo starten).
+- Fictieve Peppol-facturen (UBL BIS Billing 3.0) voor de demo staan in `addons/vme_belgie/demo_data/facturen/`, één per VME. Importeer ze in de company van die VME via **Facturatie > Leveranciers > Facturen > Upload**; de verdeelregels vullen sleutel en rekening in en bij "Bevestigen" wordt automatisch verdeeld.
 
 ## Domeinbegrippen
 
