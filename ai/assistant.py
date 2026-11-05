@@ -13,6 +13,7 @@ import html
 import os
 import sys
 from datetime import date, timedelta
+from email.utils import parsedate_to_datetime
 from pathlib import Path
 
 from classifier import TOPICS, URGENCIES, ClaudeClassifier, MockClassifier, RefusalError
@@ -24,6 +25,8 @@ HERE = Path(__file__).resolve().parent
 # Days until the deadline of the activity, per urgency.
 DEADLINE_DAYS = {"high": 0, "normal": 2, "low": 5}
 CONFIDENCE_LABELS = {"high": "hoog", "medium": "gemiddeld", "low": "laag (nakijken!)"}
+# Topics that also get a draft damage claim in Odoo (step 14).
+DAMAGE_TOPICS = {"leak"}
 
 
 def load_env(path):
@@ -49,7 +52,15 @@ def activity_summary(vmes, result):
     return f"AI-voorstel: {TOPICS[result.topic]} ({lot_label(vmes, result)})"
 
 
-def activity_note(mail, result, vmes):
+def mail_day(mail):
+    """Date of the mail, or None when the Date header cannot be read."""
+    try:
+        return parsedate_to_datetime(mail.date).date()
+    except (TypeError, ValueError):
+        return None
+
+
+def activity_note(mail, result, vmes, claim_id=None):
     """HTML note with everything the staff member needs to check and send the reply."""
     e = html.escape
 
@@ -68,7 +79,8 @@ def activity_note(mail, result, vmes):
         f" &#8212; {e(result.matching_reason)}</li>"
         f"<li><b>Samenvatting:</b> {e(result.summary)}</li>"
         "</ul>"
-        f"<h4>Conceptantwoord: {e(result.reply_subject)}</h4>"
+        + (f"<p>Schadedossier {claim_id} aangemaakt als melding: kijk het na in Werken en schade.</p>" if claim_id else "")
+        + f"<h4>Conceptantwoord: {e(result.reply_subject)}</h4>"
         f"<blockquote>{paragraphs(result.reply_body)}</blockquote>"
         f"<h4>Oorspronkelijke mail: {e(mail.subject)}</h4>"
         f"<p class=\"text-muted\">{e(mail.date)} &#183; {e(mail.reference)}</p>"
@@ -111,10 +123,17 @@ def run(mails, directory, classifier, vmes, dry_run=False, force=False, user_id=
         elif dry_run:
             out("  " + result.reply_body.replace("\n", "\n  "))
         else:
+            claim_id = None
+            if result.topic in DAMAGE_TOPICS:
+                claim_id = directory.create_damage_claim(
+                    result.association_id, mail.subject, mail.body, mail.reference,
+                    lot_id=result.lot_id, owner_id=result.owner_id, mail_date=mail_day(mail),
+                )
+                out(f"  Schadedossier {claim_id} aangemaakt (melding, nog niet aangegeven).")
             activity_id = directory.create_activity(
                 result.association_id,
                 activity_summary(vmes, result),
-                activity_note(mail, result, vmes),
+                activity_note(mail, result, vmes, claim_id),
                 today + timedelta(days=DEADLINE_DAYS[result.urgency]),
                 user_id=user_id,
             )

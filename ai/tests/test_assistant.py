@@ -198,6 +198,21 @@ def test_run_creates_one_activity_per_mail(vmes, directory):
     assert "lek-a4-20261102@example.com" in leak["note"]
 
 
+def test_run_makes_a_draft_damage_claim_for_a_leak(vmes, directory):
+    run(read_inbox(INBOX), directory, MockClassifier(vmes), vmes, today=TODAY, out=lambda line: None)
+    assert len(directory.claims) == 1
+    claim = directory.claims[0]
+    assert (claim["association_id"], claim["lot_id"], claim["owner_id"]) == (1, 11, 101)
+    assert claim["reference"] == "lek-a4-20261102@example.com"
+    assert claim["mail_date"] == date(2026, 11, 2)
+    assert "Schadedossier 1 aangemaakt" in directory.activities[0]["note"]
+
+
+def test_dry_run_makes_no_damage_claim(vmes, directory):
+    run(read_inbox(INBOX), directory, MockClassifier(vmes), vmes, dry_run=True, out=lambda line: None)
+    assert directory.claims == []
+
+
 def test_run_skips_mails_already_processed(vmes, directory):
     mails = read_inbox(INBOX)
     run(mails, directory, MockClassifier(vmes), vmes, today=TODAY, out=lambda line: None)

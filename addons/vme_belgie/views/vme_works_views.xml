@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="vme_works_view_list" model="ir.ui.view">
+        <field name="name">vme.works.list</field>
+        <field name="model">vme.works</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state in ('closed', 'cancelled')" decoration-warning="reserve_shortfall &gt; 0">
+                <field name="currency_id" column_invisible="1"/>
+                <field name="association_id"/>
+                <field name="name"/>
+                <field name="decision_number" optional="show"/>
+                <field name="financing" optional="show"/>
+                <field name="budget" sum="Totaal"/>
+                <field name="contractor_id" optional="show"/>
+                <field name="contract_amount" optional="show" sum="Totaal"/>
+                <field name="invoiced_amount" optional="show"/>
+                <field name="reserve_shortfall" optional="hide"/>
+                <field name="planned_start" optional="show"/>
+                <field name="state" widget="badge" decoration-info="state in ('quotes', 'awarded')"
+                       decoration-warning="state == 'in_progress'" decoration-success="state in ('delivered', 'closed')"/>
+                <field name="user_id" widget="many2one_avatar_user" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_works_view_form" model="ir.ui.view">
+        <field name="name">vme.works.form</field>
+        <field name="model">vme.works</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_request_quotes" type="object" string="Offertes opvragen" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_start" type="object" string="Werken gestart" class="btn-primary"
+                            invisible="state != 'awarded'"/>
+                    <button name="action_deliver" type="object" string="Voorlopig opgeleverd" class="btn-primary"
+                            invisible="state != 'in_progress'"
+                            confirm="De werken gelden als uitgevoerd: ze verdwijnen uit de inlichtingen aan de notaris. Doorgaan?"/>
+                    <button name="action_close" type="object" string="Definitief opgeleverd" class="btn-primary"
+                            invisible="state != 'delivered'"/>
+                    <button name="action_cancel" type="object" string="Annuleren" invisible="state not in ('draft', 'quotes', 'awarded')"/>
+                    <button name="action_reset_draft" type="object" string="Terug naar voorbereiding" invisible="state != 'cancelled'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,quotes,awarded,in_progress,delivered,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_bills" type="object" class="oe_stat_button" icon="fa-file-text-o"
+                                invisible="state in ('draft', 'quotes')">
+                            <field name="bill_count" widget="statinfo" string="Facturen"/>
+                        </button>
+                        <button name="action_open_allocations" type="object" class="oe_stat_button" icon="fa-pie-chart"
+                                invisible="not invoiced_amount">
+                            <span class="o_stat_text">Verdeling</span>
+                        </button>
+                    </div>
+                    <field name="currency_id" invisible="1"/>
+                    <div class="alert alert-warning" role="alert" invisible="not reserve_shortfall or state in ('closed', 'cancelled')">
+                        Het reservekapitaal volstaat niet voor deze werken: er ontbreekt
+                        <field name="reserve_shortfall" class="fw-bold"/>.
+                        Vraag een bijzondere bijdrage aan het reservekapitaal op of laat de AV de financiering aanpassen.
+                    </div>
+                    <div class="alert alert-info" role="alert" invisible="state != 'quotes' or not quotes_missing">
+                        Nog <field name="quotes_missing" class="fw-bold"/> offerte(s) nodig voor u kunt gunnen
+                        (de AV legde een drempel vast; minimum <field name="min_quotes"/>).
+                    </div>
+                    <div class="oe_title"><h1><field name="name" placeholder="bv. Renovatie plat dak"/></h1></div>
+                    <group>
+                        <group string="Beslissing en budget">
+                            <field name="association_id" readonly="state != 'draft'" options="{'no_create': True}"/>
+                            <field name="decision_id" readonly="state not in ('draft', 'quotes')" options="{'no_create': True}"/>
+                            <field name="decision_number" invisible="not decision_id"/>
+                            <field name="decision_date" invisible="not decision_id"/>
+                            <field name="budget" readonly="state not in ('draft', 'quotes')"/>
+                            <field name="key_id" options="{'no_create': True}"/>
+                            <field name="user_id" options="{'no_create': True}"/>
+                        </group>
+                        <group string="Financiering">
+                            <field name="financing" readonly="state not in ('draft', 'quotes', 'awarded')"/>
+                            <field name="reserve_balance" invisible="financing != 'reserve'"/>
+                            <field name="reserve_committed" invisible="financing != 'reserve'"/>
+                            <field name="reserve_available" invisible="financing != 'reserve'"/>
+                            <field name="contractor_id" invisible="not contractor_id"/>
+                            <field name="contract_amount" invisible="not contractor_id"/>
+                            <field name="award_date" invisible="not award_date"/>
+                            <field name="invoiced_amount" invisible="state in ('draft', 'quotes')"/>
+                            <field name="remaining_amount" invisible="state in ('draft', 'quotes')"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Offertes" name="quotes">
+                            <group>
+                                <field name="quote_deadline"/>
+                            </group>
+                            <field name="quote_ids" readonly="state not in ('draft', 'quotes')">
+                                <list editable="bottom" decoration-success="state == 'awarded'" decoration-muted="state == 'rejected'"
+                                      decoration-bf="is_cheapest">
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="is_cheapest" column_invisible="1"/>
+                                    <field name="partner_id"/>
+                                    <field name="date"/>
+                                    <field name="reference" optional="show"/>
+                                    <field name="amount"/>
+                                    <field name="budget_difference" optional="show"/>
+                                    <field name="duration_weeks" optional="show"/>
+                                    <field name="validity_date" optional="hide"/>
+                                    <field name="notes" optional="show"/>
+                                    <field name="attachment_ids" widget="many2many_binary" optional="show"/>
+                                    <field name="state" widget="badge" decoration-success="state == 'awarded'"/>
+                                    <button name="action_award" type="object" string="Gunnen" icon="fa-check"
+                                            invisible="parent.state != 'quotes' or state != 'received'"
+                                            confirm="De werken gunnen aan deze aannemer? De andere offertes worden niet gekozen."/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Uitvoering en oplevering" name="execution">
+                            <group>
+                                <group string="Uitvoering">
+                                    <field name="planned_start"/>
+                                    <field name="planned_end"/>
+                                    <field name="date_start"/>
+                                    <field name="progress" widget="progressbar" readonly="state != 'in_progress'"/>
+                                </group>
+                                <group string="Oplevering">
+                                    <field name="provisional_delivery_date" readonly="state not in ('in_progress', 'delivered')"/>
+                                    <field name="final_delivery_date" readonly="state != 'delivered'"/>
+                                    <field name="liability_end_date"/>
+                                </group>
+                            </group>
+                            <field name="delivery_remarks" placeholder="Opmerkingen bij de voorlopige oplevering, op te lossen voor de definitieve oplevering"/>
+                        </page>
+                        <page string="Facturen" name="bills" invisible="state in ('draft', 'quotes')">
+                            <field name="bill_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="partner_id"/>
+                                    <field name="invoice_date"/>
+                                    <field name="ref"/>
+                                    <field name="amount_total_in_currency_signed" string="Totaal" sum="Totaal"/>
+                                    <field name="state" widget="badge"/>
+                                </list>
+                            </field>
+                            <div class="text-muted">
+                                Facturen van de aannemer komen hier vanzelf bij zolang de werken gegund of in uitvoering zijn.
+                                Ze worden verdeeld met de sleutel van de werken; bij financiering uit het reservekapitaal
+                                worden ze ten laste van het reservekapitaal geboekt en niet afgerekend in het werkkapitaal.
+                            </div>
+                        </page>
+                        <page string="Beschrijving" name="description">
+                            <field name="description" placeholder="Wat wordt er uitgevoerd, waar, en met welk lastenboek?"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="vme_works_view_search" model="ir.ui.view">
+        <field name="name">vme.works.search</field>
+        <field name="model">vme.works</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="association_id"/>
+                <field name="contractor_id"/>
+                <filter name="open" string="Lopend" domain="[('state', 'not in', ('closed', 'cancelled'))]"/>
+                <filter name="reserve" string="Uit het reservekapitaal" domain="[('financing', '=', 'reserve')]"/>
+                <group>
+                    <filter name="group_association" string="VME" context="{'group_by': 'association_id'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="vme_works_action" model="ir.actions.act_window">
+        <field name="name">Werkdossiers</field>
+        <field name="res_model">vme.works</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_open': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nog geen werkdossiers</p>
+            <p>Start een werkdossier vanuit een beslissing van de AV (Algemene vergaderingen &gt; Register van beslissingen) of hier.
+               Het dossier volgt offertes, gunning, uitvoering, oplevering en facturen op.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_vme_works_root" name="Werken en schade" parent="menu_vme_root" sequence="52"/>
+    <menuitem id="menu_vme_works" name="Werkdossiers" parent="menu_vme_works_root" action="vme_works_action" sequence="10"/>
+
+    <!-- Start the works from the decision of the assembly -->
+    <record id="vme_assembly_item_view_form_works_file" model="ir.ui.view">
+        <field name="name">vme.assembly.item.form.works.file</field>
+        <field name="model">vme.assembly.item</field>
+        <field name="inherit_id" ref="vme_assembly_item_view_form_works"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='works_done']" position="after">
+                <field name="works_ids" invisible="1"/>
+                <button name="action_create_works" type="object" string="Werkdossier aanmaken" class="btn-link ps-0"
+                        icon="fa-wrench" invisible="outcome != 'adopted' or works_ids" colspan="2"/>
+                <button name="action_create_works" type="object" string="Werkdossier openen" class="btn-link ps-0"
+                        icon="fa-wrench" invisible="not works_ids" colspan="2"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Threshold for quotes on the VME -->
+    <record id="vme_association_view_form_works" model="ir.ui.view">
+        <field name="name">vme.association.form.works</field>
+        <field name="model">vme.association</field>
+        <field name="inherit_id" ref="vme_association_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='notes']" position="before">
+                <page string="Werken en verzekeringen" name="works">
+                    <group string="Offertes voor werken (beslissing van de AV)">
+                        <field name="currency_id" invisible="1"/>
+                        <field name="works_quote_threshold"/>
+                        <field name="works_min_quotes"/>
+                    </group>
+                    <field name="works_ids" readonly="1">
+                        <list>
+                            <field name="currency_id" column_invisible="1"/>
+                            <field name="name"/>
+                            <field name="budget"/>
+                            <field name="financing"/>
+                            <field name="state" widget="badge"/>
+                        </list>
+                    </field>
+                    <separator string="Verzekeringspolissen"/>
+                    <field name="insurance_policy_ids" context="{'default_association_id': id}">
+                        <list>
+                            <field name="name"/>
+                            <field name="insurer_id"/>
+                            <field name="policy_number"/>
+                            <field name="date_end"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Works on the vendor bill -->
+    <record id="view_move_form_vme_works" model="ir.ui.view">
+        <field name="name">account.move.form.vme.works</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="view_move_form_vme"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='vme_fund']" position="after">
+                <field name="vme_works_id" invisible="not vme_association_id or move_type not in ('in_invoice', 'in_refund')"
+                       readonly="state != 'draft'" options="{'no_create': True}"/>
+                <field name="vme_works_financing" invisible="not vme_works_id"/>
+                <field name="vme_reserve_move_id" invisible="not vme_reserve_move_id"/>
+                <field name="vme_damage_claim_id" invisible="not vme_association_id or move_type not in ('in_invoice', 'in_refund')"
+                       options="{'no_create': True}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -38,6 +38,8 @@
         "views/vme_collection_views.xml",
         "views/vme_bank_views.xml",
         "views/vme_migration_views.xml",
+        "views/vme_works_views.xml",
+        "views/vme_damage_views.xml",
     ],
     "installable": True,
     "application": True,

@@ -116,6 +116,27 @@
                                     </tr>
                                 </tbody>
                             </table>
+                            <t t-if="st.get('reserve_works')">
+                                <table class="table table-sm mb-2">
+                                    <thead>
+                                        <tr>
+                                            <th>Werken betaald uit het reservekapitaal</th>
+                                            <th class="text-end">Totaal VME</th>
+                                            <th class="text-end">Uw aandeel</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="st['reserve_works']" t-as="w">
+                                            <td t-out="w['works'].name"/>
+                                            <td class="text-end"><t t-out="w['total_vme']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td>
+                                            <td class="text-end"><t t-out="w['amount']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <p class="small text-muted">
+                                    Deze facturen zijn betaald uit het reservekapitaal: ze staan niet in het saldo van het werkkapitaal.
+                                </p>
+                            </t>
                             <p class="small text-muted">
                                 Bijdragen aan het reservekapitaal worden niet afgerekend: ze blijven eigendom van de VME, ook bij verkoop van uw kavel.
                             </p>

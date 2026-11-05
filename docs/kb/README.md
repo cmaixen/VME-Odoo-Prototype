@@ -29,21 +29,23 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 ### Gebouw en installaties
 
 10. [Keuringen en liften opvolgen](keuringen.md)
+11. [Werken opvolgen, van offertes tot oplevering](werken.md)
+12. [Een schadegeval behandelen met de verzekering](schadegevallen.md)
 
 ### Algemene vergaderingen
 
-11. [Algemene vergaderingen plannen in blokken](av-planner.md)
-12. [De algemene vergadering: oproeping, stemming en notulen](algemene-vergadering.md)
+13. [Algemene vergaderingen plannen in blokken](av-planner.md)
+14. [De algemene vergadering: oproeping, stemming en notulen](algemene-vergadering.md)
 
 ### Post en mails
 
-13. [Leveranciersfacturen per e-mail ontvangen](facturen-per-mail.md)
-14. [Een antwoord behandelen dat de AI-assistent voorstelt](ai-voorstellen-mails.md)
-15. [Bankafschriften inlezen en betalingen koppelen](bankafschriften.md)
+15. [Leveranciersfacturen per e-mail ontvangen](facturen-per-mail.md)
+16. [Een antwoord behandelen dat de AI-assistent voorstelt](ai-voorstellen-mails.md)
+17. [Bankafschriften inlezen en betalingen koppelen](bankafschriften.md)
 
 ### Overstappen
 
-16. [Een VME overnemen uit een ander syndicuspakket](migratie.md)
+18. [Een VME overnemen uit een ander syndicuspakket](migratie.md)
 
 ## Zo is het platform opgebouwd
 
