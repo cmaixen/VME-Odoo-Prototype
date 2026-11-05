@@ -1,0 +1,499 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Mailings -->
+    <record id="vme_communication_view_list" model="ir.ui.view">
+        <field name="name">vme.communication.list</field>
+        <field name="model">vme.communication</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'cancel'" decoration-info="state == 'draft'">
+                <field name="create_date" string="Aangemaakt" widget="date"/>
+                <field name="association_id"/>
+                <field name="name"/>
+                <field name="kind"/>
+                <field name="audience"/>
+                <field name="channel"/>
+                <field name="recipient_count"/>
+                <field name="sent_date"/>
+                <field name="state" widget="badge" decoration-success="state == 'sent'" decoration-info="state == 'draft'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_communication_view_form" model="ir.ui.view">
+        <field name="name">vme.communication.form</field>
+        <field name="model">vme.communication</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_prepare_recipients" type="object" string="Ontvangers ophalen" invisible="state != 'draft'"/>
+                    <button name="action_confirm" type="object" string="Bevestigen en versturen" class="btn-primary"
+                            invisible="state != 'draft'"
+                            confirm="De e-mails, sms'en en pushberichten worden nu verstuurd en de brieven en aangetekende zendingen klaargezet. Doorgaan?"/>
+                    <button name="action_print_letters" type="object" string="Brieven afdrukken" invisible="state == 'cancel'"/>
+                    <button name="action_cancel" type="object" string="Annuleren" invisible="state != 'draft'"/>
+                    <button name="action_reset_draft" type="object" string="Terug naar concept" invisible="state != 'cancel'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,sent"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_logs" type="object" class="oe_stat_button" icon="fa-users">
+                            <field name="recipient_count" widget="statinfo" string="Ontvangers"/>
+                        </button>
+                        <button name="action_open_logs" type="object" class="oe_stat_button" icon="fa-check-square-o"
+                                invisible="kind != 'survey'">
+                            <field name="answer_count" widget="statinfo" string="Antwoorden"/>
+                        </button>
+                    </div>
+                    <div class="alert alert-info" role="alert" invisible="state != 'draft'">
+                        Dit is een concept: er is nog niets verstuurd. Kijk de ontvangers en de tekst na en klik op
+                        <strong>Bevestigen en versturen</strong>.
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="state != 'draft'" placeholder="bv. Waterafsluiting in {vme}"/></h1>
+                    </div>
+                    <group>
+                        <group string="Wat">
+                            <field name="association_id" readonly="state != 'draft'" options="{'no_create': True}"/>
+                            <field name="template_id" readonly="state != 'draft'" options="{'no_create': True}"/>
+                            <field name="kind" readonly="state != 'draft'"/>
+                            <field name="channel" readonly="state != 'draft'"/>
+                            <field name="sale_file_id" invisible="not sale_file_id" readonly="1"/>
+                        </group>
+                        <group string="Aan wie">
+                            <field name="audience" readonly="state != 'draft'"/>
+                            <field name="building_block" invisible="audience != 'block'" required="audience == 'block'"
+                                   readonly="state != 'draft'" placeholder="bv. A"/>
+                            <field name="lot_ids" widget="many2many_tags" invisible="audience != 'lots'"
+                                   readonly="state != 'draft'" options="{'no_create': True}"/>
+                            <field name="partner_ids" widget="many2many_tags" invisible="audience != 'partners'"
+                                   readonly="state != 'draft'"/>
+                            <field name="reference_date" readonly="state != 'draft'"/>
+                            <field name="channel_summary" invisible="not channel_summary"/>
+                            <field name="sent_date" invisible="not sent_date"/>
+                            <field name="letter_attachment_id" invisible="not letter_attachment_id"/>
+                        </group>
+                    </group>
+                    <div class="text-muted mb-2" invisible="audience != 'tenants'">
+                        Huurders komen uit het huurbeheer (stappen 19 en 25). Zolang dat er niet is, zijn er geen huurders.
+                    </div>
+                    <notebook>
+                        <page string="Tekst" name="text">
+                            <div class="text-muted mb-2">
+                                Plaatshouders: {eigenaar}, {kavels}, {vme}, {adres_vme}, {datum}. Ze worden per ontvanger ingevuld.
+                            </div>
+                            <field name="body_html" readonly="state != 'draft'" options="{'collaborative': false}"/>
+                            <group>
+                                <field name="short_text" readonly="state != 'draft'"
+                                       placeholder="Korte tekst voor sms en pushberichten"/>
+                            </group>
+                        </page>
+                        <page string="Bevraging" name="survey" invisible="kind != 'survey'">
+                            <group>
+                                <field name="question" readonly="state != 'draft'" required="kind == 'survey'"/>
+                                <field name="answer_deadline" readonly="state != 'draft'"/>
+                            </group>
+                            <field name="option_ids" readonly="state != 'draft'">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="answer_count"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Ontvangers en antwoorden" name="recipients">
+                            <field name="log_ids">
+                                <list editable="bottom" create="0" delete="0" decoration-muted="state == 'cancel'">
+                                    <field name="communication_id" column_invisible="1"/>
+                                    <field name="partner_id" readonly="1"/>
+                                    <field name="lot_names" readonly="1"/>
+                                    <field name="role" readonly="1"/>
+                                    <field name="channel" readonly="parent.state != 'draft'"/>
+                                    <field name="email" optional="hide"/>
+                                    <field name="state" readonly="1" widget="badge" decoration-success="state == 'sent'"/>
+                                    <field name="answer_option_id" column_invisible="parent.kind != 'survey'"
+                                           options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="answer_note" column_invisible="parent.kind != 'survey'"/>
+                                    <field name="answer_date" column_invisible="parent.kind != 'survey'" optional="hide"/>
+                                    <field name="registered_mail_id" optional="show" readonly="1"/>
+                                    <button name="action_print" type="object" icon="fa-print" title="Brief afdrukken"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="vme_communication_view_search" model="ir.ui.view">
+        <field name="name">vme.communication.search</field>
+        <field name="model">vme.communication</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="association_id"/>
+                <filter name="draft" string="Concepten" domain="[('state', '=', 'draft')]"/>
+                <filter name="sent" string="Verstuurd" domain="[('state', '=', 'sent')]"/>
+                <separator/>
+                <filter name="survey" string="Bevragingen" domain="[('kind', '=', 'survey')]"/>
+                <group>
+                    <filter name="group_association" string="VME" context="{'group_by': 'association_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="vme_communication_action" model="ir.actions.act_window">
+        <field name="name">Verzendingen</field>
+        <field name="res_model">vme.communication</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nog geen verzendingen</p>
+            <p>Stuur een mededeling of bevraging aan alle eigenaars, een blok of gekozen kavels: per e-mail, brief, aangetekend, sms of push. Elke verzending begint als concept.</p>
+        </field>
+    </record>
+
+    <record id="vme_communication_survey_action" model="ir.actions.act_window">
+        <field name="name">Bevragingen</field>
+        <field name="res_model">vme.communication</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('kind', '=', 'survey')]</field>
+        <field name="context">{'default_kind': 'survey'}</field>
+    </record>
+
+    <!-- Communication log -->
+    <record id="vme_communication_log_view_list" model="ir.ui.view">
+        <field name="name">vme.communication.log.list</field>
+        <field name="model">vme.communication.log</field>
+        <field name="arch" type="xml">
+            <list create="0" decoration-muted="state == 'cancel'" decoration-info="state == 'draft'">
+                <field name="date"/>
+                <field name="association_id"/>
+                <field name="partner_id"/>
+                <field name="lot_names"/>
+                <field name="subject"/>
+                <field name="channel"/>
+                <field name="source_name" optional="show"/>
+                <field name="answer_option_id" optional="hide"/>
+                <field name="sent_date"/>
+                <field name="state" widget="badge" decoration-success="state == 'sent'" decoration-info="state == 'draft'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_communication_log_view_form" model="ir.ui.view">
+        <field name="name">vme.communication.log.form</field>
+        <field name="model">vme.communication.log</field>
+        <field name="arch" type="xml">
+            <form create="0">
+                <header>
+                    <button name="action_open_source" type="object" string="Bron openen"/>
+                    <button name="action_print" type="object" string="Brief afdrukken" invisible="not body_html"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,sent"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h2><field name="subject" readonly="1"/></h2></div>
+                    <group>
+                        <group>
+                            <field name="partner_id" readonly="1"/>
+                            <field name="association_id" readonly="1"/>
+                            <field name="lot_names" readonly="1"/>
+                            <field name="role" readonly="1"/>
+                            <field name="channel" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="date" readonly="1"/>
+                            <field name="sent_date" readonly="1"/>
+                            <field name="communication_id" invisible="not communication_id"/>
+                            <field name="source_name" invisible="not source_name"/>
+                            <field name="mail_id" invisible="not mail_id"/>
+                            <field name="provider_reference" invisible="not provider_reference"/>
+                            <field name="registered_mail_id" invisible="not registered_mail_id"/>
+                        </group>
+                    </group>
+                    <group string="Antwoord" invisible="kind != 'survey'">
+                        <field name="kind" invisible="1"/>
+                        <field name="answer_option_id" options="{'no_create': True}"/>
+                        <field name="answer_note"/>
+                        <field name="answer_date"/>
+                    </group>
+                    <field name="body_html" readonly="1" invisible="not body_html"/>
+                    <field name="short_text" readonly="1" invisible="channel not in ('sms', 'push')"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="vme_communication_log_view_search" model="ir.ui.view">
+        <field name="name">vme.communication.log.search</field>
+        <field name="model">vme.communication.log</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="partner_id"/>
+                <field name="association_id"/>
+                <field name="subject"/>
+                <field name="lot_names"/>
+                <filter name="sent" string="Verstuurd" domain="[('state', '=', 'sent')]"/>
+                <filter name="draft" string="Concepten" domain="[('state', '=', 'draft')]"/>
+                <separator/>
+                <filter name="registered" string="Aangetekend" domain="[('channel', '=', 'registered')]"/>
+                <filter name="letter" string="Brief" domain="[('channel', '=', 'letter')]"/>
+                <filter name="email" string="E-mail" domain="[('channel', '=', 'email')]"/>
+                <group>
+                    <filter name="group_partner" string="Ontvanger" context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_association" string="VME" context="{'group_by': 'association_id'}"/>
+                    <filter name="group_channel" string="Kanaal" context="{'group_by': 'channel'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="vme_communication_log_action" model="ir.actions.act_window">
+        <field name="name">Communicatielog</field>
+        <field name="res_model">vme.communication.log</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_sent': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_empty_folder">Nog geen communicatie</p>
+            <p>Elke verzending, oproeping voor de AV en herinnering komt hier per eigenaar terecht.</p>
+        </field>
+    </record>
+
+    <!-- Register of registered mail -->
+    <record id="vme_registered_mail_view_list" model="ir.ui.view">
+        <field name="name">vme.registered.mail.list</field>
+        <field name="model">vme.registered.mail</field>
+        <field name="arch" type="xml">
+            <list create="0" decoration-info="state == 'prepared'" decoration-danger="state == 'returned'">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="association_id"/>
+                <field name="partner_id"/>
+                <field name="subject"/>
+                <field name="provider"/>
+                <field name="tracking_number"/>
+                <field name="deposit_date"/>
+                <field name="delivery_date" optional="show"/>
+                <field name="state" widget="badge" decoration-info="state == 'prepared'"
+                       decoration-success="state == 'delivered'" decoration-danger="state == 'returned'"/>
+                <button name="action_deposit" type="object" string="Afgegeven" invisible="state != 'prepared'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_registered_mail_view_form" model="ir.ui.view">
+        <field name="name">vme.registered.mail.form</field>
+        <field name="model">vme.registered.mail</field>
+        <field name="arch" type="xml">
+            <form create="0">
+                <header>
+                    <button name="action_deposit" type="object" string="Afgegeven bij de post" class="btn-primary"
+                            invisible="state != 'prepared'"/>
+                    <button name="action_send_electronic" type="object" string="Elektronisch aangetekend versturen"
+                            invisible="state != 'prepared'"
+                            confirm="De brief gaat naar de dienst voor elektronisch aangetekende zendingen (in het prototype een simulatie). Doorgaan?"/>
+                    <button name="action_refresh_status" type="object" string="Status ophalen"
+                            invisible="state != 'deposited' or provider != 'electronic'"/>
+                    <button name="action_delivered" type="object" string="Ontvangen" invisible="state != 'deposited'"/>
+                    <button name="action_returned" type="object" string="Niet afgehaald" invisible="state != 'deposited'"/>
+                    <button name="action_download" type="object" string="PDF" invisible="not attachment_id"/>
+                    <field name="state" widget="statusbar" statusbar_visible="prepared,deposited,delivered"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="association_id" readonly="1"/>
+                            <field name="partner_id" readonly="1"/>
+                            <field name="address" readonly="1"/>
+                            <field name="subject" readonly="1"/>
+                            <field name="source_name" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="date" readonly="1"/>
+                            <field name="provider" readonly="state != 'prepared'"/>
+                            <field name="tracking_number" readonly="state not in ('prepared', 'deposited')"/>
+                            <field name="deposit_date" readonly="1"/>
+                            <field name="delivery_date" readonly="1"/>
+                            <field name="attachment_id" readonly="1"/>
+                            <field name="log_id" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="vme_registered_mail_view_search" model="ir.ui.view">
+        <field name="name">vme.registered.mail.search</field>
+        <field name="model">vme.registered.mail</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="association_id"/>
+                <field name="tracking_number"/>
+                <filter name="prepared" string="Af te geven" domain="[('state', '=', 'prepared')]"/>
+                <filter name="deposited" string="Onderweg" domain="[('state', '=', 'deposited')]"/>
+                <group>
+                    <filter name="group_association" string="VME" context="{'group_by': 'association_id'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="vme_registered_mail_action" model="ir.actions.act_window">
+        <field name="name">Verzendregister aangetekend</field>
+        <field name="res_model">vme.registered.mail</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_empty_folder">Nog geen aangetekende zendingen</p>
+            <p>Een verzending "aangetekend" en elke ingebrekestelling komt hier met haar PDF en volgnummer.</p>
+        </field>
+    </record>
+
+    <!-- Templates -->
+    <record id="vme_communication_template_view_list" model="ir.ui.view">
+        <field name="name">vme.communication.template.list</field>
+        <field name="model">vme.communication.template</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="kind"/>
+                <field name="channel"/>
+                <field name="subject"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_communication_template_view_form" model="ir.ui.view">
+        <field name="name">vme.communication.template.form</field>
+        <field name="model">vme.communication.template</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="kind"/>
+                            <field name="channel"/>
+                            <field name="subject"/>
+                            <field name="short_text"/>
+                        </group>
+                        <group invisible="kind != 'survey'">
+                            <field name="question"/>
+                            <field name="option_names"/>
+                        </group>
+                    </group>
+                    <div class="text-muted mb-2">Plaatshouders: {eigenaar}, {kavels}, {vme}, {adres_vme}, {datum}.</div>
+                    <field name="body_html"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="vme_communication_template_action" model="ir.actions.act_window">
+        <field name="name">Communicatiesjablonen</field>
+        <field name="res_model">vme.communication.template</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Extensions of other forms -->
+    <record id="vme_lot_view_form_communication" model="ir.ui.view">
+        <field name="name">vme.lot.form.communication</field>
+        <field name="model">vme.lot</field>
+        <field name="inherit_id" ref="vme_lot_view_form"/>
+        <field name="arch" type="xml">
+            <field name="floor" position="after">
+                <field name="building_block"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="vme_lot_view_list_communication" model="ir.ui.view">
+        <field name="name">vme.lot.list.communication</field>
+        <field name="model">vme.lot</field>
+        <field name="inherit_id" ref="vme_lot_view_list"/>
+        <field name="arch" type="xml">
+            <field name="floor" position="after">
+                <field name="building_block" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="res_partner_view_form_vme_communication" model="ir.ui.view">
+        <field name="name">res.partner.form.vme.communication</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button name="action_open_vme_communication_log" type="object" class="oe_stat_button" icon="fa-envelope-o"
+                        invisible="not vme_communication_count">
+                    <field name="vme_communication_count" widget="statinfo" string="Communicatie VME"/>
+                </button>
+            </div>
+            <field name="category_id" position="after">
+                <field name="vme_communication_preference"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="vme_association_view_form_communication" model="ir.ui.view">
+        <field name="name">vme.association.form.communication</field>
+        <field name="model">vme.association</field>
+        <field name="inherit_id" ref="vme_association_view_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button name="action_open_communications" type="object" class="oe_stat_button" icon="fa-envelope">
+                    <field name="communication_count" widget="statinfo" string="Verzendingen"/>
+                </button>
+            </div>
+        </field>
+    </record>
+
+    <record id="vme_sale_file_view_form_communication" model="ir.ui.view">
+        <field name="name">vme.sale.file.form.communication</field>
+        <field name="model">vme.sale.file</field>
+        <field name="inherit_id" ref="vme_sale_file_view_form"/>
+        <field name="arch" type="xml">
+            <button name="action_print" position="before">
+                <button name="action_open_welcome_letter" type="object" string="Welkomstbrief"
+                        invisible="not welcome_communication_id"/>
+                <field name="welcome_communication_id" invisible="1"/>
+            </button>
+        </field>
+    </record>
+
+    <record id="vme_collection_reminder_view_form_communication" model="ir.ui.view">
+        <field name="name">vme.collection.reminder.form.communication</field>
+        <field name="model">vme.collection.reminder</field>
+        <field name="inherit_id" ref="vme_collection_reminder_view_form"/>
+        <field name="arch" type="xml">
+            <button name="action_mark_sent" position="before">
+                <button name="action_send_registered" type="object" string="Aangetekend versturen" class="btn-primary"
+                        invisible="state != 'draft' or level != '3'"
+                        confirm="De ingebrekestelling komt als PDF in het verzendregister voor aangetekende zendingen en wordt als verstuurd gemarkeerd. Doorgaan?"/>
+            </button>
+            <field name="email" position="after">
+                <field name="registered_mail_id" invisible="not registered_mail_id"/>
+            </field>
+        </field>
+    </record>
+
+    <menuitem id="menu_vme_communication_root" name="Communicatie" parent="menu_vme_root" sequence="49"/>
+    <menuitem id="menu_vme_communication" name="Verzendingen" parent="menu_vme_communication_root"
+              action="vme_communication_action" sequence="10"/>
+    <menuitem id="menu_vme_communication_survey" name="Bevragingen" parent="menu_vme_communication_root"
+              action="vme_communication_survey_action" sequence="20"/>
+    <menuitem id="menu_vme_communication_log" name="Communicatielog" parent="menu_vme_communication_root"
+              action="vme_communication_log_action" sequence="30"/>
+    <menuitem id="menu_vme_registered_mail" name="Verzendregister aangetekend" parent="menu_vme_communication_root"
+              action="vme_registered_mail_action" sequence="40"/>
+    <menuitem id="menu_vme_communication_template" name="Communicatiesjablonen" parent="menu_vme_configuration"
+              action="vme_communication_template_action" sequence="30"/>
+</odoo>

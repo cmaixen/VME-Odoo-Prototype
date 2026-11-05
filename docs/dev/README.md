@@ -18,6 +18,7 @@ Interne documentatie voor wie aan de module `vme_belgie` werkt. De gebruikersdoc
 | [invordering.md](invordering.md) | Achterstallen, ouderdom, herinneringen in drie niveaus, interest en schadevergoeding, doorsturen (stap 10) |
 | [bankafschriften.md](bankafschriften.md) | CODA en CAMT.053 inlezen, betalingen koppelen, wat Community niet kan (stap 12) |
 | [betalingsverkeer.md](betalingsverkeer.md) | Goedkeuren vóór betaling, SEPA-overschrijvingen en -domiciliëringen, terugkoppeling via het afschrift (stap 20) |
+| [communicatie.md](communicatie.md) | Verzendingen, selectie van ontvangers, communicatielog, verzendregister aangetekend, providers voor sms, push en elektronisch aangetekend, koppelplaats voor huurders (stap 23) |
 | [facturen-per-mail.md](facturen-per-mail.md) | Mailalias per VME op het aankoopdagboek (stap 7b) |
 | [pdf-ai-lezen.md](pdf-ai-lezen.md) | PDF-facturen zonder UBL en documenten lezen met AI, veld- en IBAN-controle, haakje voor de mappen van stap 15 (stap 21) |
 | [ai-assistent.md](ai-assistent.md) | Het losse script in `ai/` voor mails van eigenaars (stap 7) |

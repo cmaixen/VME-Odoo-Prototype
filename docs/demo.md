@@ -159,7 +159,7 @@ Na stap 8 staan er ook drie aanvragen in **VME > Aanvragen**.
    - het aandeel in de dakwerken die de AV van maart besliste (2.736 euro op 38.000 euro),
    - de lopende procedures.
 3. Klik op **Antwoord eerste vraag (PDF)**: de PDF komt in de chatter en de taak is afgevinkt. Doorsturen naar de notaris doet de medewerker zelf.
-4. Vertel erbij: bij de akte klikt de syndicus op **Akte verleden**, en vanaf dan gaan kosten en provisies naar de koper.
+4. Vertel erbij: bij de akte klikt de syndicus op **Akte verleden**, en vanaf dan gaan kosten en provisies naar de koper. Odoo zet dan ook een concept-welkomstbrief voor de koper klaar (knop **Welkomstbrief**).
 
 > Boodschap: "Een vraag van de notaris is twee minuten werk in plaats van een half uur zoeken, en de termijn ontsnapt u niet."
 
@@ -186,6 +186,14 @@ Na stap 8 staan er ook drie aanvragen in **VME > Aanvragen**.
 4. In **Mijn mandaten en verslag** drukt hij het sjabloon voor zijn verslag aan de AV af, met de cijfers van 2026 al ingevuld.
 
 > Boodschap: "De commissaris kijkt zelf na, wanneer het hem past, zonder dat u mappen moet kopiëren."
+### Extra: een waterafsluiting in blok A (1 minuut)
+
+1. **VME > Communicatie > Verzendingen > Nieuw**: VME Residentie Linde, sjabloon **Waterafsluiting**, ontvangers "Eigenaars van een blok", blok `A`.
+2. **Ontvangers ophalen**: twaalf eigenaars, één bericht per eigenaar (ook wie een garage heeft), A4 en A9 per brief omdat ze papier vroegen, A5 naar de nieuwe eigenaar.
+3. **Bevestigen en versturen**: de e-mails gaan in de wachtrij, de twee brieven staan samen in één PDF. Elke eigenaar ziet het in zijn communicatielog.
+4. Vertel erbij: een ingebrekestelling gaat met **Aangetekend versturen** in het verzendregister met haar PDF en volgnummer; sms en elektronisch aangetekend zijn voorzien met een simulatie.
+
+> Boodschap: "Eén plaats voor alles wat een eigenaar van u kreeg, en niets vertrekt zonder dat u het bevestigt."
 
 ## Na de demo
 

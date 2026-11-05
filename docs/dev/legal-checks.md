@@ -3,7 +3,7 @@
 Automatisch gemaakt door `python3 tools/legal_checks.py`; niet met de hand bewerken.
 Elke rij is een wettelijke regel in de code die nog juridisch gevalideerd moet worden.
 
-Aantal punten: 73.
+Aantal punten: 76.
 
 ## Per bron
 
@@ -14,6 +14,7 @@ Aantal punten: 73.
 - **KB 9 maart 2003 betreffende de beveiliging van liften**: [vme_installation.py:17](../../addons/vme_belgie/models/vme_installation.py#L17)
 - **NBN S21-050**: [vme_installation.py:20](../../addons/vme_belgie/models/vme_installation.py#L20)
 - **SEPA Core Direct Debit Rulebook (EPC)**: [vme_payment.py:22](../../addons/vme_belgie/models/vme_payment.py#L22)
+- **Verordening (EU) 910/2014 (eIDAS) art. 43-44 en art. XII.25 §3 WER**: [vme_communication.py:520](../../addons/vme_belgie/models/vme_communication.py#L520)
 - **Vlaamse regelgeving verwarmingsaudit/onderhoud**: [vme_installation.py:25](../../addons/vme_belgie/models/vme_installation.py#L25)
 - **art. 1792 en 2270 oud BW**: [vme_works.py:18](../../addons/vme_belgie/models/vme_works.py#L18)
 - **art. 18 §2/3 Elektriciteitswet 29 april 1999**: [vme_contract.py:27](../../addons/vme_belgie/models/vme_contract.py#L27)
@@ -22,7 +23,7 @@ Aantal punten: 73.
 - **art. 3.86 §3 BW en KB 12 juli 2012 (minimum chart of accounts)**: [vme_works.py:449](../../addons/vme_belgie/models/vme_works.py#L449)
 - **art. 3.87 §10 BW**: [vme_assembly_meeting.py:232](../../addons/vme_belgie/models/vme_assembly_meeting.py#L232)
 - **art. 3.87 §2 BW**: [vme_assembly.py:13](../../addons/vme_belgie/models/vme_assembly.py#L13), [vme_assembly.py:38](../../addons/vme_belgie/models/vme_assembly.py#L38)
-- **art. 3.87 §3 BW**: [vme_assembly.py:17](../../addons/vme_belgie/models/vme_assembly.py#L17), [vme_assembly.py:42](../../addons/vme_belgie/models/vme_assembly.py#L42), [vme_assembly.py:234](../../addons/vme_belgie/models/vme_assembly.py#L234), [vme_assembly_meeting.py:168](../../addons/vme_belgie/models/vme_assembly_meeting.py#L168)
+- **art. 3.87 §3 BW**: [vme_assembly.py:17](../../addons/vme_belgie/models/vme_assembly.py#L17), [vme_assembly.py:42](../../addons/vme_belgie/models/vme_assembly.py#L42), [vme_assembly.py:234](../../addons/vme_belgie/models/vme_assembly.py#L234), [vme_assembly_meeting.py:168](../../addons/vme_belgie/models/vme_assembly_meeting.py#L168), [vme_communication.py:255](../../addons/vme_belgie/models/vme_communication.py#L255)
 - **art. 3.87 §5 BW**: [vme_assembly_meeting.py:54](../../addons/vme_belgie/models/vme_assembly_meeting.py#L54), [vme_assembly_meeting.py:109](../../addons/vme_belgie/models/vme_assembly_meeting.py#L109)
 - **art. 3.87 §6 BW**: [vme_assembly_meeting.py:122](../../addons/vme_belgie/models/vme_assembly_meeting.py#L122), [vme_assembly_meeting.py:285](../../addons/vme_belgie/models/vme_assembly_meeting.py#L285)
 - **art. 3.87 §7 BW**: [vme_assembly_meeting.py:25](../../addons/vme_belgie/models/vme_assembly_meeting.py#L25), [vme_assembly_meeting.py:381](../../addons/vme_belgie/models/vme_assembly_meeting.py#L381)
@@ -45,6 +46,7 @@ Aantal punten: 73.
 - **art. 3.94 §1, 3° BW**: [vme_sale_file.py:279](../../addons/vme_belgie/models/vme_sale_file.py#L279)
 - **art. 3.94 §2 BW**: [vme_sale_file.py:12](../../addons/vme_belgie/models/vme_sale_file.py#L12)
 - **art. 37/2 Arbeidsovereenkomstenwet 3 juli 1978**: [vme_contract.py:32](../../addons/vme_belgie/models/vme_contract.py#L32)
+- **art. 5.231 BW**: [vme_communication.py:670](../../addons/vme_belgie/models/vme_communication.py#L670)
 - **art. 74 §1 wet 4 april 2014 betreffende de verzekeringen**: [vme_damage.py:10](../../addons/vme_belgie/models/vme_damage.py#L10)
 - **art. 85 Wet van 4 april 2014 betreffende de verzekeringen**: [vme_contract.py:23](../../addons/vme_belgie/models/vme_contract.py#L23)
 - **art. 88 §1 wet 4 april 2014 betreffende de verzekeringen**: [vme_damage.py:14](../../addons/vme_belgie/models/vme_damage.py#L14)
@@ -94,6 +96,9 @@ Aantal punten: 73.
 | [addons/vme_belgie/models/vme_collection.py](../../addons/vme_belgie/models/vme_collection.py#L140) | 140 | art. XIX.4 §1 WER | at most the legal interest rate plus 8 percentage points. |
 | [addons/vme_belgie/models/vme_collection.py](../../addons/vme_belgie/models/vme_collection.py#L403) | 403 | art. XIX.2 §1 WER | the first reminder is free; interest and damages only run from the end of a term of at least 14 days after it was sent. Check whether interest may run from the due date instead when the reglement van mede-eigendom says so. |
 | [addons/vme_belgie/models/vme_collection.py](../../addons/vme_belgie/models/vme_collection.py#L439) | 439 | reglement van mede-eigendom (art. 3.85 BW) | simple interest per year of 365 days. |
+| [addons/vme_belgie/models/vme_communication.py](../../addons/vme_belgie/models/vme_communication.py#L255) | 255 | art. 3.87 §3 BW | convocations go by registered letter unless the owner agreed individually and in writing to another means; registered and letter ignore the preference. |
+| [addons/vme_belgie/models/vme_communication.py](../../addons/vme_belgie/models/vme_communication.py#L520) | 520 | Verordening (EU) 910/2014 (eIDAS) art. 43-44 en art. XII.25 §3 WER | an electronic registered delivery by a qualified provider counts as a registered letter; whether that also holds for a formal notice (ingebrekestelling, art. 5.231 BW) and for a convocation to the general assembly (art. 3.87 §3 BW) still has to be confirmed by a lawyer. |
+| [addons/vme_belgie/models/vme_communication.py](../../addons/vme_belgie/models/vme_communication.py#L670) | 670 | art. 5.231 BW | the formal notice (level 3) is sent by registered letter. |
 | [addons/vme_belgie/models/vme_contract.py](../../addons/vme_belgie/models/vme_contract.py#L23) | 23 | art. 85 Wet van 4 april 2014 betreffende de verzekeringen | an insurance contract runs for at most one year, is renewed tacitly and can be cancelled at least three months before its due date. |
 | [addons/vme_belgie/models/vme_contract.py](../../addons/vme_belgie/models/vme_contract.py#L27) | 27 | art. 18 §2/3 Elektriciteitswet 29 april 1999 | households and small businesses can cancel an energy contract at any time with one month notice (also in the regional energy decrees); whether that applies to a VME is to be confirmed. |
 | [addons/vme_belgie/models/vme_contract.py](../../addons/vme_belgie/models/vme_contract.py#L32) | 32 | art. 37/2 Arbeidsovereenkomstenwet 3 juli 1978 | the notice period of an employment contract depends on seniority and is not computed here; the default is for the contract with the social secretariat. |

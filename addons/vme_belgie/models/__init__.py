@@ -28,3 +28,4 @@ from . import vme_lot_contact
 from . import vme_request
 from . import account_move_ai
 from . import vme_document_intake
+from . import vme_communication

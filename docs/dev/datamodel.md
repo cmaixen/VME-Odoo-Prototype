@@ -69,6 +69,10 @@ erDiagram
 | `vme.lot.contact` | Huurder of bewoner van een kavel | `lot_id`, `partner_id`, `role` (huurder, bewoner, contactpersoon), `date_start`, `date_end`. |
 | `vme.lot.key` | Sleutelregister | `lot_id`, `kind`, `number`, `issue_date`, `partner_id` (in handen van), `state` (in gebruik, geblokkeerd, ingeleverd), `request_id`. |
 | `vme.bill.ai.check` | Controle van een door AI gelezen factuurveld | Per factuur één rij per gelezen veld: `field_code`, `name`, `value`, `confidence` (hoog/gemiddeld/laag), `status` (in orde/nakijken/gevaar), `message`. Wordt bij elke controle vervangen. Zie [pdf-ai-lezen.md](pdf-ai-lezen.md). |
+| `vme.communication` | Verzending | Mededeling of bevraging per VME: selectie (`audience`), `reference_date`, gevraagd kanaal, tekst met plaatshouders, antwoorden (`option_ids`). Concept → verstuurd. Zie [communicatie.md](communicatie.md). |
+| `vme.communication.log` | Communicatielog | Eén lijn per ontvanger en verzending, ook voor oproepingen en herinneringen (`source_model`, `source_id`); echt kanaal, status, antwoord op een bevraging. |
+| `vme.registered.mail` | Aangetekende zending | Volgnummer `AT/jaar/nnnn`, bestemmeling, adres als tekst, PDF, papier of elektronisch, zendingsnummer, status tot ontvangen of niet afgehaald. |
+| `vme.communication.template` | Sjabloon | Onderwerp, tekst, korte tekst, kanaal, vraag en antwoorden. |
 | `vme.migration` | Overstap uit een ander pakket | `attachment_ids` (exportbestanden), `source_format`, `state` (nieuw, proefrun gedaan, geïmporteerd), `report_html`, `error_count`, `warning_count`, `transition_date`, `association_id`, `opening_move_id`. Zie [migratie.md](migratie.md). |
 
 Wizards (transient): `vme.provision.call.wizard` en `vme.annual.statement.wizard`, elk met een HTML-voorbeeld (`preview_html`).
@@ -101,6 +105,10 @@ Wizards (transient): `vme.provision.call.wizard` en `vme.annual.statement.wizard
 | `res.users` | `_vme_sync_auditor_access()` | Toegestane companies van een commissaris volgen zijn lopende mandaten. |
 | `account.move` | `vme_approval_state`, `vme_approved_by_id`, `vme_second_approved_by_id` (+ datums), `vme_payment_status`, `vme_payment_line_ids` | Goedkeuring vóór betaling en de laatste betaalopdracht van een leveranciersfactuur; `vme_fund` zegt op een leveranciersfactuur uit welk fonds ze betaald wordt (stap 20, zie [betalingsverkeer.md](betalingsverkeer.md)). |
 | `account.bank.statement.line` | `vme_end_to_end_id`, `vme_return_reason`, `vme_payment_batch_line_ids` | SEPA-referentie en terugboekreden uit CAMT.053, en de batchbetaling die de beweging bevestigt (stap 20). |
+| `res.partner` | `vme_communication_preference` | E-mail of papier voor mededelingen (stap 23). |
+| `vme.lot` | `building_block` | Blok, om per blok te communiceren; `_get_tenants_on(date)` is de koppelplaats voor huurders. |
+| `vme.sale.file` | `welcome_communication_id` | Concept-welkomstbrief, gemaakt bij de akte. |
+| `vme.collection.reminder` | `registered_mail_id` | De aangetekende zending van een ingebrekestelling. |
 | `account.move.line` | `vme_key_id` | Verdeelsleutel per regel; opgeslagen compute die alleen een lege sleutel invult vanuit de verdeelregel. |
 
 ## Rekeningen

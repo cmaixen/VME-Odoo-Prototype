@@ -90,6 +90,10 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 
 ### Overstappen
 
+27. [Communicatie met eigenaars: mededelingen, bevragingen en aangetekende brieven](communicatie.md)
+
+### Overstappen
+
 
 ## Zo is het platform opgebouwd
 

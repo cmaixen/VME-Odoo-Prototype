@@ -55,3 +55,9 @@ access_vme_payment_batch_line_user,vme.payment.batch.line user,model_vme_payment
 access_vme_payment_batch_read,vme.payment.batch read,model_vme_payment_batch,base.group_user,1,0,0,0
 access_vme_payment_batch_line_read,vme.payment.batch.line read,model_vme_payment_batch_line,base.group_user,1,0,0,0
 access_vme_bill_ai_check_user,vme.bill.ai.check user,model_vme_bill_ai_check,base.group_user,1,1,1,1
+access_vme_communication_user,vme.communication user,model_vme_communication,base.group_user,1,1,1,1
+access_vme_communication_option_user,vme.communication.option user,model_vme_communication_option,base.group_user,1,1,1,1
+access_vme_communication_log_user,vme.communication.log user,model_vme_communication_log,base.group_user,1,1,1,0
+access_vme_communication_template_user,vme.communication.template user,model_vme_communication_template,base.group_user,1,0,0,0
+access_vme_communication_template_system,vme.communication.template system,model_vme_communication_template,base.group_system,1,1,1,1
+access_vme_registered_mail_user,vme.registered.mail user,model_vme_registered_mail,base.group_user,1,1,1,0
