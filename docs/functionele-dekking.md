@@ -23,12 +23,12 @@ Legende: ✅ gebouwd · 🔨 wordt nu gebouwd · 📋 gepland · ➖ bewust late
 | | Budgetopvolging (budget tegenover werkelijk, per rekening en sleutel) | 📋 | stap 22 |
 | Inlichtingen inzake verkoop | Notarismodule met termijnen | ✅ | stap 9 |
 | | Kavelwissel bij de akte | ✅ | stap 9 |
-| | Welkomstcommunicatie voor de nieuwe eigenaar | 📋 | stap 23 |
+| | Welkomstcommunicatie voor de nieuwe eigenaar | ✅ | stap 23 (concept-welkomstbrief na de akte) |
 | Afrekeningen | Jaarafrekening per eigenaar | ✅ | stap 6 |
 | | Commissaris van de rekeningen | 🔨 | stap 16 |
 | | Afrekening van lasten aan huurders | 📋 | stap 25 |
 | Rappelopvolging | Overzicht, rappels in niveaus, interest, doorsturen | ✅ | stap 10 |
-| | Aangetekend versturen | 📋 | stap 23 |
+| | Aangetekend versturen | ✅ | stap 23 (ingebrekestelling als PDF in het verzendregister) |
 | Indexatiebeheer | Huurindexering met uitzonderingen | 📋 | stap 25 |
 | | Indexatiebrieven | 📋 | stap 25 (de bpost-koppeling ➖) |
 | Technisch beheer | Keuringen en liften | ✅ | stap 6b |
@@ -52,9 +52,14 @@ Legende: ✅ gebouwd · 🔨 wordt nu gebouwd · 📋 gepland · ➖ bewust late
 | | Automatisch ordenen met AI | 📋 | stap 21 |
 | | Acties op meerdere documenten tegelijk | 🔨 | stap 15 |
 | Huurcontractbeheer | Huurcontracten opmaken, huurders, waarborg, huur | 📋 | stap 25 |
-| Centraal communicatiebeheer | Brieven, e-mail, sms, aangetekend, push | 📋 | stap 23 |
-| | Bevragingen | 📋 | stap 23 |
-| | Updates en documenten delen | 📋 | stap 23 |
+| Centraal communicatiebeheer | Brieven, e-mail, aangetekend (PDF met verzendregister) per VME, blok of kavel, met voorkeur papier of e-mail | ✅ | stap 23 |
+| | Sms, push en elektronisch aangetekend | ✅ | stap 23, provider-interface met een simulatie; een echte dienst ➖ vraagt een contract |
+| | Communicatielog per eigenaar, met oproepingen en herinneringen | ✅ | stap 23 |
+| | Sjablonen (welkomstbrief, werken, waterafsluiting) | ✅ | stap 23 |
+| | Huurders als ontvangers | 📋 | stap 19 en 25 (de selectie bestaat al) |
+| | Bevragingen met antwoorden per eigenaar | ✅ | stap 23 (antwoorden via het portaal: stap 15) |
+| | Updates | ✅ | stap 23 |
+| | Documenten delen | 🔨 | stap 15 |
 | Communicatie in twee richtingen | Mails van eigenaars gekoppeld met een voorgesteld antwoord (AI) | ✅ | stap 7 |
 | | Meldingen via het portaal | 📋 | stap 15 en 19 |
 

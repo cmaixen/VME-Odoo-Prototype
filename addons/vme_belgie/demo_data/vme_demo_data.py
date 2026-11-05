@@ -14,6 +14,9 @@ from ..models.allocation_tools import largest_remainder
 SALE_DATE_END = date(2026, 6, 30)
 SALE_DATE_START = date(2026, 7, 1)
 
+# Owners who asked for letters on paper instead of e-mail (step 23).
+PAPER_OWNERS = {"A4", "A9", "B12"}
+
 # Weight of a lot in the general key, per m², relative to an apartment.
 TYPE_WEIGHT = {"apartment": 1.0, "garage": 0.4}
 
@@ -32,6 +35,7 @@ def _apartments(prefix, floors, areas):
             lots.append({
                 "name": f"{prefix}{len(lots) + 1}",
                 "lot_type": "apartment",
+                "block": prefix,
                 "floor": "Gelijkvloers" if floor == 0 else f"Verdieping {floor}",
                 "floor_number": floor,
                 "area": area + 2 * floor,
@@ -342,6 +346,7 @@ class VmeAssociation(models.Model):
                     "name": lot["name"],
                     "lot_type": lot["lot_type"],
                     "floor": lot["floor"],
+                    "building_block": lot.get("block", False),
                 }
                 for index, lot in enumerate(building["lots"])
             ])
@@ -405,6 +410,8 @@ class VmeAssociation(models.Model):
                 owner_by_lot[name] = Partner.create({
                     "name": f"Eigenaar {short_name} {name}",
                     "email": f"eigenaar.{short_name.lower()}.{name.lower()}@example.com",
+                    # A few owners want their letters on paper (step 23).
+                    "vme_communication_preference": "paper" if name in PAPER_OWNERS else "email",
                 })
 
             buyer = None

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="seq_vme_registered_mail" model="ir.sequence">
+        <field name="name">Verzendregister aangetekend</field>
+        <field name="code">vme.registered.mail</field>
+        <field name="prefix">AT/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <!-- Providers for sms, push and electronic registered mail: "mock" logs and sends nothing. -->
+    <data noupdate="1">
+        <record id="config_sms_provider" model="ir.config_parameter">
+            <field name="key">vme_belgie.sms_provider</field>
+            <field name="value">mock</field>
+        </record>
+        <record id="config_push_provider" model="ir.config_parameter">
+            <field name="key">vme_belgie.push_provider</field>
+            <field name="value">mock</field>
+        </record>
+        <record id="config_registered_provider" model="ir.config_parameter">
+            <field name="key">vme_belgie.registered_provider</field>
+            <field name="value">mock</field>
+        </record>
+
+        <record id="communication_template_welcome" model="vme.communication.template">
+            <field name="name">Welkomstbrief nieuwe eigenaar</field>
+            <field name="sequence">10</field>
+            <field name="kind">message</field>
+            <field name="channel">preference</field>
+            <field name="subject">Welkom in {vme}</field>
+            <field name="short_text">Welkom als eigenaar in {vme}. U ontvangt binnenkort een brief met de praktische afspraken.</field>
+            <field name="body_html" type="html">
+<p>Beste {eigenaar},</p>
+<p>Welkom als nieuwe eigenaar van {kavels} in {vme}, {adres_vme}. Als syndicus beheren wij de gemene delen en de rekeningen van de vereniging van mede-eigenaars.</p>
+<p>Wat u van ons kunt verwachten:</p>
+<ul>
+<li>Een provisieoproep voor het werkkapitaal en het reservekapitaal, meestal vier keer per jaar.</li>
+<li>Elk jaar een afrekening van de werkelijke kosten volgens de verdeelsleutels.</li>
+<li>Een uitnodiging voor de algemene vergadering. Laat ons weten of u die per e-mail wilt ontvangen.</li>
+</ul>
+<p>Vanaf {datum} bent u eigenaar; de kosten van voor die datum zijn voor de vorige eigenaar. Geef ons uw telefoonnummer en uw voorkeur (e-mail of papier) door, zodat we u bij een dringende melding kunnen bereiken.</p>
+<p>Met vriendelijke groeten,<br/>De syndicus</p>
+</field>
+        </record>
+
+        <record id="communication_template_works" model="vme.communication.template">
+            <field name="name">Mededeling werken</field>
+            <field name="sequence">20</field>
+            <field name="kind">message</field>
+            <field name="channel">preference</field>
+            <field name="subject">Werken in {vme}</field>
+            <field name="short_text">Werken in {vme}: lees de brief of e-mail van de syndicus voor de details.</field>
+            <field name="body_html" type="html">
+<p>Beste {eigenaar},</p>
+<p>Volgens de beslissing van de algemene vergadering starten binnenkort werken aan het gebouw. Vul hieronder de aard van de werken, de periode en de hinder in.</p>
+<ul>
+<li>Werken: …</li>
+<li>Periode: van … tot …</li>
+<li>Wat dit voor u betekent: …</li>
+</ul>
+<p>Met vragen kunt u bij ons terecht.</p>
+<p>Met vriendelijke groeten,<br/>De syndicus</p>
+</field>
+        </record>
+
+        <record id="communication_template_water" model="vme.communication.template">
+            <field name="name">Waterafsluiting</field>
+            <field name="sequence">30</field>
+            <field name="kind">message</field>
+            <field name="channel">sms</field>
+            <field name="subject">Waterafsluiting in {vme}</field>
+            <field name="short_text">{vme}: het water wordt afgesloten op … van … tot … uur voor herstellingen. Excuses voor de hinder.</field>
+            <field name="body_html" type="html">
+<p>Beste {eigenaar},</p>
+<p>Voor herstellingen aan de leidingen wordt het water in {vme} afgesloten op … van … tot … uur. Vul vooraf wat water in en laat de kranen dicht.</p>
+<p>Verhuurt u uw kavel ({kavels})? Geef dit dan ook door aan uw huurder.</p>
+<p>Met vriendelijke groeten,<br/>De syndicus</p>
+</field>
+        </record>
+
+        <record id="communication_template_survey_charging" model="vme.communication.template">
+            <field name="name">Bevraging laadpalen</field>
+            <field name="sequence">40</field>
+            <field name="kind">survey</field>
+            <field name="channel">preference</field>
+            <field name="subject">Interesse in een laadpaal in {vme}?</field>
+            <field name="question">Hebt u interesse in een laadpaal voor een elektrische wagen op uw parkeerplaats?</field>
+            <field name="option_names">Ja, binnen het jaar
+Ja, later
+Nee
+</field>
+            <field name="body_html" type="html">
+<p>Beste {eigenaar},</p>
+<p>Enkele eigenaars vroegen naar laadpalen in de garage. Voor we offertes opvragen en het punt op de agenda van de algemene vergadering zetten, willen we weten hoeveel interesse er is. Uw antwoord verplicht u tot niets.</p>
+</field>
+        </record>
+    </data>
+</odoo>
