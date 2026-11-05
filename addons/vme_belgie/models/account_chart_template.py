@@ -16,9 +16,8 @@ class AccountChartTemplate(models.AbstractModel):
 
     def _post_load_data(self, template_code, company, template_data):
         super()._post_load_data(template_code, company, template_data)
-        if not self.env["vme.association"].with_context(active_test=False).search_count(
-            [("company_id", "=", company.id)]
-        ):
+        vme = self.env["vme.association"].with_context(active_test=False).search([("company_id", "=", company.id)])
+        if not vme:
             return
         Account = self.env["account.account"].with_company(company)
         # The Belgian chart leaves the purchase journal without a default account, so
@@ -34,3 +33,5 @@ class AccountChartTemplate(models.AbstractModel):
                 Account.create({
                     "code": code, "name": name, "account_type": "equity", "company_ids": [company.id],
                 })
+        # Mail address for vendor bills, on the purchase journal that now exists.
+        vme._ensure_bill_alias()

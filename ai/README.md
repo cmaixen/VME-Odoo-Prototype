@@ -65,3 +65,14 @@ De vijf mails zijn verzonnen en gebruiken de namen en adressen van de demodata (
 ```
 
 Geen API-sleutel en geen Odoo nodig: het taalmodel en de Odoo-API worden nagebootst.
+
+## Leveranciersfacturen per mail aanleveren (stap 7b)
+
+`facturen_mailgate.py` levert de `.eml`-bestanden in `facturen_inbox/` aan Odoo zoals een inkomende mailserver dat doet (via `mail.thread.message_process`). Elke VME heeft een adres `facturen-<naam>@syndicus.example.com` op haar aankoopdagboek; Odoo maakt van elke mail een conceptfactuur in die VME en leest de UBL-bijlage in.
+
+```bash
+.venv/bin/python facturen_mailgate.py --dry-run   # toont per mail het adres en de bijlagen
+.venv/bin/python facturen_mailgate.py             # levert aan en toont de conceptfacturen
+```
+
+De drie mails komen van de fictieve energieleverancier uit de demodata, met de UBL-facturen uit `addons/vme_belgie/demo_data/facturen/` als bijlage. Een tweede run maakt geen nieuwe facturen: Odoo herkent de Message-ID. Uitleg voor medewerkers: `docs/kb/facturen-per-mail.md`; architectuur: `docs/dev/facturen-per-mail.md`.

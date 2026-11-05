@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Fictitious mail domain for the prototype: every VME gets facturen-<name>@ this domain on
+         its purchase journal. A real installation replaces it with the syndic's own domain. -->
+    <record id="mail_alias_domain_vme" model="mail.alias.domain">
+        <field name="name">syndicus.example.com</field>
+    </record>
+</odoo>

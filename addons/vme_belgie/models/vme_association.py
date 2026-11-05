@@ -42,6 +42,13 @@ class VmeAssociation(models.Model):
         domain="[('partner_id', '=', partner_id)]",
     )
 
+    bill_alias_email = fields.Char(
+        string="E-mailadres voor facturen",
+        compute="_compute_bill_alias_email",
+        help="Leveranciers sturen hun facturen naar dit adres; elke mail met een factuur als bijlage "
+        "wordt een conceptfactuur in deze VME.",
+    )
+
     untrusted_fund_bank_ids = fields.Many2many(
         "res.partner.bank", string="Niet-bevestigde rekeningen", compute="_compute_untrusted_fund_bank_ids"
     )
@@ -90,6 +97,45 @@ class VmeAssociation(models.Model):
                 internal_users.sudo().write({"company_ids": [fields.Command.link(company.id)]})
                 vals["company_id"] = company.id
         return super().create(vals_list)
+
+    def _purchase_journal(self):
+        self.ensure_one()
+        return self.env["account.journal"].sudo().search(
+            [("company_id", "=", self.company_id.id), ("type", "=", "purchase")], order="sequence, id", limit=1
+        )
+
+    @api.depends("company_id")
+    def _compute_bill_alias_email(self):
+        for vme in self:
+            vme.bill_alias_email = vme.company_id and vme._purchase_journal().alias_email or False
+
+    @api.model
+    def _ensure_all_bill_aliases(self):
+        self.with_context(active_test=False).search([])._ensure_bill_alias()
+
+    def _ensure_bill_alias(self):
+        """Give the purchase journal of each VME the alias facturen-<name>@<mail domain>.
+
+        Odoo's own mail gateway then turns every mail to that address into a draft vendor bill
+        in the company of the VME, and reads UBL attachments like an upload would.
+        """
+        Alias = self.env["mail.alias"].sudo()
+        default_domain = self.env.ref("vme_belgie.mail_alias_domain_vme", raise_if_not_found=False)
+        for vme in self.sudo():
+            company = vme.company_id
+            journal = vme._purchase_journal()
+            if not journal:  # chart of accounts not loaded yet
+                continue
+            if not company.alias_domain_id and default_domain:
+                company.alias_domain_id = default_domain
+            name = Alias._sanitize_alias_name(f"facturen-{company.name}")
+            if Alias.search_count([
+                ("alias_name", "=", name), ("alias_domain_id", "=", company.alias_domain_id.id),
+                ("id", "!=", journal.alias_id.id),
+            ]):
+                name = f"{name}-{company.id}"
+            if journal.alias_name != name or journal.alias_domain_id != company.alias_domain_id:
+                journal.write({"alias_name": name, "alias_domain_id": company.alias_domain_id.id})
 
     @api.constrains("kbo_number")
     def _check_kbo_number(self):
