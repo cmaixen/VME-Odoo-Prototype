@@ -139,9 +139,22 @@ Draai dit ongeveer 15 minuten voor de demo, in de map van het project. Docker (O
 
 > Boodschap: "Uw inbox gesorteerd per gebouw en kavel, met een antwoord klaar om na te kijken."
 
+### Extra: een verkoop, de notaris vraagt inlichtingen (1 minuut)
+
+1. **VME > Verkoopdossiers**: het dossier *Verkoop A3, G3 Residentie Linde* staat oranje. Notariskantoor Voorbeeld vroeg op 28 oktober inlichtingen; het antwoord moet er binnen 15 dagen zijn, dus uiterlijk op 12 november.
+2. Open het dossier. Het tabblad **Antwoord aan de notaris** toont het antwoord, samengesteld uit de boekhouding en de AV:
+   - het reservekapitaal en het aandeel van A3 en G3,
+   - de onbetaalde vierde provisie van A3 (475,20 euro),
+   - het aandeel in de dakwerken die de AV van maart besliste (2.736 euro op 38.000 euro),
+   - de lopende procedures.
+3. Klik op **Antwoord eerste vraag (PDF)**: de PDF komt in de chatter en de taak is afgevinkt. Doorsturen naar de notaris doet de medewerker zelf.
+4. Vertel erbij: bij de akte klikt de syndicus op **Akte verleden**, en vanaf dan gaan kosten en provisies naar de koper.
+
+> Boodschap: "Een vraag van de notaris is twee minuten werk in plaats van een half uur zoeken, en de termijn ontsnapt u niet."
+
 ## Na de demo
 
-- De demo is daarna niet meer "vers": de factuur, de provisieoproep 2027, de AV-planning en de AI-taken staan erin. Bouw de database opnieuw op met de commando's hierboven voor een volgende demo.
+- De demo is daarna niet meer "vers": de factuur, de provisieoproep 2027, de AV-planning, de AI-taken en eventueel het antwoord aan de notaris staan erin. Bouw de database opnieuw op met de commando's hierboven voor een volgende demo.
 - Stap 2 kan maar één keer per database: Odoo herkent de mail aan haar Message-ID en verwerkt ze geen tweede keer.
 - Lever **niet** de mails in `ai/facturen_inbox/` aan op een demo met historiek: die elektriciteitsfacturen zitten al in de historiek en zouden dubbel geboekt worden. Ze zijn bedoeld voor een demo zonder historiek.
 

@@ -104,3 +104,14 @@ class TestDemoData(TransactionCase):
         roof = assembly.item_ids.filtered(lambda i: i.name.startswith("Dakwerken"))
         self.assertEqual(roof.activity_ids.summary, "Drie offertes vragen voor de dakwerken")
         self.assertEqual(len(assembly.item_ids.filtered("decision_number")), 7)
+
+    def test_demo_sale_linde_a3(self):
+        sale = self.env["vme.sale.file"].search([("association_id", "=", self.linde.id)])
+        self.assertEqual(sale.lot_ids.mapped("name"), ["A3", "G3"])
+        self.assertEqual(sale.seller_id.name, "Eigenaar Linde A3")
+        self.assertEqual(sale.first_deadline, date(2026, 11, 12))
+        self.assertEqual(sale.activity_ids.date_deadline, date(2026, 11, 12))
+        info = sale._get_notary_information()
+        self.assertEqual(len(info["works"]), 1)
+        self.assertTrue(info["works"][0]["share"] > 0)
+        self.assertIn("gevelwerken", info["legal_proceedings"])

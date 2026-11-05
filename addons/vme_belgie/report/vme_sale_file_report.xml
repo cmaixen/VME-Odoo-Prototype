@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_notary_information" model="ir.actions.report">
+        <field name="name">Inlichtingen aan de notaris</field>
+        <field name="model">vme.sale.file</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">vme_belgie.report_notary_information</field>
+        <field name="report_file">vme_belgie.report_notary_information</field>
+        <field name="print_report_name">'Inlichtingen notaris %s' % object.name</field>
+        <field name="binding_model_id" ref="model_vme_sale_file"/>
+    </record>
+
+    <!-- The content of the answer: used in the PDF and as preview on the sale file. -->
+    <template id="notary_information_body">
+        <t t-set="currency" t-value="info['currency']"/>
+        <t t-set="money" t-value="{'widget': 'monetary', 'display_currency': currency}"/>
+
+        <h5>1. Verkochte kavels en quotiteiten</h5>
+        <table class="table table-sm mb-4">
+            <thead><tr><th>Sleutel</th><th class="text-end">Quotiteit verkochte kavels</th></tr></thead>
+            <tbody>
+                <tr t-foreach="info['keys']" t-as="k">
+                    <td t-out="k['key'].name"/>
+                    <td class="text-end"><t t-out="'%g' % k['shares']"/>/<t t-out="'%g' % k['total']"/></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h5>2. Reservekapitaal</h5>
+        <table class="table table-sm mb-1">
+            <tbody>
+                <tr>
+                    <td>Reservekapitaal van de VME op <t t-out="format_date(info['date'])"/></td>
+                    <td class="text-end"><t t-out="info['reserve_balance']" t-options="money"/></td>
+                </tr>
+                <tr class="fw-bold">
+                    <td>Aandeel van de verkochte kavels<t t-if="info['general_key']"> (<t t-out="info['general_key'].name"/>)</t></td>
+                    <td class="text-end"><t t-out="info['reserve_share']" t-options="money"/></td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="small text-muted mb-4">Het reservekapitaal blijft eigendom van de VME en wordt bij de verkoop niet terugbetaald.</p>
+
+        <h5>3. Werkkapitaal <t t-out="info['date'].year"/></h5>
+        <table t-if="info['statement']" class="table table-sm mb-4">
+            <tbody>
+                <tr>
+                    <td>Aandeel van de verkoper in de kosten van <t t-out="info['date'].year"/> tot vandaag</td>
+                    <td class="text-end"><t t-out="info['statement']['cost_total']" t-options="money"/></td>
+                </tr>
+                <tr>
+                    <td>Betaalde provisies werkkapitaal <t t-out="info['date'].year"/></td>
+                    <td class="text-end"><t t-out="info['statement']['working']['paid']" t-options="money"/></td>
+                </tr>
+                <tr class="fw-bold">
+                    <td>Voorlopig saldo<t t-if="info['statement']['balance'] &gt; 0"> (bij te betalen)</t><t t-else=""> (in het voordeel van de verkoper)</t></td>
+                    <td class="text-end"><t t-out="abs(info['statement']['balance'])" t-options="money"/></td>
+                </tr>
+            </tbody>
+        </table>
+        <p t-else="" class="mb-4">Geen kosten of provisies voor de verkoper in <t t-out="info['date'].year"/>.</p>
+
+        <h5>4. Achterstallen van de verkoper</h5>
+        <table t-if="info['arrears']" class="table table-sm mb-4">
+            <thead><tr><th>Provisie</th><th>Fonds</th><th>Vervaldag</th><th class="text-end">Open</th></tr></thead>
+            <tbody>
+                <tr t-foreach="info['arrears']" t-as="a">
+                    <td t-out="a['move'].name"/>
+                    <td t-out="a['fund']"/>
+                    <td t-out="format_date(a['due'])"/>
+                    <td class="text-end"><t t-out="a['amount']" t-options="money"/></td>
+                </tr>
+                <tr class="fw-bold text-danger">
+                    <td colspan="3">Totaal achterstallen</td>
+                    <td class="text-end"><t t-out="info['arrears_total']" t-options="money"/></td>
+                </tr>
+            </tbody>
+        </table>
+        <p t-else="" class="mb-4">De verkoper heeft geen achterstallen.</p>
+
+        <h5>5. Beslist maar nog niet uitgevoerde werken</h5>
+        <table t-if="info['works']" class="table table-sm mb-4">
+            <thead><tr><th>Beslissing</th><th>Omschrijving</th><th class="text-end">Raming</th><th class="text-end">Aandeel kavels</th></tr></thead>
+            <tbody>
+                <tr t-foreach="info['works']" t-as="w">
+                    <td><t t-out="w['item'].decision_number"/> <small class="text-muted">(AV <t t-out="format_date(w['item'].assembly_date)"/>)</small></td>
+                    <td t-out="w['item'].decision or w['item'].name"/>
+                    <td class="text-end"><t t-out="w['amount']" t-options="money"/></td>
+                    <td class="text-end"><t t-out="w['share']" t-options="money"/></td>
+                </tr>
+            </tbody>
+        </table>
+        <p t-else="" class="mb-4">Geen beslist maar nog niet uitgevoerde werken.</p>
+
+        <h5>6. Lopende gerechtelijke procedures</h5>
+        <div t-if="info['legal_proceedings']" class="mb-4" t-out="info['legal_proceedings']"/>
+        <p t-else="" class="mb-4">Er zijn geen gerechtelijke procedures lopende.</p>
+
+        <h5>7. Algemene vergaderingen van de laatste drie jaar</h5>
+        <t t-if="info['assemblies']">
+            <div t-foreach="info['assemblies']" t-as="assembly" class="mb-2">
+                <strong t-out="assembly.name"/> (<t t-out="format_date(assembly.date)"/>)
+                <ul class="small mb-0">
+                    <li t-foreach="assembly.item_ids.filtered(lambda i: i.decision_number)" t-as="item">
+                        <t t-out="item.decision_number"/>: <t t-out="item.name"/>
+                        <em>(<t t-out="dict(item._fields['outcome'].selection).get(item.outcome)"/>)</em>
+                    </li>
+                </ul>
+            </div>
+            <p class="small text-muted">De notulen zijn bijgevoegd of op aanvraag beschikbaar.</p>
+        </t>
+        <p t-else="">Er werd in de laatste drie jaar geen algemene vergadering gehouden.</p>
+    </template>
+
+    <template id="report_notary_information">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="info" t-value="infos[o.id]"/>
+                <t t-set="answer" t-value="answers[o.id]"/>
+                <t t-set="company" t-value="o.company_id"/>
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <h2 class="mb-0">Inlichtingen aan de notaris</h2>
+                                <div class="text-muted">
+                                    <t t-if="answer == 'second'">Antwoord op de tweede vraag (art. 3.94 §2 BW)</t>
+                                    <t t-else="">Antwoord op de eerste vraag (art. 3.94 §1 BW)</t>
+                                </div>
+                                <div class="text-muted">VME <t t-out="o.association_id.name"/><t t-if="o.association_id.kbo_number"> · KBO <t t-out="o.association_id.kbo_number"/></t></div>
+                            </div>
+                            <div class="col-5 offset-1">
+                                <strong t-out="o.notary_id.name or 'De notaris'"/>
+                                <div t-if="o.notary_reference" class="text-muted">Uw referentie: <t t-out="o.notary_reference"/></div>
+                                <div class="text-muted">Datum: <t t-out="format_date(info['date'])"/></div>
+                            </div>
+                        </div>
+                        <p>
+                            Betreft: verkoop van <strong t-out="', '.join(info['lots'].mapped('name'))"/>
+                            door <strong t-out="o.seller_id.name"/><t t-if="o.buyer_id"> aan <strong t-out="o.buyer_id.name"/></t>.
+                        </p>
+                        <p t-if="answer == 'second'">
+                            Uw tweede vraag ontvingen we op <t t-out="format_date(o.second_request_date)"/><t t-if="o.deed_date">; de akte is gepland op <t t-out="format_date(o.deed_date)"/></t>.
+                        </p>
+                        <p t-else="">Uw vraag ontvingen we op <t t-out="format_date(o.first_request_date)"/>.
+                        </p>
+                        <t t-call="vme_belgie.notary_information_body"/>
+                        <p class="mt-4">
+                            Met vriendelijke groeten,<br/>de syndicus van VME <t t-out="o.association_id.name"/>
+                        </p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

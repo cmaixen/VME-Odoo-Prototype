@@ -220,6 +220,22 @@ DEMO_ASSEMBLY_2026 = {
     ],
 }
 
+# A sale in progress (step 9): the notary asked for information on 28 October 2026, so the answer
+# is due on 12 November 2026, a week after the demo date. A3 has an unpaid call in the demo history
+# and pays its share of the roof works decided at the 2026 assembly.
+DEMO_SALE = {
+    "vme": "Residentie Linde",
+    "lots": ["A3", "G3"],
+    "notary": {"name": "Notariskantoor Voorbeeld", "is_company": True, "email": "akten@notaris-voorbeeld.example.com",
+               "street": "Notarisplein 1", "zip": "2000", "city": "Voorbeeldstad"},
+    "notary_reference": "2026/1187/VB",
+    "buyer": {"name": "Koper Voorbeeld Linde A3", "email": "koper.a3@example.com"},
+    "first_request_date": date(2026, 10, 28),
+    "roof_works": ("Dakwerken", 38000),
+    "legal_proceedings": "<p>Geen procedures als eiser of verweerder. Lopend minnelijk overleg met de "
+                         "aannemer van de gevelwerken (2024) over vochtplekken in blok A; geen dagvaarding.</p>",
+}
+
 STAFF_USER = {"name": "Medewerker Voorbeeld", "login": "medewerker.voorbeeld@example.com"}
 
 KEY_NAMES = {
@@ -423,6 +439,7 @@ class VmeAssociation(models.Model):
 
         self._load_demo_assembly_blocks()
         self._load_demo_assembly_2026()
+        self._load_demo_sale()
 
         def set_rule_accounts():
             # Runs at commit, after the chart of accounts of the new companies is loaded.
@@ -445,6 +462,25 @@ class VmeAssociation(models.Model):
                 "next": self.env["ir.actions.act_window"]._for_xml_id("vme_belgie.vme_association_action"),
             },
         }
+
+    @api.model
+    def _load_demo_sale(self):
+        spec = DEMO_SALE
+        vme = self.search([("name", "=", spec["vme"])])
+        vme.legal_proceedings = spec["legal_proceedings"]
+        title, amount = spec["roof_works"]
+        self.env["vme.assembly.item"].search([
+            ("association_id", "=", vme.id), ("name", "=like", f"{title}%")]).works_amount = amount
+        Partner = self.env["res.partner"]
+        return self.env["vme.sale.file"].create({
+            "association_id": vme.id,
+            "lot_ids": [Command.set(vme.lot_ids.filtered(lambda lot: lot.name in spec["lots"]).ids)],
+            "notary_id": Partner.create({**spec["notary"], "country_id": self.env.ref("base.be").id}).id,
+            "notary_reference": spec["notary_reference"],
+            "buyer_id": Partner.create(spec["buyer"]).id,
+            "first_request_date": spec["first_request_date"],
+            "user_id": self.env.ref("base.user_admin").id,
+        })
 
     @api.model
     def _load_demo_assembly_blocks(self):

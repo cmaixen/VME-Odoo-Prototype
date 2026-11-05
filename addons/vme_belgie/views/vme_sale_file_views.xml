@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="vme_sale_file_view_list" model="ir.ui.view">
+        <field name="name">vme.sale.file.list</field>
+        <field name="model">vme.sale.file</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="deadline_state == 'danger'" decoration-warning="deadline_state == 'warning'"
+                  decoration-muted="state in ('done', 'cancelled')">
+                <field name="deadline_state" column_invisible="1"/>
+                <field name="association_id"/>
+                <field name="name"/>
+                <field name="seller_id"/>
+                <field name="notary_id"/>
+                <field name="notary_reference" optional="hide"/>
+                <field name="first_request_date" optional="show"/>
+                <field name="answer_deadline"/>
+                <field name="deed_date" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-info="state in ('new', 'second_received')" decoration-success="state == 'done'"/>
+                <field name="user_id" widget="many2one_avatar_user" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_sale_file_view_form" model="ir.ui.view">
+        <field name="name">vme.sale.file.form</field>
+        <field name="model">vme.sale.file</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_answer_first" type="object" string="Antwoord eerste vraag (PDF)"
+                            class="btn-primary" invisible="state != 'new'"/>
+                    <button name="action_answer_second" type="object" string="Antwoord tweede vraag (PDF)"
+                            class="btn-primary" invisible="state != 'second_received'"/>
+                    <button name="action_deed_done" type="object" string="Akte verleden"
+                            class="btn-primary" invisible="state != 'second_answered'"
+                            confirm="De eigendom van de verkochte kavels gaat over naar de koper op de datum van de akte. Doorgaan?"/>
+                    <button name="action_deed_done" type="object" string="Akte verleden"
+                            invisible="state not in ('new', 'first_answered', 'second_received')"
+                            confirm="De tweede vraag is nog niet beantwoord. De eigendom gaat toch over naar de koper op de datum van de akte. Doorgaan?"/>
+                    <button name="action_print" type="object" string="Afdrukken" invisible="state == 'cancelled'"/>
+                    <button name="action_cancel" type="object" string="Annuleren" invisible="state in ('done', 'cancelled')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="new,first_answered,second_received,second_answered,done"/>
+                </header>
+                <sheet>
+                    <field name="deadline_state" invisible="1"/>
+                    <div class="alert alert-danger" role="alert" invisible="deadline_state != 'danger'">
+                        <field name="deadline_text"/>
+                    </div>
+                    <div class="alert alert-warning" role="alert" invisible="deadline_state != 'warning'">
+                        <field name="deadline_text"/>
+                    </div>
+                    <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+                    <group>
+                        <group string="Verkoop">
+                            <field name="association_id" readonly="state != 'new'" options="{'no_create': True}"/>
+                            <field name="lot_ids" widget="many2many_tags" readonly="state == 'done'" options="{'no_create': True}"/>
+                            <field name="seller_id" readonly="state == 'done'"/>
+                            <field name="buyer_id" readonly="state == 'done'"/>
+                            <field name="deed_date" readonly="state == 'done'"/>
+                        </group>
+                        <group string="Notaris">
+                            <field name="notary_id"/>
+                            <field name="notary_reference"/>
+                            <field name="user_id" options="{'no_create': True}"/>
+                        </group>
+                        <group string="Eerste vraag (15 dagen)">
+                            <field name="first_request_date" readonly="state != 'new'"/>
+                            <field name="first_deadline"/>
+                            <field name="first_answer_date"/>
+                        </group>
+                        <group string="Tweede vraag (30 dagen)">
+                            <field name="second_request_date" readonly="state in ('second_answered', 'done', 'cancelled')"
+                                   help="Vul de datum in zodra de notaris na het compromis de tweede vraag stelt."/>
+                            <field name="second_deadline"/>
+                            <field name="second_answer_date"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Antwoord aan de notaris" name="answer">
+                            <div class="text-muted mb-2">
+                                Zo ziet het antwoord er vandaag uit. Het wordt opgemaakt uit de boekhouding, de AV-beslissingen en de procedures hieronder.
+                                Opgemaakte antwoorden staan als PDF in de chatter; er wordt niets automatisch verstuurd.
+                            </div>
+                            <field name="information_html" readonly="1"/>
+                        </page>
+                        <page string="Gerechtelijke procedures" name="proceedings">
+                            <field name="legal_proceedings" placeholder="Overgenomen van de VME; pas aan voor dit dossier indien nodig."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="vme_sale_file_view_search" model="ir.ui.view">
+        <field name="name">vme.sale.file.search</field>
+        <field name="model">vme.sale.file</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="association_id"/>
+                <field name="seller_id"/>
+                <field name="notary_id"/>
+                <field name="notary_reference"/>
+                <filter name="open" string="Lopend" domain="[('state', 'not in', ('done', 'cancelled'))]"/>
+                <filter name="late" string="Antwoord te laat"
+                        domain="[('answer_deadline', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="soon" string="Antwoord binnen 7 dagen"
+                        domain="[('answer_deadline', '&gt;=', context_today().strftime('%Y-%m-%d')),
+                                 ('answer_deadline', '&lt;=', (context_today() + relativedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <group>
+                    <filter name="group_association" string="VME" context="{'group_by': 'association_id'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="vme_sale_file_action" model="ir.actions.act_window">
+        <field name="name">Verkoopdossiers</field>
+        <field name="res_model">vme.sale.file</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_open': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nog geen verkoopdossiers</p>
+            <p>Vraagt een notaris inlichtingen over een kavel die verkocht wordt? Start een verkoopdossier vanaf de kavel of hier.
+               Het antwoord wordt automatisch opgemaakt en de wettelijke termijn bewaakt.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_vme_sale_file" name="Verkoopdossiers" parent="menu_vme_root" action="vme_sale_file_action" sequence="42"/>
+
+    <!-- Start a sale from the lot -->
+    <record id="vme_lot_view_form_sale" model="ir.ui.view">
+        <field name="name">vme.lot.form.sale</field>
+        <field name="model">vme.lot</field>
+        <field name="inherit_id" ref="vme_lot_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <header>
+                    <button name="action_start_sale" type="object" string="Verkoop starten"/>
+                </header>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Legal proceedings on the VME -->
+    <record id="vme_association_view_form_sale" model="ir.ui.view">
+        <field name="name">vme.association.form.sale</field>
+        <field name="model">vme.association</field>
+        <field name="inherit_id" ref="vme_association_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='notes']" position="before">
+                <page string="Gerechtelijke procedures" name="legal_proceedings">
+                    <field name="legal_proceedings" placeholder="bv. Procedure tegen aannemer X over de gevelwerken, rolnummer ..."/>
+                    <div class="text-muted">Wordt overgenomen in de inlichtingen aan de notaris bij elke verkoop.</div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Works decided by the assembly -->
+    <record id="vme_assembly_item_view_form_works" model="ir.ui.view">
+        <field name="name">vme.assembly.item.form.works</field>
+        <field name="model">vme.assembly.item</field>
+        <field name="inherit_id" ref="vme_assembly_item_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='follow_up_deadline']/.." position="after">
+                <group string="Werken">
+                    <field name="currency_id" invisible="1"/>
+                    <field name="association_id" invisible="1"/>
+                    <field name="works_amount"/>
+                    <field name="works_key_id" invisible="not works_amount" options="{'no_create': True}"/>
+                    <field name="works_done" invisible="not works_amount"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

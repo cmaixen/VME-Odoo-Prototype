@@ -29,6 +29,8 @@ Bezit één persoon meerdere kavels (bijvoorbeeld een appartement en een garage)
 
 Bij een verkoop eindigt het eigendom van de verkoper de dag voor de akte, en begint dat van de koper op de dag van de akte.
 
+Werkt u met een verkoopdossier (zie [Verkoop van een kavel: inlichtingen aan de notaris](verkoop-notaris.md)), dan doet de knop **Akte verleden** dit voor u. Met de hand gaat het zo:
+
 1. Open de kavel en ga naar **Eigendommen**.
 2. Vul bij de verkoper de **Einddatum** in: de dag vóór de overdracht.
 3. Voeg een regel toe voor de koper met als **Begindatum** de dag van de overdracht.

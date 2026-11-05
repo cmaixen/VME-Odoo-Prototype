@@ -21,3 +21,4 @@ access_vme_assembly_item_user,vme.assembly.item user,model_vme_assembly_item,bas
 access_vme_assembly_attendee_user,vme.assembly.attendee user,model_vme_assembly_attendee,base.group_user,1,1,1,1
 access_vme_assembly_vote_user,vme.assembly.vote user,model_vme_assembly_vote,base.group_user,1,1,1,1
 access_vme_assembly_convocation_user,vme.assembly.convocation user,model_vme_assembly_convocation,base.group_user,1,1,1,1
+access_vme_sale_file_user,vme.sale.file user,model_vme_sale_file,base.group_user,1,1,1,1

@@ -3,7 +3,7 @@
 Automatisch gemaakt door `python3 tools/legal_checks.py`; niet met de hand bewerken.
 Elke rij is een wettelijke regel in de code die nog juridisch gevalideerd moet worden.
 
-Aantal punten: 33.
+Aantal punten: 39.
 
 ## Per bron
 
@@ -26,6 +26,11 @@ Aantal punten: 33.
 - **art. 3.89 §5 BW**: [account_move.py:52](../../addons/vme_belgie/models/account_move.py#L52), [vme_association.py:15](../../addons/vme_belgie/models/vme_association.py#L15), [vme_association.py:34](../../addons/vme_belgie/models/vme_association.py#L34), [vme_association.py:170](../../addons/vme_belgie/models/vme_association.py#L170), [vme_association.py:193](../../addons/vme_belgie/models/vme_association.py#L193), [vme_provision_call_wizard.py:115](../../addons/vme_belgie/wizard/vme_provision_call_wizard.py#L115)
 - **art. 3.93 §4 BW**: [vme_assembly_meeting.py:212](../../addons/vme_belgie/models/vme_assembly_meeting.py#L212)
 - **art. 3.94 BW**: [account_move.py:144](../../addons/vme_belgie/models/account_move.py#L144)
+- **art. 3.94 §1 BW**: [vme_sale_file.py:10](../../addons/vme_belgie/models/vme_sale_file.py#L10), [vme_sale_file.py:16](../../addons/vme_belgie/models/vme_sale_file.py#L16)
+- **art. 3.94 §1, 1° BW**: [vme_sale_file.py:255](../../addons/vme_belgie/models/vme_sale_file.py#L255)
+- **art. 3.94 §1, 2° en §2 BW**: [vme_sale_file.py:278](../../addons/vme_belgie/models/vme_sale_file.py#L278)
+- **art. 3.94 §1, 3° BW**: [vme_sale_file.py:270](../../addons/vme_belgie/models/vme_sale_file.py#L270)
+- **art. 3.94 §2 BW**: [vme_sale_file.py:12](../../addons/vme_belgie/models/vme_sale_file.py#L12)
 - **no general legal interval found; manufacturer and fire department advice**: [vme_installation.py:28](../../addons/vme_belgie/models/vme_installation.py#L28)
 
 ## Alle punten
@@ -64,4 +69,10 @@ Aantal punten: 33.
 | [addons/vme_belgie/models/vme_installation.py](../../addons/vme_belgie/models/vme_installation.py#L28) | 28 | no general legal interval found; manufacturer and fire department advice | - |
 | [addons/vme_belgie/models/vme_installation.py](../../addons/vme_belgie/models/vme_installation.py#L33) | 33 | KB 9 maart 2003 | risk analysis of an elevator at least every 15 years. |
 | [addons/vme_belgie/models/vme_key.py](../../addons/vme_belgie/models/vme_key.py#L60) | 60 | art. 3.85 §1 BW | the deed of division sets each lot's share in the common parts; the shares of a key must add up to its total. |
+| [addons/vme_belgie/models/vme_sale_file.py](../../addons/vme_belgie/models/vme_sale_file.py#L10) | 10 | art. 3.94 §1 BW | the syndic answers the notary's first request within 15 days. |
+| [addons/vme_belgie/models/vme_sale_file.py](../../addons/vme_belgie/models/vme_sale_file.py#L12) | 12 | art. 3.94 §2 BW | the syndic answers the second request (after the compromise) within 30 days. |
+| [addons/vme_belgie/models/vme_sale_file.py](../../addons/vme_belgie/models/vme_sale_file.py#L16) | 16 | art. 3.94 §1 BW | the notary receives the minutes of the assemblies of the last three years. |
+| [addons/vme_belgie/models/vme_sale_file.py](../../addons/vme_belgie/models/vme_sale_file.py#L255) | 255 | art. 3.94 §1, 1° BW | the reserve capital stays with the VME; the notary reports the share of the lot, not a refund to the seller (art. 3.86 §4 BW). |
+| [addons/vme_belgie/models/vme_sale_file.py](../../addons/vme_belgie/models/vme_sale_file.py#L270) | 270 | art. 3.94 §1, 3° BW | unpaid contributions of the seller. |
+| [addons/vme_belgie/models/vme_sale_file.py](../../addons/vme_belgie/models/vme_sale_file.py#L278) | 278 | art. 3.94 §1, 2° en §2 BW | works decided by the assembly before the sale. |
 | [addons/vme_belgie/wizard/vme_provision_call_wizard.py](../../addons/vme_belgie/wizard/vme_provision_call_wizard.py#L115) | 115 | art. 3.89 §5 BW | working and reserve capital on separate bank accounts, so each fund gets its own invoice paid to its own account. |
