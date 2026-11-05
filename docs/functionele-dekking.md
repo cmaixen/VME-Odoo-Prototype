@@ -26,11 +26,11 @@ Legende: ✅ gebouwd · 🔨 wordt nu gebouwd · 📋 gepland · ➖ bewust late
 | | Welkomstcommunicatie voor de nieuwe eigenaar | 📋 | stap 23 |
 | Afrekeningen | Jaarafrekening per eigenaar | ✅ | stap 6 |
 | | Commissaris van de rekeningen | 🔨 | stap 16 |
-| | Afrekening van lasten aan huurders | 📋 | stap 25 |
+| | Afrekening van lasten aan huurders | ✅ | stap 25 |
 | Rappelopvolging | Overzicht, rappels in niveaus, interest, doorsturen | ✅ | stap 10 |
 | | Aangetekend versturen | 📋 | stap 23 |
-| Indexatiebeheer | Huurindexering met uitzonderingen | 📋 | stap 25 |
-| | Indexatiebrieven | 📋 | stap 25 (de bpost-koppeling ➖) |
+| Indexatiebeheer | Huurindexering met uitzonderingen (gezondheidsindex, indexstop per gewest) | ✅ | stap 25 |
+| | Indexatiebrieven | ✅ | stap 25 (de bpost-koppeling ➖) |
 | Technisch beheer | Keuringen en liften | ✅ | stap 6b |
 | | Contracten | 🔨 | stap 18 |
 | | Technische documenten | 🔨 | stap 15 |
@@ -45,13 +45,15 @@ Legende: ✅ gebouwd · 🔨 wordt nu gebouwd · 📋 gepland · ➖ bewust late
 | | Gebouwkaart met de financiële toestand en een overzicht van de portefeuille | 📋 | stap 22 |
 | Beheer mede-eigenaars en huurders | Eigenaars met historiek | ✅ | stap 2 |
 | | Profiel in het portaal | 🔨 | stap 15 |
-| | Huurders als volwaardige contacten per kavel | 📋 | stap 19 en 25 |
+| | Huurders als volwaardige contacten per kavel | ✅ | stap 25 (aanvragen van huurders: stap 19) |
 | Leveranciersbeheer | Leveranciers, verdeelregels, facturen | ✅ | stap 4b |
 | | Leverancierskaart met contracten, keuringen, lopende werken en facturen | 📋 | stap 22 |
 | Documentbeheer | Mappen per VME en kavel, delen of niet delen | 🔨 | stap 15 |
 | | Automatisch ordenen met AI | 📋 | stap 21 |
 | | Acties op meerdere documenten tegelijk | 🔨 | stap 15 |
-| Huurcontractbeheer | Huurcontracten opmaken, huurders, waarborg, huur | 📋 | stap 25 |
+| Huurcontractbeheer | Huurcontracten opmaken, huurders, waarborg, huur | ✅ | stap 25 |
+| | Maandelijkse huurfacturen en opvolging van opzeg en einde huur | ✅ | stap 25 |
+| | Doorstorting aan de verhuurder en ereloon van de rentmeester | 📋 | na stap 25 |
 | Centraal communicatiebeheer | Brieven, e-mail, sms, aangetekend, push | 📋 | stap 23 |
 | | Bevragingen | 📋 | stap 23 |
 | | Updates en documenten delen | 📋 | stap 23 |

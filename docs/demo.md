@@ -15,7 +15,7 @@ Draai dit ongeveer 15 minuten voor de demo, in de map van het project. Docker (O
    ```bash
    docker compose stop odoo
    docker compose exec db dropdb -U odoo --if-exists vme_demo
-   docker compose run --rm odoo odoo -d vme_demo -i vme_belgie --load-language=nl_BE --stop-after-init
+   docker compose run --rm odoo odoo -d vme_demo -i vme_belgie,vme_rentmeester --load-language=nl_BE --stop-after-init
    echo "env = env(user=env.ref('base.user_admin')); env['vme.association']._load_demo_data(); env.cr.commit()" | docker compose run --rm -T odoo odoo shell -d vme_demo --no-http
    echo "env = env(user=env.ref('base.user_admin')); env['vme.association']._load_demo_history(); env.cr.commit()" | docker compose run --rm -T odoo odoo shell -d vme_demo --no-http
    docker compose up -d odoo
@@ -151,6 +151,18 @@ Draai dit ongeveer 15 minuten voor de demo, in de map van het project. Docker (O
 4. Vertel erbij: bij de akte klikt de syndicus op **Akte verleden**, en vanaf dan gaan kosten en provisies naar de koper.
 
 > Boodschap: "Een vraag van de notaris is twee minuten werk in plaats van een half uur zoeken, en de termijn ontsnapt u niet."
+
+### Extra: de rentmeester, indexatiebrief en afrekening aan de huurder (1,5 minuut)
+
+Kies rechtsboven ook het bedrijf **Rentmeester Voorbeeld BV**, anders blijven de huurfacturen verborgen.
+
+1. **Rentmeester > Huurcontracten**: drie verhuurde appartementen. Het contract van *Linde A7* heeft een taak: de uiterste opzegdatum van het kortlopende contract is 30 november.
+2. Open **Rentmeester > Indexeringen** en de conceptindexering van *Linde A2* op 1 november 2026. Toon de berekening: met EPC-label E werd in 2022 niet geïndexeerd, de correctiefactor 1,090092 houdt die gemiste indexering eruit. Nieuwe huur 939,90 euro.
+3. Klik op **Indexatiebrief (PDF)**: een concept, nog niet verstuurd. Klik op **Bevestigen**.
+4. Open het contract *Linde A2* en klik op **Afrekening lasten**, jaar 2026, **Berekenen**: per factuur uit de jaarafrekening van de VME het deel van de huurder (schoonmaak, lift en elektriciteit wel, brandverzekering niet), min 900 euro provisies.
+5. **Afrekening (PDF)** en **Conceptfactuur maken**.
+
+> Boodschap: "De jaarafrekening van de VME is meteen de basis voor de afrekening aan de huurder, zonder overtikken."
 
 ## Na de demo
 

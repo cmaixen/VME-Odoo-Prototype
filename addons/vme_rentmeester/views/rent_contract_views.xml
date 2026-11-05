@@ -1,0 +1,499 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="vme_rent_contract_view_list" model="ir.ui.view">
+        <field name="name">vme.rent.contract.list</field>
+        <field name="model">vme.rent.contract</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'ended'" decoration-warning="state == 'notice'">
+                <field name="name"/>
+                <field name="association_id" optional="show"/>
+                <field name="landlord_id"/>
+                <field name="tenant_id"/>
+                <field name="region" optional="hide"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="next_anniversary" optional="show"/>
+                <field name="notice_deadline" optional="show"/>
+                <field name="current_rent" sum="Totaal"/>
+                <field name="charges_amount" optional="show"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="state" widget="badge" decoration-success="state == 'active'"
+                       decoration-warning="state == 'notice'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_rent_contract_view_form" model="ir.ui.view">
+        <field name="name">vme.rent.contract.form</field>
+        <field name="model">vme.rent.contract</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_activate" type="object" string="Contract activeren" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_create_indexation" type="object" string="Indexering berekenen"
+                            invisible="state not in ('active', 'notice')"/>
+                    <button name="action_open_settlement_wizard" type="object" string="Afrekening lasten"
+                            invisible="state == 'draft' or charges_type != 'provision'"/>
+                    <button name="action_register_notice" type="object" string="Opzeg registreren"
+                            invisible="state != 'active'"/>
+                    <button name="action_end" type="object" string="Huur beëindigen"
+                            invisible="state not in ('active', 'notice')"
+                            confirm="Het contract wordt beëindigd; er komen geen huurfacturen meer. Doorgaan?"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,notice,ended"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_invoices" type="object" class="oe_stat_button" icon="fa-file-text-o">
+                            <field name="invoice_count" widget="statinfo" string="Huurfacturen"/>
+                        </button>
+                        <button name="action_open_indexations" type="object" class="oe_stat_button" icon="fa-line-chart">
+                            <field name="indexation_count" widget="statinfo" string="Indexeringen"/>
+                        </button>
+                        <button name="action_open_settlements" type="object" class="oe_stat_button" icon="fa-calculator">
+                            <field name="settlement_count" widget="statinfo" string="Afrekeningen"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <div class="alert alert-warning" role="alert" invisible="not deposit_warning">
+                        <field name="deposit_warning"/>
+                    </div>
+                    <group>
+                        <group string="Pand">
+                            <field name="lot_ids" widget="many2many_tags"/>
+                            <field name="association_id"/>
+                            <field name="property_address"/>
+                            <field name="region"/>
+                            <field name="epc_label"/>
+                        </group>
+                        <group string="Partijen">
+                            <field name="landlord_id"/>
+                            <field name="tenant_ids" widget="many2many_tags"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="analytic_account_id" groups="analytic.group_analytic_accounting"/>
+                        </group>
+                        <group string="Looptijd">
+                            <field name="date_signed"/>
+                            <field name="date_start"/>
+                            <field name="duration_years"/>
+                            <field name="lease_type"/>
+                            <field name="date_end"/>
+                            <field name="next_anniversary"/>
+                        </group>
+                        <group string="Huur en lasten">
+                            <field name="currency_id" invisible="1"/>
+                            <field name="rent"/>
+                            <field name="current_rent"/>
+                            <field name="charges_type"/>
+                            <field name="charges_amount"/>
+                            <field name="is_written"/>
+                            <field name="indexation_excluded"/>
+                        </group>
+                        <group string="Huurwaarborg">
+                            <field name="deposit_amount"/>
+                            <field name="deposit_type"/>
+                            <field name="deposit_reference"/>
+                        </group>
+                        <group string="Opzeg en einde">
+                            <field name="notice_deadline"/>
+                            <field name="notice_date"/>
+                            <field name="notice_party"/>
+                            <field name="notice_months"/>
+                            <field name="notice_end_date"/>
+                            <field name="date_moved_out"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Lasten per rubriek" name="charges" invisible="charges_type != 'provision'">
+                            <p class="text-muted">Welk deel van de kosten uit de jaarafrekening van de verhuurder de huurder draagt.</p>
+                            <field name="charge_line_ids">
+                                <list editable="bottom">
+                                    <field name="category_id"/>
+                                    <field name="tenant_percent"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Indexeringen" name="indexations">
+                            <field name="indexation_ids" readonly="1">
+                                <list>
+                                    <field name="anniversary_date"/>
+                                    <field name="effective_date"/>
+                                    <field name="previous_rent"/>
+                                    <field name="new_rent"/>
+                                    <field name="correction_factor" optional="show"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="state" widget="badge" decoration-success="state == 'confirmed'"
+                                           decoration-info="state == 'draft'"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notities" name="notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="vme_rent_contract_view_search" model="ir.ui.view">
+        <field name="name">vme.rent.contract.search</field>
+        <field name="model">vme.rent.contract</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="landlord_id"/>
+                <field name="tenant_ids"/>
+                <field name="association_id"/>
+                <filter name="running" string="Lopend" domain="[('state', 'in', ('active', 'notice'))]"/>
+                <filter name="ended" string="Beëindigd" domain="[('state', '=', 'ended')]"/>
+                <group>
+                    <filter name="group_landlord" string="Verhuurder" context="{'group_by': 'landlord_id'}"/>
+                    <filter name="group_association" string="VME" context="{'group_by': 'association_id'}"/>
+                    <filter name="group_region" string="Gewest" context="{'group_by': 'region'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="vme_rent_contract_action" model="ir.actions.act_window">
+        <field name="name">Huurcontracten</field>
+        <field name="res_model">vme.rent.contract</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_running': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nog geen huurcontracten</p>
+            <p>Een huurcontract koppelt een verhuurder en huurders aan een kavel of pand, met huur, lasten en waarborg.</p>
+        </field>
+    </record>
+
+    <!-- Indexations -->
+    <record id="vme_rent_indexation_view_list" model="ir.ui.view">
+        <field name="name">vme.rent.indexation.list</field>
+        <field name="model">vme.rent.indexation</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="contract_id"/>
+                <field name="landlord_id" optional="show"/>
+                <field name="anniversary_date"/>
+                <field name="effective_date"/>
+                <field name="region" optional="hide"/>
+                <field name="epc_label" optional="show"/>
+                <field name="previous_rent"/>
+                <field name="new_rent"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="state" widget="badge" decoration-success="state == 'confirmed'" decoration-info="state == 'draft'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_rent_indexation_view_form" model="ir.ui.view">
+        <field name="name">vme.rent.indexation.form</field>
+        <field name="model">vme.rent.indexation</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_print_letter" type="object" string="Indexatiebrief (PDF)" class="btn-primary"/>
+                    <button name="action_confirm" type="object" string="Bevestigen" invisible="state != 'draft'"/>
+                    <button name="action_recompute" type="object" string="Herberekenen" invisible="state != 'draft'"/>
+                    <button name="action_cancel" type="object" string="Annuleren" invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="display_name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="contract_id" readonly="state != 'draft'"/>
+                            <field name="landlord_id"/>
+                            <field name="tenant_id"/>
+                            <field name="region"/>
+                            <field name="epc_label"/>
+                        </group>
+                        <group>
+                            <field name="anniversary_date" readonly="state != 'draft'"/>
+                            <field name="request_date" readonly="state != 'draft'"/>
+                            <field name="effective_date"/>
+                        </group>
+                        <group string="Berekening">
+                            <field name="currency_id" invisible="1"/>
+                            <field name="base_rent"/>
+                            <field name="start_index_month"/>
+                            <field name="start_index"/>
+                            <field name="new_index_month"/>
+                            <field name="new_index"/>
+                            <field name="theoretical_rent"/>
+                        </group>
+                        <group string="Indexstop 2022-2023" invisible="not freeze_anniversary">
+                            <field name="freeze_anniversary"/>
+                            <field name="freeze_rate" widget="percentage"/>
+                            <field name="correction_factor"/>
+                        </group>
+                        <group string="Resultaat">
+                            <field name="previous_rent"/>
+                            <field name="new_rent"/>
+                            <field name="increase"/>
+                        </group>
+                    </group>
+                    <p class="text-muted small">Nieuwe huur = basishuur × nieuw indexcijfer / aanvangsindex, gedeeld door de correctiefactor als het contract onder de indexstop van 2022-2023 viel.
+                        De brief is een concept: niets wordt automatisch verstuurd.</p>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="vme_rent_indexation_action" model="ir.actions.act_window">
+        <field name="name">Indexeringen</field>
+        <field name="res_model">vme.rent.indexation</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Settlements -->
+    <record id="vme_rent_settlement_view_list" model="ir.ui.view">
+        <field name="name">vme.rent.settlement.list</field>
+        <field name="model">vme.rent.settlement</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="year" options="{'enable_formatting': false}"/>
+                <field name="contract_id"/>
+                <field name="tenant_id"/>
+                <field name="landlord_id" optional="show"/>
+                <field name="tenant_total"/>
+                <field name="provisions"/>
+                <field name="balance"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="state" widget="badge" decoration-success="state == 'invoiced'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_rent_settlement_view_form" model="ir.ui.view">
+        <field name="name">vme.rent.settlement.form</field>
+        <field name="model">vme.rent.settlement</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_print" type="object" string="Afrekening (PDF)" class="btn-primary"/>
+                    <button name="action_create_invoice" type="object" string="Conceptfactuur maken" invisible="state != 'draft'"/>
+                    <button name="action_open_invoice" type="object" string="Factuur openen" invisible="not invoice_id"/>
+                    <button name="action_recompute" type="object" string="Herberekenen" invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="display_name"/></h1></div>
+                    <div class="alert alert-warning" role="alert" invisible="not statement_incomplete">
+                        De jaarafrekening van de VME is nog niet volledig: er zijn geboekte facturen zonder verdeling.
+                    </div>
+                    <group>
+                        <group>
+                            <field name="contract_id" readonly="1"/>
+                            <field name="association_id"/>
+                            <field name="landlord_id"/>
+                            <field name="tenant_id"/>
+                            <field name="year" readonly="1" options="{'enable_formatting': false}"/>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                        </group>
+                        <group>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="owner_total"/>
+                            <field name="tenant_total"/>
+                            <field name="provisions"/>
+                            <field name="balance" class="fw-bold"/>
+                            <field name="invoice_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <field name="line_ids" readonly="1">
+                        <list>
+                            <field name="move_name"/>
+                            <field name="supplier"/>
+                            <field name="description"/>
+                            <field name="period_start" optional="show"/>
+                            <field name="period_end" optional="show"/>
+                            <field name="keys" optional="hide"/>
+                            <field name="lots" optional="show"/>
+                            <field name="category_id"/>
+                            <field name="owner_amount" sum="Totaal"/>
+                            <field name="lease_days" optional="show"/>
+                            <field name="lease_amount" sum="Totaal" optional="show"/>
+                            <field name="tenant_percent"/>
+                            <field name="tenant_amount" sum="Totaal"/>
+                            <field name="currency_id" column_invisible="1"/>
+                        </list>
+                    </field>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="vme_rent_settlement_action" model="ir.actions.act_window">
+        <field name="name">Afrekeningen huurders</field>
+        <field name="res_model">vme.rent.settlement</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Health index and rubrics -->
+    <record id="vme_rent_index_view_list" model="ir.ui.view">
+        <field name="name">vme.rent.index.list</field>
+        <field name="model">vme.rent.index</field>
+        <field name="arch" type="xml">
+            <list editable="top">
+                <field name="month" widget="date"/>
+                <field name="value"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_rent_index_action" model="ir.actions.act_window">
+        <field name="name">Gezondheidsindex</field>
+        <field name="res_model">vme.rent.index</field>
+        <field name="view_mode">list</field>
+        <field name="help" type="html">
+            <p>Vul elke maand het indexcijfer van Statbel in (basis 2013 = 100). De indexering zoekt hier de aanvangsindex en het nieuwe indexcijfer op.</p>
+        </field>
+    </record>
+
+    <record id="vme_rent_charge_category_view_list" model="ir.ui.view">
+        <field name="name">vme.rent.charge.category.list</field>
+        <field name="model">vme.rent.charge.category</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="default_tenant_percent"/>
+                <field name="partner_ids" widget="many2many_tags"/>
+                <field name="key_type"/>
+                <field name="account_prefixes"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_rent_charge_category_action" model="ir.actions.act_window">
+        <field name="name">Rubrieken van lasten</field>
+        <field name="res_model">vme.rent.charge.category</field>
+        <field name="view_mode">list</field>
+        <field name="help" type="html">
+            <p>Een kost uit de jaarafrekening komt in de rubriek van zijn leverancier, anders van de soort sleutel, anders van de kostenrekening.</p>
+        </field>
+    </record>
+
+    <!-- Wizards -->
+    <record id="vme_rent_invoice_wizard_view_form" model="ir.ui.view">
+        <field name="name">vme.rent.invoice.wizard.form</field>
+        <field name="model">vme.rent.invoice.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <p>Maakt voor elk lopend contract de huurfactuur van de maand, met huur en lasten. Een contract dat al een factuur heeft voor die maand, wordt overgeslagen. Er wordt niets verstuurd.</p>
+                <group>
+                    <field name="month"/>
+                    <field name="contract_ids" widget="many2many_tags"/>
+                    <field name="post"/>
+                </group>
+                <footer>
+                    <button name="action_create" type="object" string="Huurfacturen maken" class="btn-primary"/>
+                    <button special="cancel" string="Annuleren"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="vme_rent_invoice_wizard_action" model="ir.actions.act_window">
+        <field name="name">Huurfacturen maken</field>
+        <field name="res_model">vme.rent.invoice.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="vme_rent_settlement_wizard_view_form" model="ir.ui.view">
+        <field name="name">vme.rent.settlement.wizard.form</field>
+        <field name="model">vme.rent.settlement.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <p>Berekent het deel van de huurder in de kosten uit de jaarafrekening van de verhuurder, per rubriek, en trekt de gefactureerde provisies af.</p>
+                <group>
+                    <field name="contract_id"/>
+                    <field name="year" options="{'enable_formatting': false}"/>
+                </group>
+                <footer>
+                    <button name="action_create" type="object" string="Berekenen" class="btn-primary"/>
+                    <button special="cancel" string="Annuleren"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="rent_invoice_view_list" model="ir.ui.view">
+        <field name="name">account.move.rent.list</field>
+        <field name="model">account.move</field>
+        <field name="mode">primary</field>
+        <field name="inherit_id" ref="account.view_out_invoice_tree"/>
+        <field name="arch" type="xml">
+            <field name="invoice_date" position="after">
+                <field name="rent_contract_id" optional="show"/>
+                <field name="rent_landlord_id" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="rent_invoice_action" model="ir.actions.act_window">
+        <field name="name">Huurfacturen</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="rent_invoice_view_list"/>
+        <field name="domain">[('rent_contract_id', '!=', False)]</field>
+        <field name="context">{'default_move_type': 'out_invoice'}</field>
+    </record>
+
+    <record id="account_move_view_form_rent" model="ir.ui.view">
+        <field name="name">account.move.form.rent</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="rent_contract_id" invisible="not rent_contract_id"/>
+                <field name="rent_period" invisible="not rent_period"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="vme_lot_view_form_rent" model="ir.ui.view">
+        <field name="name">vme.lot.form.rent</field>
+        <field name="model">vme.lot</field>
+        <field name="inherit_id" ref="vme_belgie.vme_lot_view_form"/>
+        <field name="arch" type="xml">
+            <field name="current_owner_id" position="after">
+                <field name="current_tenant_ids" widget="many2many_tags" invisible="not current_tenant_ids"/>
+            </field>
+            <page name="ownerships" position="after">
+                <page string="Huurcontracten" name="rent_contracts" invisible="not rent_contract_ids">
+                    <field name="rent_contract_ids">
+                        <list>
+                            <field name="name"/>
+                            <field name="tenant_id"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="state"/>
+                        </list>
+                    </field>
+                </page>
+            </page>
+        </field>
+    </record>
+
+    <!-- Menus: a separate app, the rental business is not the VME's -->
+    <menuitem id="menu_rent_root" name="Rentmeester" web_icon="vme_rentmeester,static/description/icon.png" sequence="41"/>
+    <menuitem id="menu_rent_contracts" name="Huurcontracten" parent="menu_rent_root" action="vme_rent_contract_action" sequence="10"/>
+    <menuitem id="menu_rent_invoices_top" name="Huurfacturen" parent="menu_rent_root" sequence="20"/>
+    <menuitem id="menu_rent_invoices" name="Huurfacturen" parent="menu_rent_invoices_top" action="rent_invoice_action" sequence="10"/>
+    <menuitem id="menu_rent_invoice_wizard" name="Huurfacturen maken" parent="menu_rent_invoices_top" action="vme_rent_invoice_wizard_action" sequence="20"/>
+    <menuitem id="menu_rent_indexations" name="Indexeringen" parent="menu_rent_root" action="vme_rent_indexation_action" sequence="30"/>
+    <menuitem id="menu_rent_settlements" name="Afrekeningen huurders" parent="menu_rent_root" action="vme_rent_settlement_action" sequence="40"/>
+    <menuitem id="menu_rent_configuration" name="Configuratie" parent="menu_rent_root" sequence="90"/>
+    <menuitem id="menu_rent_index" name="Gezondheidsindex" parent="menu_rent_configuration" action="vme_rent_index_action" sequence="10"/>
+    <menuitem id="menu_rent_charge_categories" name="Rubrieken van lasten" parent="menu_rent_configuration" action="vme_rent_charge_category_action" sequence="20"/>
+</odoo>

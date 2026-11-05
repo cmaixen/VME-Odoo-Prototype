@@ -45,6 +45,10 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 
 16. [Een VME overnemen uit een ander syndicuspakket](migratie.md)
 
+### Rentmeester
+
+17. [Een verhuurd appartement beheren: huurcontract, huurfacturen, indexering en afrekening aan de huurder](rentmeester.md)
+
 ## Zo is het platform opgebouwd
 
 - **Eén VME = één bedrijf in Odoo.** Elke VME heeft haar eigen boekhouding, eigen rekeningnummers en eigen facturen. Rechtsboven in Odoo kies je in welke VME je werkt wanneer je facturen ingeeft. De schermen in de app **VME** (kavels, sleutels, provisieoproepen, jaarafrekening) tonen altijd alle VME's samen.
@@ -60,5 +64,7 @@ De demo bevat drie verzonnen gebouwen:
 | Residentie Linde | 12 appartementen (A1–A12) en 8 garages (G1–G8) | Algemene sleutel, liftsleutel | A5 en G5 zijn op 1 juli 2026 verkocht; A3 en G3 zijn in verkoop (vraag van de notaris) |
 | Hof ter Beuken | 24 appartementen (B1–B24) | Algemene sleutel, verwarmingssleutel | Eén eigenaar heeft B23 en B24; het reservefonds zit onder de 5% |
 | Kaaihuis | 6 appartementen (K1–K6) | Algemene sleutel | Klein gebouw zonder lift |
+
+Bij de demo horen ook drie verhuurde appartementen (Linde A2, Linde A7 en Beuken B23), beheerd door het fictieve kantoor **Rentmeester Voorbeeld BV**; zie [rentmeester](rentmeester.md).
 
 Een beheerder laadt de demo via **VME > Configuratie > Demodata laden** en daarna **Demohistoriek 2026 laden** (provisieoproepen, betalingen, leveranciersfacturen en invorderingen van een volledig jaar). De schermafbeeldingen in deze kennisbank komen uit die demo.

@@ -49,6 +49,8 @@ erDiagram
 
 Wizards (transient): `vme.provision.call.wizard` en `vme.annual.statement.wizard`, elk met een HTML-voorbeeld (`preview_html`).
 
+De modellen van de rentmeester (`vme.rent.*`) staan in de module `vme_rentmeester`; zie [rentmeester.md](rentmeester.md#datamodel).
+
 ## Uitbreidingen op Odoo-modellen
 
 | Model | Veld | Uitleg |

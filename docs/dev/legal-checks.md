@@ -3,16 +3,26 @@
 Automatisch gemaakt door `python3 tools/legal_checks.py`; niet met de hand bewerken.
 Elke rij is een wettelijke regel in de code die nog juridisch gevalideerd moet worden.
 
-Aantal punten: 50.
+Aantal punten: 65.
 
 ## Per bron
 
 - **AREI (Algemeen Reglement op de Elektrische Installaties)**: [vme_installation.py:22](../../addons/vme_belgie/models/vme_installation.py#L22)
+- **Brusselse ordonnantie van 13 oktober 2022 (indexering volgens EPB)**: [rent_rules.py:47](../../addons/vme_rentmeester/models/rent_rules.py#L47)
 - **KB 12 juli 2012 (minimum chart of accounts for VMEs)**: [account_chart_template.py:6](../../addons/vme_belgie/models/account_chart_template.py#L6), [vme_association.py:87](../../addons/vme_belgie/models/vme_association.py#L87)
 - **KB 9 maart 2003**: [vme_installation.py:33](../../addons/vme_belgie/models/vme_installation.py#L33)
 - **KB 9 maart 2003 betreffende de beveiliging van liften**: [vme_installation.py:17](../../addons/vme_belgie/models/vme_installation.py#L17)
 - **NBN S21-050**: [vme_installation.py:20](../../addons/vme_belgie/models/vme_installation.py#L20)
+- **Vlaams decreet van 14 oktober 2022 (indexering volgens EPC)**: [rent_rules.py:39](../../addons/vme_rentmeester/models/rent_rules.py#L39)
 - **Vlaamse regelgeving verwarmingsaudit/onderhoud**: [vme_installation.py:25](../../addons/vme_belgie/models/vme_installation.py#L25)
+- **Waals decreet van 19 oktober 2022 (indexation selon le PEB)**: [rent_rules.py:55](../../addons/vme_rentmeester/models/rent_rules.py#L55)
+- **art. 16 VWHD, art. 237 BHC, art. 55 Waals decreet 15-03-2018**: [rent_rules.py:94](../../addons/vme_rentmeester/models/rent_rules.py#L94), [rent_rules.py:195](../../addons/vme_rentmeester/models/rent_rules.py#L195)
+- **art. 1728bis oud BW, art. 34 VWHD, art. 224 BHC, art. 26 Waals decreet 15-03-2018**: [rent_contract.py:253](../../addons/vme_rentmeester/models/rent_contract.py#L253), [rent_rules.py:30](../../addons/vme_rentmeester/models/rent_rules.py#L30)
+- **art. 1728ter oud BW, art. 35 VWHD, art. 221 BHC, art. 32 Waals decreet 15-03-2018**: [rent_settlement.py:56](../../addons/vme_rentmeester/models/rent_settlement.py#L56)
+- **art. 224 Brusselse Huisvestingscode**: [rent_rules.py:70](../../addons/vme_rentmeester/models/rent_rules.py#L70)
+- **art. 248 Brusselse Huisvestingscode**: [rent_rules.py:83](../../addons/vme_rentmeester/models/rent_rules.py#L83)
+- **art. 26 Waals decreet van 15 maart 2018**: [rent_rules.py:73](../../addons/vme_rentmeester/models/rent_rules.py#L73)
+- **art. 3 en 21 VWHD, art. 238 BHC, art. 55 Waals decreet 15-03-2018**: [rent_rules.py:91](../../addons/vme_rentmeester/models/rent_rules.py#L91)
 - **art. 3.85 §1 BW**: [vme_key.py:60](../../addons/vme_belgie/models/vme_key.py#L60), [vme_migration.py:739](../../addons/vme_belgie/models/vme_migration.py#L739)
 - **art. 3.86 §3 BW**: [vme_budget.py:5](../../addons/vme_belgie/models/vme_budget.py#L5), [vme_migration.py:445](../../addons/vme_belgie/models/vme_migration.py#L445)
 - **art. 3.87 §10 BW**: [vme_assembly_meeting.py:232](../../addons/vme_belgie/models/vme_assembly_meeting.py#L232)
@@ -31,6 +41,9 @@ Aantal punten: 50.
 - **art. 3.94 §1, 2° en §2 BW**: [vme_sale_file.py:278](../../addons/vme_belgie/models/vme_sale_file.py#L278)
 - **art. 3.94 §1, 3° BW**: [vme_sale_file.py:270](../../addons/vme_belgie/models/vme_sale_file.py#L270)
 - **art. 3.94 §2 BW**: [vme_sale_file.py:12](../../addons/vme_belgie/models/vme_sale_file.py#L12)
+- **art. 34 Vlaams Woninghuurdecreet**: [rent_rules.py:67](../../addons/vme_rentmeester/models/rent_rules.py#L67)
+- **art. 37 Vlaams Woninghuurdecreet**: [rent_rules.py:80](../../addons/vme_rentmeester/models/rent_rules.py#L80)
+- **art. 62 Waals decreet van 15 maart 2018**: [rent_rules.py:86](../../addons/vme_rentmeester/models/rent_rules.py#L86)
 - **art. III.88 WER**: [vme_migration.py:476](../../addons/vme_belgie/models/vme_migration.py#L476)
 - **art. XIX.2 §1 WER**: [vme_collection.py:108](../../addons/vme_belgie/models/vme_collection.py#L108), [vme_collection.py:401](../../addons/vme_belgie/models/vme_collection.py#L401)
 - **art. XIX.4 §1 WER**: [vme_collection.py:139](../../addons/vme_belgie/models/vme_collection.py#L139)
@@ -93,3 +106,18 @@ Aantal punten: 50.
 | [addons/vme_belgie/models/vme_sale_file.py](../../addons/vme_belgie/models/vme_sale_file.py#L270) | 270 | art. 3.94 §1, 3° BW | unpaid contributions of the seller. |
 | [addons/vme_belgie/models/vme_sale_file.py](../../addons/vme_belgie/models/vme_sale_file.py#L278) | 278 | art. 3.94 §1, 2° en §2 BW | works decided by the assembly before the sale. |
 | [addons/vme_belgie/wizard/vme_provision_call_wizard.py](../../addons/vme_belgie/wizard/vme_provision_call_wizard.py#L115) | 115 | art. 3.89 §5 BW | working and reserve capital on separate bank accounts, so each fund gets its own invoice paid to its own account. |
+| [addons/vme_rentmeester/models/rent_contract.py](../../addons/vme_rentmeester/models/rent_contract.py#L253) | 253 | art. 1728bis oud BW, art. 34 VWHD, art. 224 BHC, art. 26 Waals decreet 15-03-2018 | alleen een schriftelijk contract dat indexering niet uitsluit, kan geïndexeerd worden. |
+| [addons/vme_rentmeester/models/rent_rules.py](../../addons/vme_rentmeester/models/rent_rules.py#L30) | 30 | art. 1728bis oud BW, art. 34 VWHD, art. 224 BHC, art. 26 Waals decreet 15-03-2018 | in alle drie de gewesten is de geïndexeerde huur = basishuur x nieuw indexcijfer / aanvangsindexcijfer, met de gezondheidsindex. |
+| [addons/vme_rentmeester/models/rent_rules.py](../../addons/vme_rentmeester/models/rent_rules.py#L39) | 39 | Vlaams decreet van 14 oktober 2022 (indexering volgens EPC) | verjaardagen van 1 oktober 2022 tot en met 30 september 2023: label A+ tot C volledig, D voor de helft, E, F of geen EPC niet. Vanaf 1 oktober 2023 een correctiefactor (decreet van 2023, nakijken). |
+| [addons/vme_rentmeester/models/rent_rules.py](../../addons/vme_rentmeester/models/rent_rules.py#L47) | 47 | Brusselse ordonnantie van 13 oktober 2022 (indexering volgens EPB) | verjaardagen van 14 oktober 2022 tot en met 13 oktober 2023: label A tot D volledig, E voor de helft, F, G of geen EPB niet. Daarna een correctiefactor (ordonnantie van 2023, nakijken). |
+| [addons/vme_rentmeester/models/rent_rules.py](../../addons/vme_rentmeester/models/rent_rules.py#L55) | 55 | Waals decreet van 19 oktober 2022 (indexation selon le PEB) | verjaardagen van 1 november 2022 tot en met 31 oktober 2023: label A tot C volledig, D en E voor de helft, F, G of geen PEB niet. Daarna een correctiefactor (decreet van 2023, nakijken). |
+| [addons/vme_rentmeester/models/rent_rules.py](../../addons/vme_rentmeester/models/rent_rules.py#L67) | 67 | art. 34 Vlaams Woninghuurdecreet | indexering met terugwerkende kracht tot maximaal drie maanden vóór de schriftelijke vraag. |
+| [addons/vme_rentmeester/models/rent_rules.py](../../addons/vme_rentmeester/models/rent_rules.py#L70) | 70 | art. 224 Brusselse Huisvestingscode | indexering met terugwerkende kracht tot maximaal drie maanden vóór de schriftelijke vraag. |
+| [addons/vme_rentmeester/models/rent_rules.py](../../addons/vme_rentmeester/models/rent_rules.py#L73) | 73 | art. 26 Waals decreet van 15 maart 2018 | indexering met terugwerkende kracht tot maximaal drie maanden vóór de schriftelijke vraag. |
+| [addons/vme_rentmeester/models/rent_rules.py](../../addons/vme_rentmeester/models/rent_rules.py#L80) | 80 | art. 37 Vlaams Woninghuurdecreet | huurwaarborg van maximaal drie maanden huur, in elke vorm. |
+| [addons/vme_rentmeester/models/rent_rules.py](../../addons/vme_rentmeester/models/rent_rules.py#L83) | 83 | art. 248 Brusselse Huisvestingscode | twee maanden op een geblokkeerde rekening, drie maanden bij een bankwaarborg. |
+| [addons/vme_rentmeester/models/rent_rules.py](../../addons/vme_rentmeester/models/rent_rules.py#L86) | 86 | art. 62 Waals decreet van 15 maart 2018 | twee maanden op een geblokkeerde rekening, drie maanden bij een bankwaarborg. |
+| [addons/vme_rentmeester/models/rent_rules.py](../../addons/vme_rentmeester/models/rent_rules.py#L91) | 91 | art. 3 en 21 VWHD, art. 238 BHC, art. 55 Waals decreet 15-03-2018 | een kortlopend contract (hoogstens drie jaar) eindigt alleen na een opzeg drie maanden vóór het einde; anders wordt het een contract van negen jaar. |
+| [addons/vme_rentmeester/models/rent_rules.py](../../addons/vme_rentmeester/models/rent_rules.py#L94) | 94 | art. 16 VWHD, art. 237 BHC, art. 55 Waals decreet 15-03-2018 | een contract van negen jaar eindigt met een opzeg van de verhuurder zes maanden of van de huurder drie maanden vóór het einde; anders loopt het telkens drie jaar door. |
+| [addons/vme_rentmeester/models/rent_rules.py](../../addons/vme_rentmeester/models/rent_rules.py#L195) | 195 | art. 16 VWHD, art. 237 BHC, art. 55 Waals decreet 15-03-2018 | de opzegtermijn begint de eerste dag van de maand na de opzeg. |
+| [addons/vme_rentmeester/models/rent_settlement.py](../../addons/vme_rentmeester/models/rent_settlement.py#L56) | 56 | art. 1728ter oud BW, art. 35 VWHD, art. 221 BHC, art. 32 Waals decreet 15-03-2018 | alleen werkelijke kosten worden afgerekend, met de stukken; forfaitaire lasten worden nooit afgerekend. |

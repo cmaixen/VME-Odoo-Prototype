@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- The landlord is an analytic dimension in the books of the rental office. -->
+        <record id="analytic_plan_landlords" model="account.analytic.plan">
+            <field name="name">Verhuurders</field>
+        </record>
+
+        <!-- Rubrics of charges and the share a tenant usually carries. Adjust per contract. -->
+        <record id="charge_category_cleaning" model="vme.rent.charge.category">
+            <field name="name">Schoonmaak gemene delen</field>
+            <field name="sequence">10</field>
+            <field name="default_tenant_percent">100</field>
+            <field name="note">Koppel de schoonmaakfirma's als leverancier aan deze rubriek.</field>
+        </record>
+        <record id="charge_category_elevator" model="vme.rent.charge.category">
+            <field name="name">Lift: onderhoud en keuring</field>
+            <field name="sequence">20</field>
+            <field name="default_tenant_percent">100</field>
+            <field name="key_type">elevator</field>
+        </record>
+        <record id="charge_category_heating" model="vme.rent.charge.category">
+            <field name="name">Verwarming en warm water</field>
+            <field name="sequence">30</field>
+            <field name="default_tenant_percent">100</field>
+            <field name="key_type">heating</field>
+        </record>
+        <record id="charge_category_energy" model="vme.rent.charge.category">
+            <field name="name">Elektriciteit en water gemene delen</field>
+            <field name="sequence">40</field>
+            <field name="default_tenant_percent">100</field>
+            <field name="account_prefixes">612</field>
+        </record>
+        <record id="charge_category_insurance" model="vme.rent.charge.category">
+            <field name="name">Verzekering van het gebouw</field>
+            <field name="sequence">50</field>
+            <field name="default_tenant_percent">0</field>
+            <field name="account_prefixes">614</field>
+        </record>
+        <record id="charge_category_maintenance" model="vme.rent.charge.category">
+            <field name="name">Onderhoud, herstellingen en grote werken</field>
+            <field name="sequence">60</field>
+            <field name="default_tenant_percent">0</field>
+            <field name="account_prefixes">611</field>
+        </record>
+        <record id="charge_category_management" model="vme.rent.charge.category">
+            <field name="name">Beheer: syndicus en administratie</field>
+            <field name="sequence">70</field>
+            <field name="default_tenant_percent">0</field>
+            <field name="account_prefixes">613</field>
+        </record>
+
+        <!-- Both crons only prepare drafts and tasks; nothing is sent. -->
+        <record id="ir_cron_rent_invoices" model="ir.cron">
+            <field name="name">Rentmeester: huurfacturen van de maand (concepten)</field>
+            <field name="model_id" ref="model_vme_rent_contract"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_rent_invoices()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+        <record id="ir_cron_rent_reminders" model="ir.cron">
+            <field name="name">Rentmeester: indexeringen en opzegtermijnen</field>
+            <field name="model_id" ref="model_vme_rent_contract"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_rent_reminders()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>

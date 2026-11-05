@@ -19,7 +19,7 @@ docker compose logs -f odoo
 ### Database aanmaken
 
 ```bash
-docker compose run --rm odoo odoo -d vme_demo -i vme_belgie --load-language=nl_BE --stop-after-init
+docker compose run --rm odoo odoo -d vme_demo -i vme_belgie,vme_rentmeester --load-language=nl_BE --stop-after-init
 ```
 
 Dat installeert ook `account`, `l10n_be` en `account_peppol`. Opnieuw beginnen: Odoo stoppen, `docker compose exec db dropdb -U odoo vme_demo`, opnieuw aanmaken.
@@ -27,18 +27,20 @@ Dat installeert ook `account`, `l10n_be` en `account_peppol`. Opnieuw beginnen: 
 ### Module upgraden
 
 ```bash
-docker compose run --rm odoo odoo -d vme_demo -u vme_belgie --stop-after-init
+docker compose run --rm odoo odoo -d vme_demo -u vme_belgie,vme_rentmeester --stop-after-init
 ```
 
 Gebruik `run`, niet `exec` (zie [valkuilen](valkuilen.md#shell-run-en-exec)). Kijk daarna de log na op `ERROR` en `WARNING` en test de functie in de browser.
 
 ## Tests
 
-Unittests staan in `addons/vme_belgie/tests/` en draaien op een aparte database `vme_test` (ongeveer 20 seconden):
+Unittests staan in `addons/vme_belgie/tests/` en `addons/vme_rentmeester/tests/` en draaien op een aparte database `vme_test` (ongeveer 20 seconden):
 
 ```bash
-docker compose run --rm odoo odoo -d vme_test -u vme_belgie --test-enable --test-tags /vme_belgie --stop-after-init
+docker compose run --rm odoo odoo -d vme_test -u vme_belgie,vme_rentmeester --test-enable --test-tags /vme_belgie,/vme_rentmeester --stop-after-init
 ```
+
+De tests van de rentmeester staan in [rentmeester.md](rentmeester.md#tests).
 
 | Bestand | Wat |
 | --- | --- |
@@ -53,7 +55,7 @@ docker compose run --rm odoo odoo -d vme_test -u vme_belgie --test-enable --test
 De trage test met een volledig demojaar (meer dan 10 minuten) draai je apart, vóór een demo en na wijzigingen aan de verdeling of de afrekening:
 
 ```bash
-docker compose run --rm odoo odoo -d vme_test -u vme_belgie --test-enable --test-tags vme_slow --stop-after-init
+docker compose run --rm odoo odoo -d vme_test -u vme_belgie,vme_rentmeester --test-enable --test-tags vme_slow --stop-after-init
 ```
 
 Testklassen zijn `post_install` en `-at_install`, zodat het rekeningstelsel en Peppol geladen zijn. Wie de demodata in een test laadt, doet dat als admin en draait daarna `cls.env.cr.precommit.run()` (zie [valkuilen](valkuilen.md#multi-company)).
