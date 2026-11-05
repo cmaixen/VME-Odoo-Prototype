@@ -49,3 +49,53 @@ Plak telkens één prompt in Claude Code. Ga pas naar de volgende als de vorige 
 ## 8. Demoscenario
 
 > Schrijf in `docs/demo.md` een demoscenario van 10 minuten voor een syndicus: van een elektriciteitsfactuur die binnenkomt en automatisch verdeeld wordt, via een factuur die een medewerker zelf verdeelt, tot de jaarafrekening; van het keuringsoverzicht met een vervallen keuring tot de taak voor de medewerker; van de AV-planner die een seizoen AV's in blokken legt; en van een mail van een eigenaar tot een voorgesteld antwoord. Controleer dat elke stap werkt op een verse database met de demodata.
+
+## 8b. Kennisbank en ontwikkelaarsdocumentatie (inhaalstap)
+
+> Lees CLAUDE.md (werkwijze over documentatie) en schrijf de documentatie voor alles wat al gebouwd is. In `docs/kb/` een kennisbank voor syndici en medewerkers, in eenvoudig Nederlands: een startpagina met inhoudstafel, en per functie een artikel (VME aanmaken en bankrekeningen bevestigen, kavels en eigendom, verdeelsleutels, een factuur verdelen, verdeelregels en Peppol-facturen, budget en provisieoproepen met de 5%-regel, de jaarafrekening lezen en afdrukken), elk met stappen in Odoo, een voorbeeld uit de demodata, schermafbeeldingen uit de browser en veelgestelde vragen. In `docs/dev/` de interne documentatie: architectuur (één module op Odoo 19 Community, één company per VME), het datamodel met een diagram, de rekenregels (verdeling, afronding, provisies, afrekening), de Odoo-methodes die we overschrijven en waarom, de valkuilen die we tegenkwamen (automatisch installeren van modules, bevestigde bankrekeningen, multi-company, tijdelijke records in formulieren, trage tests), hoe je de omgeving, tests en demo opbouwt, en een lijst van alle `LEGAL-CHECK`-punten die een script automatisch uit de code haalt. Maak de kennisbank ook bereikbaar vanuit Odoo: een menu "Help" in de app VME dat naar de juiste artikels linkt. Controleer elke stap van de kennisbank in de browser op een verse demo.
+
+---
+
+# Fase 2: de rest van het werk van een syndicus
+
+Na de demo (stap 8) dekken de stappen hieronder de taken af die een syndicus nog buiten het prototype doet. Ze staan in volgorde van hoeveel tijd ze een syndicus kosten. Elke wettelijke regel krijgt een `# LEGAL-CHECK:` met de bron, en alle data blijft fictief.
+
+## 9. Inlichtingen aan de notaris bij verkoop
+
+> Bouw een dossier "Verkoop kavel" per kavel: de notaris vraagt inlichtingen op, de syndicus antwoordt binnen de wettelijke termijnen (`# LEGAL-CHECK: art. 3.94 BW`, eerste en tweede vraag van de notaris). Stel het antwoord automatisch samen uit de bestaande gegevens: aandeel van de kavel in het werk- en reservekapitaal, openstaande provisies en achterstallen van de verkoper, door de AV beslste maar nog niet uitgevoerde werken en hun kostprijs, lopende gerechtelijke procedures, en de laatste notulen. Maak er een PDF van in de huisstijl van de VME, toon de termijn als vervaldatum met een taak voor de medewerker, en zet bij de akte de eigendom automatisch over naar de koper op de juiste datum (zodat kostenverdeling en provisies vanzelf volgen). Voeg in de demodata een lopende verkoop toe in Hof ter Beuken. Schrijf unittests voor de bedragen in het antwoord en de eigendomsoverdracht. Gebruik plan mode.
+
+## 10. Invordering van achterstallen
+
+> Bouw een invorderingsflow voor openstaande provisies en afrekeningen, over alle VME's heen: een overzicht van achterstallen per eigenaar en per VME met ouderdom (30/60/90 dagen), en drie niveaus (vriendelijke herinnering, aanmaning, ingebrekestelling) met Nederlandse sjablonen, de gestructureerde mededeling en het openstaande saldo. Bereken nalatigheidsinteresten en een forfaitaire schadevergoeding volgens het reglement van mede-eigendom (instelbaar per VME, `# LEGAL-CHECK:` voor de wettelijke grenzen) en boek ze op de eigenaar. Niets wordt automatisch verstuurd: de medewerker keurt per niveau goed, en een dossier kan doorgestuurd worden naar een advocaat of deurwaarder met een PDF-overzicht. Gebruik de achterstallen uit de demohistoriek (A3, B7). Schrijf unittests voor de ouderdom, de niveaus en de interesten. Gebruik plan mode.
+
+## 11. Algemene vergadering: oproeping, stemming en notulen
+
+> Bouw verder op de AV-planner uit stap 6c. Maak per AV een agenda met punten (elk met de vereiste meerderheid: volstrekte meerderheid, 2/3, 4/5 of eenparigheid, `# LEGAL-CHECK: art. 3.88 BW`), en verstuur de oproeping binnen de wettelijke termijn (`# LEGAL-CHECK: art. 3.87 BW`) als concept per eigenaar, met de agenda, de jaarafrekening en een volmachtformulier. Registreer op de vergadering de aanwezigen en volmachten (met de wettelijke grens op het aantal volmachten per mandataris), controleer het quorum op quotiteiten en aantal eigenaars, en laat per punt stemmen in quotiteiten met automatische uitkomst. Genereer de notulen als PDF, houd het register van beslissingen bij, en maak voor elke beslissing een opvolgtaak (bv. "offertes vragen voor dakwerken"). Gebruik een fictieve AV van Residentie Linde in de demodata. Schrijf unittests voor quorum, meerderheden en volmachtgrenzen. Gebruik plan mode.
+
+## 12. Bankafschriften inlezen en betalingen koppelen
+
+> Lees bankafschriften in (CODA, het Belgische formaat, en als alternatief CAMT.053) per VME en per fondsrekening, en koppel betalingen automatisch aan provisies en afrekeningen via de gestructureerde mededeling; betalingen zonder of met foute mededeling komen in een lijst om manueel te koppelen, met een voorstel op basis van bedrag en eigenaar. Leveranciersbetalingen worden aan de geboekte facturen gekoppeld. Maak fictieve CODA-bestanden voor de drie demo-VME's met een paar bewuste uitzonderingen (te laat, te weinig, foute mededeling). Gebruik wat Odoo Community al kan; zeg duidelijk wat een Enterprise-module of een externe bibliotheek zou vragen. Schrijf unittests voor de automatische en de voorgestelde koppelingen. Gebruik plan mode.
+
+## 13. Migratie uit een ander syndicuspakket
+
+> Bouw een importmodule om een bestaande portefeuille over te nemen uit een ander syndicuspakket (bijvoorbeeld Dobby), op basis van CSV- of Excel-exports. Ken je het exportformaat van het bronpakket niet, ontwerp dan een eigen, gedocumenteerd importformaat en maak een omzetter per bronpakket later. Importeer per VME: VME-gegevens, kavels, eigenaars met eigendomsdatums, sleutels met quotiteiten, leveranciers, en de openingsbalans op de overstapdatum (stand werk- en reservekapitaal, bank, openstaande saldi per eigenaar en per leverancier) als één openingsboeking; oudere jaren worden alleen als PDF-archief bewaard. Maak eerst een proefrun met een rapport van fouten en waarschuwingen (sleutels die niet optellen, eigenaars zonder kavel, ontbrekende bankrekeningen) zonder iets te schrijven, en daarna pas de echte import. Maak fictieve exportbestanden voor één VME met bewuste fouten. Leg in `docs/beslissingen.md` vast hoe de overstap verloopt (overstapdatum, parallel draaien van één VME gedurende een kwartaal, verwerkersovereenkomst voor echte gegevens). Schrijf unittests voor de proefrun en de openingsbalans. Gebruik plan mode.
+
+## 14. Werken, offertes en schadegevallen
+
+> Bouw een dossier per werk: beschrijving, beslissing van de AV (koppeling met stap 11), budget en financiering (werkkapitaal of reservekapitaal), offertes van meerdere aannemers met vergelijking (`# LEGAL-CHECK:` minimum aantal offertes boven het bedrag dat de AV vastlegde), gunning, opvolging van de uitvoering, oplevering en de facturen met hun verdeling. Bouw daarnaast een schadedossier per schadegeval: melding (bv. vanuit een mail van een eigenaar uit stap 7), betrokken kavels, verzekeringspolis, aangifte bij de verzekeraar, expertise, herstelling en uitbetaling, met termijnen en taken. Voeg een dakwerken-dossier en een waterschade toe aan de demodata. Schrijf unittests voor de financiering uit het reservekapitaal en de statussen. Gebruik plan mode.
+
+## 15. Documenten en eigenaarsportaal
+
+> Bouw per VME een documentenbeheer met vaste mappen (basisakte en reglement van mede-eigendom, notulen, jaarafrekeningen, verzekeringspolissen, keuringsverslagen, postinterventiedossier, contracten) en per kavel (eigendomsdocumenten, briefwisseling). Gebruik de portaalfunctie van Odoo Community zodat elke eigenaar na inloggen alleen zijn VME en zijn eigen kavels ziet: documenten, zijn afrekeningen en provisies met betaalstatus, en de agenda van de volgende AV (`# LEGAL-CHECK:` welke documenten de syndicus digitaal toegankelijk moet maken). Houd het register van eigenaars en hun contactgegevens actueel en laat eigenaars hun adres zelf wijzigen, met goedkeuring door de syndicus. Schrijf unittests voor de toegangsrechten (een eigenaar ziet nooit gegevens van een andere VME of kavel). Gebruik plan mode.
+
+## 16. Raad van mede-eigendom en commissaris van de rekeningen
+
+> Voeg per VME de leden van de raad van mede-eigendom en de commissaris van de rekeningen toe (`# LEGAL-CHECK: art. 3.90 en 3.91 BW`), met een portaaltoegang voor de commissaris om de boekhouding, facturen en bankafschriften van zijn VME in te kijken zonder iets te kunnen wijzigen, en een sjabloon voor zijn verslag aan de AV. Geef de raad een overzicht van de lopende dossiers (werken, schade, invordering). Schrijf unittests voor de leesrechten. Gebruik plan mode.
+
+## 17. Verbruik en meterstanden
+
+> Werk de sleutels "op verbruik" uit: per kavel tellers (water, verwarming via kostenverdelers, elektriciteit gemene delen) met meterstanden per periode, import van een CSV van een meteropnamebedrijf, en het verdelen van een factuur volgens het werkelijke verbruik in de kostperiode (met een vast deel volgens quotiteiten en een variabel deel volgens verbruik, instelbaar per VME). Maak fictieve meterstanden voor de verwarming van Hof ter Beuken. Schrijf unittests voor de verdeling vast/variabel en ontbrekende meterstanden. Gebruik plan mode.
+
+## 18. Personeel en contracten
+
+> Voeg per VME een overzicht van de lopende contracten toe (onderhoud, schoonmaak, verzekering, energie, lift, conciërge) met looptijd, opzegtermijn en jaarlijkse evaluatie (`# LEGAL-CHECK:` evaluatieplicht van de syndicus), met een taak vóór elke opzegtermijn. Voor een VME met eigen personeel (conciërge) volstaat in het prototype het boeken van de loonkosten uit een extern sociaal secretariaat via de verdeelregels. Schrijf unittests voor de opzegtermijnen. Gebruik plan mode.

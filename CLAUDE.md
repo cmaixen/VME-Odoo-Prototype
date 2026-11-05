@@ -67,3 +67,6 @@ Een werkend prototype van een syndicusplatform op Odoo 19, om te tonen aan een p
 - Werk met kleine stappen en gebruik plan mode voor elke nieuwe functie.
 - Schrijf voor de rekenlogica (verdeling, provisies, afrekening) unittests in `addons/vme_belgie/tests/`.
 - Hou `docs/beslissingen.md` bij: elke ontwerpkeuze in twee zinnen.
+- Werk bij elke stap ook de documentatie bij, in hetzelfde commit:
+  - `docs/kb/`: de kennisbank voor syndici en hun medewerkers, in het Nederlands en zonder technische termen. Per functie een artikel "Hoe doe ik …?" met de stappen in Odoo, een voorbeeld uit de demodata en de veelgestelde vragen.
+  - `docs/dev/`: de interne ontwikkelaarsdocumentatie. Architectuur, datamodel, hoe een berekening werkt, uitbreidingspunten in Odoo die we overschrijven, valkuilen die we tegenkwamen, en hoe je test en de demo opbouwt.
