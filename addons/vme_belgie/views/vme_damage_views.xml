@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="vme_damage_claim_view_list" model="ir.ui.view">
+        <field name="name">vme.damage.claim.list</field>
+        <field name="model">vme.damage.claim</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="deadline_state == 'danger'" decoration-warning="deadline_state == 'warning'"
+                  decoration-muted="state in ('paid', 'refused', 'cancelled')">
+                <field name="deadline_state" column_invisible="1"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="association_id"/>
+                <field name="name"/>
+                <field name="damage_type" optional="show"/>
+                <field name="lot_ids" widget="many2many_tags" optional="show"/>
+                <field name="report_date"/>
+                <field name="declaration_deadline" optional="show"/>
+                <field name="insurer_reference" optional="show"/>
+                <field name="estimated_amount" optional="hide"/>
+                <field name="compensation_amount" optional="hide"/>
+                <field name="state" widget="badge" decoration-info="state in ('reported', 'declared', 'expertise')"
+                       decoration-warning="state == 'repair'" decoration-success="state == 'paid'" decoration-danger="state == 'refused'"/>
+                <field name="user_id" widget="many2one_avatar_user" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_damage_claim_view_form" model="ir.ui.view">
+        <field name="name">vme.damage.claim.form</field>
+        <field name="model">vme.damage.claim</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_declare" type="object" string="Aangegeven bij verzekeraar" class="btn-primary"
+                            invisible="state != 'reported'"/>
+                    <button name="action_expertise" type="object" string="Expert aangesteld" class="btn-primary"
+                            invisible="state != 'declared'"/>
+                    <button name="action_repair" type="object" string="Herstelling gestart" class="btn-primary"
+                            invisible="state != 'expertise'"/>
+                    <button name="action_repair" type="object" string="Herstelling gestart (zonder expertise)"
+                            invisible="state != 'declared'"/>
+                    <button name="action_paid" type="object" string="Vergoeding ontvangen" class="btn-primary"
+                            invisible="state != 'repair'"/>
+                    <button name="action_paid" type="object" string="Vergoeding ontvangen"
+                            invisible="state not in ('declared', 'expertise')"/>
+                    <button name="action_refuse" type="object" string="Geweigerd" invisible="state not in ('declared', 'expertise', 'repair')"/>
+                    <button name="action_cancel" type="object" string="Annuleren" invisible="state not in ('reported', 'declared')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="reported,declared,expertise,repair,paid"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_bills" type="object" class="oe_stat_button" icon="fa-file-text-o">
+                            <span class="o_stat_text">Facturen</span>
+                        </button>
+                    </div>
+                    <field name="deadline_state" invisible="1"/>
+                    <field name="currency_id" invisible="1"/>
+                    <div class="alert alert-danger" role="alert" invisible="deadline_state != 'danger'">
+                        <field name="deadline_text"/>
+                    </div>
+                    <div class="alert alert-warning" role="alert" invisible="deadline_state != 'warning'">
+                        <field name="deadline_text"/>
+                    </div>
+                    <div class="oe_title"><h1><field name="name" placeholder="bv. Waterschade badkamer A4"/></h1></div>
+                    <group>
+                        <group string="Melding">
+                            <field name="association_id" readonly="state != 'reported'" options="{'no_create': True}"/>
+                            <field name="damage_type"/>
+                            <field name="event_date"/>
+                            <field name="report_date"/>
+                            <field name="reporter_id"/>
+                            <field name="source"/>
+                            <field name="mail_reference" invisible="source != 'mail'"/>
+                            <field name="lot_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                            <field name="common_parts"/>
+                            <field name="cause"/>
+                            <field name="user_id" options="{'no_create': True}"/>
+                        </group>
+                        <group string="Verzekering">
+                            <field name="policy_id" options="{'no_create': True}"/>
+                            <field name="insurer_id"/>
+                            <field name="deductible"/>
+                            <field name="declaration_deadline"/>
+                            <field name="declaration_date"/>
+                            <field name="insurer_reference"/>
+                            <field name="prescription_date"/>
+                        </group>
+                        <group string="Expertise en herstelling">
+                            <field name="expert_id"/>
+                            <field name="expertise_date"/>
+                            <field name="estimated_amount"/>
+                            <field name="repair_partner_id"/>
+                            <field name="repair_date"/>
+                        </group>
+                        <group string="Uitbetaling">
+                            <field name="repair_cost"/>
+                            <field name="compensation_amount"/>
+                            <field name="payment_date"/>
+                            <field name="net_cost"/>
+                            <field name="refusal_reason" invisible="state not in ('declared', 'expertise', 'repair', 'refused')"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Omschrijving" name="description">
+                            <field name="description" placeholder="Wat is er gebeurd, waar, en wat werd al gedaan?"/>
+                        </page>
+                        <page string="Facturen herstelling" name="bills">
+                            <field name="bill_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="partner_id"/>
+                                    <field name="invoice_date"/>
+                                    <field name="amount_total_in_currency_signed" string="Totaal" sum="Totaal"/>
+                                    <field name="state" widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="vme_damage_claim_view_search" model="ir.ui.view">
+        <field name="name">vme.damage.claim.search</field>
+        <field name="model">vme.damage.claim</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="association_id"/>
+                <field name="lot_ids"/>
+                <field name="insurer_reference"/>
+                <filter name="open" string="Lopend" domain="[('state', 'not in', ('paid', 'refused', 'cancelled'))]"/>
+                <filter name="to_declare" string="Nog aan te geven" domain="[('state', '=', 'reported')]"/>
+                <group>
+                    <filter name="group_association" string="VME" context="{'group_by': 'association_id'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_type" string="Soort" context="{'group_by': 'damage_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="vme_damage_claim_action" model="ir.actions.act_window">
+        <field name="name">Schadedossiers</field>
+        <field name="res_model">vme.damage.claim</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_open': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nog geen schadedossiers</p>
+            <p>Meldt een eigenaar schade? Maak een schadedossier: de termijn voor de aangifte bij de verzekeraar wordt bewaakt
+               en elke stap krijgt een taak.</p>
+        </field>
+    </record>
+
+    <record id="vme_insurance_policy_view_list" model="ir.ui.view">
+        <field name="name">vme.insurance.policy.list</field>
+        <field name="model">vme.insurance.policy</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="association_id"/>
+                <field name="name"/>
+                <field name="policy_type"/>
+                <field name="insurer_id"/>
+                <field name="policy_number"/>
+                <field name="deductible"/>
+                <field name="declaration_days"/>
+                <field name="date_end" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_insurance_policy_view_form" model="ir.ui.view">
+        <field name="name">vme.insurance.policy.form</field>
+        <field name="model">vme.insurance.policy</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <field name="currency_id" invisible="1"/>
+                    <div class="oe_title"><h1><field name="name" placeholder="bv. Brandverzekering gebouw"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="association_id" options="{'no_create': True}"/>
+                            <field name="policy_type"/>
+                            <field name="insurer_id"/>
+                            <field name="broker_id"/>
+                            <field name="policy_number"/>
+                        </group>
+                        <group>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="deductible"/>
+                            <field name="declaration_days"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <field name="coverage" placeholder="Gedekte risico's"/>
+                    <field name="claim_ids" readonly="1">
+                        <list>
+                            <field name="name"/>
+                            <field name="report_date"/>
+                            <field name="state" widget="badge"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="vme_insurance_policy_action" model="ir.actions.act_window">
+        <field name="name">Verzekeringspolissen</field>
+        <field name="res_model">vme.insurance.policy</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_vme_damage_claim" name="Schadedossiers" parent="menu_vme_works_root" action="vme_damage_claim_action" sequence="20"/>
+    <menuitem id="menu_vme_insurance_policy" name="Verzekeringspolissen" parent="menu_vme_works_root" action="vme_insurance_policy_action" sequence="30"/>
+</odoo>

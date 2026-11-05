@@ -36,6 +36,10 @@ In de demo staan vijf verzonnen mails klaar. Na het verwerken staan deze taken i
 
 De mail over de lift komt van een privéadres dat niet in Odoo staat. De assistent herkent toch het gebouw en appartement A11 uit de tekst, en zegt dat ook in de uitleg bij de koppeling.
 
+## Schademeldingen
+
+Gaat een mail over een lek of waterschade, dan maakt de assistent ook een **schadedossier** in de status **Gemeld** (VME > Werken en schade > Schadedossiers), en vermeldt dat in de activiteit. Kijk het na en doe de aangifte bij de verzekeraar; zie [Een schadegeval behandelen met de verzekering](schadegevallen.md).
+
 ## Veelgestelde vragen
 
 **Kan de assistent per ongeluk een mail versturen?**

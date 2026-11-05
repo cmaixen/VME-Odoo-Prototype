@@ -121,3 +121,12 @@ class VmeDirectory:
             order="id desc", limit=1, context=self.context,
         )
         return ids[0] if ids else None
+
+    def create_damage_claim(self, association_id, subject, body, reference, lot_id=None, owner_id=None,
+                            mail_date=None):
+        """Draft damage claim on the VME (step 14); one per mail. Nothing is declared or sent."""
+        return self.odoo.execute(
+            "vme.damage.claim", "create_from_mail", association_id, subject, body,
+            reference=reference, lot_id=lot_id, owner_id=owner_id,
+            mail_date=mail_date.isoformat() if mail_date else None, context=self.context,
+        )

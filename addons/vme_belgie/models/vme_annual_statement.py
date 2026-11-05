@@ -28,7 +28,11 @@ class VmeAssociation(models.Model):
             ("invoice_date", ">=", start),
             ("invoice_date", "<=", end),
         ])
-        allocations = bills.vme_allocation_ids
+        # LEGAL-CHECK: art. 3.86 §3 BW - works paid from the reserve capital are not settled in
+        # the working capital; each owner sees his share in them apart.
+        reserve_bills = bills.filtered(lambda m: m.vme_reserve_move_id)
+        allocations = (bills - reserve_bills).vme_allocation_ids
+        reserve_allocations = reserve_bills.vme_allocation_ids
         # Provisions belong to the year of their budget, not of their invoice date: a call
         # for next year sent in December must not reduce this year's balance.
         provisions = self.env["account.move"].sudo().search([
@@ -37,7 +41,7 @@ class VmeAssociation(models.Model):
             ("state", "=", "posted"),
         ])
         if partners is None:
-            partners = allocations.partner_id | provisions.partner_id
+            partners = allocations.partner_id | provisions.partner_id | reserve_allocations.partner_id
         else:
             partners = partners.sudo()
 
@@ -89,6 +93,15 @@ class VmeAssociation(models.Model):
                     "open": currency.round(open_amount),
                     "open_invoices": invoices.filtered(lambda m: not float_is_zero(m.amount_residual, precision_rounding=currency.rounding)),
                 }
+            reserve_works = []
+            own_reserve = reserve_allocations.filtered(lambda a: a.partner_id == partner)
+            for works in own_reserve.move_id.vme_works_id:
+                works_allocations = own_reserve.filtered(lambda a, w=works: a.move_id.vme_works_id == w)
+                reserve_works.append({
+                    "works": works,
+                    "total_vme": currency.round(-sum(works_allocations.move_id.mapped("amount_total_signed"))),
+                    "amount": currency.round(sum(works_allocations.mapped("amount"))),
+                })
             cost_total = currency.round(sum(own.mapped("amount")))
             balance = currency.round(cost_total - funds["working"]["paid"])
             ownerships = vme.lot_ids.ownership_ids.filtered(
@@ -103,11 +116,13 @@ class VmeAssociation(models.Model):
                 "working": funds["working"],
                 "reserve": funds["reserve"],
                 "balance": balance,
+                "reserve_works": reserve_works,
+                "reserve_works_total": currency.round(sum(w["amount"] for w in reserve_works)),
             })
 
         undistributed = bills.filtered(lambda m: not m.vme_allocation_ids)
         bills_total = currency.round(-sum(bills.mapped("amount_total_signed")))
-        allocated_total = currency.round(sum(allocations.mapped("amount")))
+        allocated_total = currency.round(sum((allocations | reserve_allocations).mapped("amount")))
         return {
             "vme": vme,
             "year": year,

@@ -102,7 +102,9 @@ class TestDemoData(TransactionCase):
         self.assertEqual(outcome["Dakwerken"], "adopted")
         self.assertEqual(outcome["Statutenwijziging"], "rejected")
         roof = assembly.item_ids.filtered(lambda i: i.name.startswith("Dakwerken"))
-        self.assertEqual(roof.activity_ids.summary, "Drie offertes vragen voor de dakwerken")
+        # The follow-up task "Drie offertes vragen voor de dakwerken" is done: the works are awarded (step 14).
+        self.assertFalse(roof.activity_ids)
+        self.assertEqual(roof.works_ids.state, "awarded")
         self.assertEqual(len(assembly.item_ids.filtered("decision_number")), 7)
 
     def test_demo_sale_linde_a3(self):
@@ -115,3 +117,19 @@ class TestDemoData(TransactionCase):
         self.assertEqual(len(info["works"]), 1)
         self.assertTrue(info["works"][0]["share"] > 0)
         self.assertIn("gevelwerken", info["legal_proceedings"])
+
+    def test_demo_works_and_damage_linde(self):
+        works = self.env["vme.works"].search([("association_id", "=", self.linde.id)])
+        self.assertEqual(works.name, "Renovatie plat dak blok A")
+        self.assertEqual((works.budget, works.financing, works.state), (38000, "reserve", "awarded"))
+        self.assertEqual(len(works.quote_ids), 3)
+        self.assertEqual(works.contractor_id.name, "Dakrenovatie Fictief NV")
+        self.assertEqual(works.contract_amount, 36450)
+        self.assertEqual(works.activity_ids.summary, "Start van de werken opvolgen")
+        self.assertFalse(works.decision_id.works_done)
+        claim = self.env["vme.damage.claim"].search([("association_id", "=", self.linde.id)])
+        self.assertEqual(claim.lot_ids.mapped("name"), ["A4", "A7"])
+        self.assertEqual(claim.state, "expertise")
+        self.assertEqual(claim.policy_id.insurer_id.name, "Verzekeringen Voorbeeld NV")
+        self.assertEqual(claim.mail_reference, "lek-a4-20261102@example.com")
+        self.assertEqual(len(self.env["vme.insurance.policy"].search([])), 3)

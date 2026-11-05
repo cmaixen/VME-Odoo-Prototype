@@ -63,6 +63,10 @@ De tests draaien zonder API-sleutel en zonder Odoo:
 
 Live testen tegen een Odoo met demodata: `python assistant.py --mock --dry-run`, dan `python assistant.py --mock`, en de VME's openen in Odoo. Met een API-sleutel in `ai/.env` hetzelfde zonder `--mock`.
 
+## Schadedossier bij een lek (stap 14)
+
+Voor onderwerpen in `DAMAGE_TOPICS` (nu `leak`) roept `run()` eerst `VmeDirectory.create_damage_claim()` aan: het Odoo-model `vme.damage.claim.create_from_mail` maakt een dossier in status Gemeld met de kavel en de eigenaar uit de classificatie, en geeft bij een tweede run voor dezelfde mail hetzelfde dossier terug. De activiteit vermeldt het dossiernummer. Bij `--dry-run` wordt niets gemaakt. Zie [werken-schade.md](werken-schade.md).
+
 ## Uitbreidingspunten
 
 - Echte mailbox (IMAP of Odoo's eigen inkomende mail) in plaats van `ai/inbox/`, met een register van verwerkte mails.

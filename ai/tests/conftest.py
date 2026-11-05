@@ -39,6 +39,7 @@ class FakeDirectory:
 
     def __init__(self):
         self.activities = []
+        self.claims = []
 
     def find_activity(self, reference):
         return next((a["id"] for a in self.activities if reference in a["note"]), None)
@@ -54,6 +55,15 @@ class FakeDirectory:
         }
         self.activities.append(activity)
         return activity["id"]
+
+    def create_damage_claim(self, association_id, subject, body, reference, lot_id=None, owner_id=None,
+                            mail_date=None):
+        existing = next((c["id"] for c in self.claims if c["reference"] == reference), None)
+        if existing:
+            return existing
+        self.claims.append({"id": len(self.claims) + 1, "association_id": association_id, "subject": subject,
+                            "reference": reference, "lot_id": lot_id, "owner_id": owner_id, "mail_date": mail_date})
+        return len(self.claims)
 
 
 @pytest.fixture

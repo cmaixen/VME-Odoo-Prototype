@@ -152,6 +152,14 @@ Draai dit ongeveer 15 minuten voor de demo, in de map van het project. Docker (O
 
 > Boodschap: "Een vraag van de notaris is twee minuten werk in plaats van een half uur zoeken, en de termijn ontsnapt u niet."
 
+### Extra: werken en een schadegeval (1 minuut)
+
+1. **VME > Werken en schade > Werkdossiers**: *Renovatie plat dak blok A* van Residentie Linde, aan beslissing 2026/06 van de AV. Toon het tabblad **Offertes**: drie offertes naast het budget van 38.000 euro, gegund aan de goedkoopste (36.450 euro). De oranje melding toont dat het reservekapitaal niet volstaat.
+2. Optioneel: kies rechtsboven Residentie Linde, upload `addons/vme_belgie/demo_data/facturen/voorschot_dakwerken_residentie_linde_2026-11.xml` bij de leveranciersfacturen en bevestig: de factuur hangt aan het dossier, is verdeeld en ten laste van het reservekapitaal geboekt.
+3. **Schadedossiers**: *Waterschade badkamer A4*, uit de mail van A4 (zie stap 8), aangegeven bij de verzekeraar op 3 november, expertise op 12 november.
+
+> Boodschap: "Van AV-beslissing tot oplevering in één dossier, en geen aangiftetermijn die ontsnapt."
+
 ## Na de demo
 
 - De demo is daarna niet meer "vers": de factuur, de provisieoproep 2027, de AV-planning, de AI-taken en eventueel het antwoord aan de notaris staan erin. Bouw de database opnieuw op met de commando's hierboven voor een volgende demo.

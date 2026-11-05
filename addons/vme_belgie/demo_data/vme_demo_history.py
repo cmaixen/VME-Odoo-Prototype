@@ -118,10 +118,12 @@ class VmeAssociation(models.Model):
 
     def _demo_history_bills(self, vmes):
         Partner = self.env["res.partner"]
+        # The insurer already exists from the demo data (insurance policies, step 14).
         suppliers = {
-            code: Partner.create({"name": name, "vat": vat, "is_company": True,
-                                  "email": f"facturen@{name.split()[0].lower()}.example.com",
-                                  "country_id": self.env.ref("base.be").id})
+            code: Partner.search([("vat", "=", vat)], limit=1) or Partner.create({
+                "name": name, "vat": vat, "is_company": True,
+                "email": f"facturen@{name.split()[0].lower()}.example.com",
+                "country_id": self.env.ref("base.be").id})
             for code, (name, vat, _key, _account) in HISTORY_SUPPLIERS.items()
         }
         suppliers["energy"] = Partner.search([("vat", "=", "BE0000000394")], limit=1)
