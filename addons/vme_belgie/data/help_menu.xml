@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Base URL of the knowledge base (docs/kb). Change it under Settings > Technical > System Parameters. -->
+    <data noupdate="1">
+        <record id="config_help_url" model="ir.config_parameter">
+            <field name="key">vme_belgie.help_url</field>
+            <field name="value">https://github.com/cmaixen/VME-Odoo-Prototype/tree/main/docs/kb</field>
+        </record>
+    </data>
+
+    <!-- One server action per article: menus cannot pass arguments, and a server action can read the parameter. -->
+    <record id="action_help_kb" model="ir.actions.server">
+        <field name="name">Help: kennisbank</field>
+        <field name="model_id" ref="model_vme_association"/>
+        <field name="state">code</field>
+        <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/README.md"}</field>
+    </record>
+    <record id="action_help_vme" model="ir.actions.server">
+        <field name="name">Help: VME aanmaken</field>
+        <field name="model_id" ref="model_vme_association"/>
+        <field name="state">code</field>
+        <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/vme-aanmaken.md"}</field>
+    </record>
+    <record id="action_help_lots" model="ir.actions.server">
+        <field name="name">Help: kavels en eigendom</field>
+        <field name="model_id" ref="model_vme_association"/>
+        <field name="state">code</field>
+        <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/kavels-en-eigendom.md"}</field>
+    </record>
+    <record id="action_help_keys" model="ir.actions.server">
+        <field name="name">Help: verdeelsleutels</field>
+        <field name="model_id" ref="model_vme_association"/>
+        <field name="state">code</field>
+        <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/verdeelsleutels.md"}</field>
+    </record>
+    <record id="action_help_distribute" model="ir.actions.server">
+        <field name="name">Help: factuur verdelen</field>
+        <field name="model_id" ref="model_vme_association"/>
+        <field name="state">code</field>
+        <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/factuur-verdelen.md"}</field>
+    </record>
+    <record id="action_help_rules" model="ir.actions.server">
+        <field name="name">Help: verdeelregels en Peppol</field>
+        <field name="model_id" ref="model_vme_association"/>
+        <field name="state">code</field>
+        <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/verdeelregels-en-peppol.md"}</field>
+    </record>
+    <record id="action_help_provisions" model="ir.actions.server">
+        <field name="name">Help: budget en provisieoproepen</field>
+        <field name="model_id" ref="model_vme_association"/>
+        <field name="state">code</field>
+        <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/budget-en-provisieoproepen.md"}</field>
+    </record>
+    <record id="action_help_statement" model="ir.actions.server">
+        <field name="name">Help: jaarafrekening</field>
+        <field name="model_id" ref="model_vme_association"/>
+        <field name="state">code</field>
+        <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/jaarafrekening.md"}</field>
+    </record>
+
+    <menuitem id="menu_vme_help" name="Help" parent="menu_vme_root" sequence="99"/>
+    <menuitem id="menu_vme_help_kb" name="Kennisbank" parent="menu_vme_help" action="action_help_kb" sequence="1"/>
+    <menuitem id="menu_vme_help_vme" name="VME aanmaken en bankrekeningen" parent="menu_vme_help" action="action_help_vme" sequence="10"/>
+    <menuitem id="menu_vme_help_lots" name="Kavels en eigendom" parent="menu_vme_help" action="action_help_lots" sequence="20"/>
+    <menuitem id="menu_vme_help_keys" name="Verdeelsleutels" parent="menu_vme_help" action="action_help_keys" sequence="30"/>
+    <menuitem id="menu_vme_help_distribute" name="Een factuur verdelen" parent="menu_vme_help" action="action_help_distribute" sequence="40"/>
+    <menuitem id="menu_vme_help_rules" name="Verdeelregels en Peppol-facturen" parent="menu_vme_help" action="action_help_rules" sequence="50"/>
+    <menuitem id="menu_vme_help_provisions" name="Budget en provisieoproepen" parent="menu_vme_help" action="action_help_provisions" sequence="60"/>
+    <menuitem id="menu_vme_help_statement" name="Jaarafrekening" parent="menu_vme_help" action="action_help_statement" sequence="70"/>
+</odoo>

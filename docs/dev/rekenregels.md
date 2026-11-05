@@ -1,0 +1,85 @@
+# Rekenregels
+
+Alle verdelingen ronden af met dezelfde functie, zodat de som van de delen altijd exact het geheel is.
+
+## Afronding: `largest_remainder`
+
+`models/allocation_tools.py`:
+
+```python
+largest_remainder(total, weights, digits=0)
+```
+
+1. Reken het totaal om naar eenheden (`digits=2`: centen).
+2. Geef elk deel het naar beneden afgeronde exacte aandeel.
+3. Verdeel de overblijvende eenheden één voor één over de delen met de grootste rest.
+4. Een negatief totaal (creditnota) wordt als absolute waarde verdeeld en krijgt daarna het minteken terug.
+
+Voorbeeld: 1000 over drie gelijke gewichten geeft `[334, 333, 333]`. Gewichten die samen nul zijn, geven een `ValueError`.
+
+Gebruikt voor: quotiteiten in de demodata (hele duizendsten), factuurbedragen over kavels en over eigenaars (centen), provisiebedragen over kavels (centen).
+
+## Verdeling van een leveranciersfactuur
+
+`account.move._vme_distribute()`, per factuur:
+
+1. **Controle** (`_vme_check_distributable`): leveranciersfactuur of -creditnota, VME bekend, kostperiode ingevuld en niet omgekeerd, minstens één productregel, elke regel een sleutel van deze VME.
+2. **Bedrag per regel**: `price_total` (inclusief btw, want btw is een kost voor een VME), omgerekend naar de munt van de company op de factuurdatum. Een creditnota krijgt een negatief bedrag.
+3. **Over de kavels**: `largest_remainder(bedrag, quotiteiten, 2)` over de sleutelregels met een quotiteit verschillend van nul.
+4. **Over de eigenaars per kavel**: `_vme_ownership_segments` knipt de kostperiode in stukken per eigenaar (`max(begin)` tot `min(einde)`) en telt de dagen, grenzen inbegrepen. Dekken de stukken niet elke dag van de periode, dan volgt een `UserError`. Het kavelbedrag wordt met `largest_remainder` over de dagen verdeeld (`# LEGAL-CHECK: art. 3.94 BW`).
+5. **Opslaan**: bestaande `vme.cost.allocation`-rijen van deze factuur worden verwijderd en opnieuw gemaakt.
+
+Gevolg: de som van alle rijen van een factuur is exact het factuurtotaal, en de som per kavel exact het kavelaandeel.
+
+### Automatisch bij het boeken
+
+`_post()` roept `_vme_auto_distribute()` aan voor geboekte leveranciersfacturen met een VME:
+
+- Heeft een regel geen sleutel, dan komt er een bericht in de chatter en gebeurt er niets.
+- Anders wordt verdeeld binnen een savepoint. Een `UserError` (bijvoorbeeld een kavel zonder eigenaar) wordt een chatterbericht; de factuur blijft geboekt.
+
+### Kostperiode
+
+- Standaard: begin en einde = factuurdatum (compute die alleen lege velden vult).
+- UBL/Peppol: `InvoicePeriod/StartDate` en `EndDate` uit het XML-bestand (`_extend_with_attachments`).
+- De kostperiode beïnvloedt alleen de verdeling tussen opeenvolgende eigenaars. Voor de jaarafrekening telt de factuurdatum.
+
+## Verdeelregels
+
+- `account.move.line._compute_vme_key_id`: hangt af van leverancier, company en `display_type`; vult alleen een lege sleutel, zodat een handmatige keuze blijft.
+- `account.move.line._compute_account_id`: zet voor regels zonder product de rekening van de regel, als die er een heeft.
+- De regel wordt gezocht op de company van de factuur en de leverancier of zijn commerciële partner.
+
+## Provisieoproep
+
+`vme.provision.call.wizard._create_call(vme, budget)`:
+
+1. Controles: oproepnummer tussen 1 en `calls_per_year`, oproep nog niet gemaakt, een algemene sleutel met regels, rekeningstelsel met 100100/100200 en een verkoopdagboek, beide fondsrekeningen ingevuld én bevestigd.
+2. Eigenaar per kavel: `lot._get_owner_on(invoice_date)`. Elke kavel moet op die datum een eigenaar hebben.
+3. Per fonds: bedrag per oproep = jaarbedrag / `calls_per_year`, verdeeld over de kavels van de algemene sleutel met `largest_remainder(…, 2)`. Kavels met bedrag nul vallen weg.
+4. Per fonds en per eigenaar één klantfactuur, zonder btw, met één regel per kavel op rekening 100100 of 100200, `partner_bank_id` = rekening van het fonds (`# LEGAL-CHECK: art. 3.89 §5 BW`).
+5. De gestructureerde mededeling (`+++xxx/xxxx/xxxxx+++`) komt van Odoo zelf: het verkoopdagboek van het Belgische rekeningstelsel gebruikt het Belgische referentiemodel.
+6. Met **Meteen boeken** boekt de wizard per VME in haar eigen company.
+
+## 5%-regel voor het reservefonds
+
+`vme.budget._compute_reserve_check` (`# LEGAL-CHECK: art. 3.86 §3 BW`):
+
+- Lasten vorig jaar = som van `amount_total_signed` (inclusief btw) van geboekte leveranciersfacturen en -creditnota's van de company met factuurdatum in jaar − 1.
+- Zijn die nul (nieuwe VME of demo zonder historiek), dan wordt het werkkapitaalbudget als schatting gebruikt en is `previous_year_charges_estimated` waar.
+- Minimum = lasten × `RESERVE_MINIMUM_RATE` (0,05).
+- Waarschuwing als de jaarbijdrage lager is en `reserve_exception_by_general_assembly` niet aanstaat. Het is een waarschuwing, geen blokkering.
+
+## Jaarafrekening
+
+`vme.association._get_annual_statement(year, partners=None)` (alles als `sudo`):
+
+- **Kosten**: kostenverdelingen van geboekte leveranciersfacturen met factuurdatum in het jaar.
+- **Provisies**: geboekte facturen met een `vme_provision_call_id` en factuurdatum in het jaar; per fonds gefactureerd, betaald (`amount_total − amount_residual`) en open.
+- **Eigenaars**: iedereen met kosten of provisies in het jaar (of de opgegeven partners).
+- **Saldo** = aandeel in de kosten − betaalde provisies werkkapitaal. Open provisies worden niet verrekend, reservekapitaal nooit.
+- **Per sleutel**: totale kosten van de VME, de quotiteiten van de eigenaar (`"70 + 6"` voor twee kavels) en zijn aandeel.
+- **Per factuur**: aandeel van de eigenaar, en `partial_days` als hij maar een deel van de kostperiode eigenaar was.
+- **Controle**: `is_complete` als er geen geboekte factuur zonder verdeling is en de som van de verdeling gelijk is aan de som van de facturen.
+
+Het rapport (`report/vme_annual_statement_report.xml`) toont per eigenaar kavels, kosten per sleutel, afrekening werkkapitaal, reservekapitaal en het detail per factuur.
