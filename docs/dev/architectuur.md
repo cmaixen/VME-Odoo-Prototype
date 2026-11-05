@@ -3,7 +3,7 @@
 ## Uitgangspunten
 
 - **Odoo 19 Community**, zonder Enterprise-code. We gebruiken niets uit het Enterprise-pakket "Property Owner Association" (licentie OEEL-1) en kijken er ook niet in.
-- **Eén eigen module**, `addons/vme_belgie`. Ze hangt af van `account`, `l10n_be` en `account_peppol` (zie [valkuilen](valkuilen.md#modules-die-odoo-zelf-installeert)).
+- **Eén eigen module voor de VME**, `addons/vme_belgie`. Ze hangt af van `account`, `l10n_be` en `account_peppol` (zie [valkuilen](valkuilen.md#modules-die-odoo-zelf-installeert)). De rentmeesterij staat apart in `addons/vme_rentmeester`, die van `vme_belgie` afhangt; zie [rentmeester.md](rentmeester.md).
 - **Code en technische namen in het Engels, labels en teksten in het Nederlands.** Franse vertalingen komen later via `.po`-bestanden; daarom gaan teksten in Python door `self.env._(...)`.
 - **Belgische regels krijgen een `# LEGAL-CHECK:`-commentaar met de bron.** [legal-checks.md](legal-checks.md) is het overzicht, gemaakt door `tools/legal_checks.py`.
 

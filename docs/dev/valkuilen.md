@@ -24,6 +24,12 @@ Elke VME is een company, en een medewerker heeft meestal maar een deel van de co
 - **Toegang tot nieuwe companies.** `vme.association.create()` koppelt elke interne gebruiker aan de nieuwe company. Zonder dat zou een VME die een script (of de systeemgebruiker) aanmaakt onzichtbaar zijn voor de medewerkers.
 - **Rekeningstelsel bij de commit.** Een company met `chart_template` krijgt haar rekeningstelsel pas bij de commit (een `precommit`-haakje). Wie meteen na het aanmaken rekeningen zoekt, vindt niets. Daarom vult `_post_load_data` de VME-rekeningen aan, en zet de demodata de rekeningen van de verdeelregels via `self.env.cr.precommit.add(...)`. In tests roep je `cls.env.cr.precommit.run()` aan na het laden.
 
+## Rentmeester: facturen in de company van het kantoor (stap 25)
+
+- **Huurfacturen zijn onzichtbaar zonder de company van het kantoor.** Ze leven in de company van het rentmeesterkantoor; een lijst van facturen toont alleen de geselecteerde companies. De teller op het contract en de controle "al een factuur voor deze maand" lezen daarom met `sudo()`: zonder dat maakte de wizard een tweede factuur voor dezelfde maand zodra een gebruiker een andere company geselecteerd had.
+- **Rekeningcodes zijn per company.** In Odoo 19 is `account.account.code` afhankelijk van de company in de context. Lees de code van een rekening uit een VME met `account.with_company(vme_company).code`, anders is ze leeg (zo vielen verzekering en energie eerst in geen enkele rubriek).
+- **`format_date` in een QWeb-rapport** bestaat niet vanzelf: geef het mee via een `report.<module>.<template>`-model met `_get_report_values`, zoals de rapporten van de rentmeester en het verkoopdossier.
+
 ## Tijdelijke records in formulieren (`_origin`)
 
 In een open formulier of wizard zijn Many2one- en Many2many-waarden tijdelijke `NewId`-records. Een `search` met `vme.id` vindt dan niets. Gebruik `record._origin` (of `record._origin.id`) om het echte record te krijgen, zoals in `vme.provision.call.wizard._get_budget()` en `vme.annual.statement.wizard._get_statement()`. Het voorbeeld (`preview_html`) wordt berekend terwijl het formulier nog open is, dus elke compute die zoekt, moet dit doen.

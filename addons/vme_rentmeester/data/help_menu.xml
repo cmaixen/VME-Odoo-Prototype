@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Same pattern as vme_belgie/data/help_menu.xml: the article lives in docs/kb, the base URL in vme_belgie.help_url. -->
+    <record id="action_help_rent" model="ir.actions.server">
+        <field name="name">Help: rentmeester</field>
+        <field name="model_id" ref="vme_belgie.model_vme_association"/>
+        <field name="state">code</field>
+        <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/rentmeester.md"}</field>
+    </record>
+    <menuitem id="menu_vme_help_rent" name="Rentmeester: huur, indexering en afrekening" parent="vme_belgie.menu_vme_help" action="action_help_rent" sequence="140"/>
+    <menuitem id="menu_rent_help" name="Help" parent="menu_rent_root" action="action_help_rent" sequence="99"/>
+</odoo>

@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_vme_rent_index_user,vme.rent.index user,model_vme_rent_index,base.group_user,1,0,0,0
+access_vme_rent_index_system,vme.rent.index system,model_vme_rent_index,base.group_system,1,1,1,1
+access_vme_rent_charge_category_user,vme.rent.charge.category user,model_vme_rent_charge_category,base.group_user,1,1,1,1
+access_vme_rent_contract_user,vme.rent.contract user,model_vme_rent_contract,base.group_user,1,1,1,1
+access_vme_rent_contract_charge_user,vme.rent.contract.charge user,model_vme_rent_contract_charge,base.group_user,1,1,1,1
+access_vme_rent_indexation_user,vme.rent.indexation user,model_vme_rent_indexation,base.group_user,1,1,1,1
+access_vme_rent_settlement_user,vme.rent.settlement user,model_vme_rent_settlement,base.group_user,1,1,1,1
+access_vme_rent_settlement_line_user,vme.rent.settlement.line user,model_vme_rent_settlement_line,base.group_user,1,1,1,1
+access_vme_rent_invoice_wizard_user,vme.rent.invoice.wizard user,model_vme_rent_invoice_wizard,base.group_user,1,1,1,1
+access_vme_rent_settlement_wizard_user,vme.rent.settlement.wizard user,model_vme_rent_settlement_wizard,base.group_user,1,1,1,1
