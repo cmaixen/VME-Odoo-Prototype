@@ -345,6 +345,8 @@ class VmeAssociation(models.Model):
             "requests": vme._get_open_requests(),
             "bills_to_pay": bills_to_pay,
             "payment_batches": vme._get_open_payment_batches(),
+            # Approval of vendor bills before payment (step 20), when installed.
+            "has_approval": "vme_approval_state" in self.env["account.move"]._fields,
             "selection_label": self._selection_label,
         }
 
@@ -367,7 +369,7 @@ class VmeAssociation(models.Model):
         Batch = self.env["vme.payment.batch"].sudo()
         domain = [("company_id", "=", self.company_id.id)] if "company_id" in Batch._fields else []
         if "state" in Batch._fields:
-            domain.append(("state", "in", ("draft", "sent")))
+            domain.append(("state", "in", ("draft", "generated", "sent")))
         return Batch.search(domain, limit=20)
 
     @api.model

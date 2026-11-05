@@ -304,12 +304,13 @@
                         <div class="card-body">
                             <p t-if="not bills_to_pay" class="text-muted mb-0">Geen openstaande leveranciersfacturen.</p>
                             <table t-else="" class="table table-sm o_vme_card_table mb-0">
-                                <thead><tr><th>Factuur</th><th>Leverancier</th><th>Vervaldag</th><th class="text-end">Te betalen</th></tr></thead>
+                                <thead><tr><th>Factuur</th><th>Leverancier</th><th>Vervaldag</th><th t-if="has_approval">Goedkeuring</th><th class="text-end">Te betalen</th></tr></thead>
                                 <tbody>
                                     <tr t-foreach="bills_to_pay" t-as="rec" t-att-class="'table-danger' if rec.invoice_date_due and rec.invoice_date_due &lt; today else ''">
                                         <td><t t-call="vme_belgie.card_link"><t t-set="record" t-value="rec"/><t t-set="label" t-value="rec.ref or rec.name"/></t></td>
                                         <td t-out="rec.partner_id.name"/>
                                         <td><t t-if="rec.invoice_date_due" t-out="rec.invoice_date_due" t-options="{'widget': 'date'}"/></td>
+                                        <td t-if="has_approval"><t t-if="rec.vme_approval_state" t-out="selection_label(rec, 'vme_approval_state')"/></td>
                                         <td class="text-end"><t t-call="vme_belgie.card_amount"><t t-set="amount" t-value="rec.amount_residual"/></t></td>
                                     </tr>
                                 </tbody>
