@@ -99,3 +99,16 @@ Na de demo (stap 8) dekken de stappen hieronder de taken af die een syndicus nog
 ## 18. Personeel en contracten
 
 > Voeg per VME een overzicht van de lopende contracten toe (onderhoud, schoonmaak, verzekering, energie, lift, conciërge) met looptijd, opzegtermijn en jaarlijkse evaluatie (`# LEGAL-CHECK:` evaluatieplicht van de syndicus), met een taak vóór elke opzegtermijn. Voor een VME met eigen personeel (conciërge) volstaat in het prototype het boeken van de loonkosten uit een extern sociaal secretariaat via de verdeelregels. Schrijf unittests voor de opzegtermijnen. Gebruik plan mode.
+
+## 19. Aanvragen van bewoners: sleutels, badges en andere vaste procedures
+
+> Bouw een intake voor aanvragen van eigenaars en huurders (via mail uit stap 7, het portaal uit stap 15 of manueel) met per aanvraagtype een vaste procedure. Eerste type: **een extra sleutel of badge** (veiligheidssleutel van de inkom, garagepoort, afstandsbediening). De aanvrager wordt herkend aan zijn e-mailadres. Een gekende eigenaar van de kavel is meteen geverifieerd. Een huurder of onbekende moet bewijs leveren: een eigendomsbewijs, of voor een huurder de schriftelijke toestemming van de eigenaar en het huurcontract. De aanvraag vraagt dat bewijs automatisch op en wacht erop, met een herinnering na 7 dagen. Na verificatie gaat de bestelling naar de slotenmaker van de VME (vastgelegd in een leveranciersrol per VME, zoals bij de keuringen). Met het sleutelcertificaat erbij; de syndicus is de enige die veiligheidssleutels mag bestellen. De kost wordt privé aangerekend aan de eigenaar van de kavel, niet verdeeld over de VME. Houd per kavel een register bij van de uitgereikte sleutels en badges (nummer, datum, aan wie), en toon dat register bij de akte in het verkoopdossier van stap 9. Andere aanvraagtypes met dezelfde motor, elk met een eigen checklist:
+> - verlies of diefstal van een badge (badge blokkeren)
+> - verhuis (lift reserveren, liftbescherming, borg, naambordje en brievenbus aanpassen)
+> - een nieuwe huurder melden (contactgegevens, reglement van orde bezorgen; `# LEGAL-CHECK: art. 3.93 BW`)
+> - toestemming voor werken aan een privatief die gemene delen raken (buitenunit airco, ramen, zonnepanelen, laadpaal), met advies van de raad of een punt op de volgende AV
+> - een defect of schade (doorsturen naar het schadedossier van stap 14)
+> - een document opvragen (notulen, reglement)
+> - een klacht over overlast
+>
+> **Beslissing vooraf:** de regel "er wordt nooit automatisch iets verstuurd" staat in CLAUDE.md. Leg in `docs/beslissingen.md` vast of de bestelling aan de slotenmaker na verificatie automatisch mag vertrekken (per VME aan te zetten) of als concept klaarstaat voor één klik. Schrijf unittests voor de verificatie (eigenaar, huurder met en zonder toestemming, onbekende), de privé-aanrekening en het sleutelregister. Gebruik plan mode.
