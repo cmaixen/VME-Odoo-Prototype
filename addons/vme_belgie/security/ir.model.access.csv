@@ -33,3 +33,6 @@ access_vme_works_user,vme.works user,model_vme_works,base.group_user,1,1,1,0
 access_vme_works_quote_user,vme.works.quote user,model_vme_works_quote,base.group_user,1,1,1,1
 access_vme_insurance_policy_user,vme.insurance.policy user,model_vme_insurance_policy,base.group_user,1,1,1,0
 access_vme_damage_claim_user,vme.damage.claim user,model_vme_damage_claim,base.group_user,1,1,1,0
+access_vme_document_folder_user,vme.document.folder user,model_vme_document_folder,base.group_user,1,1,1,1
+access_vme_document_user,vme.document user,model_vme_document,base.group_user,1,1,1,1
+access_vme_address_request_user,vme.address.request user,model_vme_address_request,base.group_user,1,1,0,0

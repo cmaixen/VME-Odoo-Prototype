@@ -24,6 +24,10 @@ erDiagram
     vme_cost_allocation }o--|| vme_lot : lot_id
     vme_cost_allocation }o--|| res_partner : "partner_id (eigenaar)"
     vme_cost_allocation }o--|| vme_key : key_id
+    vme_association ||--o{ vme_document : document_ids
+    vme_document }o--|| vme_document_folder : folder_id
+    vme_document }o--o| vme_lot : "lot_id (kaveldocument)"
+    vme_address_request }o--|| res_partner : "partner_id (eigenaar)"
     vme_migration }o--o| vme_association : "association_id (na import)"
     vme_migration }o--o| account_move : "opening_move_id (openingsboeking)"
 ```
@@ -51,6 +55,14 @@ erDiagram
 
 Wizards (transient): `vme.provision.call.wizard` en `vme.annual.statement.wizard`, elk met een HTML-voorbeeld (`preview_html`).
 
+### Documenten en portaal (stap 15)
+
+| Model | Betekenis | Belangrijke velden en regels |
+| --- | --- | --- |
+| `vme.document.folder` | Documentmap | `scope` (`vme` of `lot`), `portal_visible` als standaard voor nieuwe documenten. Vaste mappen in `data/document_folders.xml`. |
+| `vme.document` | Document | `association_id`, `lot_id` (verplicht in een kavelmap, verboden in een VME-map, zelfde VME), `folder_id`, `date` (bepaalt de zichtbaarheid), `datas` (bijlage), `filename`, `portal_visible`. `_portal_domain_for(partner)` is de zichtbaarheidsregel, zie [portaal.md](portaal.md). |
+| `vme.address.request` | Adreswijziging | `partner_id`, nieuwe `street`, `street2`, `zip`, `city`, `country_id`, `phone`, `email`, `old_address` (tekst bij de aanvraag), `state` (`to_approve`, `approved`, `refused`). Goedkeuren schrijft naar de partner. |
+
 ## Uitbreidingen op Odoo-modellen
 
 | Model | Veld | Uitleg |
@@ -61,6 +73,9 @@ Wizards (transient): `vme.provision.call.wizard` en `vme.annual.statement.wizard
 | `account.move` | `vme_provision_call_id`, `vme_fund` | Op provisiefacturen: de oproep en het fonds (`working` of `reserve`). |
 | `account.move` | `vme_collection_id` | Op een factuur met nalatigheidsinterest en schadevergoeding: het invorderingsdossier. |
 | `account.bank.statement.line` | `vme_bank_fund`, `vme_match_state`, `vme_exception`, `vme_days_late`, `vme_match_note`, `vme_structured_reference`, `vme_candidate_move_ids`, `vme_matched_move_ids`, `vme_follow_up` | Koppeling van bankbewegingen met provisies en leveranciersfacturen (stap 12, zie [bankafschriften.md](bankafschriften.md)). |
+| `res.partner` | `vme_ownership_ids`, `vme_address_request_ids` | Eigendommen en adreswijzigingen; helpers `_vme_portal_*` voor het portaal. |
+| `vme.ownership` | `is_current`, `email`, `phone`, `contact_address`, `has_portal` | Register van eigenaars (`is_current` is zoekbaar). |
+| `vme.association` / `vme.lot` | `document_ids`, `document_count` | Documenten van de VME en van de kavel. |
 | `account.move.line` | `vme_key_id` | Verdeelsleutel per regel; opgeslagen compute die alleen een lege sleutel invult vanuit de verdeelregel. |
 
 ## Rekeningen

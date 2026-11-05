@@ -1,13 +1,13 @@
 {
     "name": "VME België",
     "summary": "Beheer van verenigingen van mede-eigenaars (VME) voor syndici",
-    "version": "19.0.1.9.0",
+    "version": "19.0.1.10.0",
     "category": "Accounting",
     "author": "VME-prototype",
     "license": "LGPL-3",
     # l10n_be and account_peppol must be installed up front: otherwise Odoo installs them
     # in the middle of creating the first Belgian company, which breaks that request.
-    "depends": ["account", "l10n_be", "account_peppol", "calendar", "mail"],
+    "depends": ["account", "l10n_be", "account_peppol", "calendar", "mail", "portal"],
     "data": [
         "security/ir.model.access.csv",
         "data/mail_alias_domain.xml",
@@ -40,6 +40,10 @@
         "views/vme_migration_views.xml",
         "views/vme_works_views.xml",
         "views/vme_damage_views.xml",
+        "data/document_folders.xml",
+        "views/vme_document_views.xml",
+        "views/vme_portal_views.xml",
+        "views/portal_templates.xml",
     ],
     "installable": True,
     "application": True,

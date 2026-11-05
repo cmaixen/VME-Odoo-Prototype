@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tile on /my for owners -->
+    <template id="portal_my_home_vme" name="Mijn mede-eigendom" inherit_id="portal.portal_my_home" priority="20">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
+            <t t-set="portal_client_category_enable" t-value="True"/>
+        </xpath>
+        <div id="portal_client_category" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/portal/static/src/img/portal-addresses.svg'"/>
+                <t t-set="title">Mijn mede-eigendom</t>
+                <t t-set="url" t-value="'/my/vme'"/>
+                <t t-set="text">Documenten, provisies, afrekeningen en de volgende algemene vergadering</t>
+                <t t-set="placeholder_count" t-value="'vme_count'"/>
+            </t>
+        </div>
+    </template>
+
+    <!-- Provision invoices live in the company of each VME, so Odoo's own invoice list stays empty
+         for an owner: hide it, the provisions are under "Mijn mede-eigendom". -->
+    <template id="portal_my_home_hide_invoices" name="Facturen verbergen voor eigenaars" inherit_id="portal.portal_my_home" priority="40">
+        <xpath expr="//div[@id='portal_client_category']/t[@t-call='portal.portal_docs_entry'][t[@t-set='url' and contains(@t-value, '/my/invoices')]]" position="attributes">
+            <attribute name="t-if">not vme_owner</attribute>
+        </xpath>
+    </template>
+
+    <template id="portal_breadcrumbs_vme" inherit_id="portal.portal_breadcrumbs" priority="40">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'vme'" class="breadcrumb-item">Mijn mede-eigendom</li>
+            <li t-if="page_name in ('vme_detail', 'vme_statement', 'vme_address')" class="breadcrumb-item">
+                <a href="/my/vme">Mijn mede-eigendom</a>
+            </li>
+            <li t-if="page_name == 'vme_detail'" class="breadcrumb-item" t-out="vme.name"/>
+            <li t-if="page_name == 'vme_statement'" class="breadcrumb-item">
+                <a t-attf-href="/my/vme/#{vme.id}" t-out="vme.name"/>
+            </li>
+            <li t-if="page_name == 'vme_statement'" class="breadcrumb-item">Jaarafrekening <t t-out="year"/></li>
+            <li t-if="page_name == 'vme_address'" class="breadcrumb-item">Adres wijzigen</li>
+        </xpath>
+    </template>
+
+    <template id="portal_my_vme" name="Mijn mede-eigendom">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="False"/>
+            <h3 class="mt-3">Mijn mede-eigendom</h3>
+            <div t-if="not ownerships" class="alert alert-info">U bent geen eigenaar van een kavel in een VME die wij beheren.</div>
+            <t t-foreach="associations" t-as="vme">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h4 class="card-title"><a t-attf-href="/my/vme/#{vme.id}" t-out="vme.name"/></h4>
+                        <div class="text-muted mb-2">
+                            <t t-out="vme.street"/>, <t t-out="vme.zip"/> <t t-out="vme.city"/>
+                        </div>
+                        <table class="table table-sm mb-2">
+                            <thead><tr><th>Kavel</th><th>Type</th><th>Eigenaar van</th><th>tot</th></tr></thead>
+                            <tbody>
+                                <tr t-foreach="ownerships.filtered(lambda o: o.association_id == vme)" t-as="own">
+                                    <td t-out="own.lot_id.name"/>
+                                    <td><span t-field="own.lot_id.lot_type"/></td>
+                                    <td><span t-field="own.date_start"/></td>
+                                    <td>
+                                        <span t-if="own.date_end" t-field="own.date_end"/>
+                                        <span t-else="" class="text-muted">nu</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <a class="btn btn-primary btn-sm" t-attf-href="/my/vme/#{vme.id}">Openen</a>
+                    </div>
+                </div>
+            </t>
+            <div t-if="ownerships" class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Mijn contactgegevens</h5>
+                    <p class="mb-2">Het register van eigenaars moet kloppen: daarheen sturen we oproepingen en afrekeningen.
+                        Een wijziging wordt eerst door de syndicus nagekeken.</p>
+                    <div t-if="pending_request" class="alert alert-warning mb-2">Uw adreswijziging wacht op goedkeuring door de syndicus.</div>
+                    <a class="btn btn-secondary btn-sm" href="/my/vme/address">Adres wijzigen</a>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_my_vme_detail" name="VME in het portaal">
+        <t t-call="portal.portal_layout">
+            <h3 class="mt-3" t-out="vme.name"/>
+            <div class="text-muted mb-3">
+                Uw kavels:
+                <t t-foreach="ownerships" t-as="own">
+                    <span class="badge text-bg-light" t-out="own.lot_id.name"/>
+                    <span t-if="own.date_end" class="small text-muted">(tot <span t-field="own.date_end"/>)</span>
+                </t>
+            </div>
+
+            <h4>Volgende algemene vergadering</h4>
+            <div class="card mb-4">
+                <div class="card-body">
+                    <t t-if="not assembly">
+                        <p class="mb-0 text-muted">Er is nog geen algemene vergadering gepland.</p>
+                    </t>
+                    <t t-elif="assembly.state == 'draft'">
+                        <p class="mb-0">De gewone algemene vergadering valt tussen <span t-field="assembly.period_start"/>
+                            en <span t-field="assembly.period_end"/>. De datum is nog niet vastgelegd.</p>
+                    </t>
+                    <t t-else="">
+                        <p>
+                            <strong><span t-field="assembly.datetime_start"/></strong>
+                            <t t-if="assembly.location"> · <t t-out="assembly.location"/></t>
+                            <span t-if="assembly.state == 'proposed'" class="badge text-bg-warning ms-2">voorlopig</span>
+                        </p>
+                        <t t-if="assembly.item_ids">
+                            <h6>Agenda</h6>
+                            <ol class="mb-0">
+                                <li t-foreach="assembly.item_ids.sorted('sequence')" t-as="item" t-out="item.name"/>
+                            </ol>
+                        </t>
+                        <p t-else="" class="mb-0 text-muted">De agenda volgt met de oproeping.</p>
+                    </t>
+                </div>
+            </div>
+
+            <h4>Provisies</h4>
+            <p t-if="not provisions" class="text-muted">Nog geen provisieoproepen.</p>
+            <t t-else="" t-call="portal.portal_table">
+                <thead>
+                    <tr><th>Oproep</th><th>Fonds</th><th>Datum</th><th>Vervaldag</th>
+                        <th class="text-end">Bedrag</th><th class="text-end">Nog te betalen</th><th>Status</th><th/></tr>
+                </thead>
+                <tbody>
+                    <tr t-foreach="provisions" t-as="move">
+                        <td t-out="move.vme_provision_call_id.display_name"/>
+                        <td><span t-field="move.vme_fund"/></td>
+                        <td><span t-field="move.invoice_date"/></td>
+                        <td><span t-field="move.invoice_date_due"/></td>
+                        <td class="text-end"><span t-field="move.amount_total"/></td>
+                        <td class="text-end"><span t-field="move.amount_residual"/></td>
+                        <td>
+                            <span t-if="move.payment_state in ('paid', 'in_payment')" class="badge text-bg-success">Betaald</span>
+                            <span t-elif="move.payment_state == 'partial'" class="badge text-bg-warning">Deels betaald</span>
+                            <span t-elif="move.invoice_date_due and move.invoice_date_due &lt; today" class="badge text-bg-danger">Vervallen</span>
+                            <span t-else="" class="badge text-bg-info">Open</span>
+                        </td>
+                        <td><a t-att-href="move.get_portal_url(report_type='pdf', download=True)">PDF</a></td>
+                    </tr>
+                </tbody>
+            </t>
+
+            <h4 class="mt-4">Jaarafrekeningen</h4>
+            <p t-if="not statement_years" class="text-muted">Nog geen afrekeningen.</p>
+            <ul t-else="">
+                <li t-foreach="statement_years" t-as="year">
+                    <a t-attf-href="/my/vme/#{vme.id}/statement/#{year}">Jaarafrekening <t t-out="year"/></a>
+                    <span t-if="year &gt;= today.year" class="badge text-bg-light">voorlopig</span>
+                </li>
+            </ul>
+
+            <h4 class="mt-4">Documenten</h4>
+            <p t-if="not folders" class="text-muted">Nog geen documenten.</p>
+            <t t-foreach="folders" t-as="folder_docs">
+                <t t-set="folder" t-value="folder_docs[0]"/>
+                <h6 class="mt-3"><i class="fa fa-folder-o me-1"/><t t-out="folder.name"/></h6>
+                <t t-call="portal.portal_table">
+                    <tbody>
+                        <tr t-foreach="folder_docs[1]" t-as="doc">
+                            <td><a t-attf-href="/my/vme/document/#{doc.id}" target="_blank" t-out="doc.name"/></td>
+                            <td><t t-if="doc.lot_id">Kavel <t t-out="doc.lot_id.name"/></t></td>
+                            <td class="text-end"><span t-field="doc.date"/></td>
+                            <td class="text-end"><a t-attf-href="/my/vme/document/#{doc.id}?download=1"><i class="fa fa-download"/></a></td>
+                        </tr>
+                    </tbody>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="portal_my_vme_statement" name="Jaarafrekening in het portaal">
+        <t t-call="portal.portal_layout">
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <h3>Jaarafrekening <t t-out="year"/> · <t t-out="vme.name"/></h3>
+                <a class="btn btn-secondary btn-sm" t-attf-href="/my/vme/#{vme.id}/statement/#{year}/pdf">PDF</a>
+            </div>
+            <div t-if="not final" class="alert alert-info">Voorlopig: het jaar is nog niet afgesloten.</div>
+            <h5>Uw kavels</h5>
+            <ul>
+                <li t-foreach="st['ownerships']" t-as="own">
+                    <t t-out="own.lot_id.name"/> (<span t-field="own.date_start"/><t t-if="own.date_end"> tot <span t-field="own.date_end"/></t>)
+                </li>
+            </ul>
+            <h5>Kosten per verdeelsleutel</h5>
+            <t t-call="portal.portal_table">
+                <thead><tr><th>Sleutel</th><th>Kavels</th><th class="text-end">Uw quotiteit</th>
+                    <th class="text-end">Kosten VME</th><th class="text-end">Uw aandeel</th></tr></thead>
+                <tbody>
+                    <tr t-foreach="st['keys']" t-as="k">
+                        <td t-out="k['key'].name"/>
+                        <td t-out="k['lots']"/>
+                        <td class="text-end"><t t-out="k['shares']"/> / <t t-out="'%g' % k['total_shares']"/></td>
+                        <td class="text-end" t-out="k['total_vme']" t-options="{'widget': 'monetary', 'display_currency': currency}"/>
+                        <td class="text-end" t-out="k['amount']" t-options="{'widget': 'monetary', 'display_currency': currency}"/>
+                    </tr>
+                </tbody>
+            </t>
+            <h5 class="mt-4">Overzicht</h5>
+            <table class="table table-sm w-auto">
+                <tr><td>Uw aandeel in de kosten</td><td class="text-end" t-out="st['cost_total']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></tr>
+                <tr><td>Betaalde provisies werkkapitaal</td><td class="text-end" t-out="-st['working']['paid']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></tr>
+                <tr class="fw-bold">
+                    <td><t t-if="st['balance'] &gt; 0">Saldo te betalen</t><t t-else="">Saldo in uw voordeel</t></td>
+                    <td class="text-end" t-out="abs(st['balance'])" t-options="{'widget': 'monetary', 'display_currency': currency}"/>
+                </tr>
+                <tr t-if="st['working']['open']"><td>Nog open provisies werkkapitaal</td><td class="text-end" t-out="st['working']['open']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></tr>
+                <tr><td>Betaald aan het reservekapitaal (niet terugvorderbaar)</td><td class="text-end" t-out="st['reserve']['paid']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></tr>
+            </table>
+            <h5 class="mt-4">Facturen</h5>
+            <t t-call="portal.portal_table">
+                <thead><tr><th>Leverancier</th><th>Omschrijving</th><th>Sleutel</th><th class="text-end">Factuur</th><th class="text-end">Uw aandeel</th></tr></thead>
+                <tbody>
+                    <tr t-foreach="st['bills']" t-as="b">
+                        <td t-out="b['supplier']"/>
+                        <td t-out="b['description']"/>
+                        <td t-out="b['keys']"/>
+                        <td class="text-end" t-out="b['total']" t-options="{'widget': 'monetary', 'display_currency': currency}"/>
+                        <td class="text-end" t-out="b['amount']" t-options="{'widget': 'monetary', 'display_currency': currency}"/>
+                    </tr>
+                </tbody>
+            </t>
+        </t>
+    </template>
+
+    <template id="portal_my_vme_address" name="Adres wijzigen">
+        <t t-call="portal.portal_layout">
+            <h3 class="mt-3">Adres wijzigen</h3>
+            <p>Huidige gegevens:
+                <t t-if="owner.street or owner.city"><t t-out="owner.street"/>, <t t-out="owner.zip"/> <t t-out="owner.city"/></t>
+                <t t-else="">nog geen adres</t>
+                <t t-if="owner.phone"> · <t t-out="owner.phone"/></t> · <t t-out="owner.email"/></p>
+            <div t-if="pending" class="alert alert-warning">
+                Uw aanvraag van <span t-field="pending.create_date" t-options="{'widget': 'date'}"/> wacht op goedkeuring door de syndicus:
+                <t t-out="pending.street"/>, <t t-out="pending.zip"/> <t t-out="pending.city"/>.
+                U kan een nieuwe aanvraag doen zodra deze behandeld is.
+            </div>
+            <form t-else="" action="/my/vme/address" method="post" class="row g-2" style="max-width: 40rem;">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <div t-if="error" class="alert alert-danger" t-out="error"/>
+                <div class="col-12"><label class="form-label" for="street">Straat en nummer</label>
+                    <input class="form-control" name="street" id="street" t-att-value="post.get('street', owner.street)"/></div>
+                <div class="col-12"><label class="form-label" for="street2">Bus of bijkomende adreslijn</label>
+                    <input class="form-control" name="street2" id="street2" t-att-value="post.get('street2', owner.street2)"/></div>
+                <div class="col-4"><label class="form-label" for="zip">Postcode</label>
+                    <input class="form-control" name="zip" id="zip" t-att-value="post.get('zip', owner.zip)"/></div>
+                <div class="col-8"><label class="form-label" for="city">Gemeente</label>
+                    <input class="form-control" name="city" id="city" t-att-value="post.get('city', owner.city)"/></div>
+                <div class="col-12"><label class="form-label" for="country_id">Land</label>
+                    <select class="form-select" name="country_id" id="country_id">
+                        <t t-set="country_id" t-value="int(post.get('country_id') or owner.country_id.id or request.env.ref('base.be').id)"/>
+                        <option t-foreach="countries" t-as="c" t-att-value="c.id" t-att-selected="c.id == country_id" t-out="c.name"/>
+                    </select></div>
+                <div class="col-6"><label class="form-label" for="phone">Telefoon</label>
+                    <input class="form-control" name="phone" id="phone" t-att-value="post.get('phone', owner.phone)"/></div>
+                <div class="col-6"><label class="form-label" for="email">E-mail</label>
+                    <input class="form-control" type="email" name="email" id="email" t-att-value="post.get('email', owner.email)"/></div>
+                <div class="col-12 mt-3">
+                    <button type="submit" class="btn btn-primary">Ter goedkeuring indienen</button>
+                    <a href="/my/vme" class="btn btn-link">Annuleren</a>
+                </div>
+            </form>
+        </t>
+    </template>
+</odoo>

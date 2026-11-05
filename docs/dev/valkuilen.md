@@ -69,6 +69,14 @@ De test met een volledig demojaar (`vme_slow`) doet ongeveer 300 betalingen in Ã
 - In Community kan alleen de verborgen groep `account.group_account_basic` bankregels wijzigen; de module geeft `group_account_invoice` schrijfrecht.
 - Meer in [bankafschriften.md](bankafschriften.md#valkuilen).
 
+## Sessiecookies per hostnaam
+
+Browsers bewaren cookies per hostnaam, niet per poort. Draaien er meerdere demo's op `localhost` (8069, een tweede demo, het portaal), dan overschrijven ze elkaars `session_id`: je wordt telkens uitgelogd, of krijgt "Session expired (invalid CSRF token)". Gebruik per demo een eigen hostnaam onder `.localhost`, bv. `http://portaal.localhost:8570` voor de eigenaar en `http://syndicus.localhost:8570` voor de syndicus. Zo kun je ook eigenaar en syndicus naast elkaar ingelogd houden.
+
+## Facturen van een VME in Odoo's eigen portaal (stap 15)
+
+Odoo's lijst `/my/invoices` zoekt met de rechten van de portaalgebruiker, en de multi-company-regel op `account.move` laat alleen facturen uit zijn eigen companies door. Provisiefacturen staan in de company van de VME, dus die lijst blijft leeg. We tonen de provisies in `/my/vme/<id>` (sudo, gefilterd op de eigenaar) en linken naar de PDF met het toegangstoken van de factuur.
+
 ## Bekende problemen (nog open)
 
 - Geen op dit moment.

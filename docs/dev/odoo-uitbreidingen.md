@@ -25,6 +25,9 @@ We blijven zo dicht mogelijk bij standaard Odoo: elke override roept eerst `supe
 | Serveracties `action_load_demo_data`, `action_load_demo_history` | `data/demo_actions.xml` | Alleen voor `base.group_system`; roepen `_load_demo_data()` en `_load_demo_history()` aan. |
 | `account.bank.statement.line` (nieuwe velden en methodes) | `models/account_bank_statement_line.py` | Koppelt bankregels zelf: vervangt de regel op de wachtrekening door tegenregels en lettert af met `reconcile()`. Gebruikt Odoo's `_seek_for_lines()`, `action_undo_reconciliation()` en `_find_or_create_bank_account()`. Zie [bankafschriften.md](bankafschriften.md). |
 | Toegangsrecht op `account.bank.statement.line` voor `account.group_account_invoice` | `security/ir.model.access.csv` | Lezen en schrijven (niet aanmaken of verwijderen): in Community kan anders alleen de verborgen groep `group_account_basic` bankregels wijzigen. |
+| `res.partner._can_be_edited_by_current_customer()` | `models/vme_portal.py` | `False` voor een portaalgebruiker die eigenaar is: Odoo's eigen adresformulieren in het portaal mogen het register niet rechtstreeks wijzigen (stap 15). |
+| `CustomerPortal.account()`, `my_addresses()`, `_prepare_home_portal_values()` | `controllers/portal.py` | Eigenaars gaan van `/my/account` en `/my/addresses` naar `/my/vme/address`; teller `vme_count` en `vme_owner` voor de tegels op `/my`. |
+| Template `portal.portal_my_home` | `views/portal_templates.xml` | Tegel "Mijn mede-eigendom"; Odoo's tegel "Je facturen" verborgen voor eigenaars (provisies staan in de VME-company, die lijst bleef leeg). |
 | Serveracties `action_help_*` | `data/help_menu.xml` | Geven een `ir.actions.act_url` terug naar `vme_belgie.help_url` + artikel. |
 
 ## Wat we bewust niet overschrijven

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="vme_document_view_list" model="ir.ui.view">
+        <field name="name">vme.document.list</field>
+        <field name="model">vme.document</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="date"/>
+                <field name="association_id"/>
+                <field name="folder_id"/>
+                <field name="lot_id" optional="show"/>
+                <field name="name"/>
+                <field name="filename" optional="hide"/>
+                <field name="portal_visible" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_document_view_form" model="ir.ui.view">
+        <field name="name">vme.document.form</field>
+        <field name="model">vme.document</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="bv. Verzekeringspolis brand 2026"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="association_id"/>
+                            <field name="folder_id" options="{'no_create': True}"/>
+                            <field name="scope" invisible="1"/>
+                            <field name="lot_id" invisible="scope != 'lot'" required="scope == 'lot'"/>
+                            <field name="date"/>
+                        </group>
+                        <group>
+                            <field name="datas" filename="filename"/>
+                            <field name="filename" invisible="1"/>
+                            <field name="portal_visible"/>
+                            <field name="note"/>
+                        </group>
+                    </group>
+                    <div class="text-muted">
+                        In het portaal ziet een eigenaar de documenten van de VME tot de einddatum van zijn eigendom,
+                        en de documenten van een kavel alleen als die datum binnen zijn eigendom valt.
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="vme_document_view_search" model="ir.ui.view">
+        <field name="name">vme.document.search</field>
+        <field name="model">vme.document</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="association_id"/>
+                <field name="lot_id"/>
+                <field name="folder_id"/>
+                <filter name="portal" string="Zichtbaar in het portaal" domain="[('portal_visible', '=', True)]"/>
+                <filter name="internal" string="Alleen intern" domain="[('portal_visible', '=', False)]"/>
+                <group>
+                    <filter name="group_association" string="VME" context="{'group_by': 'association_id'}"/>
+                    <filter name="group_folder" string="Map" context="{'group_by': 'folder_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="vme_document_action" model="ir.actions.act_window">
+        <field name="name">Documenten</field>
+        <field name="res_model">vme.document</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_group_association': 1, 'search_default_group_folder': 1}</field>
+    </record>
+
+    <record id="vme_document_folder_view_list" model="ir.ui.view">
+        <field name="name">vme.document.folder.list</field>
+        <field name="model">vme.document.folder</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="scope"/>
+                <field name="portal_visible"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_document_folder_action" model="ir.actions.act_window">
+        <field name="name">Documentmappen</field>
+        <field name="res_model">vme.document.folder</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <!-- Documents tab on the VME and on the lot -->
+    <record id="vme_association_view_form_documents" model="ir.ui.view">
+        <field name="name">vme.association.form.documents</field>
+        <field name="model">vme.association</field>
+        <field name="inherit_id" ref="vme_association_view_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button name="action_open_documents" type="object" class="oe_stat_button" icon="fa-folder-open">
+                    <field name="document_count" widget="statinfo" string="Documenten"/>
+                </button>
+            </div>
+        </field>
+    </record>
+
+    <record id="vme_lot_view_form_documents" model="ir.ui.view">
+        <field name="name">vme.lot.form.documents</field>
+        <field name="model">vme.lot</field>
+        <field name="inherit_id" ref="vme_lot_view_form"/>
+        <field name="arch" type="xml">
+            <page name="ownerships" position="after">
+                <page string="Documenten" name="documents">
+                    <field name="document_ids" context="{'default_lot_id': id, 'default_association_id': association_id}">
+                        <list>
+                            <field name="date"/>
+                            <field name="folder_id"/>
+                            <field name="name"/>
+                            <field name="portal_visible"/>
+                        </list>
+                    </field>
+                </page>
+            </page>
+        </field>
+    </record>
+
+    <menuitem id="menu_vme_document" name="Documenten" parent="menu_vme_root" action="vme_document_action" sequence="44"/>
+    <menuitem id="menu_vme_document_folder" name="Documentmappen" parent="menu_vme_configuration"
+              action="vme_document_folder_action" sequence="30"/>
+</odoo>

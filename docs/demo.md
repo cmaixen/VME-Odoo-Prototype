@@ -159,6 +159,14 @@ Draai dit ongeveer 15 minuten voor de demo, in de map van het project. Docker (O
 3. **Schadedossiers**: *Waterschade badkamer A4*, uit de mail van A4 (zie stap 8), aangegeven bij de verzekeraar op 3 november, expertise op 12 november.
 
 > Boodschap: "Van AV-beslissing tot oplevering in één dossier, en geen aangiftetermijn die ontsnapt."
+### Extra: het eigenaarsportaal (1 minuut)
+
+1. Open een privévenster (of een tweede browser) op http://localhost:8069/my en log in als eigenaar: `eigenaar.linde.a1@example.com`, wachtwoord `portaal-demo`. Zo blijft de sessie van de syndicus open.
+2. **Mijn mede-eigendom > Residentie Linde**: zijn kavels A1 en G1, de provisies van 2026 met de betaalstatus en een PDF per oproep, de voorlopige jaarafrekening 2026, en de documenten van het gebouw en van A1.
+3. Vertel erbij: de verkoper van A5 (`eigenaar.linde.a5@example.com`) ziet niets meer van na de verkoop, en een eigenaar ziet nooit een ander gebouw of een andere kavel.
+4. **Adres wijzigen**: de aanvraag van A1 wacht al op goedkeuring. Terug als syndicus: **VME > Eigenaars > Adreswijzigingen > Goedkeuren**.
+
+> Boodschap: "Eigenaars vinden hun documenten en hun saldo zelf, en het register van eigenaars blijft juist."
 
 ## Na de demo
 

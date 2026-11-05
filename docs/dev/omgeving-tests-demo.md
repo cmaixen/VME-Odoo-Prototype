@@ -48,6 +48,7 @@ docker compose run --rm odoo odoo -d vme_test -u vme_belgie --test-enable --test
 | `test_distribution_rules.py` | Regel vult sleutel en rekening, handmatige sleutel blijft, automatisch verdelen bij boeken, geen regel geen verdeling, mislukte verdeling blokkeert boeken niet, één regel per leverancier; import van de Peppol-factuur van Residentie Linde |
 | `test_provision_call.py` | Bedragen, bankrekeningen en rekeningen per fonds, één factuur per fonds voor een eigenaar met twee kavels, eigenaar op factuurdatum, gestructureerde mededeling, concept zonder boeken, weigeringen (dubbele oproep, onbevestigde rekening, nummer buiten budget), andere company geselecteerd, voorbeeld in een open formulier, VME zonder budget, 5%-regel |
 | `test_annual_statement.py` | Saldo's, reservekapitaal niet afgerekend, controle op niet-verdeelde facturen, rapport; `TestAnnualStatementDemo` met een volledig demojaar (tag `vme_slow`) |
+| `test_portal.py` | Eigenaarsportaal: geen andere VME, geen andere kavel, niets nieuws na de verkoop, geen invorderingskosten bij de provisies, geen ORM-rechten voor portaalgebruikers, adreswijziging met goedkeuring; routes als portaalgebruiker (`HttpCase`) |
 | `test_migration.py` | Overstap uit een ander pakket: parsing, proefrun schrijft niets, verwachte fouten en waarschuwingen, openingsbalans in evenwicht, volledige import met openingsboeking, zip met Excel |
 
 De trage test met een volledig demojaar (meer dan 10 minuten) draai je apart, vóór een demo en na wijzigingen aan de verdeling of de afrekening:
@@ -110,6 +111,17 @@ docker compose -p vme-docs run --rm -p 8370:8069 odoo -- --db-filter=^vme_demo$
 ```
 
 Zet in die demo de systeemparameter `report.url` op `http://localhost:8069` en herstart, anders komen PDF's zonder opmaak (zie [valkuilen](valkuilen.md#pdfs-zonder-opmaak)).
+
+## Inloggen als eigenaar
+
+De demodata maakt twee portaallogins aan, zonder uitnodigingsmail (wachtwoord `portaal-demo`):
+
+| Login | Wie |
+| --- | --- |
+| `eigenaar.linde.a1@example.com` | Eigenaar van A1 en G1 in Residentie Linde |
+| `eigenaar.linde.a5@example.com` | Verkoper van A5 en G5 (verkocht op 1 juli 2026) |
+
+Ze openen http://localhost:8069/my. Log de eigenaar in een privévenster in, of gebruik een eigen hostnaam (zie [valkuilen](valkuilen.md#sessiecookies-per-hostnaam)).
 
 ## Schermafbeeldingen voor de kennisbank
 
