@@ -87,7 +87,7 @@ Wat er dan in de demo zit:
 
 | Onderdeel | Inhoud |
 | --- | --- |
-| VME's | Residentie Linde (20 kavels, algemene sleutel + liftsleutel), Hof ter Beuken (24 kavels, algemeen + verwarming), Kaaihuis (6 kavels, algemeen) |
+| VME's | Residentie Linde (20 kavels, algemene sleutel + liftsleutel), Hof ter Beuken (24 kavels, algemeen + verwarming op verbruik, 48 kostenverdelers via de demohistoriek), Kaaihuis (6 kavels, algemeen) |
 | Eigenaars | "Eigenaar Linde A1" … met `@example.com`-adressen; A5/G5 in Linde verkocht op 1 juli 2026; één eigenaar voor B23 en B24 |
 | Nummers | KBO- en btw-nummers beginnen met 0000; IBAN's gebruiken de onbestaande bankcode 999 |
 | Leveranciers | Energie (alle VME's), lift (Linde); in de historiek ook schoonmaak, verzekering en gas |
@@ -110,6 +110,8 @@ Laad demodata en historiek met dezelfde commando's als hierboven, telkens met `-
 ```bash
 docker compose -p vme-docs run --rm -p 8370:8069 odoo -- --db-filter=^vme_demo$
 ```
+
+Open een tweede demo in dezelfde browser niet op `localhost` of `127.0.0.1` maar op een eigen naam, bv. `http://verbruik.localhost:8770`: cookies houden geen rekening met de poort, dus twee Odoo's op `localhost` loggen elkaar voortdurend uit ("Odoo-sessie verlopen").
 
 Zet in die demo de systeemparameter `report.url` op `http://localhost:8069` en herstart, anders komen PDF's zonder opmaak (zie [valkuilen](valkuilen.md#pdfs-zonder-opmaak)).
 

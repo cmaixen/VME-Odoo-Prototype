@@ -25,3 +25,7 @@ class VmeCostAllocation(models.Model):
     date_to = fields.Date(string="Tot", required=True)
     days = fields.Integer(string="Dagen", aggregator=None)
     amount = fields.Monetary(string="Bedrag", required=True)
+    # Only for keys "op verbruik": amount = fixed part (shares) + variable part (consumption).
+    fixed_amount = fields.Monetary(string="Vast deel")
+    variable_amount = fields.Monetary(string="Variabel deel")
+    consumption = fields.Float(string="Verbruik", digits=(16, 3), aggregator=None)

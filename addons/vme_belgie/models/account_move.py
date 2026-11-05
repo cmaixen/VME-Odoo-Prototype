@@ -5,6 +5,7 @@ from odoo.exceptions import UserError
 
 from .allocation_tools import largest_remainder
 from .bank_formats import make_structured
+from .vme_meter import MissingReading
 
 AMOUNT_DIGITS = 2
 
@@ -107,28 +108,125 @@ class AccountMove(models.Model):
                     line.price_total, move.company_currency_id, move.company_id,
                     move.invoice_date or fields.Date.context_today(move),
                 )
-                key_lines = line.vme_key_id.line_ids.filtered("shares")
-                lot_amounts = largest_remainder(amount, key_lines.mapped("shares"), AMOUNT_DIGITS)
-                for key_line, lot_amount in zip(key_lines, lot_amounts):
-                    segments = move._vme_ownership_segments(key_line.lot_id, start, end, period_days)
-                    owner_amounts = largest_remainder(lot_amount, [s[3] for s in segments], AMOUNT_DIGITS)
-                    for (partner, seg_start, seg_end, days), owner_amount in zip(segments, owner_amounts):
-                        allocation_vals.append({
-                            "move_id": move.id,
-                            "move_line_id": line.id,
-                            "association_id": vme.id,
-                            "key_id": line.vme_key_id.id,
-                            "lot_id": key_line.lot_id.id,
-                            "partner_id": partner.id,
-                            "shares": key_line.shares,
-                            "date_from": seg_start,
-                            "date_to": seg_end,
-                            "days": days,
-                            "amount": owner_amount,
-                        })
+                if line.vme_key_id.key_type == "consumption":
+                    rows = move._vme_consumption_rows(line.vme_key_id, amount, start, end, period_days)
+                else:
+                    rows = move._vme_share_rows(line.vme_key_id, amount, start, end, period_days)
+                for key_line, (partner, seg_start, seg_end, days), owner_amount, extra in rows:
+                    allocation_vals.append({
+                        "move_id": move.id,
+                        "move_line_id": line.id,
+                        "association_id": vme.id,
+                        "key_id": line.vme_key_id.id,
+                        "lot_id": key_line.lot_id.id,
+                        "partner_id": partner.id,
+                        "shares": key_line.shares,
+                        "date_from": seg_start,
+                        "date_to": seg_end,
+                        "days": days,
+                        "amount": owner_amount,
+                        **extra,
+                    })
         Allocation = self.env["vme.cost.allocation"].sudo()
         Allocation.search([("move_id", "in", self.ids)]).unlink()
         return Allocation.create(allocation_vals)
+
+    def _vme_share_rows(self, key, amount, start, end, period_days):
+        """Split an amount over the lots by shares, then over the owners by days.
+
+        Yields (key line, ownership segment, amount, extra allocation values).
+        """
+        key_lines = key.line_ids.filtered("shares")
+        lot_amounts = largest_remainder(amount, key_lines.mapped("shares"), AMOUNT_DIGITS)
+        for key_line, lot_amount in zip(key_lines, lot_amounts):
+            segments = self._vme_ownership_segments(key_line.lot_id, start, end, period_days)
+            owner_amounts = largest_remainder(lot_amount, [s[3] for s in segments], AMOUNT_DIGITS)
+            for segment, owner_amount in zip(segments, owner_amounts):
+                yield key_line, segment, owner_amount, {}
+
+    def _vme_consumption_rows(self, key, amount, start, end, period_days):
+        """Split an amount for a key "op verbruik": a fixed part by shares, a variable part by consumption.
+
+        The fixed part goes over the lots by their shares and over the owners by days, like any key.
+        The variable part goes over the lots by the consumption of their meters in the cost period, and
+        over the owners of a lot by the consumption within their own days of ownership: with a reading on
+        the deed date that is the real consumption, otherwise it is interpolated per day between readings.
+        """
+        # LEGAL-CHECK: art. 3.94 BW - between seller and buyer, the consumption of each one's
+        # ownership period; without a reading at the deed, pro rata per day between two readings.
+        key_lines = key.line_ids
+        fixed_total, variable_total = largest_remainder(
+            amount, [key.fixed_percent, 100.0 - key.fixed_percent], AMOUNT_DIGITS
+        )
+        fixed_lots = largest_remainder(fixed_total, key_lines.mapped("shares"), AMOUNT_DIGITS)
+        segments_by_line = {
+            key_line: self._vme_ownership_segments(key_line.lot_id, start, end, period_days)
+            for key_line in key_lines
+        }
+        consumption = {key_line: [0.0] * len(segments) for key_line, segments in segments_by_line.items()}
+        if variable_total:
+            consumption = self._vme_segment_consumption(key, segments_by_line)
+        lot_consumption = [sum(consumption[key_line]) for key_line in key_lines]
+        variable_lots = (
+            largest_remainder(variable_total, lot_consumption, AMOUNT_DIGITS) if variable_total
+            else [0.0] * len(key_lines)
+        )
+        for key_line, fixed_lot, variable_lot in zip(key_lines, fixed_lots, variable_lots):
+            segments = segments_by_line[key_line]
+            fixed_owners = largest_remainder(fixed_lot, [s[3] for s in segments], AMOUNT_DIGITS)
+            if sum(consumption[key_line]) > 0:
+                variable_owners = largest_remainder(variable_lot, consumption[key_line], AMOUNT_DIGITS)
+            else:
+                variable_owners = [0.0] * len(segments)
+            for segment, fixed, variable, used in zip(segments, fixed_owners, variable_owners, consumption[key_line]):
+                yield key_line, segment, round(fixed + variable, AMOUNT_DIGITS), {
+                    "fixed_amount": fixed,
+                    "variable_amount": variable,
+                    "consumption": round(used, 3),
+                }
+
+    def _vme_segment_consumption(self, key, segments_by_line):
+        """Consumption per ownership segment, {key line: [consumption per segment]}; raise if incomplete."""
+        no_meter, missing = [], {}
+        result = {}
+        for key_line, segments in segments_by_line.items():
+            meters = key_line.lot_id.meter_ids.filtered(lambda m: m.meter_type == key.meter_type)
+            if not meters:
+                no_meter.append(key_line.lot_id.name)
+                continue
+            values = []
+            for _partner, seg_start, seg_end, _days in segments:
+                used = 0.0
+                for meter in meters:
+                    try:
+                        used += meter._consumption(seg_start, seg_end)
+                    except MissingReading as error:
+                        missing.setdefault(meter, error.day)
+                values.append(used)
+            result[key_line] = values
+        if no_meter or missing:
+            problems = []
+            if no_meter:
+                problems.append(self.env._(
+                    "Geen teller \"%(type)s\" voor kavel %(lots)s.",
+                    type=dict(key._fields["meter_type"].selection)[key.meter_type], lots=", ".join(no_meter),
+                ))
+            if missing:
+                problems.append(self.env._(
+                    "Ontbrekende meterstand vóór of na %(date)s voor teller %(meters)s.",
+                    date=min(missing.values()).strftime("%d/%m/%Y"),
+                    meters=", ".join(f"{m.name} ({m.lot_id.name})" for m in missing),
+                ))
+            raise UserError(self.env._(
+                "Sleutel %(key)s verdeelt op verbruik, maar het verbruik in de kostperiode is niet volledig "
+                "gekend. %(problems)s Lees de meterstanden in en verdeel opnieuw.",
+                key=key.display_name, problems=" ".join(problems),
+            ))
+        if sum(sum(values) for values in result.values()) <= 0:
+            raise UserError(self.env._(
+                "Sleutel %s verdeelt op verbruik, maar er is geen verbruik in de kostperiode.", key.display_name
+            ))
+        return result
 
     def _vme_check_distributable(self):
         self.ensure_one()

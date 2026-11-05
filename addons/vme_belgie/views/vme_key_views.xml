@@ -40,6 +40,17 @@
                             <field name="is_balanced"/>
                         </group>
                     </group>
+                    <group invisible="key_type != 'consumption'" string="Verdeling op verbruik">
+                        <group>
+                            <field name="meter_type" required="key_type == 'consumption' and fixed_percent &lt; 100"/>
+                            <field name="fixed_percent"/>
+                            <field name="variable_percent"/>
+                        </group>
+                        <div class="text-muted">
+                            Het vaste deel wordt verdeeld volgens de quotiteiten hieronder, het variabele deel volgens
+                            het verbruik van de tellers van elke kavel in de kostperiode van de factuur.
+                        </div>
+                    </group>
                     <field name="line_ids" readonly="not association_id">
                         <list editable="bottom">
                             <field name="association_id" column_invisible="1"/>

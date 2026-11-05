@@ -44,6 +44,19 @@
                                 </list>
                             </field>
                         </page>
+                        <page string="Tellers" name="meters">
+                            <field name="meter_ids" context="{'default_lot_id': id}">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="meter_type"/>
+                                    <field name="location"/>
+                                    <field name="factor"/>
+                                    <field name="last_reading_date"/>
+                                    <field name="last_reading_value"/>
+                                    <field name="unit"/>
+                                </list>
+                            </field>
+                        </page>
                     </notebook>
                 </sheet>
             </form>

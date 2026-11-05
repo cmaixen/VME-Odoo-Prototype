@@ -26,6 +26,7 @@ class VmeLot(models.Model):
     )
     floor = fields.Char(string="Verdieping")
     ownership_ids = fields.One2many("vme.ownership", "lot_id", string="Eigendommen")
+    meter_ids = fields.One2many("vme.meter", "lot_id", string="Tellers")
     current_owner_id = fields.Many2one(
         "res.partner", string="Huidige eigenaar", compute="_compute_current_owner"
     )

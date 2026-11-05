@@ -22,7 +22,7 @@ UNPAID_CALLS = {
 HISTORY_SUPPLIERS = {
     "cleaning": ("Schoonmaak Voorbeeld BV", "BE0000000592", "general", "611000"),
     "insurance": ("Verzekeringen Voorbeeld NV", "BE0000000691", "general", "614000"),
-    "gas": ("Gasleverancier Voorbeeld NV", "BE0000000790", "heating", "612500"),
+    "gas": ("Gasleverancier Voorbeeld NV", "BE0000000790", "consumption", "612500"),
 }
 
 # Bills per VME: supplier code, invoice date, cost period, [(description, amount excl. VAT)], VAT.
@@ -58,6 +58,13 @@ UBL_FILES = {
 }
 
 
+# Readings of the meter reading company (heat cost allocators), read in before the bills.
+# hof_ter_beuken_2026-10-31.csv is left for the demo: read it in by hand via VME > Verbruik.
+METER_FILES = {
+    "Hof ter Beuken": "hof_ter_beuken_2026-09-30.csv",
+}
+
+
 class VmeAssociation(models.Model):
     _inherit = "vme.association"
 
@@ -74,6 +81,7 @@ class VmeAssociation(models.Model):
 
         journals = vmes._ensure_fund_bank_journals()
         self._demo_history_provisions(vmes, journals)
+        self._demo_history_meter_readings(vmes)
         self._demo_history_bills(vmes)
         self._load_demo_collection()
         return {
@@ -115,6 +123,12 @@ class VmeAssociation(models.Model):
                         "payment_date": call.date_due - timedelta(days=10),
                         "group_payment": False,
                     }).action_create_payments()
+
+    def _demo_history_meter_readings(self, vmes):
+        Wizard = self.env["vme.meter.import.wizard"]
+        for vme in vmes.filtered(lambda v: v.name in METER_FILES):
+            with file_open(f"vme_belgie/demo_data/meterstanden/{METER_FILES[vme.name]}", "rb") as f:
+                Wizard._import_file(vme, f.read(), METER_FILES[vme.name])
 
     def _demo_history_bills(self, vmes):
         Partner = self.env["res.partner"]

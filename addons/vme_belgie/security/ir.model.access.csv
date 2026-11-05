@@ -38,3 +38,6 @@ access_vme_document_user,vme.document user,model_vme_document,base.group_user,1,
 access_vme_address_request_user,vme.address.request user,model_vme_address_request,base.group_user,1,1,0,0
 access_vme_mandate_user,vme.mandate user,model_vme_mandate,base.group_user,1,1,1,1
 access_vme_council_dossier_user,vme.council.dossier user,model_vme_council_dossier,base.group_user,1,0,0,0
+access_vme_meter_user,vme.meter user,model_vme_meter,base.group_user,1,1,1,1
+access_vme_meter_reading_user,vme.meter.reading user,model_vme_meter_reading,base.group_user,1,1,1,1
+access_vme_meter_import_wizard_user,vme.meter.import.wizard user,model_vme_meter_import_wizard,base.group_user,1,1,1,1

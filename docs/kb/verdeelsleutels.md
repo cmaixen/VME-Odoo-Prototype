@@ -5,7 +5,7 @@ Een verdeelsleutel zegt hoe een kost over de kavels wordt verdeeld. Elke kavel k
 ## Stappen
 
 1. Open **VME > Verdeelsleutels** en klik op **Nieuw**, of open de VME en ga naar het tabblad **Verdeelsleutels**.
-2. Geef de sleutel een naam en kies de **VME** en de **Soort**: Algemeen, Lift, Verwarming, Op verbruik of Andere.
+2. Geef de sleutel een naam en kies de **VME** en de **Soort**: Algemeen, Lift, Verwarming, Op verbruik of Andere. Kies je **Op verbruik**, dan stel je ook het vaste deel en de tellers in: zie [Verwarming of water op verbruik](verbruik-en-meterstanden.md).
 3. Vul het **Totaal** in, meestal 1.000.
 4. Voeg per kavel een regel toe met de **Quotiteit**. Kavels die niet meebetalen (bijvoorbeeld garages in een liftsleutel) laat je weg.
 5. Kijk onderaan de lijst: de som moet gelijk zijn aan het totaal. Het vinkje **Klopt** staat dan aan.

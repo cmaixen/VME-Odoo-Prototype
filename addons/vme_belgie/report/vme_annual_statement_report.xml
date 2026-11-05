@@ -60,7 +60,13 @@
                                     <tr t-foreach="st['keys']" t-as="k">
                                         <td t-out="k['key'].name"/>
                                         <td class="text-end"><t t-out="k['total_vme']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td>
-                                        <td class="text-end"><t t-out="k['shares']"/>/<t t-out="'%g' % k['total_shares']"/> <small class="text-muted">(<t t-out="k['lots']"/>)</small></td>
+                                        <td class="text-end"><t t-out="k['shares']"/>/<t t-out="'%g' % k['total_shares']"/> <small class="text-muted">(<t t-out="k['lots']"/>)</small>
+                                            <div t-if="k['consumption']" class="small text-muted">
+                                                uw verbruik <t t-out="('%.1f' % k['consumption']['used']).replace('.', ',')"/> <t t-out="k['consumption']['unit']"/>:
+                                                vast <t t-out="k['consumption']['fixed']" t-options="{'widget': 'monetary', 'display_currency': currency}"/>
+                                                + variabel <t t-out="k['consumption']['variable']" t-options="{'widget': 'monetary', 'display_currency': currency}"/>
+                                            </div>
+                                        </td>
                                         <td class="text-end"><t t-out="k['amount']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td>
                                     </tr>
                                     <tr class="fw-bold">

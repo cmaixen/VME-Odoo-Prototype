@@ -31,6 +31,18 @@ Gebruikt voor: quotiteiten in de demodata (hele duizendsten), factuurbedragen ov
 
 Gevolg: de som van alle rijen van een factuur is exact het factuurtotaal, en de som per kavel exact het kavelaandeel.
 
+### Sleutel op verbruik
+
+Voor een sleutel met `key_type = "consumption"` vervangen stap 3 en 4 door `_vme_consumption_rows` (details in [verbruik.md](verbruik.md)):
+
+1. `largest_remainder(bedrag, [vast %, 100 − vast %], 2)`: vast en variabel deel.
+2. Vast deel over de kavels volgens de quotiteiten, per kavel over de eigenaars volgens de dagen.
+3. Variabel deel over de kavels volgens het verbruik in de kostperiode: (stand einde laatste dag − stand einde dag vóór de eerste dag) × coëfficiënt, opgeteld over de tellers van de gekozen soort. Een stand tussen twee opnames wordt lineair per dag geïnterpoleerd.
+4. Per kavel het variabele deel over de eigenaars volgens hun verbruik binnen hun eigen eigendomsperiode (`# LEGAL-CHECK: art. 3.94 BW`): met een tussenopname bij de akte is dat het echte verbruik, anders pro rata per dag tussen de twee opnames.
+5. Ontbreekt een opname vóór het begin of na het einde, of heeft een kavel geen teller, dan volgt een `UserError` met de lijst; er wordt niets verdeeld.
+
+Voorbeeld (uit `test_consumption.py`): 1000 euro, 30% vast, A1 600/1000 en 100 eenheden, A2 400/1000 en 300 eenheden. Vast 300: 180 en 120. Variabel 700: 175 en 525. A1 betaalt 355, A2 645.
+
 ### Automatisch bij het boeken
 
 `_post()` roept `_vme_auto_distribute()` aan voor geboekte leveranciersfacturen met een VME:

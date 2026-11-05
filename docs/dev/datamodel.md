@@ -28,6 +28,8 @@ erDiagram
     vme_document }o--|| vme_document_folder : folder_id
     vme_document }o--o| vme_lot : "lot_id (kaveldocument)"
     vme_address_request }o--|| res_partner : "partner_id (eigenaar)"
+    vme_lot ||--o{ vme_meter : meter_ids
+    vme_meter ||--o{ vme_meter_reading : reading_ids
     vme_migration }o--o| vme_association : "association_id (na import)"
     vme_migration }o--o| account_move : "opening_move_id (openingsboeking)"
 ```
@@ -39,7 +41,9 @@ erDiagram
 | `vme.association` | VME | `company_id` (verplicht via SQL-check, uniek); naam, KBO, adres zijn `related` naar de company; `working_capital_bank_id` en `reserve_capital_bank_id` (moeten verschillen); `untrusted_fund_bank_ids` (berekend: rekeningen zonder `allow_out_payment`). KBO-controle modulo 97. |
 | `vme.lot` | Kavel | `name` uniek per VME, `lot_type` (appartement, garage, berging, handelsruimte, andere), `floor`, `current_owner_id` (berekend voor vandaag). `_get_owner_on(date)` geeft de eigenaar op een datum. |
 | `vme.ownership` | Eigendom | `lot_id`, `partner_id`, `date_start`, `date_end` (leeg = loopt nog). Geen overlap per kavel: één eigenaar tegelijk. |
-| `vme.key` | Verdeelsleutel | `key_type` (algemeen, lift, verwarming, op verbruik, andere), `total_shares` (standaard 1000), `line_ids`; `is_balanced` en `shares_difference` berekend. Opslaan faalt als de som niet het totaal is. |
+| `vme.key` | Verdeelsleutel | `key_type` (algemeen, lift, verwarming, op verbruik, andere), `total_shares` (standaard 1000), `line_ids`; `is_balanced` en `shares_difference` berekend. Opslaan faalt als de som niet het totaal is. Voor "op verbruik": `meter_type` en `fixed_percent` (zie [verbruik.md](verbruik.md)). |
+| `vme.meter` | Teller | `name` uniek per VME, `lot_id`, `meter_type` (water, verwarming/kostenverdeler, elektriciteit), `factor` (coëfficiënt). `_index_at(day)` en `_consumption(from, to)`. |
+| `vme.meter.reading` | Meterstand | `meter_id`, `date` (stand op het einde van de dag), `value`, `source`; uniek per teller en dag, nooit dalend. |
 | `vme.key.line` | Quotiteit | `key_id`, `lot_id` (uniek per sleutel, zelfde VME), `shares` (2 decimalen), `percentage`. |
 | `vme.distribution.rule` | Verdeelregel | Per VME één regel per leverancier (`partner_id`), met `key_id` en optioneel `account_id`. `_find_rule(company, partner)` zoekt ook op de commerciële partner. |
 | `vme.cost.allocation` | Kostenverdeling | Eén rij per factuurregel × kavel × eigenaarssegment: `move_id`, `move_line_id`, `key_id`, `lot_id`, `partner_id`, `shares`, `date_from`, `date_to`, `days`, `amount`. Alleen-lezen voor gebruikers; wordt bij elke verdeling vervangen. |
