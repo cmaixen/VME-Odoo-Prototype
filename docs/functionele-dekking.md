@@ -40,7 +40,9 @@ Legende: ✅ gebouwd · 🔨 wordt nu gebouwd · 📋 gepland · ➖ bewust late
 | | Schadegevallen | 🔨 | stap 14 |
 | Algemene vergadering | Planning in blokken | ✅ | stap 6c |
 | | Agenda, oproeping, stemming, notulen en opvolging | ✅ | stap 11 |
-| | Hybride en digitaal vergaderen, elektronisch stemmen en tekenen | 📋 | stap 24 |
+| | Hybride en digitaal vergaderen, elektronisch stemmen en tekenen | ✅ | stap 24 |
+| | Buitengewone AV naast de gewone | ✅ | stap 24 |
+| | Volledig schriftelijke besluitvorming zonder vergadering, gekwalificeerde handtekening (itsme, eID) | ➖ | na het prototype |
 | Gebouwbeheer en eigendomsbeheer | Gebouwen, kavels, quotiteiten, eigenaars | ✅ | stap 2 |
 | | Gebouwkaart met de financiële toestand en een overzicht van de portefeuille | 📋 | stap 22 |
 | Beheer mede-eigenaars en huurders | Eigenaars met historiek | ✅ | stap 2 |
@@ -62,5 +64,6 @@ Legende: ✅ gebouwd · 🔨 wordt nu gebouwd · 📋 gepland · ➖ bewust late
 
 - AI-assistent die mails van eigenaars aan VME en kavel koppelt en een antwoord voorstelt (stap 7).
 - AV-planner die het hele AV-seizoen in blokken plant met de wettelijke periodes en oproepingstermijnen (stap 6c).
+- Hybride AV zonder Enterprise: online stemmen met dezelfde rekenregels als in de zaal, en notulen ondertekend in het portaal met een auditspoor (naam, tijdstip, IP en SHA-256 van de PDF) (stap 24).
 - Kosten per dag verdeeld bij een verkoop, met de kostperiode uit de Peppol-factuur (stap 4b).
 - Alles op Odoo Community, zonder licentiekosten per gebruiker.

@@ -73,8 +73,11 @@ Het register is de actie `vme_assembly_item_register_action` met domein `decisio
 - wkhtmltopdf haalt de opmaak via `web.base.url`. In een Docker-run met een andere poortmapping (bv. 8170 → 8069) faalt dat met `ConnectionRefusedError` en wordt de PDF zonder opmaak gemaakt; op de gewone demo (8069) is er geen probleem.
 - `_order` op `lot_names` sorteert alfabetisch (A10 vóór A2); de aanwezigheidslijst sorteert daarom op id, wat de volgorde van de sleutellijnen volgt.
 
+## Digitale en hybride AV
+
+Online deelname, elektronisch en schriftelijk stemmen, buitengewone AV's en de ondertekening van de notulen staan in [digitale-av.md](digitale-av.md) (stap 24). De rekenregels hierboven blijven ongewijzigd: een online stem is een gewone `vme.assembly.vote` met een bron en een tijdstip. `_prepare_votes` slaat sindsdien eigenaars over die via het portaal stemmen (`votes_remotely`), en `action_all_for` raakt alleen zaalstemmen.
+
 ## Uitbreidingen voor later
 
 - Stemmen per eigenaar vooraf vanuit het volmachtformulier invullen (steminstructies).
-- Een portaal voor eigenaars om de oproeping en notulen te lezen (stap 15).
 - Een tweede vergadering automatisch aanmaken als het quorum niet bereikt is.

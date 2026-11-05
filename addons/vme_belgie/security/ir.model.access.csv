@@ -43,3 +43,4 @@ access_vme_meter_reading_user,vme.meter.reading user,model_vme_meter_reading,bas
 access_vme_meter_import_wizard_user,vme.meter.import.wizard user,model_vme_meter_import_wizard,base.group_user,1,1,1,1
 access_vme_contract_user,vme.contract user,model_vme_contract,base.group_user,1,1,1,1
 access_vme_contract_evaluation_user,vme.contract.evaluation user,model_vme_contract_evaluation,base.group_user,1,1,1,1
+access_vme_assembly_signature_user,vme.assembly.signature user,model_vme_assembly_signature,base.group_user,1,1,1,1

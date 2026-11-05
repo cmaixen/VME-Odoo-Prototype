@@ -167,6 +167,21 @@ Draai dit ongeveer 15 minuten voor de demo, in de map van het project. Docker (O
 4. **Adres wijzigen**: de aanvraag van A1 wacht al op goedkeuring. Terug als syndicus: **VME > Eigenaars > Adreswijzigingen > Goedkeuren**.
 
 > Boodschap: "Eigenaars vinden hun documenten en hun saldo zelf, en het register van eigenaars blijft juist."
+### Extra: een hybride AV met online stemmen en ondertekenen (2 minuten)
+
+Gebruik drie hostnamen, zodat de sessies elkaar niet uitloggen: `http://localhost:8069` voor de syndicus, `http://a1.localhost:8069` en `http://a6.localhost:8069` voor de eigenaars (wachtwoord `portaal-demo`).
+
+1. **VME > Algemene vergaderingen**, open **Buitengewone AV 2026 Residentie Linde: Laadpalen in de garage** (19 november, hybride). Tabblad **Online**: de link per AV en de videolink. A7 gaf volmacht aan A1.
+2. Als A6 (`eigenaar.linde.a6@example.com`): **Mijn mede-eigendom > Residentie Linde > Online deelnemen en stemmen**. Stem vooraf schriftelijk over de schilderwerken.
+3. Als syndicus: **Online onthaal openen**. Als A1 en A6: **Ik ben aanwezig (online)**; de videolink verschijnt.
+4. Als syndicus: bij de laadpalen **Stemming openen**. A1 stemt in één formulier voor zichzelf en voor A7; A6 stemt ook. Toon bij **Stemmen** dat de online stemmen alleen-lezen zijn, met tijdstip en stemmer.
+5. **Stemming sluiten**: in het portaal zien de eigenaars de uitslag. Sluit of handel de andere punten af, en klik **Gehouden** en **Notulen ter ondertekening**.
+6. A1 en A6 ondertekenen in het portaal. Tabblad **Ondertekening**: naam, tijdstip, IP-adres en SHA-256 van de PDF per ondertekenaar.
+
+Zijn er te weinig aanwezigen voor het quorum, zet dan enkele eigenaars op "Aanwezig" in de aanwezigheidslijst (in de zaal). De AV kan maar één keer doorlopen worden: voor een nieuwe demo de database opnieuw aanmaken.
+
+> Boodschap: "Thuis meestemmen met dezelfde regels als in de zaal, en notulen die bewijsbaar ongewijzigd ondertekend zijn, zonder Enterprise-licentie."
+
 ### Extra: de commissaris van de rekeningen kijkt mee (1 minuut)
 
 1. Open Residentie Linde, tabblad **Raad en commissaris**: eigenaar Linde A2 is commissaris sinds de AV van 10 maart, met een eigen login. Hof ter Beuken heeft 24 appartementen en dus een raad (B1 voorzitter, B6 en B11).

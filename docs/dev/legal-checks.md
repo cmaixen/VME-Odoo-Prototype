@@ -3,7 +3,7 @@
 Automatisch gemaakt door `python3 tools/legal_checks.py`; niet met de hand bewerken.
 Elke rij is een wettelijke regel in de code die nog juridisch gevalideerd moet worden.
 
-Aantal punten: 68.
+Aantal punten: 76.
 
 ## Per bron
 
@@ -18,21 +18,23 @@ Aantal punten: 68.
 - **art. 3.85 §1 BW**: [vme_key.py:34](../../addons/vme_belgie/models/vme_key.py#L34), [vme_key.py:92](../../addons/vme_belgie/models/vme_key.py#L92), [vme_migration.py:739](../../addons/vme_belgie/models/vme_migration.py#L739)
 - **art. 3.86 §3 BW**: [vme_annual_statement.py:33](../../addons/vme_belgie/models/vme_annual_statement.py#L33), [vme_budget.py:5](../../addons/vme_belgie/models/vme_budget.py#L5), [vme_migration.py:445](../../addons/vme_belgie/models/vme_migration.py#L445)
 - **art. 3.86 §3 BW en KB 12 juli 2012 (minimum chart of accounts)**: [vme_works.py:449](../../addons/vme_belgie/models/vme_works.py#L449)
-- **art. 3.87 §10 BW**: [vme_assembly_meeting.py:232](../../addons/vme_belgie/models/vme_assembly_meeting.py#L232)
-- **art. 3.87 §2 BW**: [vme_assembly.py:13](../../addons/vme_belgie/models/vme_assembly.py#L13), [vme_assembly.py:38](../../addons/vme_belgie/models/vme_assembly.py#L38)
-- **art. 3.87 §3 BW**: [vme_assembly.py:17](../../addons/vme_belgie/models/vme_assembly.py#L17), [vme_assembly.py:42](../../addons/vme_belgie/models/vme_assembly.py#L42), [vme_assembly.py:234](../../addons/vme_belgie/models/vme_assembly.py#L234), [vme_assembly_meeting.py:168](../../addons/vme_belgie/models/vme_assembly_meeting.py#L168)
-- **art. 3.87 §5 BW**: [vme_assembly_meeting.py:54](../../addons/vme_belgie/models/vme_assembly_meeting.py#L54), [vme_assembly_meeting.py:109](../../addons/vme_belgie/models/vme_assembly_meeting.py#L109)
-- **art. 3.87 §6 BW**: [vme_assembly_meeting.py:122](../../addons/vme_belgie/models/vme_assembly_meeting.py#L122), [vme_assembly_meeting.py:285](../../addons/vme_belgie/models/vme_assembly_meeting.py#L285)
-- **art. 3.87 §7 BW**: [vme_assembly_meeting.py:25](../../addons/vme_belgie/models/vme_assembly_meeting.py#L25), [vme_assembly_meeting.py:381](../../addons/vme_belgie/models/vme_assembly_meeting.py#L381)
+- **art. 3.87 §1 BW**: [vme_assembly_meeting.py:489](../../addons/vme_belgie/models/vme_assembly_meeting.py#L489), [vme_assembly_online.py:17](../../addons/vme_belgie/models/vme_assembly_online.py#L17), [vme_assembly_online.py:235](../../addons/vme_belgie/models/vme_assembly_online.py#L235), [vme_assembly_online.py:303](../../addons/vme_belgie/models/vme_assembly_online.py#L303)
+- **art. 3.87 §10 BW**: [vme_assembly_meeting.py:234](../../addons/vme_belgie/models/vme_assembly_meeting.py#L234), [vme_assembly_online.py:198](../../addons/vme_belgie/models/vme_assembly_online.py#L198)
+- **art. 3.87 §2 BW**: [vme_assembly.py:13](../../addons/vme_belgie/models/vme_assembly.py#L13), [vme_assembly.py:38](../../addons/vme_belgie/models/vme_assembly.py#L38), [vme_assembly.py:247](../../addons/vme_belgie/models/vme_assembly.py#L247)
+- **art. 3.87 §3 BW**: [vme_assembly.py:17](../../addons/vme_belgie/models/vme_assembly.py#L17), [vme_assembly.py:42](../../addons/vme_belgie/models/vme_assembly.py#L42), [vme_assembly.py:234](../../addons/vme_belgie/models/vme_assembly.py#L234), [vme_assembly_meeting.py:170](../../addons/vme_belgie/models/vme_assembly_meeting.py#L170)
+- **art. 3.87 §5 BW**: [vme_assembly_meeting.py:54](../../addons/vme_belgie/models/vme_assembly_meeting.py#L54), [vme_assembly_meeting.py:111](../../addons/vme_belgie/models/vme_assembly_meeting.py#L111)
+- **art. 3.87 §6 BW**: [vme_assembly_meeting.py:124](../../addons/vme_belgie/models/vme_assembly_meeting.py#L124), [vme_assembly_meeting.py:287](../../addons/vme_belgie/models/vme_assembly_meeting.py#L287)
+- **art. 3.87 §6-7 BW**: [vme_assembly_online.py:298](../../addons/vme_belgie/models/vme_assembly_online.py#L298)
+- **art. 3.87 §7 BW**: [vme_assembly_meeting.py:25](../../addons/vme_belgie/models/vme_assembly_meeting.py#L25), [vme_assembly_meeting.py:385](../../addons/vme_belgie/models/vme_assembly_meeting.py#L385), [vme_assembly_online.py:146](../../addons/vme_belgie/models/vme_assembly_online.py#L146)
 - **art. 3.88 §1, 1°, c) BW**: [vme_works.py:11](../../addons/vme_belgie/models/vme_works.py#L11), [vme_works.py:195](../../addons/vme_belgie/models/vme_works.py#L195)
 - **art. 3.88 §1-3 BW**: [vme_assembly_meeting.py:8](../../addons/vme_belgie/models/vme_assembly_meeting.py#L8)
-- **art. 3.88 §3 BW**: [vme_assembly_meeting.py:302](../../addons/vme_belgie/models/vme_assembly_meeting.py#L302)
+- **art. 3.88 §3 BW**: [vme_assembly_meeting.py:304](../../addons/vme_belgie/models/vme_assembly_meeting.py#L304)
 - **art. 3.89 §5 BW**: [account_bank_statement_line.py:155](../../addons/vme_belgie/models/account_bank_statement_line.py#L155), [account_move.py:56](../../addons/vme_belgie/models/account_move.py#L56), [vme_association.py:15](../../addons/vme_belgie/models/vme_association.py#L15), [vme_association.py:34](../../addons/vme_belgie/models/vme_association.py#L34), [vme_association.py:170](../../addons/vme_belgie/models/vme_association.py#L170), [vme_association.py:193](../../addons/vme_belgie/models/vme_association.py#L193), [vme_contract.py:39](../../addons/vme_belgie/models/vme_contract.py#L39), [vme_migration.py:621](../../addons/vme_belgie/models/vme_migration.py#L621), [vme_provision_call_wizard.py:115](../../addons/vme_belgie/wizard/vme_provision_call_wizard.py#L115)
 - **art. 3.89 §5, 12° BW**: [vme_document.py:17](../../addons/vme_belgie/models/vme_document.py#L17)
 - **art. 3.90 §1 BW**: [vme_council.py:16](../../addons/vme_belgie/models/vme_council.py#L16), [vme_council.py:104](../../addons/vme_belgie/models/vme_council.py#L104)
 - **art. 3.90 §1 en art. 3.91 BW**: [vme_council.py:35](../../addons/vme_belgie/models/vme_council.py#L35)
 - **art. 3.91 BW**: [vme_council.py:270](../../addons/vme_belgie/models/vme_council.py#L270)
-- **art. 3.93 §4 BW**: [vme_assembly_meeting.py:212](../../addons/vme_belgie/models/vme_assembly_meeting.py#L212)
+- **art. 3.93 §4 BW**: [vme_assembly_meeting.py:214](../../addons/vme_belgie/models/vme_assembly_meeting.py#L214)
 - **art. 3.94 BW**: [account_move.py:155](../../addons/vme_belgie/models/account_move.py#L155), [account_move.py:259](../../addons/vme_belgie/models/account_move.py#L259)
 - **art. 3.94 §1 BW**: [vme_sale_file.py:10](../../addons/vme_belgie/models/vme_sale_file.py#L10), [vme_sale_file.py:16](../../addons/vme_belgie/models/vme_sale_file.py#L16)
 - **art. 3.94 §1, 1° BW**: [vme_sale_file.py:255](../../addons/vme_belgie/models/vme_sale_file.py#L255)
@@ -66,17 +68,25 @@ Aantal punten: 68.
 | [addons/vme_belgie/models/vme_assembly.py](../../addons/vme_belgie/models/vme_assembly.py#L38) | 38 | art. 3.87 §2 BW | fifteen-day period from the rules of co-ownership. |
 | [addons/vme_belgie/models/vme_assembly.py](../../addons/vme_belgie/models/vme_assembly.py#L42) | 42 | art. 3.87 §3 BW | at least 15 days unless the rules of co-ownership say otherwise. |
 | [addons/vme_belgie/models/vme_assembly.py](../../addons/vme_belgie/models/vme_assembly.py#L234) | 234 | art. 3.87 §3 BW | convocation at least 15 days before the meeting. |
+| [addons/vme_belgie/models/vme_assembly.py](../../addons/vme_belgie/models/vme_assembly.py#L247) | 247 | art. 3.87 §2 BW | besides the ordinary assembly in its yearly period, the syndic convenes an extraordinary assembly whenever a decision is needed. |
 | [addons/vme_belgie/models/vme_assembly_meeting.py](../../addons/vme_belgie/models/vme_assembly_meeting.py#L8) | 8 | art. 3.88 §1-3 BW | required majorities. Abstentions, blank and invalid votes do not count as cast votes (art. 3.87 §8 BW). Unanimity is of all co-owners, not only those present (art. 3.88 §3 BW). |
 | [addons/vme_belgie/models/vme_assembly_meeting.py](../../addons/vme_belgie/models/vme_assembly_meeting.py#L25) | 25 | art. 3.87 §7 BW | nobody may hold more than three proxies, unless the votes they hold themselves plus those of their proxies do not exceed 10% of all votes. |
 | [addons/vme_belgie/models/vme_assembly_meeting.py](../../addons/vme_belgie/models/vme_assembly_meeting.py#L54) | 54 | art. 3.87 §5 BW | without quorum a second assembly may be convened at least fifteen days later; it deliberates whatever the number of members present. |
-| [addons/vme_belgie/models/vme_assembly_meeting.py](../../addons/vme_belgie/models/vme_assembly_meeting.py#L109) | 109 | art. 3.87 §5 BW | more than half of the co-owners holding at least half of the shares, or co-owners holding more than three quarters of the shares. |
-| [addons/vme_belgie/models/vme_assembly_meeting.py](../../addons/vme_belgie/models/vme_assembly_meeting.py#L122) | 122 | art. 3.87 §6 BW | each co-owner votes with the shares of his lots in the common parts. |
-| [addons/vme_belgie/models/vme_assembly_meeting.py](../../addons/vme_belgie/models/vme_assembly_meeting.py#L168) | 168 | art. 3.87 §3 BW | convocation at least fifteen days before the meeting. |
-| [addons/vme_belgie/models/vme_assembly_meeting.py](../../addons/vme_belgie/models/vme_assembly_meeting.py#L212) | 212 | art. 3.93 §4 BW | the syndic keeps a register of the decisions of the general assembly. |
-| [addons/vme_belgie/models/vme_assembly_meeting.py](../../addons/vme_belgie/models/vme_assembly_meeting.py#L232) | 232 | art. 3.87 §10 BW | the syndic writes the minutes, signed at the end of the meeting by the chair, the secretary and the co-owners still present. |
-| [addons/vme_belgie/models/vme_assembly_meeting.py](../../addons/vme_belgie/models/vme_assembly_meeting.py#L285) | 285 | art. 3.87 §6 BW | nobody votes with more votes than all other present or represented co-owners together. |
-| [addons/vme_belgie/models/vme_assembly_meeting.py](../../addons/vme_belgie/models/vme_assembly_meeting.py#L302) | 302 | art. 3.88 §3 BW | unanimity of the votes of all co-owners. |
-| [addons/vme_belgie/models/vme_assembly_meeting.py](../../addons/vme_belgie/models/vme_assembly_meeting.py#L381) | 381 | art. 3.87 §7 BW | more than three proxies only up to 10% of all votes. |
+| [addons/vme_belgie/models/vme_assembly_meeting.py](../../addons/vme_belgie/models/vme_assembly_meeting.py#L111) | 111 | art. 3.87 §5 BW | more than half of the co-owners holding at least half of the shares, or co-owners holding more than three quarters of the shares. |
+| [addons/vme_belgie/models/vme_assembly_meeting.py](../../addons/vme_belgie/models/vme_assembly_meeting.py#L124) | 124 | art. 3.87 §6 BW | each co-owner votes with the shares of his lots in the common parts. |
+| [addons/vme_belgie/models/vme_assembly_meeting.py](../../addons/vme_belgie/models/vme_assembly_meeting.py#L170) | 170 | art. 3.87 §3 BW | convocation at least fifteen days before the meeting. |
+| [addons/vme_belgie/models/vme_assembly_meeting.py](../../addons/vme_belgie/models/vme_assembly_meeting.py#L214) | 214 | art. 3.93 §4 BW | the syndic keeps a register of the decisions of the general assembly. |
+| [addons/vme_belgie/models/vme_assembly_meeting.py](../../addons/vme_belgie/models/vme_assembly_meeting.py#L234) | 234 | art. 3.87 §10 BW | the syndic writes the minutes, signed at the end of the meeting by the chair, the secretary and the co-owners still present. |
+| [addons/vme_belgie/models/vme_assembly_meeting.py](../../addons/vme_belgie/models/vme_assembly_meeting.py#L287) | 287 | art. 3.87 §6 BW | nobody votes with more votes than all other present or represented co-owners together. |
+| [addons/vme_belgie/models/vme_assembly_meeting.py](../../addons/vme_belgie/models/vme_assembly_meeting.py#L304) | 304 | art. 3.88 §3 BW | unanimity of the votes of all co-owners. |
+| [addons/vme_belgie/models/vme_assembly_meeting.py](../../addons/vme_belgie/models/vme_assembly_meeting.py#L385) | 385 | art. 3.87 §7 BW | more than three proxies only up to 10% of all votes. |
+| [addons/vme_belgie/models/vme_assembly_meeting.py](../../addons/vme_belgie/models/vme_assembly_meeting.py#L489) | 489 | art. 3.87 §1 BW | the convocation states how to take part at a distance. |
+| [addons/vme_belgie/models/vme_assembly_online.py](../../addons/vme_belgie/models/vme_assembly_online.py#L17) | 17 | art. 3.87 §1 BW | co-owners may take part in the general assembly at a distance (electronically) when the convocation provides for it; they count as present for quorum and votes. |
+| [addons/vme_belgie/models/vme_assembly_online.py](../../addons/vme_belgie/models/vme_assembly_online.py#L146) | 146 | art. 3.87 §7 BW | the proxy holder votes for the co-owners who gave a proxy. |
+| [addons/vme_belgie/models/vme_assembly_online.py](../../addons/vme_belgie/models/vme_assembly_online.py#L198) | 198 | art. 3.87 §10 BW | the minutes are signed at the end of the meeting by the chair, the secretary and the co-owners still present (in the room or online). Owners who only voted in writing beforehand were not at the meeting. |
+| [addons/vme_belgie/models/vme_assembly_online.py](../../addons/vme_belgie/models/vme_assembly_online.py#L235) | 235 | art. 3.87 §1 BW | written voting before the meeting, only where the law and the rules of co-ownership allow it. Check per decision; the default is no. |
+| [addons/vme_belgie/models/vme_assembly_online.py](../../addons/vme_belgie/models/vme_assembly_online.py#L298) | 298 | art. 3.87 §6-7 BW | one vote per co-owner, cast by the owner or by its proxy holder. |
+| [addons/vme_belgie/models/vme_assembly_online.py](../../addons/vme_belgie/models/vme_assembly_online.py#L303) | 303 | art. 3.87 §1 BW | a co-owner who votes in writing beforehand counts as present. |
 | [addons/vme_belgie/models/vme_association.py](../../addons/vme_belgie/models/vme_association.py#L15) | 15 | art. 3.89 §5 BW | every VME keeps its own accounts, so each association gets its own res.company. |
 | [addons/vme_belgie/models/vme_association.py](../../addons/vme_belgie/models/vme_association.py#L34) | 34 | art. 3.89 §5 BW | working and reserve capital on separate accounts. |
 | [addons/vme_belgie/models/vme_association.py](../../addons/vme_belgie/models/vme_association.py#L87) | 87 | KB 12 juli 2012 (minimum chart of accounts for VMEs) | The full Belgian PCMN is the closest standard Odoo chart for now. |

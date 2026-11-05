@@ -37,6 +37,7 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 
 14. [Algemene vergaderingen plannen in blokken](av-planner.md)
 15. [De algemene vergadering: oproeping, stemming en notulen](algemene-vergadering.md)
+24. [Een hybride of online algemene vergadering houden](digitale-av.md)
 
 ### Post en mails
 

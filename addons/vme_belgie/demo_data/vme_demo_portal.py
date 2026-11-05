@@ -10,6 +10,7 @@ PORTAL_PASSWORD = "portaal-demo"
 PORTAL_OWNERS = [
     ("Residentie Linde", "Eigenaar Linde A1"),  # owns A1 and G1
     ("Residentie Linde", "Eigenaar Linde A5"),  # sold A5 and G5 on 1 July 2026
+    ("Residentie Linde", "Eigenaar Linde A6"),  # owns A6 and G6; secretary of the hybrid assembly (step 24)
 ]
 
 # (vme, folder xml id, lot or None, date, title, visible in the portal, lines of the fictitious PDF)

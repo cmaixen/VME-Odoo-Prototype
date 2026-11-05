@@ -161,6 +161,12 @@
         <field name="state">code</field>
         <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/contracten.md"}</field>
     </record>
+    <record id="action_help_digital_assembly" model="ir.actions.server">
+        <field name="name">Help: hybride of online AV</field>
+        <field name="model_id" ref="model_vme_association"/>
+        <field name="state">code</field>
+        <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/digitale-av.md"}</field>
+    </record>
     <menuitem id="menu_vme_help" name="Help" parent="menu_vme_root" sequence="99"/>
     <menuitem id="menu_vme_help_kb" name="Kennisbank" parent="menu_vme_help" action="action_help_kb" sequence="1"/>
     <menuitem id="menu_vme_help_vme" name="VME aanmaken en bankrekeningen" parent="menu_vme_help" action="action_help_vme" sequence="10"/>
@@ -186,4 +192,5 @@
     <menuitem id="menu_vme_help_documents" name="Documenten" parent="menu_vme_help" action="action_help_documents" sequence="140"/>
     <menuitem id="menu_vme_help_portal" name="Het eigenaarsportaal" parent="menu_vme_help" action="action_help_portal" sequence="150"/>
     <menuitem id="menu_vme_help_contracts" name="Contracten en personeel" parent="menu_vme_help" action="action_help_contracts" sequence="140"/>
+    <menuitem id="menu_vme_help_digital_assembly" name="Hybride of online AV" parent="menu_vme_help" action="action_help_digital_assembly" sequence="101"/>
 </odoo>

@@ -77,6 +77,14 @@ Browsers bewaren cookies per hostnaam, niet per poort. Draaien er meerdere demo'
 
 Odoo's lijst `/my/invoices` zoekt met de rechten van de portaalgebruiker, en de multi-company-regel op `account.move` laat alleen facturen uit zijn eigen companies door. Provisiefacturen staan in de company van de VME, dus die lijst blijft leeg. We tonen de provisies in `/my/vme/<id>` (sudo, gefilterd op de eigenaar) en linken naar de PDF met het toegangstoken van de factuur.
 
+## Binaire velden lezen met `bin_size` (stap 24)
+
+De webclient leest records met `bin_size=True` in de context. Een binair veld (ook `ir.attachment.raw` en `datas`) geeft dan de grootte als tekst ("33.21 Kb") in plaats van de inhoud. Een compute die een hash van een bijlage maakt, gaf daardoor in het formulier een andere SHA-256 dan in het portaal, en de handtekeningen leken ongeldig. Lees bestanden voor een berekening altijd met `with_context(bin_size=False)` (zie `attachment_sha256` in `models/vme_assembly_online.py`). De test `test_hash_ignores_bin_size` vangt dit op.
+
+## Een tweede AV in hetzelfde jaar (stap 24)
+
+Sinds er buitengewone AV's zijn, kan een VME meer dan één AV per jaar hebben. Code of tests die "de AV van VME X in jaar Y" zoeken, filteren op `assembly_type = 'ordinary'`, anders krijgen ze twee records (`ensure_one` faalt, of een vergelijking op een recordset van twee).
+
 ## Bekende problemen (nog open)
 
 - Geen op dit moment.
