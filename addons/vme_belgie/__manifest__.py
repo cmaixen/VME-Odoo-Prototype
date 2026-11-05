@@ -19,6 +19,7 @@
         "views/vme_cost_allocation_views.xml",
         "views/account_move_views.xml",
         "data/demo_actions.xml",
+        "data/help_menu.xml",
         "views/vme_distribution_rule_views.xml",
         "wizard/vme_provision_call_wizard_views.xml",
         "views/vme_budget_views.xml",

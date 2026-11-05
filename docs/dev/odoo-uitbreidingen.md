@@ -1,0 +1,28 @@
+# Odoo-methodes die we overschrijven
+
+We blijven zo dicht mogelijk bij standaard Odoo: elke override roept eerst `super()` aan en voegt alleen iets toe. Wie Odoo upgradet, kijkt deze lijst na.
+
+| Methode | Bestand | Wat we toevoegen | Waarom |
+| --- | --- | --- | --- |
+| `account.move._post(soft)` | `models/account_move.py` | Na `super()`: `_vme_auto_distribute()` op geboekte leveranciersfacturen en -creditnota's met een VME | Een factuur met verdeelregel moet zonder klikken verdeeld zijn. Fouten worden chatterberichten: het boeken mag nooit blokkeren op eigendomsgegevens. De verdeling loopt in een savepoint, zodat een mislukte verdeling niets half achterlaat. |
+| `account.move._compute_partner_bank_id()` | `models/account_move.py` | Voor facturen met een `vme_fund`: de bankrekening van dat fonds van de VME | Odoo kiest standaard de eerste rekening van de company. Een provisie moet op de rekening van haar fonds komen (`# LEGAL-CHECK: art. 3.89 §5 BW`). De VME wordt op company gezocht, omdat `vme_association_id` bij `create` nog niet berekend is. Extra `@api.depends` op `vme_fund` en `vme_association_id`. |
+| `account.move._extend_with_attachments(files_data, new)` | `models/account_move.py` | Leest `InvoicePeriod/StartDate` en `EndDate` uit het UBL-bestand en zet de kostperiode | Odoo negeert de factuurperiode van een Peppol-factuur; wij hebben ze nodig voor de pro-rataverdeling bij een verkoop. Dit is het haakje dat Odoo 19 gebruikt voor zowel **Upload** als `journal._create_document_from_attachment`. |
+| `account.move.line._compute_account_id()` | `models/account_move.py` | Voor regels zonder product: de rekening uit de verdeelregel, als die er een heeft | Facturen zonder product (de meeste Peppol-facturen) krijgen anders de standaardrekening van het dagboek. |
+| `account.chart.template._post_load_data(template_code, company, template_data)` | `models/account_chart_template.py` | Alleen voor companies van een VME: standaardrekening 611000 op het aankoopdagboek, en de rekeningen 100100 Werkkapitaal en 100200 Reservekapitaal | Het Belgische PCMN laat het aankoopdagboek zonder standaardrekening en kent geen fondsrekeningen voor een VME. Dit haakje loopt nadat het rekeningstelsel van een nieuwe company geladen is; dat gebeurt pas bij de commit, dus op dat moment bestaat de VME al. |
+
+## Andere uitbreidingspunten
+
+| Punt | Bestand | Uitleg |
+| --- | --- | --- |
+| `vme.association.create()` | `models/vme_association.py` | Maakt de company met `chart_template: "be_comp"` en geeft alle interne gebruikers toegang. Geen `required=True` op `company_id`: dan eist de webclient het veld al voor `create()` het kan invullen; een SQL-check vervangt dat. |
+| `vme.key.write()` / `vme.key.line.write()` / `unlink()` | `models/vme_key.py` | De som van een sleutel wordt gecontroleerd na alle regelcommando's van een formulier (context `vme_skip_line_check`), maar ook als iemand een regel los bewerkt of verwijdert. |
+| `account.move.line._compute_vme_key_id()` | `models/account_move.py` | Nieuw opgeslagen compute (`readonly=False`) op `move_id.partner_id`, `move_id.company_id`, `display_type`: vult een lege sleutel vanuit de verdeelregel. |
+| `account.move._compute_vme_association_id()` | `models/account_move.py` | Opgeslagen compute op `company_id`, met `sudo` en `active_test=False`, zodat ook gearchiveerde VME's en companies buiten de selectie gevonden worden. |
+| Serveracties `action_load_demo_data`, `action_load_demo_history` | `data/demo_actions.xml` | Alleen voor `base.group_system`; roepen `_load_demo_data()` en `_load_demo_history()` aan. |
+| Serveracties `action_help_*` | `data/help_menu.xml` | Geven een `ir.actions.act_url` terug naar `vme_belgie.help_url` + artikel. |
+
+## Wat we bewust niet overschrijven
+
+- **Bevestigen van bankrekeningen** (`res.partner.bank.allow_out_payment`, `_user_can_trust`). Odoo laat dat alleen toe voor een mens met de juiste rechten; we tonen een waarschuwing en de wizard weigert, maar we zetten het nooit zelf aan vanuit code die als systeemgebruiker draait.
+- **Gestructureerde mededeling.** Die komt van het Belgische referentiemodel van het verkoopdagboek.
+- **Peppol-import zelf.** We gebruiken de gewone upload van Odoo en lezen alleen de periode extra.

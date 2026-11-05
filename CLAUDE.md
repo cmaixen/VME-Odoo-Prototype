@@ -70,3 +70,4 @@ Een werkend prototype van een syndicusplatform op Odoo 19, om te tonen aan een p
 - Werk bij elke stap ook de documentatie bij, in hetzelfde commit:
   - `docs/kb/`: de kennisbank voor syndici en hun medewerkers, in het Nederlands en zonder technische termen. Per functie een artikel "Hoe doe ik …?" met de stappen in Odoo, een voorbeeld uit de demodata en de veelgestelde vragen.
   - `docs/dev/`: de interne ontwikkelaarsdocumentatie. Architectuur, datamodel, hoe een berekening werkt, uitbreidingspunten in Odoo die we overschrijven, valkuilen die we tegenkwamen, en hoe je test en de demo opbouwt.
+  - Een nieuw kennisbankartikel krijgt een item in het menu **VME > Help** (`addons/vme_belgie/data/help_menu.xml`). Na een wijziging aan een `# LEGAL-CHECK:` draai je `python3 tools/legal_checks.py`, dat `docs/dev/legal-checks.md` bijwerkt.
