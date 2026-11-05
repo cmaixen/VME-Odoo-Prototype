@@ -1,0 +1,4 @@
+code;naam;btw;email;iban;sleutel
+L01;Energieleverancier Voorbeeld NV;BE0000000394;facturen@energieleverancier.example.com;;Algemene sleutel
+L02;Liftdienst Esdoorn Voorbeeld BV;BE0000001384;facturen@liftdienst.example.com;BE07 9990 0000 9366;Liftsleutel
+L03;Glazenwasser Voorbeeld;;glazenwasser@example.com;BE93 9990 0000 9467;Algemene sleutel
