@@ -1,81 +1,64 @@
 # Functionele dekking
 
-Vergelijking met de functies die een gangbaar Belgisch syndicus- en rentmeesterpakket aanbiedt (de functielijst van Dobby, november 2026). Per functie: wat het prototype al heeft, wat in een geplande stap zit, en wat nog ontbreekt. Stapnummers verwijzen naar `PROMPTS.md`.
+Vergelijking met de functies die een gangbaar Belgisch syndicus- en rentmeesterpakket aanbiedt (de functielijst van Dobby, november 2026). Per functie: wat het prototype al heeft, wat nu gebouwd wordt, en wat bewust later komt. Stapnummers verwijzen naar `PROMPTS.md`.
 
 Legende: ✅ gebouwd · 🔨 wordt nu gebouwd · 📋 gepland · ➖ bewust later
 
 | Functie | Wat erbij hoort | Status | Waar |
 | --- | --- | --- | --- |
-| Aankoopfacturen verwerken | UBL en Peppol | ✅ | stap 4b, 7b |
-| | Facturen per mail | ✅ | stap 7b |
-| | OCR van PDF-facturen zonder UBL | 📋 | stap 21 |
-| | Goedkeuren vóór betaling | ✅ | stap 20 |
-| | OCR van PDF-facturen zonder UBL | ✅ | stap 21 |
-| | Goedkeuren vóór betaling | 📋 | stap 20 |
+| Aankoopfacturen verwerken | UBL en Peppol, facturen per mail | ✅ | stap 4b, 7b |
+| | PDF-facturen zonder UBL gelezen met AI, met waarschuwing bij een onbekend IBAN | ✅ | stap 21 |
+| | Goedkeuren vóór betaling, met een tweede goedkeuring boven een drempel | ✅ | stap 20 |
 | Boekhouding | Eén boekhouding per VME, Belgisch rekeningstelsel, boekingsregels (verdeelregels), opvragingen | ✅ | stap 1–6 |
 | | Minimumrekeningstelsel VME (KB 12 juli 2012) nakijken | 📋 | LEGAL-CHECK |
 | Betalingsverkeer | Bankafschriften inlezen (CODA/CAMT) en koppelen | ✅ | stap 12 |
-| | Betaalbatches voor leveranciers (SEPA) | ✅ | stap 20 |
-| | Domiciliëringen van provisies | ✅ | stap 20 |
+| | Betaalbatches voor leveranciers (SEPA pain.001) | ✅ | stap 20 |
+| | Domiciliëringen van provisies (SEPA pain.008) met mandaten en terugkoppeling | ✅ | stap 20 |
 | | Rechtstreekse bankkoppeling (bv. Swan, Ponto, Isabel) | ➖ | na het prototype, vraagt een contract met de bank of aggregator |
-| Kapitaalbeheer | Werk- en reservekapitaal apart, 5%-regel | ✅ | stap 5 |
-| | Stand en verloop per VME | 📋 | stap 22 |
-| | Live inzicht voor eigenaars in het portaal | 🔨 | stap 15 |
+| Kapitaalbeheer | Werk- en reservekapitaal apart, 5%-regel, werken uit het reservekapitaal | ✅ | stap 5, 14 |
+| | Stand en verloop per VME | 🔨 | stap 22 |
+| | Live inzicht voor eigenaars in het portaal | ✅ | stap 15 (uitgebreid in stap 22) |
 | Budgetbeheer | Budget en provisieberekening | ✅ | stap 5 |
-| | Budgetopvolging (budget tegenover werkelijk, per rekening en sleutel) | 📋 | stap 22 |
-| Inlichtingen inzake verkoop | Notarismodule met termijnen | ✅ | stap 9 |
-| | Kavelwissel bij de akte | ✅ | stap 9 |
-| | Welkomstcommunicatie voor de nieuwe eigenaar | ✅ | stap 23 (concept-welkomstbrief na de akte) |
-| Afrekeningen | Jaarafrekening per eigenaar | ✅ | stap 6 |
-| | Commissaris van de rekeningen | 🔨 | stap 16 |
+| | Budgetopvolging (budget tegenover werkelijk, per rekening en sleutel) | 🔨 | stap 22 |
+| Inlichtingen inzake verkoop | Notarismodule met termijnen, kavelwissel bij de akte | ✅ | stap 9 |
+| | Welkomstbrief voor de nieuwe eigenaar | ✅ | stap 23 |
+| Afrekeningen | Jaarafrekening per eigenaar, ook op verbruik | ✅ | stap 6, 17 |
+| | Commissaris van de rekeningen met leestoegang | ✅ | stap 16 |
 | | Afrekening van lasten aan huurders | ✅ | stap 25 |
 | Rappelopvolging | Overzicht, rappels in niveaus, interest, doorsturen | ✅ | stap 10 |
-| | Aangetekend versturen | ✅ | stap 23 (ingebrekestelling als PDF in het verzendregister) |
-| Indexatiebeheer | Huurindexering met uitzonderingen | 📋 | stap 25 |
-| | Indexatiebrieven | 📋 | stap 25 (de bpost-koppeling ➖) |
-| | Aangetekend versturen | 📋 | stap 23 |
-| Indexatiebeheer | Huurindexering met uitzonderingen (gezondheidsindex, indexstop per gewest) | ✅ | stap 25 |
+| | Aangetekend versturen (PDF met verzendregister) | ✅ | stap 23 |
+| Indexatiebeheer | Huurindexering met uitzonderingen (gezondheidsindex, regels per gewest) | ✅ | stap 25 |
 | | Indexatiebrieven | ✅ | stap 25 (de bpost-koppeling ➖) |
 | Technisch beheer | Keuringen en liften | ✅ | stap 6b |
-| | Contracten | 🔨 | stap 18 |
-| | Technische documenten | 🔨 | stap 15 |
+| | Contracten met opzegtermijnen | ✅ | stap 18 |
+| | Technische documenten | ✅ | stap 15 |
 | | Sleutels, badges en codes: register per kavel, bestelling bij de slotenmaker, blokkeren | ✅ | stap 19 |
-| Taakbeheer | Taken en activiteiten met termijnen (Odoo) | ✅ | |
-| | Meldingen en workflows per aanvraagtype: acht types met checklist, verificatie van de aanvrager | ✅ | stap 19 |
-| | Schadegevallen | 🔨 | stap 14 |
+| | Meterstanden en verbruik | ✅ | stap 17 |
+| Taakbeheer | Taken en activiteiten met termijnen | ✅ | Odoo |
+| | Meldingen en workflows per aanvraagtype, met verificatie van de aanvrager | ✅ | stap 19 |
+| | Werken met offertes en schadegevallen met de verzekeraar | ✅ | stap 14 |
 | Algemene vergadering | Planning in blokken | ✅ | stap 6c |
 | | Agenda, oproeping, stemming, notulen en opvolging | ✅ | stap 11 |
-| | Hybride en digitaal vergaderen, elektronisch stemmen en tekenen | 📋 | stap 24 |
+| | Hybride en digitaal vergaderen, elektronisch stemmen en tekenen | 🔨 | stap 24 |
 | Gebouwbeheer en eigendomsbeheer | Gebouwen, kavels, quotiteiten, eigenaars | ✅ | stap 2 |
-| | Gebouwkaart met de financiële toestand en een overzicht van de portefeuille | 📋 | stap 22 |
-| Beheer mede-eigenaars en huurders | Eigenaars met historiek | ✅ | stap 2 |
-| | Profiel in het portaal | 🔨 | stap 15 |
-| | Huurders als contacten per kavel (rol en periode) | ✅ | stap 19 |
-| | Huurcontracten aan de huurder gekoppeld | 📋 | stap 25 |
-| | Huurders als volwaardige contacten per kavel | ✅ | stap 25 (aanvragen van huurders: stap 19) |
-| Leveranciersbeheer | Leveranciers, verdeelregels, facturen | ✅ | stap 4b |
-| | Leverancierskaart met contracten, keuringen, lopende werken en facturen | 📋 | stap 22 |
-| Documentbeheer | Mappen per VME en kavel, delen of niet delen | 🔨 | stap 15 |
-| | Automatisch ordenen met AI | 🔨 | stap 21 (soort en VME), de map volgt met stap 15 |
-| | Acties op meerdere documenten tegelijk | 🔨 | stap 15 |
-| Huurcontractbeheer | Huurcontracten opmaken, huurders, waarborg, huur | 📋 | stap 25 |
-| Centraal communicatiebeheer | Brieven, e-mail, aangetekend (PDF met verzendregister) per VME, blok of kavel, met voorkeur papier of e-mail | ✅ | stap 23 |
-| | Sms, push en elektronisch aangetekend | ✅ | stap 23, provider-interface met een simulatie; een echte dienst ➖ vraagt een contract |
-| | Communicatielog per eigenaar, met oproepingen en herinneringen | ✅ | stap 23 |
-| | Sjablonen (welkomstbrief, werken, waterafsluiting) | ✅ | stap 23 |
-| | Huurders als ontvangers | 📋 | stap 19 en 25 (de selectie bestaat al) |
-| | Bevragingen met antwoorden per eigenaar | ✅ | stap 23 (antwoorden via het portaal: stap 15) |
-| | Updates | ✅ | stap 23 |
-| | Documenten delen | 🔨 | stap 15 |
-| Huurcontractbeheer | Huurcontracten opmaken, huurders, waarborg, huur | ✅ | stap 25 |
-| | Maandelijkse huurfacturen en opvolging van opzeg en einde huur | ✅ | stap 25 |
+| | Gebouwkaart met de financiële toestand en een overzicht van de portefeuille | 🔨 | stap 22 |
+| | Raad van mede-eigendom met overzicht van de lopende dossiers | ✅ | stap 16 |
+| Beheer mede-eigenaars en huurders | Eigenaars met historiek en register | ✅ | stap 2, 15 |
+| | Profiel in het portaal, adreswijziging met goedkeuring | ✅ | stap 15 |
+| | Huurders als contacten per kavel, gekoppeld aan hun huurcontract | ✅ | stap 19, 25 |
+| Leveranciersbeheer | Leveranciers, verdeelregels, facturen, contracten | ✅ | stap 4b, 18 |
+| | Leverancierskaart met contracten, keuringen, lopende werken en facturen | 🔨 | stap 22 |
+| Documentbeheer | Mappen per VME en kavel, delen of niet delen, acties op meerdere documenten | ✅ | stap 15 |
+| | Automatisch ordenen met AI | ✅ | stap 21 (soort en VME) met de mappen van stap 15 |
+| Huurcontractbeheer | Huurcontracten, huurders, waarborg, maandelijkse huur, opzeg en einde huur | ✅ | stap 25 |
 | | Doorstorting aan de verhuurder en ereloon van de rentmeester | 📋 | na stap 25 |
-| Centraal communicatiebeheer | Brieven, e-mail, sms, aangetekend, push | 📋 | stap 23 |
-| | Bevragingen | 📋 | stap 23 |
-| | Updates en documenten delen | 📋 | stap 23 |
+| Centraal communicatiebeheer | Brieven, e-mail en aangetekend per VME, blok of kavel, met voorkeur papier of e-mail | ✅ | stap 23 |
+| | Sms, push en elektronisch aangetekend | ✅ | stap 23, provider-interface met een simulatie; een echte dienst ➖ vraagt een contract |
+| | Sjablonen, updates, bevragingen met antwoorden, communicatielog per eigenaar | ✅ | stap 23 |
+| | Huurders als ontvangers | ✅ | stap 23 met de huurders van stap 19 en 25 |
 | Communicatie in twee richtingen | Mails van eigenaars gekoppeld met een voorgesteld antwoord (AI) | ✅ | stap 7 |
 | | Aanvragen per mail als vaste procedure (AI) | ✅ | stap 19 |
-| | Meldingen via het portaal (koppelplaats `create_from_intake` klaar) | 📋 | stap 15 |
+| | Aanvragen en antwoorden op bevragingen via het portaal | 📋 | koppelplaatsen in stap 19 en 23 bestaan; aansluiten op het portaal van stap 15 |
 
 ## Waar het prototype verder gaat
 
