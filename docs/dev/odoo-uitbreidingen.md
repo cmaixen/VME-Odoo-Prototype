@@ -13,6 +13,8 @@ We blijven zo dicht mogelijk bij standaard Odoo: elke override roept eerst `supe
 | `account.move.button_draft()` | `models/vme_works.py` | Keert de boeking op het reservekapitaal om en maakt `vme_reserve_move_id` leeg | Een factuur terugzetten naar concept mag het reservekapitaal niet verminderd laten. |
 | `account.move.line._compute_vme_key_id()` (override) | `models/vme_works.py` | Extra `@api.depends("move_id.vme_works_id")`: regels van een werkfactuur krijgen de sleutel van het werkdossier, tenzij met de hand een andere sleutel gekozen is | De verdeelregel van een aannemer (als die er is) mag de sleutel van de werken niet overschrijven. |
 | `account.chart.template._post_load_data(template_code, company, template_data)` | `models/account_chart_template.py` | Alleen voor companies van een VME: standaardrekening 611000 op het aankoopdagboek, en de rekeningen 100100 Werkkapitaal en 100200 Reservekapitaal | Het Belgische PCMN laat het aankoopdagboek zonder standaardrekening en kent geen fondsrekeningen voor een VME. Dit haakje loopt nadat het rekeningstelsel van een nieuwe company geladen is; dat gebeurt pas bij de commit, dus op dat moment bestaat de VME al. |
+| `base._get_view()` en `base._get_view_cache_key()` | `models/vme_council.py` | Voor de commissaris: `create`, `edit` en `delete` op `0` in list-, form- en kanbanweergaven (niet voor `res.users` en wizards); de cachesleutel krijgt een element erbij | De commissaris mag alleen lezen; zonder deze knoppen botst hij niet op toegangsfouten. De record rules blijven de echte bescherming (stap 16). |
+| `vme.association.create()` (tweede override) | `models/vme_council.py` | Na `super()`: `_vme_sync_auditor_access()` voor commissarissen van de nieuwe company | De eerste override geeft alle interne gebruikers toegang tot een nieuwe VME; een commissaris mag alleen zijn eigen VME's zien. |
 
 ## Andere uitbreidingspunten
 
@@ -28,6 +30,8 @@ We blijven zo dicht mogelijk bij standaard Odoo: elke override roept eerst `supe
 | `res.partner._can_be_edited_by_current_customer()` | `models/vme_portal.py` | `False` voor een portaalgebruiker die eigenaar is: Odoo's eigen adresformulieren in het portaal mogen het register niet rechtstreeks wijzigen (stap 15). |
 | `CustomerPortal.account()`, `my_addresses()`, `_prepare_home_portal_values()` | `controllers/portal.py` | Eigenaars gaan van `/my/account` en `/my/addresses` naar `/my/vme/address`; teller `vme_count` en `vme_owner` voor de tegels op `/my`. |
 | Template `portal.portal_my_home` | `views/portal_templates.xml` | Tegel "Mijn mede-eigendom"; Odoo's tegel "Je facturen" verborgen voor eigenaars (provisies staan in de VME-company, die lijst bleef leeg). |
+| Record rules voor `group_vme_auditor` | `security/vme_council_security.xml` | Per VME-model een leesregel op `company_ids` en een regel die schrijven, aanmaken en verwijderen weigert; een leesregel op `res.partner`. Gelden alleen voor de commissaris. Zie [raad-commissaris.md](raad-commissaris.md). |
+| `check_not_auditor(env)` | `models/vme_access.py` | Bovenaan knoppen die met `sudo()` schrijven (invordering, bankregels): record rules gelden niet voor wat `sudo()` doet. |
 | Serveracties `action_help_*` | `data/help_menu.xml` | Geven een `ir.actions.act_url` terug naar `vme_belgie.help_url` + artikel. |
 
 ## Wat we bewust niet overschrijven

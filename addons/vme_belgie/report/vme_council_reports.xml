@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Template for the auditor's report to the general assembly: the figures come from the
+         books, the findings and the conclusion are filled in by the auditor himself. -->
+    <record id="action_report_auditor" model="ir.actions.report">
+        <field name="name">Verslag van de commissaris van de rekeningen</field>
+        <field name="model">vme.mandate</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">vme_belgie.report_auditor</field>
+        <field name="report_file">vme_belgie.report_auditor</field>
+        <field name="print_report_name">'Verslag commissaris %s %s' % (object.association_id.name, object.audit_year)</field>
+        <field name="binding_model_id" ref="model_vme_mandate"/>
+    </record>
+
+    <template id="report_auditor">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="f" t-value="o._get_audit_figures()"/>
+                <t t-set="money" t-value="{'widget': 'monetary', 'display_currency': f['currency']}"/>
+                <t t-set="company" t-value="o.company_id"/>
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2 class="mb-0">Verslag van de commissaris van de rekeningen</h2>
+                        <div class="text-muted mb-4">
+                            Aan de algemene vergadering van de VME <t t-out="o.association_id.name"/>
+                            <t t-if="o.association_id.kbo_number"> · KBO <t t-out="o.association_id.kbo_number"/></t>
+                            · boekjaar <t t-out="f['year']"/>
+                        </div>
+
+                        <h5>1. Opdracht</h5>
+                        <p>
+                            De algemene vergadering stelde <strong t-out="o.partner_id.name"/> aan als commissaris van de rekeningen
+                            <t t-if="o.assembly_item_id"> (beslissing <t t-out="o.assembly_item_id.decision_number or o.assembly_item_id.name"/>)</t>,
+                            voor het mandaat van <t t-out="o.date_start" t-options="{'widget': 'date'}"/>
+                            tot <t t-out="o.date_end" t-options="{'widget': 'date'}"/>.
+                            De commissaris controleerde de rekeningen van het boekjaar van
+                            <t t-out="f['start']" t-options="{'widget': 'date'}"/> tot <t t-out="f['end']" t-options="{'widget': 'date'}"/>.
+                        </p>
+
+                        <h5>2. Gecontroleerde stukken</h5>
+                        <table class="table table-sm mb-2">
+                            <thead><tr><th>Stuk</th><th class="text-end">Aantal</th><th class="text-end">Bedrag</th></tr></thead>
+                            <tbody>
+                                <tr><td>Geboekte leveranciersfacturen en creditnota's</td>
+                                    <td class="text-end" t-out="f['bill_count']"/><td class="text-end" t-out="f['bill_total']" t-options="money"/></tr>
+                                <tr><td>Provisieoproepen, afrekeningen en kosten aan eigenaars</td>
+                                    <td class="text-end" t-out="f['call_count']"/><td class="text-end" t-out="f['call_total']" t-options="money"/></tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-sm mb-2">
+                            <thead><tr><th>Bankrekening</th><th class="text-end">Bewegingen</th><th class="text-end">Saldo volgens de bankafschriften op <t t-out="f['end']" t-options="{'widget': 'date'}"/></th></tr></thead>
+                            <tbody>
+                                <tr t-foreach="f['banks']" t-as="bank">
+                                    <td><t t-out="bank['name']"/> <span class="text-muted" t-out="bank['account']"/></td>
+                                    <td class="text-end" t-out="bank['statement_lines']"/>
+                                    <td class="text-end" t-out="bank['balance']" t-options="money"/>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-sm mb-4">
+                            <tbody>
+                                <tr><td>Nog te ontvangen van eigenaars op het einde van het boekjaar</td><td class="text-end" t-out="f['receivable']" t-options="money"/></tr>
+                                <tr><td>Nog te betalen aan leveranciers op het einde van het boekjaar</td><td class="text-end" t-out="f['payable']" t-options="money"/></tr>
+                                <tr><td>Stand van het reservekapitaal op het einde van het boekjaar</td><td class="text-end" t-out="f['reserve_fund']" t-options="money"/></tr>
+                            </tbody>
+                        </table>
+
+                        <h5>3. Uitgevoerde controles</h5>
+                        <table class="table table-sm mb-4">
+                            <thead><tr><th>Controle</th><th style="width: 12%">Gedaan</th><th style="width: 35%">Opmerking</th></tr></thead>
+                            <tbody>
+                                <tr><td>Steekproef van leveranciersfacturen: echt, goedgekeurd en volgens de juiste sleutel verdeeld</td><td>☐</td><td/></tr>
+                                <tr><td>Bankafschriften aangesloten op de boekhouding, per rekening</td><td>☐</td><td/></tr>
+                                <tr><td>Werk- en reservekapitaal op aparte rekeningen</td><td>☐</td><td/></tr>
+                                <tr><td>Provisieoproepen volgens het budget dat de AV goedkeurde</td><td>☐</td><td/></tr>
+                                <tr><td>Opbouw van het reservekapitaal volgens de beslissing van de AV</td><td>☐</td><td/></tr>
+                                <tr><td>Achterstallen van eigenaars opgevolgd</td><td>☐</td><td/></tr>
+                                <tr><td>Jaarafrekening per eigenaar klopt met de boekhouding</td><td>☐</td><td/></tr>
+                            </tbody>
+                        </table>
+
+                        <h5>4. Bevindingen</h5>
+                        <div style="border: 1px solid #ccc; min-height: 120px;" class="mb-4"/>
+
+                        <h5>5. Besluit</h5>
+                        <p class="mb-1">☐ Ik stel de algemene vergadering voor de rekeningen goed te keuren en de syndicus kwijting te geven.</p>
+                        <p class="mb-1">☐ Ik stel voor de rekeningen goed te keuren, met de opmerkingen hierboven.</p>
+                        <p class="mb-4">☐ Ik stel voor de rekeningen niet goed te keuren, om de redenen hierboven.</p>
+
+                        <div class="row mt-5">
+                            <div class="col-6">Opgemaakt te ........................................ op ....................</div>
+                            <div class="col-6">
+                                <div>Handtekening</div>
+                                <div class="mt-5" t-out="o.partner_id.name"/>
+                                <div class="text-muted">Commissaris van de rekeningen</div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <!-- Overview of the running files, to hand to the council. -->
+    <record id="action_report_council_dossiers" model="ir.actions.report">
+        <field name="name">Lopende dossiers voor de raad</field>
+        <field name="model">vme.association</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">vme_belgie.report_council_dossiers</field>
+        <field name="report_file">vme_belgie.report_council_dossiers</field>
+        <field name="print_report_name">'Lopende dossiers %s' % object.name</field>
+        <field name="binding_model_id" ref="model_vme_association"/>
+    </record>
+
+    <template id="report_council_dossiers">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="company" t-value="o.company_id"/>
+                <t t-set="dossiers" t-value="o.env['vme.council.dossier'].search([('association_id', '=', o.id)])"/>
+                <t t-set="types" t-value="dict(dossiers._fields['dossier_type']._description_selection(o.env))"/>
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2 class="mb-0">Lopende dossiers</h2>
+                        <div class="text-muted mb-4">
+                            Voor de raad van mede-eigendom van <t t-out="o.name"/>,
+                            stand op <t t-out="context_timestamp(datetime.datetime.now())" t-options="{'widget': 'date'}"/>
+                        </div>
+                        <p t-if="not dossiers">Er zijn geen lopende dossiers.</p>
+                        <t t-foreach="types" t-as="dossier_type">
+                            <t t-set="rows" t-value="dossiers.filtered(lambda d: d.dossier_type == dossier_type)"/>
+                            <t t-if="rows">
+                                <h5 t-out="types[dossier_type]"/>
+                                <table class="table table-sm mb-4">
+                                    <thead><tr><th>Dossier</th><th>Stand van zaken</th><th>Termijn</th><th>Opvolging door</th></tr></thead>
+                                    <tbody>
+                                        <tr t-foreach="rows" t-as="row">
+                                            <td><t t-out="row.name"/><div t-if="row.partner_id" class="text-muted" t-out="row.partner_id.name"/></td>
+                                            <td t-out="row.status"/>
+                                            <td t-att-class="'text-danger' if row.is_overdue else ''">
+                                                <t t-if="row.date_deadline" t-out="row.date_deadline" t-options="{'widget': 'date'}"/>
+                                            </td>
+                                            <td t-out="row.user_id.name or ''"/>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </t>
+                        </t>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

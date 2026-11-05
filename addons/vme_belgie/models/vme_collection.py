@@ -10,6 +10,7 @@ from odoo.fields import Command
 from odoo.tools import format_date
 
 from .vme_provision_call import FUNDS
+from .vme_access import check_not_auditor
 
 AGING_BUCKETS = [
     ("0_30", "1-30 dagen"),
@@ -225,6 +226,7 @@ class VmeArrears(models.Model):
         """
 
     def action_refresh_collections(self):
+        check_not_auditor(self.env)
         return self.env["vme.collection"].action_refresh()
 
 
@@ -449,6 +451,7 @@ class VmeCollection(models.Model):
         return result
 
     def action_charge_costs(self):
+        check_not_auditor(self.env)
         self._charge_costs()
 
     def _charge_costs(self):
@@ -574,6 +577,7 @@ class VmeCollection(models.Model):
 
     @api.model
     def action_refresh(self):
+        check_not_auditor(self.env)
         new, paid, reminders = self._refresh()
         message = self.env._(
             "%(new)s nieuwe dossiers, %(paid)s afgesloten, %(drafts)s herinneringen klaar om na te kijken.",
@@ -597,6 +601,7 @@ class VmeCollection(models.Model):
         self._refresh()
 
     def action_propose_reminder(self):
+        check_not_auditor(self.env)
         self.ensure_one()
         today = self._get_today()
         if not self.next_level:
@@ -644,6 +649,7 @@ class VmeCollection(models.Model):
 
     def action_forward(self):
         """Open the mail composer to the lawyer or bailiff with the PDF overview; nothing is sent by itself."""
+        check_not_auditor(self.env)
         self.ensure_one()
         if not self.forward_partner_id:
             raise UserError(self.env._("Kies eerst de advocaat of deurwaarder."))

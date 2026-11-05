@@ -51,6 +51,13 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 
 19. [Documenten van een VME en van een kavel bewaren](documenten.md)
 20. [Het eigenaarsportaal: toegang, wat de eigenaar ziet, adreswijzigingen](eigenaarsportaal.md)
+21. [De raad van mede-eigendom en de commissaris van de rekeningen](raad-en-commissaris.md)
+
+### Post en mails
+
+
+### Overstappen
+
 
 ## Zo is het platform opgebouwd
 

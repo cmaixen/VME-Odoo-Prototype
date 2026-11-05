@@ -36,3 +36,5 @@ access_vme_damage_claim_user,vme.damage.claim user,model_vme_damage_claim,base.g
 access_vme_document_folder_user,vme.document.folder user,model_vme_document_folder,base.group_user,1,1,1,1
 access_vme_document_user,vme.document user,model_vme_document,base.group_user,1,1,1,1
 access_vme_address_request_user,vme.address.request user,model_vme_address_request,base.group_user,1,1,0,0
+access_vme_mandate_user,vme.mandate user,model_vme_mandate,base.group_user,1,1,1,1
+access_vme_council_dossier_user,vme.council.dossier user,model_vme_council_dossier,base.group_user,1,0,0,0

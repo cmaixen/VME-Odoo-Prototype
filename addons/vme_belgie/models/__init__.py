@@ -20,3 +20,4 @@ from . import vme_works
 from . import vme_damage
 from . import vme_document
 from . import vme_portal
+from . import vme_council

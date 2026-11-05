@@ -9,6 +9,7 @@
     # in the middle of creating the first Belgian company, which breaks that request.
     "depends": ["account", "l10n_be", "account_peppol", "calendar", "mail", "portal"],
     "data": [
+        "security/vme_council_security.xml",
         "security/ir.model.access.csv",
         "data/mail_alias_domain.xml",
         "views/vme_association_views.xml",
@@ -44,6 +45,9 @@
         "views/vme_document_views.xml",
         "views/vme_portal_views.xml",
         "views/portal_templates.xml",
+        "views/vme_council_views.xml",
+        "report/vme_council_reports.xml",
+        "data/council_data.xml",
     ],
     "installable": True,
     "application": True,

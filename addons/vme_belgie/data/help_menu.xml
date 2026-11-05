@@ -100,6 +100,12 @@
         <field name="state">code</field>
         <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/invordering.md"}</field>
     </record>
+    <record id="action_help_council" model="ir.actions.server">
+        <field name="name">Help: raad en commissaris</field>
+        <field name="model_id" ref="model_vme_association"/>
+        <field name="state">code</field>
+        <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/raad-en-commissaris.md"}</field>
+    </record>
 
     <record id="action_help_sale" model="ir.actions.server">
         <field name="name">Help: verkoop en notaris</field>
@@ -162,6 +168,7 @@
     <menuitem id="menu_vme_help_bill_mail" name="Facturen per e-mail" parent="menu_vme_help" action="action_help_bill_mail" sequence="110"/>
     <menuitem id="menu_vme_help_ai" name="Voorstellen van de AI-assistent" parent="menu_vme_help" action="action_help_ai" sequence="120"/>
     <menuitem id="menu_vme_help_collection" name="Invordering van achterstallen" parent="menu_vme_help" action="action_help_collection" sequence="75"/>
+    <menuitem id="menu_vme_help_council" name="Raad van mede-eigendom en commissaris" parent="menu_vme_help" action="action_help_council" sequence="105"/>
     <menuitem id="menu_vme_help_migration" name="Overstap uit een ander pakket" parent="menu_vme_help" action="action_help_migration" sequence="130"/>
     <menuitem id="menu_vme_help_documents" name="Documenten" parent="menu_vme_help" action="action_help_documents" sequence="140"/>
     <menuitem id="menu_vme_help_portal" name="Het eigenaarsportaal" parent="menu_vme_help" action="action_help_portal" sequence="150"/>

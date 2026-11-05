@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Mandates: council members and auditor -->
+    <record id="vme_mandate_view_list" model="ir.ui.view">
+        <field name="name">vme.mandate.list</field>
+        <field name="model">vme.mandate</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="not is_current">
+                <field name="association_id" column_invisible="context.get('default_association_id')"/>
+                <field name="role"/>
+                <field name="partner_id"/>
+                <field name="is_owner" optional="show"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="assembly_item_id" optional="hide"/>
+                <field name="user_id" optional="show"/>
+                <field name="is_current" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_mandate_view_form" model="ir.ui.view">
+        <field name="name">vme.mandate.form</field>
+        <field name="model">vme.mandate</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_grant_access" type="object" string="Leestoegang geven" class="btn-primary"
+                            invisible="role != 'auditor' or user_id or not id or not is_current"
+                            groups="base.group_erp_manager"/>
+                    <button name="action_revoke_access" type="object" string="Leestoegang intrekken"
+                            invisible="not user_id" groups="base.group_erp_manager"
+                            confirm="De commissaris verliest de toegang tot deze VME. Doorgaan?"/>
+                    <button name="action_print_report" type="object" string="Sjabloon verslag aan de AV"
+                            invisible="role != 'auditor' or not id"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Afgelopen" bg_color="text-bg-secondary" invisible="is_current or not id"/>
+                    <group>
+                        <group>
+                            <field name="association_id" readonly="id"/>
+                            <field name="role"/>
+                            <field name="partner_id"/>
+                            <field name="email" invisible="role != 'auditor'"/>
+                            <field name="is_owner"/>
+                        </group>
+                        <group>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="assembly_item_id" options="{'no_create': True}"/>
+                            <field name="audit_year" invisible="role != 'auditor'" options="{'format': false}"/>
+                            <field name="user_id" invisible="role != 'auditor'"/>
+                            <field name="is_current" invisible="1"/>
+                        </group>
+                    </group>
+                    <div class="text-muted" invisible="role != 'auditor'">
+                        De commissaris krijgt met "Leestoegang geven" een eigen gebruiker die alleen de boekhouding, de facturen
+                        en de bankafschriften van deze VME kan inkijken. Er wordt geen uitnodiging verstuurd: verstuur ze zelf
+                        vanuit de gebruiker. Na het einde van het mandaat vervalt de toegang vanzelf.
+                    </div>
+                    <field name="note" placeholder="Notities"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="vme_mandate_view_search" model="ir.ui.view">
+        <field name="name">vme.mandate.search</field>
+        <field name="model">vme.mandate</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="partner_id"/>
+                <field name="association_id"/>
+                <filter name="current" string="Lopend" domain="[('is_current', '=', True)]"/>
+                <separator/>
+                <filter name="council" string="Raad van mede-eigendom" domain="[('role', 'in', ('chair', 'member'))]"/>
+                <filter name="auditor" string="Commissaris" domain="[('role', '=', 'auditor')]"/>
+                <group>
+                    <filter name="group_vme" string="VME" context="{'group_by': 'association_id'}"/>
+                    <filter name="group_role" string="Rol" context="{'group_by': 'role'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="vme_mandate_action" model="ir.actions.act_window">
+        <field name="name">Raad en commissaris</field>
+        <field name="res_model">vme.mandate</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_current': 1, 'search_default_group_vme': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nog geen leden van de raad of commissaris</p>
+            <p>De AV stelt elk jaar een commissaris van de rekeningen aan, en vanaf twintig kavels ook een raad van mede-eigendom.</p>
+        </field>
+    </record>
+
+    <!-- Auditor: only his own mandates, to print the report template. -->
+    <record id="vme_mandate_action_mine" model="ir.actions.act_window">
+        <field name="name">Mijn mandaten</field>
+        <field name="res_model">vme.mandate</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('user_id', '=', uid)]</field>
+    </record>
+
+    <!-- The council and auditor on the VME -->
+    <record id="vme_association_view_form_council" model="ir.ui.view">
+        <field name="name">vme.association.form.council</field>
+        <field name="model">vme.association</field>
+        <field name="inherit_id" ref="vme_association_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_council_dossiers" type="object" class="oe_stat_button" icon="fa-folder-open">
+                    <field name="open_dossier_count" widget="statinfo" string="Lopende dossiers"/>
+                </button>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Raad en commissaris" name="council">
+                    <div class="alert alert-warning" role="alert" invisible="not council_warning">
+                        <field name="council_warning"/>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="council_lot_count"/>
+                            <field name="council_required"/>
+                        </group>
+                        <group>
+                            <button name="action_print_council_dossiers" type="object" string="Overzicht voor de raad afdrukken"
+                                    icon="fa-print" colspan="2" invisible="not id"/>
+                        </group>
+                    </group>
+                    <field name="mandate_ids" context="{'default_association_id': id}" readonly="not id"/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Running files for the council -->
+    <record id="vme_council_dossier_view_list" model="ir.ui.view">
+        <field name="name">vme.council.dossier.list</field>
+        <field name="model">vme.council.dossier</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0" delete="0" decoration-danger="is_overdue">
+                <field name="association_id"/>
+                <field name="dossier_type"/>
+                <field name="name"/>
+                <field name="partner_id" optional="show"/>
+                <field name="status"/>
+                <field name="date_deadline"/>
+                <field name="user_id" optional="show" widget="many2one_avatar_user"/>
+                <field name="is_overdue" column_invisible="True"/>
+                <button name="action_open_record" type="object" string="Openen" icon="fa-external-link"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_council_dossier_view_search" model="ir.ui.view">
+        <field name="name">vme.council.dossier.search</field>
+        <field name="model">vme.council.dossier</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="association_id"/>
+                <field name="partner_id"/>
+                <filter name="overdue" string="Over termijn" domain="[('is_overdue', '=', True)]"/>
+                <separator/>
+                <filter name="type_sale" string="Verkoop" domain="[('dossier_type', '=', 'sale')]"/>
+                <filter name="type_collection" string="Invordering" domain="[('dossier_type', '=', 'collection')]"/>
+                <filter name="type_inspection" string="Keuringen" domain="[('dossier_type', '=', 'inspection')]"/>
+                <filter name="type_assembly" string="Opvolging AV" domain="[('dossier_type', '=', 'assembly')]"/>
+                <filter name="type_works" string="Werken en schade" domain="[('dossier_type', 'in', ('works', 'damage'))]"/>
+                <group>
+                    <filter name="group_vme" string="VME" context="{'group_by': 'association_id'}"/>
+                    <filter name="group_type" string="Soort" context="{'group_by': 'dossier_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="vme_council_dossier_action" model="ir.actions.act_window">
+        <field name="name">Lopende dossiers</field>
+        <field name="res_model">vme.council.dossier</field>
+        <field name="view_mode">list</field>
+        <field name="context">{'search_default_group_vme': 1, 'search_default_group_type': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Geen lopende dossiers</p>
+            <p>Verkopen, invorderingen, opmerkingen uit keuringen en opvolgtaken van de AV verschijnen hier zolang ze lopen.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_vme_council_root" name="Raad en commissaris" parent="menu_vme_root" sequence="52"/>
+    <menuitem id="menu_vme_council_dossier" name="Lopende dossiers" parent="menu_vme_council_root"
+              action="vme_council_dossier_action" sequence="10"/>
+    <menuitem id="menu_vme_mandate" name="Leden en mandaten" parent="menu_vme_council_root"
+              action="vme_mandate_action" sequence="20"/>
+
+    <!-- What the auditor inspects, together in one menu. -->
+    <menuitem id="menu_vme_auditor_root" name="Commissaris" parent="menu_vme_root" sequence="5"
+              groups="group_vme_auditor"/>
+    <menuitem id="menu_vme_auditor_mandates" name="Mijn mandaten en verslag" parent="menu_vme_auditor_root"
+              action="vme_mandate_action_mine" sequence="10"/>
+    <menuitem id="menu_vme_auditor_bills" name="Leveranciersfacturen" parent="menu_vme_auditor_root"
+              action="account.action_move_in_invoice_type" sequence="20"/>
+    <menuitem id="menu_vme_auditor_invoices" name="Provisies en afrekeningen" parent="menu_vme_auditor_root"
+              action="account.action_move_out_invoice_type" sequence="30"/>
+    <menuitem id="menu_vme_auditor_bank" name="Bankbewegingen" parent="menu_vme_auditor_root"
+              action="vme_bank_line_action" sequence="40"/>
+    <menuitem id="menu_vme_auditor_entries" name="Boekingen" parent="menu_vme_auditor_root"
+              action="account.action_move_journal_line" sequence="50"/>
+</odoo>
