@@ -139,6 +139,17 @@ Draai dit ongeveer 15 minuten voor de demo, in de map van het project. Docker (O
 
 > Boodschap: "Uw inbox gesorteerd per gebouw en kavel, met een antwoord klaar om na te kijken."
 
+### Extra: een badge aanvragen, eigenaar of huurder (1,5 minuut)
+
+Na stap 8 staan er ook drie aanvragen in **VME > Aanvragen**.
+
+1. **Eigenaar Linde A4** vraagt een extra badge: meteen geverifieerd. Toon het tabblad **Berichten** (de bestelling aan Slotenmaker Voorbeeld BV, met het sleutelcertificaat) en de bestelbon in bijlage. Klik op **Bestelling versturen**, vul een nummer in (bv. BA-L-101) en klik op **Levering registreren**: de badge staat in het register van A4 en de eigenaar krijgt een factuur van 25 euro.
+2. **Huurder Linde A6** vraagt een sleutel zonder bewijs: de aanvraag wacht op de toestemming van de eigenaar en het huurcontract. **Bewijs goedkeuren** weigert; **Bewijs opvragen** stuurt de vraag en plant een herinnering na 7 dagen.
+3. **Huurder Beuken B12** stuurde de toestemming en het huurcontract mee: ze staan in het tabblad **Bewijs**. Vink beide aan en klik op **Bewijs goedkeuren**: de bestelling staat klaar.
+4. Optioneel: het verkoopdossier van Linde A3 toont in het antwoord aan de notaris de uitgereikte sleutels en badges.
+
+> Boodschap: "De vaste procedures lopen vanzelf, maar niets vertrekt zonder uw klik."
+
 ### Extra: een verkoop, de notaris vraagt inlichtingen (1 minuut)
 
 1. **VME > Verkoopdossiers**: het dossier *Verkoop A3, G3 Residentie Linde* staat oranje. Notariskantoor Voorbeeld vroeg op 28 oktober inlichtingen; het antwoord moet er binnen 15 dagen zijn, dus uiterlijk op 12 november.
@@ -178,7 +189,7 @@ Draai dit ongeveer 15 minuten voor de demo, in de map van het project. Docker (O
 
 ## Na de demo
 
-- De demo is daarna niet meer "vers": de factuur, de provisieoproep 2027, de AV-planning, de AI-taken en eventueel het antwoord aan de notaris staan erin. Bouw de database opnieuw op met de commando's hierboven voor een volgende demo.
+- De demo is daarna niet meer "vers": de factuur, de provisieoproep 2027, de AV-planning, de AI-taken en aanvragen en eventueel het antwoord aan de notaris staan erin. Bouw de database opnieuw op met de commando's hierboven voor een volgende demo.
 - Stap 2 kan maar één keer per database: Odoo herkent de mail aan haar Message-ID en verwerkt ze geen tweede keer.
 - Lever **niet** de mails in `ai/facturen_inbox/` aan op een demo met historiek: die elektriciteitsfacturen zitten al in de historiek en zouden dubbel geboekt worden. Ze zijn bedoeld voor een demo zonder historiek.
 

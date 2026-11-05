@@ -29,6 +29,8 @@ class VmeAssociation(models.Model):
             ("state", "=", "posted"),
             ("invoice_date", ">=", start),
             ("invoice_date", "<=", end),
+            # Private costs of a request (e.g. a key for one owner) are charged to that owner, not distributed.
+            ("vme_request_id", "=", False),
         ])
         # LEGAL-CHECK: art. 3.86 §3 BW - works paid from the reserve capital are not settled in
         # the working capital; each owner sees his share in them apart.

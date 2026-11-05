@@ -56,7 +56,7 @@ Message-ID: <av-b23-20261105@example.com>
 Beste, ...
 ```
 
-De vijf mails zijn verzonnen en gebruiken de namen en adressen van de demodata (`@example.com`): een lek (Residentie Linde A4), een vraag over de afrekening (Hof ter Beuken B7), een verkoop en verhuis (Kaaihuis K4), een klacht over de lift (Residentie Linde A11, vanaf een onbekend privéadres) en een vraag over de volgende AV (Hof ter Beuken B23).
+De acht mails zijn verzonnen en gebruiken de namen en adressen van de demodata (`@example.com`): een lek (Residentie Linde A4), een vraag over de afrekening (Hof ter Beuken B7), een verkoop en verhuis (Kaaihuis K4), een klacht over de lift (Residentie Linde A11, vanaf een onbekend privéadres), een vraag over de volgende AV (Hof ter Beuken B23), en drie aanvragen voor een badge of sleutel: van de eigenaar van Linde A4, van de huurder van Linde A6 zonder bewijs, en van de huurder van Beuken B12 met de toestemming van de eigenaar en het huurcontract als PDF-bijlage. Die drie worden geen taak maar een aanvraag in **VME > Aanvragen** (zie `docs/kb/aanvragen-sleutels-badges.md`).
 
 ## Tests
 

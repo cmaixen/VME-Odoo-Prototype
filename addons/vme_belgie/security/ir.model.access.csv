@@ -43,3 +43,9 @@ access_vme_meter_reading_user,vme.meter.reading user,model_vme_meter_reading,bas
 access_vme_meter_import_wizard_user,vme.meter.import.wizard user,model_vme_meter_import_wizard,base.group_user,1,1,1,1
 access_vme_contract_user,vme.contract user,model_vme_contract,base.group_user,1,1,1,1
 access_vme_contract_evaluation_user,vme.contract.evaluation user,model_vme_contract_evaluation,base.group_user,1,1,1,1
+access_vme_lot_contact_user,vme.lot.contact user,model_vme_lot_contact,base.group_user,1,1,1,1
+access_vme_lot_key_user,vme.lot.key user,model_vme_lot_key,base.group_user,1,1,1,1
+access_vme_request_type_user,vme.request.type user,model_vme_request_type,base.group_user,1,0,0,0
+access_vme_request_type_system,vme.request.type system,model_vme_request_type,base.group_system,1,1,1,1
+access_vme_request_user,vme.request user,model_vme_request,base.group_user,1,1,1,0
+access_vme_request_check_user,vme.request.check user,model_vme_request_check,base.group_user,1,1,1,1

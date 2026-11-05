@@ -1,8 +1,9 @@
 """AI assistant for owner mails.
 
 Reads the mails in ai/inbox/, links each one to a VME and lot in Odoo, picks the topic,
-drafts a reply in Dutch, and puts it as a to-do activity on the VME. Nothing is ever sent:
-a staff member reviews the draft and sends it from Odoo or their mail program.
+drafts a reply in Dutch, and puts it as a to-do activity on the VME. A mail that is a request with
+a fixed procedure (an extra badge, a move, ...) becomes a request (vme.request) in Odoo instead.
+Nothing is ever sent: a staff member reviews the draft and sends it from Odoo or their mail program.
 
     python assistant.py              # Claude via the Anthropic API, writes to Odoo
     python assistant.py --mock       # rule-based stand-in, no API key needed
@@ -16,7 +17,7 @@ from datetime import date, timedelta
 from email.utils import parsedate_to_datetime
 from pathlib import Path
 
-from classifier import TOPICS, URGENCIES, ClaudeClassifier, MockClassifier, RefusalError
+from classifier import NO_REQUEST, REQUEST_TYPES, TOPICS, URGENCIES, ClaudeClassifier, MockClassifier, RefusalError
 from mails import read_inbox
 from odoo_api import OdooClient, OdooError, VmeDirectory
 
@@ -103,7 +104,7 @@ def run(mails, directory, classifier, vmes, dry_run=False, force=False, user_id=
     today = today or date.today()
     processed = []
     for mail in mails:
-        if not force and not dry_run and directory.find_activity(mail.reference):
+        if not force and not dry_run and (directory.find_activity(mail.reference) or directory.find_request(mail.reference)):
             out(f"- {mail.path.name}: al verwerkt, overgeslagen")
             continue
         try:
@@ -115,6 +116,7 @@ def run(mails, directory, classifier, vmes, dry_run=False, force=False, user_id=
         out(
             f"- {mail.path.name}: {vme_name or 'geen VME'} / {lot_label(vmes, result)} / "
             f"{TOPICS[result.topic]} / {URGENCIES[result.urgency]} / zekerheid {result.confidence}"
+            + (f" / aanvraag: {REQUEST_TYPES[result.request_type]}" if result.request_type != NO_REQUEST else "")
         )
         activity_id = None
         if result.association_id is None:
@@ -122,6 +124,16 @@ def run(mails, directory, classifier, vmes, dry_run=False, force=False, user_id=
             out("  Geen VME gevonden: niet in Odoo gezet, behandel deze mail manueel.")
         elif dry_run:
             out("  " + result.reply_body.replace("\n", "\n  "))
+        elif result.request_type != NO_REQUEST:
+            # A request has a fixed procedure in Odoo: proof, order, checklist. Odoo prepares the
+            # messages as drafts; the proposed reply goes along as a note.
+            request_id = directory.create_request(
+                result.association_id, result.request_type, mail, lot_id=result.lot_id,
+                summary=result.summary, proposed_reply=result.reply_body,
+            )
+            out(f"  Aanvraag {request_id} aangemaakt op {vme_name}.")
+            processed.append((mail, result, None))
+            continue
         else:
             claim_id = None
             if result.topic in DAMAGE_TOPICS:

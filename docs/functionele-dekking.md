@@ -34,9 +34,9 @@ Legende: ✅ gebouwd · 🔨 wordt nu gebouwd · 📋 gepland · ➖ bewust late
 | Technisch beheer | Keuringen en liften | ✅ | stap 6b |
 | | Contracten | 🔨 | stap 18 |
 | | Technische documenten | 🔨 | stap 15 |
-| | Sleutels, badges en codes | 📋 | stap 19 |
+| | Sleutels, badges en codes: register per kavel, bestelling bij de slotenmaker, blokkeren | ✅ | stap 19 |
 | Taakbeheer | Taken en activiteiten met termijnen (Odoo) | ✅ | |
-| | Meldingen en workflows per aanvraagtype | 📋 | stap 19 |
+| | Meldingen en workflows per aanvraagtype: acht types met checklist, verificatie van de aanvrager | ✅ | stap 19 |
 | | Schadegevallen | 🔨 | stap 14 |
 | Algemene vergadering | Planning in blokken | ✅ | stap 6c |
 | | Agenda, oproeping, stemming, notulen en opvolging | ✅ | stap 11 |
@@ -45,7 +45,8 @@ Legende: ✅ gebouwd · 🔨 wordt nu gebouwd · 📋 gepland · ➖ bewust late
 | | Gebouwkaart met de financiële toestand en een overzicht van de portefeuille | 📋 | stap 22 |
 | Beheer mede-eigenaars en huurders | Eigenaars met historiek | ✅ | stap 2 |
 | | Profiel in het portaal | 🔨 | stap 15 |
-| | Huurders als volwaardige contacten per kavel | 📋 | stap 19 en 25 |
+| | Huurders als contacten per kavel (rol en periode) | ✅ | stap 19 |
+| | Huurcontracten aan de huurder gekoppeld | 📋 | stap 25 |
 | Leveranciersbeheer | Leveranciers, verdeelregels, facturen | ✅ | stap 4b |
 | | Leverancierskaart met contracten, keuringen, lopende werken en facturen | 📋 | stap 22 |
 | Documentbeheer | Mappen per VME en kavel, delen of niet delen | 🔨 | stap 15 |
@@ -56,11 +57,13 @@ Legende: ✅ gebouwd · 🔨 wordt nu gebouwd · 📋 gepland · ➖ bewust late
 | | Bevragingen | 📋 | stap 23 |
 | | Updates en documenten delen | 📋 | stap 23 |
 | Communicatie in twee richtingen | Mails van eigenaars gekoppeld met een voorgesteld antwoord (AI) | ✅ | stap 7 |
-| | Meldingen via het portaal | 📋 | stap 15 en 19 |
+| | Aanvragen per mail als vaste procedure (AI) | ✅ | stap 19 |
+| | Meldingen via het portaal (koppelplaats `create_from_intake` klaar) | 📋 | stap 15 |
 
 ## Waar het prototype verder gaat
 
 - AI-assistent die mails van eigenaars aan VME en kavel koppelt en een antwoord voorstelt (stap 7).
 - AV-planner die het hele AV-seizoen in blokken plant met de wettelijke periodes en oproepingstermijnen (stap 6c).
 - Kosten per dag verdeeld bij een verkoop, met de kostperiode uit de Peppol-factuur (stap 4b).
+- Een mail "ik wil een extra badge" wordt een aanvraag die de aanvrager herkent, het juiste bewijs opvraagt, de bestelling bij de slotenmaker klaarzet en de kost privé aanrekent; het sleutelregister volgt de eigendom tot in de akte (stap 19).
 - Alles op Odoo Community, zonder licentiekosten per gebruiker.

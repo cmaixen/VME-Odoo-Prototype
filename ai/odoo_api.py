@@ -1,4 +1,5 @@
 """Small client for the Odoo JSON-RPC API, plus the reads and writes the assistant needs."""
+import base64
 import itertools
 import json
 import urllib.request
@@ -59,15 +60,30 @@ class VmeDirectory:
     def _search_read(self, model, domain, fields):
         return self.odoo.execute(model, "search_read", domain, fields=fields, context=self.context)
 
-    def load(self):
-        """Return a list of VME's, each with its lots and their current owner."""
+    def load(self, today=None):
+        """Return a list of VME's, each with its lots, their current owner and tenants."""
+        today = (today or date.today()).isoformat()
         associations = self._search_read("vme.association", [], ["name", "street", "zip", "city"])
         lots = self._search_read("vme.lot", [], ["name", "association_id", "lot_type", "floor", "current_owner_id"])
-        owner_ids = sorted({lot["current_owner_id"][0] for lot in lots if lot["current_owner_id"]})
+        tenancies = self._search_read(
+            "vme.lot.contact",
+            [("role", "=", "tenant"), ("date_start", "<=", today), "|", ("date_end", "=", False), ("date_end", ">=", today)],
+            ["lot_id", "partner_id"],
+        )
+        partner_ids = sorted(
+            {lot["current_owner_id"][0] for lot in lots if lot["current_owner_id"]}
+            | {tenancy["partner_id"][0] for tenancy in tenancies}
+        )
         partners = {
             partner["id"]: partner
-            for partner in self._search_read("res.partner", [("id", "in", owner_ids)], ["name", "email"])
+            for partner in self._search_read("res.partner", [("id", "in", partner_ids)], ["name", "email"])
         }
+        tenants_by_lot = {}
+        for tenancy in tenancies:
+            tenant = partners.get(tenancy["partner_id"][0])
+            if tenant:
+                tenants_by_lot.setdefault(tenancy["lot_id"][0], []).append(
+                    {"id": tenant["id"], "name": tenant["name"], "email": tenant["email"] or ""})
 
         vmes = {
             vme["id"]: {
@@ -89,6 +105,7 @@ class VmeDirectory:
                 "type": lot["lot_type"],
                 "floor": lot["floor"] or "",
                 "owner": {"id": owner["id"], "name": owner["name"], "email": owner["email"] or ""} if owner else None,
+                "tenants": tenants_by_lot.get(lot["id"], []),
             })
         return list(vmes.values())
 
@@ -129,4 +146,36 @@ class VmeDirectory:
             "vme.damage.claim", "create_from_mail", association_id, subject, body,
             reference=reference, lot_id=lot_id, owner_id=owner_id,
             mail_date=mail_date.isoformat() if mail_date else None, context=self.context,
+        )
+
+    def find_request(self, reference):
+        """Id of a request already made from this mail, or None."""
+        ids = self.odoo.execute(
+            "vme.request", "search", [("source_reference", "=", reference)], limit=1, context=self.context,
+        )
+        return ids[0] if ids else None
+
+    def create_request(self, association_id, request_type, mail, lot_id=None, summary="", proposed_reply=""):
+        """Create a request with its fixed procedure in Odoo; Odoo recognises the requester by e-mail.
+
+        Nothing is sent: Odoo prepares the proof request or the order as drafts on the request.
+        """
+        return self.odoo.execute(
+            "vme.request", "create_from_intake",
+            association_id=association_id,
+            request_type=request_type,
+            email=mail.sender_email,
+            name=mail.sender_name,
+            lot_id=lot_id or False,
+            subject=mail.subject,
+            body=mail.body,
+            channel="mail",
+            reference=mail.reference,
+            summary=summary,
+            proposed_reply=proposed_reply,
+            attachments=[
+                {"name": name, "datas": base64.b64encode(content).decode(), "mimetype": mimetype}
+                for name, content, mimetype in mail.attachments
+            ],
+            context=self.context,
         )

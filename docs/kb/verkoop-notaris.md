@@ -28,6 +28,7 @@ Op het tabblad **Antwoord aan de notaris** ziet u het antwoord zoals het vandaag
 5. **Beslist maar nog niet uitgevoerde werken**: elke aangenomen AV-beslissing met een geraamde kostprijs die nog niet uitgevoerd is, met het aandeel van de verkochte kavels.
 6. **Lopende gerechtelijke procedures**, overgenomen van de VME.
 7. De **algemene vergaderingen van de laatste drie jaar** met hun beslissingen.
+8. De **uitgereikte sleutels en badges** van de verkochte kavels die nog in gebruik zijn: soort, nummer, datum en wie ze heeft. Dezelfde lijst staat in het tabblad **Sleutels en badges** van het dossier.
 
 Klopt iets niet, pas het dan aan waar het vandaan komt (een betaling, een beslissing, de procedures). Het antwoord volgt vanzelf.
 
@@ -49,6 +50,7 @@ Komt de tweede vraag binnen, vul dan **Tweede vraag ontvangen op** in. Odoo zet 
 1. Vul de **datum van de akte** en de **koper** in.
 2. Klik op **Akte verleden** en bevestig.
 3. Odoo sluit de eigendom van de verkoper af op de dag vóór de akte en zet de koper als eigenaar vanaf de dag van de akte, voor elke verkochte kavel. In de chatter van het dossier en van de VME komt een bericht.
+4. De sleutels en badges die de verkoper had, staan in het sleutelregister vanaf dan op naam van de koper; het bericht in de chatter somt ze op, zodat u ze bij de akte kunt laten overhandigen. Sleutels van een huurder blijven op naam van de huurder.
 
 Vanaf dan gaan nieuwe provisieoproepen naar de koper, en worden kosten per dag verdeeld tussen verkoper en koper (zie [Kavels en eigenaars, ook bij een verkoop](kavels-en-eigendom.md)).
 

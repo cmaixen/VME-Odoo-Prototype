@@ -4,6 +4,8 @@ De AI-assistent leest de mails van eigenaars, zoekt uit over welk gebouw (VME) e
 
 **De assistent verstuurt nooit zelf iets.** Elk antwoord vertrekt pas nadat u het nagekeken en zelf verstuurd hebt.
 
+**Aanvragen met een vaste procedure** (een extra badge of sleutel, een verlies, een verhuis, een nieuwe huurder, toestemming voor werken, een defect, een document, overlast) worden geen taak maar een **aanvraag** in **VME > Aanvragen**, met de mail en haar bijlagen erbij. Het voorstel van antwoord staat daar als notitie. Hoe u een aanvraag behandelt, leest u in [Aanvragen van bewoners](aanvragen-sleutels-badges.md).
+
 ## Waar vind ik de voorstellen?
 
 - Bovenaan rechts in Odoo staat het klokje van de **activiteiten**. Het getal toont hoeveel taken voor u klaarstaan.
@@ -24,7 +26,7 @@ Moet er nog iets gebeuren, zoals een loodgieter bellen, plan dan met **Activitei
 
 ## Voorbeeld uit de demodata
 
-In de demo staan vijf verzonnen mails klaar. Na het verwerken staan deze taken in Odoo:
+In de demo staan acht verzonnen mails klaar. Vijf worden een taak, drie een aanvraag voor een badge of sleutel (van de eigenaar van Linde A4, de huurder van Linde A6 en de huurder van Beuken B12). Na het verwerken staan deze taken in Odoo:
 
 | VME | Kavel | Onderwerp | Dringend |
 | --- | --- | --- | --- |

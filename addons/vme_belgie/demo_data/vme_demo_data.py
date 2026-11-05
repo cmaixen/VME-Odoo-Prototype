@@ -465,6 +465,7 @@ class VmeAssociation(models.Model):
         self._load_demo_portal()
         self._load_demo_council()
         self._load_demo_contracts(suppliers)
+        self._load_demo_requests()
 
         def set_rule_accounts():
             # Runs at commit, after the chart of accounts of the new companies is loaded.

@@ -18,3 +18,4 @@ from . import test_portal
 from . import test_council
 from . import test_consumption
 from . import test_contracts
+from . import test_requests

@@ -23,3 +23,5 @@ from . import vme_document
 from . import vme_portal
 from . import vme_council
 from . import vme_contract
+from . import vme_lot_contact
+from . import vme_request

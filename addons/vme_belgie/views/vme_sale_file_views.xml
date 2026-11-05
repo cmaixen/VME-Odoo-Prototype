@@ -84,6 +84,20 @@
                             </div>
                             <field name="information_html" readonly="1"/>
                         </page>
+                        <page string="Sleutels en badges" name="key_register">
+                            <div class="text-muted mb-2">
+                                Uitgereikte sleutels en badges van de verkochte kavels. Bij "Akte verleden" gaan die van de verkoper naar de koper.
+                            </div>
+                            <field name="key_register_ids" readonly="1">
+                                <list>
+                                    <field name="lot_id"/>
+                                    <field name="kind"/>
+                                    <field name="number"/>
+                                    <field name="issue_date"/>
+                                    <field name="partner_id"/>
+                                </list>
+                            </field>
+                        </page>
                         <page string="Gerechtelijke procedures" name="proceedings">
                             <field name="legal_proceedings" placeholder="Overgenomen van de VME; pas aan voor dit dossier indien nodig."/>
                         </page>

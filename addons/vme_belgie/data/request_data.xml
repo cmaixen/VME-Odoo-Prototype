@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="seq_vme_request" model="ir.sequence">
+            <field name="name">Aanvragen van bewoners</field>
+            <field name="code">vme.request</field>
+            <field name="prefix">AANV/%(year)s/</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- One type per procedure; the checklist can be changed per syndic office. -->
+        <record id="request_type_key" model="vme.request.type">
+            <field name="name">Extra sleutel of badge</field>
+            <field name="code">key</field>
+            <field name="sequence">10</field>
+            <field name="needs_verification" eval="True"/>
+            <field name="description">Veiligheidssleutel van de inkom, sleutel of afstandsbediening van de garagepoort, badge. Alleen de syndicus bestelt bij de slotenmaker van de VME, met het sleutelcertificaat. De kost gaat privé naar de eigenaar van de kavel.</field>
+            <field name="checklist">Aanvrager geverifieerd
+Bestelling verstuurd naar de slotenmaker
+Sleutel of badge afgehaald door de aanvrager (handtekening voor ontvangst)</field>
+        </record>
+        <record id="request_type_badge_lost" model="vme.request.type">
+            <field name="name">Verlies of diefstal van een badge</field>
+            <field name="code">badge_lost</field>
+            <field name="sequence">20</field>
+            <field name="description">Blokkeer de badge meteen, in het register en in het toegangssysteem. Een vervangbadge is een nieuwe aanvraag "Extra sleutel of badge".</field>
+            <field name="checklist">Badge geblokkeerd in het register
+Badge geblokkeerd in het toegangssysteem (leverancier verwittigd)
+Bij diefstal: kopie van het proces-verbaal van de politie ontvangen
+Vervangbadge nodig? Nieuwe aanvraag "Extra sleutel of badge" gemaakt</field>
+        </record>
+        <record id="request_type_move" model="vme.request.type">
+            <field name="name">Verhuis</field>
+            <field name="code">move</field>
+            <field name="sequence">30</field>
+            <field name="checklist">Datum van de verhuis afgesproken
+Lift gereserveerd
+Liftbescherming geplaatst
+Borg ontvangen
+Naambordje en brievenbus aangepast
+Gemene delen nagekeken en borg teruggestort</field>
+        </record>
+        <record id="request_type_new_tenant" model="vme.request.type">
+            <field name="name">Nieuwe huurder melden</field>
+            <field name="code">new_tenant</field>
+            <field name="sequence">40</field>
+            <field name="description">Registreer de huurder bij de kavel en bezorg hem of haar het reglement van orde (art. 3.93 BW).</field>
+            <field name="checklist">Contactgegevens van de huurder geregistreerd
+Reglement van orde aan de huurder bezorgd
+Naambordje en brievenbus aangepast</field>
+        </record>
+        <record id="request_type_works_permission" model="vme.request.type">
+            <field name="name">Toestemming voor werken aan een privatief</field>
+            <field name="code">works_permission</field>
+            <field name="sequence">50</field>
+            <field name="description">Buitenunit van een airco, ramen, zonnepanelen, laadpaal: werken die de gemene delen raken. Vraag het advies van de raad van mede-eigendom of zet een punt op de volgende algemene vergadering.</field>
+            <field name="checklist">Technische fiche en plaats van de werken ontvangen
+Advies van de raad gevraagd of punt op de volgende AV gezet
+Beslissing schriftelijk aan de aanvrager bezorgd
+Voorwaarden opgevolgd (herstel gemene delen, verzekering, onderhoud)</field>
+        </record>
+        <record id="request_type_damage" model="vme.request.type">
+            <field name="name">Defect of schade</field>
+            <field name="code">damage</field>
+            <field name="sequence">60</field>
+            <field name="description">Wordt doorgestuurd naar een schadedossier.</field>
+            <field name="checklist">Doorgestuurd naar het schadedossier
+Aanvrager op de hoogte gebracht</field>
+        </record>
+        <record id="request_type_document" model="vme.request.type">
+            <field name="name">Document opvragen</field>
+            <field name="code">document</field>
+            <field name="sequence">70</field>
+            <field name="checklist">Gevraagd document opgezocht (notulen, reglement, afrekening)
+Nagegaan of de aanvrager het mag krijgen (eigenaar of gemachtigde)
+Document bezorgd</field>
+        </record>
+        <record id="request_type_nuisance" model="vme.request.type">
+            <field name="name">Klacht over overlast</field>
+            <field name="code">nuisance</field>
+            <field name="sequence">80</field>
+            <field name="checklist">Feiten en data genoteerd
+Betrokken bewoner aangeschreven met verwijzing naar het reglement van orde
+Opgevolgd of de overlast ophoudt
+Zo nodig geagendeerd op de raad van mede-eigendom of de AV</field>
+        </record>
+    </data>
+</odoo>

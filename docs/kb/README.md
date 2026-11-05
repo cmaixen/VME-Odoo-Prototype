@@ -76,6 +76,10 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 ### Post en mails
 
 
+### Bewoners
+
+24. [Aanvragen van bewoners: sleutels, badges en andere vaste procedures](aanvragen-sleutels-badges.md)
+
 ### Overstappen
 
 
@@ -95,5 +99,10 @@ De demo bevat drie verzonnen gebouwen:
 | Hof ter Beuken | 24 appartementen (B1–B24) | Algemene sleutel, verwarming op verbruik (30% vast) | Eén eigenaar heeft B23 en B24; kostenverdelers op elke radiator; het reservefonds zit onder de 5% |
 | Hof ter Beuken | 24 appartementen (B1–B24) | Algemene sleutel, verwarmingssleutel | Eén eigenaar heeft B23 en B24; het reservefonds zit onder de 5%; een conciërge via een sociaal secretariaat |
 | Kaaihuis | 6 appartementen (K1–K6) | Algemene sleutel | Klein gebouw zonder lift |
+| Residentie Linde | 12 appartementen (A1–A12) en 8 garages (G1–G8) | Algemene sleutel, liftsleutel | A5 en G5 zijn op 1 juli 2026 verkocht; A3 en G3 zijn in verkoop (vraag van de notaris); A6 is verhuurd |
+| Hof ter Beuken | 24 appartementen (B1–B24) | Algemene sleutel, verwarmingssleutel | Eén eigenaar heeft B23 en B24; het reservefonds zit onder de 5%; B12 is verhuurd |
+| Kaaihuis | 6 appartementen (K1–K6) | Algemene sleutel | Klein gebouw zonder lift; K2 is verhuurd |
+
+Elk gebouw heeft een sleutelregister en dezelfde verzonnen slotenmaker (Slotenmaker Voorbeeld BV).
 
 Een beheerder laadt de demo via **VME > Configuratie > Demodata laden** en daarna **Demohistoriek 2026 laden** (provisieoproepen, betalingen, leveranciersfacturen en invorderingen van een volledig jaar). De schermafbeeldingen in deze kennisbank komen uit die demo.

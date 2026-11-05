@@ -2,7 +2,7 @@
 import email
 import email.policy
 import email.utils
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 # Header names accepted in a .txt mail, Dutch or English, mapped to the field they fill.
@@ -26,6 +26,8 @@ class Mail:
     date: str
     message_id: str
     body: str
+    # (file name, content, mime type) of each attachment, e.g. the proof for a request.
+    attachments: list = field(default_factory=list)
 
     @property
     def reference(self):
@@ -60,6 +62,10 @@ def _read_eml(path):
         date=str(message.get("Date", "")),
         message_id=str(message.get("Message-ID", "")).strip(),
         body=body.strip(),
+        attachments=[
+            (att.get_filename() or "bijlage", att.get_content(), att.get_content_type())
+            for att in message.iter_attachments()
+        ],
     )
 
 

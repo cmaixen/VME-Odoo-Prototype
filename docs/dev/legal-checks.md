@@ -3,7 +3,7 @@
 Automatisch gemaakt door `python3 tools/legal_checks.py`; niet met de hand bewerken.
 Elke rij is een wettelijke regel in de code die nog juridisch gevalideerd moet worden.
 
-Aantal punten: 68.
+Aantal punten: 70.
 
 ## Per bron
 
@@ -16,7 +16,7 @@ Aantal punten: 68.
 - **art. 1792 en 2270 oud BW**: [vme_works.py:18](../../addons/vme_belgie/models/vme_works.py#L18)
 - **art. 18 §2/3 Elektriciteitswet 29 april 1999**: [vme_contract.py:27](../../addons/vme_belgie/models/vme_contract.py#L27)
 - **art. 3.85 §1 BW**: [vme_key.py:34](../../addons/vme_belgie/models/vme_key.py#L34), [vme_key.py:92](../../addons/vme_belgie/models/vme_key.py#L92), [vme_migration.py:739](../../addons/vme_belgie/models/vme_migration.py#L739)
-- **art. 3.86 §3 BW**: [vme_annual_statement.py:33](../../addons/vme_belgie/models/vme_annual_statement.py#L33), [vme_budget.py:5](../../addons/vme_belgie/models/vme_budget.py#L5), [vme_migration.py:445](../../addons/vme_belgie/models/vme_migration.py#L445)
+- **art. 3.86 §3 BW**: [vme_annual_statement.py:35](../../addons/vme_belgie/models/vme_annual_statement.py#L35), [vme_budget.py:5](../../addons/vme_belgie/models/vme_budget.py#L5), [vme_migration.py:445](../../addons/vme_belgie/models/vme_migration.py#L445)
 - **art. 3.86 §3 BW en KB 12 juli 2012 (minimum chart of accounts)**: [vme_works.py:449](../../addons/vme_belgie/models/vme_works.py#L449)
 - **art. 3.87 §10 BW**: [vme_assembly_meeting.py:232](../../addons/vme_belgie/models/vme_assembly_meeting.py#L232)
 - **art. 3.87 §2 BW**: [vme_assembly.py:13](../../addons/vme_belgie/models/vme_assembly.py#L13), [vme_assembly.py:38](../../addons/vme_belgie/models/vme_assembly.py#L38)
@@ -24,6 +24,7 @@ Aantal punten: 68.
 - **art. 3.87 §5 BW**: [vme_assembly_meeting.py:54](../../addons/vme_belgie/models/vme_assembly_meeting.py#L54), [vme_assembly_meeting.py:109](../../addons/vme_belgie/models/vme_assembly_meeting.py#L109)
 - **art. 3.87 §6 BW**: [vme_assembly_meeting.py:122](../../addons/vme_belgie/models/vme_assembly_meeting.py#L122), [vme_assembly_meeting.py:285](../../addons/vme_belgie/models/vme_assembly_meeting.py#L285)
 - **art. 3.87 §7 BW**: [vme_assembly_meeting.py:25](../../addons/vme_belgie/models/vme_assembly_meeting.py#L25), [vme_assembly_meeting.py:381](../../addons/vme_belgie/models/vme_assembly_meeting.py#L381)
+- **art. 3.88 §1, 1°, b) BW**: [vme_request.py:71](../../addons/vme_belgie/models/vme_request.py#L71)
 - **art. 3.88 §1, 1°, c) BW**: [vme_works.py:11](../../addons/vme_belgie/models/vme_works.py#L11), [vme_works.py:195](../../addons/vme_belgie/models/vme_works.py#L195)
 - **art. 3.88 §1-3 BW**: [vme_assembly_meeting.py:8](../../addons/vme_belgie/models/vme_assembly_meeting.py#L8)
 - **art. 3.88 §3 BW**: [vme_assembly_meeting.py:302](../../addons/vme_belgie/models/vme_assembly_meeting.py#L302)
@@ -32,12 +33,13 @@ Aantal punten: 68.
 - **art. 3.90 §1 BW**: [vme_council.py:16](../../addons/vme_belgie/models/vme_council.py#L16), [vme_council.py:104](../../addons/vme_belgie/models/vme_council.py#L104)
 - **art. 3.90 §1 en art. 3.91 BW**: [vme_council.py:35](../../addons/vme_belgie/models/vme_council.py#L35)
 - **art. 3.91 BW**: [vme_council.py:270](../../addons/vme_belgie/models/vme_council.py#L270)
+- **art. 3.93 BW**: [vme_request.py:702](../../addons/vme_belgie/models/vme_request.py#L702)
 - **art. 3.93 §4 BW**: [vme_assembly_meeting.py:212](../../addons/vme_belgie/models/vme_assembly_meeting.py#L212)
 - **art. 3.94 BW**: [account_move.py:155](../../addons/vme_belgie/models/account_move.py#L155), [account_move.py:259](../../addons/vme_belgie/models/account_move.py#L259)
 - **art. 3.94 §1 BW**: [vme_sale_file.py:10](../../addons/vme_belgie/models/vme_sale_file.py#L10), [vme_sale_file.py:16](../../addons/vme_belgie/models/vme_sale_file.py#L16)
-- **art. 3.94 §1, 1° BW**: [vme_sale_file.py:255](../../addons/vme_belgie/models/vme_sale_file.py#L255)
-- **art. 3.94 §1, 2° en §2 BW**: [vme_sale_file.py:278](../../addons/vme_belgie/models/vme_sale_file.py#L278)
-- **art. 3.94 §1, 3° BW**: [vme_sale_file.py:270](../../addons/vme_belgie/models/vme_sale_file.py#L270)
+- **art. 3.94 §1, 1° BW**: [vme_sale_file.py:264](../../addons/vme_belgie/models/vme_sale_file.py#L264)
+- **art. 3.94 §1, 2° en §2 BW**: [vme_sale_file.py:287](../../addons/vme_belgie/models/vme_sale_file.py#L287)
+- **art. 3.94 §1, 3° BW**: [vme_sale_file.py:279](../../addons/vme_belgie/models/vme_sale_file.py#L279)
 - **art. 3.94 §2 BW**: [vme_sale_file.py:12](../../addons/vme_belgie/models/vme_sale_file.py#L12)
 - **art. 37/2 Arbeidsovereenkomstenwet 3 juli 1978**: [vme_contract.py:32](../../addons/vme_belgie/models/vme_contract.py#L32)
 - **art. 74 §1 wet 4 april 2014 betreffende de verzekeringen**: [vme_damage.py:10](../../addons/vme_belgie/models/vme_damage.py#L10)
@@ -60,7 +62,7 @@ Aantal punten: 68.
 | [addons/vme_belgie/models/account_move.py](../../addons/vme_belgie/models/account_move.py#L56) | 56 | art. 3.89 §5 BW | a provision is paid to the bank account of its fund. |
 | [addons/vme_belgie/models/account_move.py](../../addons/vme_belgie/models/account_move.py#L155) | 155 | art. 3.94 BW | between seller and buyer, the consumption of each one's ownership period; without a reading at the deed, pro rata per day between two readings. |
 | [addons/vme_belgie/models/account_move.py](../../addons/vme_belgie/models/account_move.py#L259) | 259 | art. 3.94 BW | costs are split between seller and buyer by the number of days each one owned the lot within the cost period. |
-| [addons/vme_belgie/models/vme_annual_statement.py](../../addons/vme_belgie/models/vme_annual_statement.py#L33) | 33 | art. 3.86 §3 BW | works paid from the reserve capital are not settled in the working capital; each owner sees his share in them apart. |
+| [addons/vme_belgie/models/vme_annual_statement.py](../../addons/vme_belgie/models/vme_annual_statement.py#L35) | 35 | art. 3.86 §3 BW | works paid from the reserve capital are not settled in the working capital; each owner sees his share in them apart. |
 | [addons/vme_belgie/models/vme_assembly.py](../../addons/vme_belgie/models/vme_assembly.py#L13) | 13 | art. 3.87 §2 BW | the ordinary general assembly takes place every year within the period of fifteen days fixed in the rules of co-ownership. |
 | [addons/vme_belgie/models/vme_assembly.py](../../addons/vme_belgie/models/vme_assembly.py#L17) | 17 | art. 3.87 §3 BW | the convocation is sent at least fifteen days before the meeting, unless the rules of co-ownership set another term. |
 | [addons/vme_belgie/models/vme_assembly.py](../../addons/vme_belgie/models/vme_assembly.py#L38) | 38 | art. 3.87 §2 BW | fifteen-day period from the rules of co-ownership. |
@@ -112,12 +114,14 @@ Aantal punten: 68.
 | [addons/vme_belgie/models/vme_migration.py](../../addons/vme_belgie/models/vme_migration.py#L476) | 476 | art. III.88 WER | accounting documents are kept for 7 years (check whether 10 years applies); art. 3.89 §5, 13° BW - the previous syndic hands over the archive. |
 | [addons/vme_belgie/models/vme_migration.py](../../addons/vme_belgie/models/vme_migration.py#L621) | 621 | art. 3.89 §5 BW | working and reserve capital on separate accounts. |
 | [addons/vme_belgie/models/vme_migration.py](../../addons/vme_belgie/models/vme_migration.py#L739) | 739 | art. 3.85 §1 BW | the shares of a key must add up to its total. |
+| [addons/vme_belgie/models/vme_request.py](../../addons/vme_belgie/models/vme_request.py#L71) | 71 | art. 3.88 §1, 1°, b) BW | works on the common parts need a two-thirds majority of the assembly; some works (charging points, art. 3.82 §1 BW) follow their own procedure. To be confirmed. |
+| [addons/vme_belgie/models/vme_request.py](../../addons/vme_belgie/models/vme_request.py#L702) | 702 | art. 3.93 BW | the house rules (reglement van orde) bind tenants and occupants once they are made known to them; the checklist asks to send them to the new tenant. To be confirmed. |
 | [addons/vme_belgie/models/vme_sale_file.py](../../addons/vme_belgie/models/vme_sale_file.py#L10) | 10 | art. 3.94 §1 BW | the syndic answers the notary's first request within 15 days. |
 | [addons/vme_belgie/models/vme_sale_file.py](../../addons/vme_belgie/models/vme_sale_file.py#L12) | 12 | art. 3.94 §2 BW | the syndic answers the second request (after the compromise) within 30 days. |
 | [addons/vme_belgie/models/vme_sale_file.py](../../addons/vme_belgie/models/vme_sale_file.py#L16) | 16 | art. 3.94 §1 BW | the notary receives the minutes of the assemblies of the last three years. |
-| [addons/vme_belgie/models/vme_sale_file.py](../../addons/vme_belgie/models/vme_sale_file.py#L255) | 255 | art. 3.94 §1, 1° BW | the reserve capital stays with the VME; the notary reports the share of the lot, not a refund to the seller (art. 3.86 §4 BW). |
-| [addons/vme_belgie/models/vme_sale_file.py](../../addons/vme_belgie/models/vme_sale_file.py#L270) | 270 | art. 3.94 §1, 3° BW | unpaid contributions of the seller. |
-| [addons/vme_belgie/models/vme_sale_file.py](../../addons/vme_belgie/models/vme_sale_file.py#L278) | 278 | art. 3.94 §1, 2° en §2 BW | works decided by the assembly before the sale. |
+| [addons/vme_belgie/models/vme_sale_file.py](../../addons/vme_belgie/models/vme_sale_file.py#L264) | 264 | art. 3.94 §1, 1° BW | the reserve capital stays with the VME; the notary reports the share of the lot, not a refund to the seller (art. 3.86 §4 BW). |
+| [addons/vme_belgie/models/vme_sale_file.py](../../addons/vme_belgie/models/vme_sale_file.py#L279) | 279 | art. 3.94 §1, 3° BW | unpaid contributions of the seller. |
+| [addons/vme_belgie/models/vme_sale_file.py](../../addons/vme_belgie/models/vme_sale_file.py#L287) | 287 | art. 3.94 §1, 2° en §2 BW | works decided by the assembly before the sale. |
 | [addons/vme_belgie/models/vme_works.py](../../addons/vme_belgie/models/vme_works.py#L11) | 11 | art. 3.88 §1, 1°, c) BW | the assembly fixes, with an absolute majority, the amount of contracts and works above which competition is compulsory. The law sets no number of quotes; art. 3.89 §5, 15° BW asks the syndic for "several" quotes on the basis of specifications. Three is the usual practice and the default here, editable per VME. |
 | [addons/vme_belgie/models/vme_works.py](../../addons/vme_belgie/models/vme_works.py#L18) | 18 | art. 1792 en 2270 oud BW | ten-year liability of contractor and architect for serious defects, counted from the acceptance of the works (here the provisional delivery). |
 | [addons/vme_belgie/models/vme_works.py](../../addons/vme_belgie/models/vme_works.py#L195) | 195 | art. 3.88 §1, 1°, c) BW | competition above the amount fixed by the assembly. |
