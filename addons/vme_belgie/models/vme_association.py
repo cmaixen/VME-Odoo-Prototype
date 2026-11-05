@@ -1,3 +1,4 @@
+import functools
 import re
 
 from odoo import api, fields, models
@@ -79,18 +80,29 @@ class VmeAssociation(models.Model):
             vme.key_count = len(vme.key_ids)
             vme.owner_count = len(vme.lot_ids.current_owner_id)
 
+    @api.model
+    def _load_vme_chart(self, company_id):
+        company = self.env["res.company"].sudo().browse(company_id)
+        if company.exists() and not company.chart_template:
+            # LEGAL-CHECK: KB 12 juli 2012 (minimum chart of accounts for VMEs).
+            # The full Belgian PCMN is the closest standard Odoo chart for now.
+            self.env["account.chart.template"].sudo().try_loading("be_comp", company, install_demo=False)
+
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
+            # An empty country from the form would overwrite Belgium on the company afterwards.
+            vals["country_id"] = vals.get("country_id") or self.env.ref("base.be").id
             if not vals.get("company_id"):
                 company = self.env["res.company"].sudo().create({
                     "name": vals.get("name") or self.env._("Nieuwe VME"),
-                    "country_id": vals.get("country_id") or self.env.ref("base.be").id,
+                    "country_id": vals["country_id"],
                     "currency_id": self.env.ref("base.EUR").id,
-                    # LEGAL-CHECK: KB 12 juli 2012 (minimum chart of accounts for VMEs).
-                    # The full Belgian PCMN is the closest standard Odoo chart for now.
-                    "chart_template": "be_comp",
                 })
+                # Load the chart explicitly once the company exists: setting chart_template on
+                # create loads the accounts but leaves partners without a default payable and
+                # receivable account in this company, so entering a bill by hand fails.
+                self.env.cr.precommit.add(functools.partial(self._load_vme_chart, company.id))
                 # Syndic staff work on every VME, so every internal user gets access to it,
                 # not only the user who created it (which may be the system user in a script).
                 internal_users = self.env["res.users"].sudo().search([("share", "=", False)]) | self.env.user

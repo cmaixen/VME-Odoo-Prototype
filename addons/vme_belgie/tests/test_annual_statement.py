@@ -79,6 +79,22 @@ class TestAnnualStatementSmall(TransactionCase):
         self.assertEqual((a["reserve"]["invoiced"], a["reserve"]["paid"]), (120.0, 120.0))
         self.assertEqual(a["balance"], a["cost_total"] - a["working"]["paid"])
 
+    def test_next_year_call_sent_this_year_is_not_counted(self):
+        # A provision call for 2027 dated in December 2026 belongs to the 2027 statement.
+        self.env["vme.budget"].create({
+            "association_id": self.vme.id, "year": 2027, "calls_per_year": "2",
+            "working_capital_budget": 1200, "reserve_capital_contribution": 200,
+        })
+        self.env["vme.provision.call.wizard"].create({
+            "association_ids": [Command.set(self.vme.ids)], "year": 2027, "number": 1,
+            "invoice_date": date(2026, 12, 15), "date_due": date(2027, 1, 15), "post_invoices": True,
+        }).action_create_calls()
+        _data, a = self._statement(self.owner_a)
+        self.assertEqual(a["working"]["invoiced"], 720.0)  # still only the two 2026 calls
+        statement_2027 = self.vme._get_annual_statement(2027)
+        a_2027 = next(st for st in statement_2027["statements"] if st["partner"] == self.owner_a)
+        self.assertEqual(a_2027["working"]["invoiced"], 360.0)
+
     def test_check_reports_undistributed_bill(self):
         supplier = self.env["res.partner"].create({"name": "Zonder sleutel", "is_company": True})
         bill = self.env["account.move"].with_company(self.vme.company_id).create({

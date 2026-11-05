@@ -75,7 +75,7 @@ Gevolg: de som van alle rijen van een factuur is exact het factuurtotaal, en de 
 `vme.association._get_annual_statement(year, partners=None)` (alles als `sudo`):
 
 - **Kosten**: kostenverdelingen van geboekte leveranciersfacturen met factuurdatum in het jaar.
-- **Provisies**: geboekte facturen met een `vme_provision_call_id` en factuurdatum in het jaar; per fonds gefactureerd, betaald (`amount_total − amount_residual`) en open.
+- **Provisies**: geboekte facturen van provisieoproepen met budgetjaar = het jaar van de afrekening (niet de factuurdatum); per fonds gefactureerd, betaald (`amount_total − amount_residual`) en open.
 - **Eigenaars**: iedereen met kosten of provisies in het jaar (of de opgegeven partners).
 - **Saldo** = aandeel in de kosten − betaalde provisies werkkapitaal. Open provisies worden niet verrekend, reservekapitaal nooit.
 - **Per sleutel**: totale kosten van de VME, de quotiteiten van de eigenaar (`"70 + 6"` voor twee kavels) en zijn aandeel.

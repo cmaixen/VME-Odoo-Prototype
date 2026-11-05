@@ -29,12 +29,12 @@ class VmeAssociation(models.Model):
             ("invoice_date", "<=", end),
         ])
         allocations = bills.vme_allocation_ids
+        # Provisions belong to the year of their budget, not of their invoice date: a call
+        # for next year sent in December must not reduce this year's balance.
         provisions = self.env["account.move"].sudo().search([
             ("company_id", "=", vme.company_id.id),
-            ("vme_provision_call_id", "!=", False),
+            ("vme_provision_call_id.budget_id.year", "=", year),
             ("state", "=", "posted"),
-            ("invoice_date", ">=", start),
-            ("invoice_date", "<=", end),
         ])
         if partners is None:
             partners = allocations.partner_id | provisions.partner_id

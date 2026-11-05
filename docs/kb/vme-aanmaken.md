@@ -58,7 +58,7 @@ Zijn beide rekeningen bevestigd, dan verdwijnt de gele melding.
 **Waarom moet ik een rekening bevestigen?**
 Een provisieoproep vraagt eigenaars geld te storten. Odoo zet daarom alleen rekeningen op een factuur die iemand met de juiste rechten heeft nagekeken. Zonder bevestiging weigert het platform de provisieoproep met een duidelijke melding.
 
-**De melding spreekt over "Geld verzenden", maar ik zie die schakelaar niet.**
+**De melding spreekt over "Betalen", maar ik zie die schakelaar niet.**
 In de Nederlandse versie van Odoo heet die schakelaar **Betalen**. Het is dezelfde instelling.
 
 **Mag ik werkkapitaal en reservekapitaal op dezelfde rekening zetten?**

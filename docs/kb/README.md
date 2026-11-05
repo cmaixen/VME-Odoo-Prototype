@@ -24,6 +24,20 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 6. [Budget en provisieoproepen, met de 5%-regel voor het reservefonds](budget-en-provisieoproepen.md)
 7. [De jaarafrekening lezen en afdrukken](jaarafrekening.md)
 
+### Gebouw en installaties
+
+8. [Keuringen en liften opvolgen](keuringen.md)
+
+### Algemene vergaderingen
+
+9. [Algemene vergaderingen plannen in blokken](av-planner.md)
+10. [De algemene vergadering: oproeping, stemming en notulen](algemene-vergadering.md)
+
+### Post en mails
+
+11. [Leveranciersfacturen per e-mail ontvangen](facturen-per-mail.md)
+12. [Een antwoord behandelen dat de AI-assistent voorstelt](ai-voorstellen-mails.md)
+
 ## Zo is het platform opgebouwd
 
 - **Eén VME = één bedrijf in Odoo.** Elke VME heeft haar eigen boekhouding, eigen rekeningnummers en eigen facturen. Rechtsboven in Odoo kies je in welke VME je werkt wanneer je facturen ingeeft. De schermen in de app **VME** (kavels, sleutels, provisieoproepen, jaarafrekening) tonen altijd alle VME's samen.

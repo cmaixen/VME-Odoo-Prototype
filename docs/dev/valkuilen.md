@@ -52,9 +52,13 @@ wkhtmltopdf draait in de Odoo-container en haalt de stylesheets van het rapport 
 - `docker compose run --rm odoo odoo ...` geeft het entrypoint de databaseverbinding mee; `docker compose exec odoo odoo ...` blijft hangen.
 - Wijzigingen die je met `odoo shell` maakt aan systeemparameters of `ir.default`, ziet een lopende server pas na een herstart: de shell verwittigt de caches van de server niet.
 
+## Opgelost na de review van de documentatie
+
+- **Leveranciersfactuur met de hand ingeven in een VME-company faalde** met "Kan geen grootboekschema vinden voor dit bedrijf". Een company die met `chart_template` in `res.company.create()` wordt aangemaakt, krijgt geen standaardrekening voor leveranciers en klanten. Oplossing: `vme.association.create()` maakt de company zonder `chart_template` aan en laadt het rekeningstelsel in een precommit met `try_loading('be_comp', company)` (`_load_vme_chart`). Test: `test_bill_can_be_entered_by_hand`.
+- **Land bleef leeg na het aanmaken van een VME** als de gebruiker Land niet invulde: het `related`-veld schreef `country_id: False` over België heen. `create()` vult nu België in de waarden zelf in. Test: `test_empty_country_defaults_to_belgium`.
+- **De waarschuwing noemde de schakelaar "Geld verzenden"**; in de Nederlandse interface heet die **Betalen**.
+- **Een provisieoproep voor volgend jaar met factuurdatum in dit jaar telde mee in de afrekening van dit jaar.** De jaarafrekening telt provisies nu per budgetjaar van hun oproep. Test: `test_next_year_call_sent_this_year_is_not_counted`.
+
 ## Bekende problemen (nog open)
 
-- **Leveranciersfactuur met de hand ingeven in een VME-company faalt** met "Kan geen grootboekschema vinden voor dit bedrijf" (`account.move._onchange_partner_id`). Een company die met `chart_template` in `res.company.create()` wordt aangemaakt, krijgt geen `ir.default` voor `property_account_payable_id` en `property_account_receivable_id`. Met `env['account.chart.template'].try_loading('be_comp', company)` na het aanmaken wel. Code die facturen aanmaakt zonder onchange (demohistoriek, tests, UBL-import via `_create_document_from_attachment`) merkt het niet. Tijdelijke oplossing in een demo: per VME-company `ir.default.set('res.partner', 'property_account_payable_id', <440000>, company_id=...)` en idem voor 400000, en Odoo herstarten.
-- **Land leeg na het aanmaken van een VME in de interface**, als de gebruiker Land niet invulde. Het formulier stuurt `country_id: False` mee; `create()` zet België op de company, maar het `related`-veld schrijft het daarna weer leeg.
-- **"Geld verzenden"** in de waarschuwing en de wizardmelding heet in de Nederlandse interface **Betalen**.
-- **Provisieoproep voor volgend jaar met factuurdatum in dit jaar** telt mee in de jaarafrekening van dit jaar. De wizard stelt vandaag voor als factuurdatum.
+- Geen op dit moment.

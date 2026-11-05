@@ -122,7 +122,7 @@ class VmeProvisionCallWizard(models.TransientModel):
         if vme.untrusted_fund_bank_ids:
             raise UserError(self.env._(
                 "De rekening(en) %(banks)s van %(vme)s zijn nog niet bevestigd. Open ze en zet "
-                "\"Geld verzenden\" aan; anders laat Odoo ze weg van de provisieoproepen.",
+                "\"Betalen\" aan; anders laat Odoo ze weg van de provisieoproepen.",
                 banks=", ".join(vme.untrusted_fund_bank_ids.mapped("acc_number")), vme=vme.name,
             ))
 

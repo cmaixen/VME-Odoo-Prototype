@@ -57,7 +57,7 @@
                     <field name="untrusted_fund_bank_ids" invisible="1"/>
                     <div class="alert alert-warning" role="alert" invisible="not untrusted_fund_bank_ids">
                         Een rekening voor werk- of reservekapitaal is nog niet bevestigd. Open de rekening en zet
-                        "Geld verzenden" aan; pas dan komt ze op de provisieoproepen.
+                        "Betalen" aan; pas dan komt ze op de provisieoproepen.
                     </div>
                     <group string="Bankrekeningen">
                         <field name="working_capital_bank_id" context="{'default_partner_id': partner_id}" readonly="not id"/>

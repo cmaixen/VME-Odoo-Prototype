@@ -44,7 +44,7 @@ In **Hof ter Beuken** waren de werkelijke kosten (vooral gas) hoger dan het budg
 Alle geboekte leveranciersfacturen met een factuurdatum in dat jaar, ook als hun kostperiode deels in een ander jaar valt. De kostperiode bepaalt alleen hoe de kost tussen verkoper en koper verdeeld wordt.
 
 **Welke provisies tellen mee?**
-De geboekte provisiefacturen met een factuurdatum in dat jaar. Alleen wat betaald is, wordt van de kosten afgetrokken.
+De geboekte provisiefacturen van de oproepen voor dat jaar (het budgetjaar, ook als de oproep al in december van het jaar ervoor vertrok). Alleen wat betaald is, wordt van de kosten afgetrokken.
 
 **Waarom worden openstaande provisies niet verrekend in het saldo?**
 Zo blijft de afrekening eenvoudig te volgen: het saldo gaat alleen over wat de eigenaar werkelijk betaalde. Wat nog open staat, blijft apart verschuldigd en staat duidelijk op de afrekening.

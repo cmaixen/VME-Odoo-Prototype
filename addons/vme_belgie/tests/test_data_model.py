@@ -2,7 +2,7 @@ from datetime import date
 
 from odoo.exceptions import ValidationError
 from odoo.fields import Command
-from odoo.tests import TransactionCase, tagged
+from odoo.tests import Form, TransactionCase, tagged
 
 
 @tagged("post_install", "-at_install")
@@ -53,6 +53,21 @@ class TestDataModel(TransactionCase):
         self.assertTrue(self.env["account.account"].search_count(
             [("company_ids", "in", vme.company_id.id)]
         ))
+
+    def test_bill_can_be_entered_by_hand(self):
+        # Regression: with chart_template set on create, suppliers had no payable account in
+        # the VME company and the bill form failed with "no chart of accounts".
+        vme = self.env["vme.association"].create({"name": "Residentie Handmatig"})
+        self.env.cr.precommit.run()
+        supplier = self.env["res.partner"].create({"name": "Leverancier Handmatig", "is_company": True})
+        self.assertTrue(supplier.with_company(vme.company_id).property_account_payable_id)
+        with Form(self.env["account.move"].with_company(vme.company_id).with_context(default_move_type="in_invoice")) as bill:
+            bill.partner_id = supplier
+        self.assertEqual(bill.partner_id, supplier)
+
+    def test_empty_country_defaults_to_belgium(self):
+        vme = self.env["vme.association"].create({"name": "Residentie Zonder Land", "country_id": False})
+        self.assertEqual(vme.country_id, self.env.ref("base.be"))
 
     def test_kbo_number_validation(self):
         self.vme.kbo_number = "0123.456.749"

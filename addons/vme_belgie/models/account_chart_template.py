@@ -20,13 +20,13 @@ class AccountChartTemplate(models.AbstractModel):
         if not vme:
             return
         Account = self.env["account.account"].with_company(company)
-        # The Belgian chart leaves the purchase journal without a default account, so
-        # bill lines without a product would need an account picked by hand every time.
+        # The Belgian chart sets no or an unsuitable default account on the purchase journal
+        # (600000 raw materials), so bill lines without a product would land on the wrong account.
         journal = self.ref("purchase", raise_if_not_found=False)
         account = Account.search(
             [("company_ids", "in", company.id), ("code", "=", VME_DEFAULT_EXPENSE_ACCOUNT_CODE)], limit=1
         )
-        if journal and account and not journal.default_account_id:
+        if journal and account:
             journal.default_account_id = account
         for code, name in VME_FUND_ACCOUNTS.values():
             if not Account.search_count([("company_ids", "in", company.id), ("code", "=", code)]):
