@@ -52,6 +52,10 @@ wkhtmltopdf draait in de Odoo-container en haalt de stylesheets van het rapport 
 - `docker compose run --rm odoo odoo ...` geeft het entrypoint de databaseverbinding mee; `docker compose exec odoo odoo ...` blijft hangen.
 - Wijzigingen die je met `odoo shell` maakt aan systeemparameters of `ir.default`, ziet een lopende server pas na een herstart: de shell verwittigt de caches van de server niet.
 
+## Trage test na veel testruns
+
+De test met een volledig demojaar (`vme_slow`) doet ongeveer 300 betalingen in één transactie. Na veel testruns heeft `vme_test` dode rijen en slechte planner-statistieken, en dan duurt één betalingsquery seconden in plaats van milliseconden (de test loopt dan tien minuten of meer). `ANALYZE` binnen de test helpt niet, omdat die de niet-gecommitte rijen niet meetelt. Oplossing: `VACUUM ANALYZE` op `vme_test` vóór de run; daarna duurt de test ongeveer 30 seconden.
+
 ## Opgelost na de review van de documentatie
 
 - **Leveranciersfactuur met de hand ingeven in een VME-company faalde** met "Kan geen grootboekschema vinden voor dit bedrijf". Een company die met `chart_template` in `res.company.create()` wordt aangemaakt, krijgt geen standaardrekening voor leveranciers en klanten. Oplossing: `vme.association.create()` maakt de company zonder `chart_template` aan en laadt het rekeningstelsel in een precommit met `try_loading('be_comp', company)` (`_load_vme_chart`). Test: `test_bill_can_be_entered_by_hand`.
