@@ -79,13 +79,8 @@ class VmeLot(models.Model):
 
     building_block = fields.Char(string="Blok", index=True, help="Bijvoorbeeld A of B: om mededelingen per blok te versturen.")
 
-    def _get_tenants_on(self, date):
-        """Tenants of these lots on the given date.
-
-        Hook for the tenants of steps 19 and 25 (rental management): they override this method.
-        Until then nobody rents, so a mailing to the tenants has no recipients.
-        """
-        return self.env["res.partner"]
+    # The tenants of a lot on a date come from `_get_tenants_on` in `vme_lot_contact.py` (step 19),
+    # extended with the tenants of the leases in `vme_rentmeester` (step 25).
 
 
 class VmeAssociation(models.Model):

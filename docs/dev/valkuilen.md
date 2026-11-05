@@ -91,3 +91,13 @@ Odoo's lijst `/my/invoices` zoekt met de rechten van de portaalgebruiker, en de 
 ## Bekende problemen (nog open)
 
 - Geen op dit moment.
+
+## Parallel gebouwde stappen samenvoegen
+
+Stappen die tegelijk op aparte branches gebouwd worden, botsen soms zonder dat git een conflict meldt:
+
+- **Twee keer dezelfde methode in één module.** Stap 19 en 23 definieerden allebei `vme.lot._get_tenants_on`; de klasse die later in `models/__init__.py` staat wint, en dat was een lege haak. Nu bestaat de methode alleen in `vme_lot_contact.py` (huurders per kavel), en `vme_rentmeester` voegt de huurders van lopende huurcontracten toe met `super()`.
+- **Twee keer dezelfde veldnaam op een model.** Stap 16 en 20 voegden allebei `mandate_ids` toe aan `vme.association` (mandaten van de raad en SEPA-mandaten); de laatste definitie overschreef de eerste en de view faalde. De SEPA-mandaten heten nu `sepa_mandate_ids`.
+- **Iedereen toegang geven tot een nieuwe company.** De demo van `vme_rentmeester` gaf alle interne gebruikers toegang tot het rentmeesterkantoor, ook de commissaris van de rekeningen, die alleen zijn eigen VME mag zien. Sla gebruikers uit `group_vme_auditor` over.
+
+Na het samenvoegen van meerdere branches: altijd de volledige testsuite van beide modules draaien, niet alleen die van de eigen stap.

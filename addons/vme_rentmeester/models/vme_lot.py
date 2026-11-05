@@ -15,3 +15,13 @@ class VmeLot(models.Model):
             own = contracts.filtered(lambda c: lot in c.lot_ids)
             lot.rent_contract_ids = own
             lot.current_tenant_ids = own.filtered(lambda c: c.state in ("active", "notice")).tenant_ids
+
+    def _get_tenants_on(self, date):
+        """The tenants registered on the lot (vme_belgie), plus those of its leases on that date."""
+        tenants = super()._get_tenants_on(date)
+        for contract in self.rent_contract_ids.filtered(lambda c: c.state in ("active", "notice", "ended")):
+            ends = [d for d in (contract.date_end, contract.notice_end_date, contract.date_moved_out) if d]
+            if contract.date_start <= date and (not ends or min(ends) >= date):
+                tenants |= contract.tenant_ids
+        return tenants
+

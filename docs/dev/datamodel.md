@@ -131,7 +131,7 @@ De codes 100100 en 100200 zijn eigen keuzes en moeten nog afgestemd worden op he
 
 | Model | Belangrijkste velden | Uitleg |
 | --- | --- | --- |
-| `vme.association` | `payment_approval_threshold`, `payment_second_approver_id`, `sepa_creditor_identifier`, `mandate_ids` | Bedrag vanaf wanneer een tweede goedkeuring nodig is, wie ze geeft, en de schuldeiseridentificatie (standaard uit het KBO-nummer). |
+| `vme.association` | `payment_approval_threshold`, `payment_second_approver_id`, `sepa_creditor_identifier`, `sepa_mandate_ids` | Bedrag vanaf wanneer een tweede goedkeuring nodig is, wie ze geeft, en de schuldeiseridentificatie (standaard uit het KBO-nummer). |
 | `vme.sepa.mandate` | `association_id`, `partner_id`, `partner_bank_id`, `reference`, `signature_date`, `state`, `first_collection_done` | SEPA-mandaat van een eigenaar bij een VME; één actief mandaat per eigenaar en VME. |
 | `vme.payment.batch` | `batch_type`, `association_id`, `fund`, `provision_call_id`, `due_until`, `execution_date`, `state`, `file_data`, `message_ref` | Een SEPA-bestand: overschrijvingen per fondsrekening of domiciliëringen per provisieoproep. |
 | `vme.payment.batch.line` | `move_id`, `partner_id`, `partner_bank_id`, `mandate_id`, `amount`, `communication`, `end_to_end_id`, `state`, `statement_line_id`, `return_statement_line_id`, `return_reason` | Eén betaling of inning; status Concept, Verstuurd, Bevestigd door de bank of Teruggekomen. |

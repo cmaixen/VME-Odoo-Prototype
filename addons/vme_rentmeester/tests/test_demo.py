@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 
 from odoo.tests import TransactionCase, tagged
 
@@ -27,3 +27,15 @@ class TestRentDemo(TransactionCase):
         self.assertIn("Opzegtermijn verstrijkt", " ".join(a7.activity_ids.mapped("summary")))
         frozen = b23.indexation_ids.filtered(lambda i: i.anniversary_date == date(2023, 9, 1))
         self.assertEqual(frozen.freeze_rate, 0.5)  # EPC D in Flanders
+
+    def test_tenants_receive_mailings(self):
+        # The tenants of a lease are tenants of the lot, so a mailing to the tenants reaches them.
+        contract = self.contracts.filtered(lambda c: c.association_id.name == "Residentie Linde")[:1]
+        lot = contract.lot_ids[:1]
+        self.assertIn(contract.tenant_id, lot._get_tenants_on(date(2026, 11, 5)))
+        self.assertNotIn(contract.tenant_id, lot._get_tenants_on(contract.date_start - timedelta(days=1)))
+        mailing = self.env["vme.communication"].create({
+            "name": "Waterafsluiting", "association_id": contract.association_id.id,
+            "audience": "tenants", "reference_date": date(2026, 11, 5),
+        })
+        self.assertIn(contract.tenant_id, [partner for partner, _lots, _role in mailing._get_recipients()])

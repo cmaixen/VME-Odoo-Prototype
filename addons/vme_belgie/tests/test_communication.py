@@ -1,5 +1,4 @@
 from datetime import date
-from unittest.mock import patch
 
 from freezegun import freeze_time
 
@@ -7,7 +6,6 @@ from odoo.exceptions import UserError
 from odoo.fields import Command
 from odoo.tests import TransactionCase, tagged
 
-from odoo.addons.vme_belgie.models.vme_communication import VmeLot
 
 TODAY = date(2026, 11, 5)
 
@@ -86,17 +84,15 @@ class TestCommunication(TransactionCase):
         recipients = self._recipients(communication)
         self.assertEqual(recipients, {self.owner1: (["G1"], "owner"), self.owner_b: (["B1"], "owner")})
 
-    def test_tenants_come_from_the_hook(self):
+    def test_tenants_on_the_reference_date(self):
         communication = self._communication(audience="tenants")
-        self.assertEqual(communication._get_recipients(), [], "No tenants before steps 19 and 25.")
+        self.assertEqual(communication._get_recipients(), [], "Nobody rents yet.")
         tenant = self.env["res.partner"].create({"name": "Huurder Communicatie A2", "email": "huurder@example.com"})
-
-        def tenants_on(lots, on_date):
-            return tenant if self.a2 in lots and on_date == TODAY else self.env["res.partner"]
-
-        with patch.object(VmeLot, "_get_tenants_on", tenants_on):
-            self.assertEqual(self._recipients(communication), {tenant: (["A2"], "tenant")})
-            communication.action_prepare_recipients()
+        # A tenant registered on the lot (step 19); leases of vme_rentmeester add their tenants too.
+        self.env["vme.lot.contact"].create({
+            "lot_id": self.a2.id, "partner_id": tenant.id, "role": "tenant", "date_start": TODAY})
+        self.assertEqual(self._recipients(communication), {tenant: (["A2"], "tenant")})
+        communication.action_prepare_recipients()
         self.assertEqual(communication.log_ids.partner_id, tenant)
         self.assertEqual(communication.log_ids.role, "tenant")
 

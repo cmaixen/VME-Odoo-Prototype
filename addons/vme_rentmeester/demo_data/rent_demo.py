@@ -64,6 +64,8 @@ class VmeAssociation(models.Model):
         })
         self.env.cr.precommit.add(functools.partial(self._load_vme_chart, company.id))
         internal_users = self.env["res.users"].sudo().search([("share", "=", False)]) | self.env.user
+        # The auditor of the accounts (vme_belgie, step 16) only sees his own VME.
+        internal_users = internal_users.filtered(lambda u: not u.has_group("vme_belgie.group_vme_auditor"))
         internal_users.sudo().write({"company_ids": [Command.link(company.id)]})
         return company
 

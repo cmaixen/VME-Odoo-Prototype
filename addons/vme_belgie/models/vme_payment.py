@@ -77,7 +77,7 @@ class VmeAssociation(models.Model):
         readonly=False,
         help="Nodig voor domiciliëringen. Voor een VME: BE, twee controlecijfers, ZZZ en het KBO-nummer. "
              "De bank bevestigt het nummer bij de aanvraag van het incassocontract.")
-    mandate_ids = fields.One2many("vme.sepa.mandate", "association_id", string="SEPA-mandaten")
+    sepa_mandate_ids = fields.One2many("vme.sepa.mandate", "association_id", string="SEPA-mandaten")
 
     @api.depends("kbo_number")
     def _compute_sepa_creditor_identifier(self):

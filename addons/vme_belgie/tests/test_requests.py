@@ -321,4 +321,5 @@ class TestRequests(TransactionCase):
         self.assertEqual(owner_key.partner_id, self.buyer)
         self.assertEqual(tenant_badge.partner_id, self.tenant)  # the tenant keeps the badge
         self.assertEqual(blocked.partner_id, self.owner)
-        self.assertIn("VS-1", sale.message_ids[0].body)
+        # The deed message lists the keys; other steps may post after it (e.g. the welcome letter).
+        self.assertTrue(any("VS-1" in message.body for message in sale.message_ids))
