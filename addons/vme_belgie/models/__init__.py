@@ -13,3 +13,4 @@ from . import vme_installation
 from . import vme_assembly
 from . import vme_assembly_meeting
 from . import vme_sale_file
+from . import vme_collection

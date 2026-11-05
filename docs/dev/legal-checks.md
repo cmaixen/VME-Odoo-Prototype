@@ -3,7 +3,7 @@
 Automatisch gemaakt door `python3 tools/legal_checks.py`; niet met de hand bewerken.
 Elke rij is een wettelijke regel in de code die nog juridisch gevalideerd moet worden.
 
-Aantal punten: 39.
+Aantal punten: 45.
 
 ## Per bron
 
@@ -31,7 +31,12 @@ Aantal punten: 39.
 - **art. 3.94 §1, 2° en §2 BW**: [vme_sale_file.py:278](../../addons/vme_belgie/models/vme_sale_file.py#L278)
 - **art. 3.94 §1, 3° BW**: [vme_sale_file.py:270](../../addons/vme_belgie/models/vme_sale_file.py#L270)
 - **art. 3.94 §2 BW**: [vme_sale_file.py:12](../../addons/vme_belgie/models/vme_sale_file.py#L12)
+- **art. XIX.2 §1 WER**: [vme_collection.py:108](../../addons/vme_belgie/models/vme_collection.py#L108), [vme_collection.py:401](../../addons/vme_belgie/models/vme_collection.py#L401)
+- **art. XIX.4 §1 WER**: [vme_collection.py:139](../../addons/vme_belgie/models/vme_collection.py#L139)
+- **art. XIX.4 §2 WER (wet 4 mei 2023)**: [vme_collection.py:47](../../addons/vme_belgie/models/vme_collection.py#L47)
 - **no general legal interval found; manufacturer and fire department advice**: [vme_installation.py:28](../../addons/vme_belgie/models/vme_installation.py#L28)
+- **reglement van mede-eigendom (art. 3.85 BW)**: [vme_collection.py:437](../../addons/vme_belgie/models/vme_collection.py#L437)
+- **wet 5 mei 1865 betreffende de lening tegen interest**: [vme_collection.py:29](../../addons/vme_belgie/models/vme_collection.py#L29)
 
 ## Alle punten
 
@@ -62,6 +67,12 @@ Aantal punten: 39.
 | [addons/vme_belgie/models/vme_association.py](../../addons/vme_belgie/models/vme_association.py#L170) | 170 | art. 3.89 §5 BW | working and reserve capital must not share an account. |
 | [addons/vme_belgie/models/vme_association.py](../../addons/vme_belgie/models/vme_association.py#L193) | 193 | art. 3.89 §5 BW | working and reserve capital on separate bank accounts. |
 | [addons/vme_belgie/models/vme_budget.py](../../addons/vme_belgie/models/vme_budget.py#L5) | 5 | art. 3.86 §3 BW | yearly reserve fund contribution of at least 5% of the ordinary common charges of the previous year, unless the general assembly decides otherwise with a 4/5 majority. |
+| [addons/vme_belgie/models/vme_collection.py](../../addons/vme_belgie/models/vme_collection.py#L29) | 29 | wet 5 mei 1865 betreffende de lening tegen interest | the legal interest rate in civil matters is published every year in the Belgisch Staatsblad; update the parameter each January. |
+| [addons/vme_belgie/models/vme_collection.py](../../addons/vme_belgie/models/vme_collection.py#L47) | 47 | art. XIX.4 §2 WER (wet 4 mei 2023) | scale for consumer debts: up to 150 euro: 20 euro; 150.01 to 500: 30 euro + 10% above 150; above 500: 65 euro + 5% above 500, with a maximum of 2000 euro. |
+| [addons/vme_belgie/models/vme_collection.py](../../addons/vme_belgie/models/vme_collection.py#L108) | 108 | art. XIX.2 §1 WER | costs only after a free first reminder and a term of at least 14 calendar days; we use the same term between every level. |
+| [addons/vme_belgie/models/vme_collection.py](../../addons/vme_belgie/models/vme_collection.py#L139) | 139 | art. XIX.4 §1 WER | at most the legal interest rate plus 8 percentage points. |
+| [addons/vme_belgie/models/vme_collection.py](../../addons/vme_belgie/models/vme_collection.py#L401) | 401 | art. XIX.2 §1 WER | the first reminder is free; interest and damages only run from the end of a term of at least 14 days after it was sent. Check whether interest may run from the due date instead when the reglement van mede-eigendom says so. |
+| [addons/vme_belgie/models/vme_collection.py](../../addons/vme_belgie/models/vme_collection.py#L437) | 437 | reglement van mede-eigendom (art. 3.85 BW) | simple interest per year of 365 days. |
 | [addons/vme_belgie/models/vme_installation.py](../../addons/vme_belgie/models/vme_installation.py#L17) | 17 | KB 9 maart 2003 betreffende de beveiliging van liften | preventive inspection by an accredited inspection body (EDTC). |
 | [addons/vme_belgie/models/vme_installation.py](../../addons/vme_belgie/models/vme_installation.py#L20) | 20 | NBN S21-050 | yearly maintenance check of portable fire extinguishers and hoses. |
 | [addons/vme_belgie/models/vme_installation.py](../../addons/vme_belgie/models/vme_installation.py#L22) | 22 | AREI (Algemeen Reglement op de Elektrische Installaties) | periodic inspection of the common parts of residential buildings. |

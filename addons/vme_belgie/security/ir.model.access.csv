@@ -22,3 +22,7 @@ access_vme_assembly_attendee_user,vme.assembly.attendee user,model_vme_assembly_
 access_vme_assembly_vote_user,vme.assembly.vote user,model_vme_assembly_vote,base.group_user,1,1,1,1
 access_vme_assembly_convocation_user,vme.assembly.convocation user,model_vme_assembly_convocation,base.group_user,1,1,1,1
 access_vme_sale_file_user,vme.sale.file user,model_vme_sale_file,base.group_user,1,1,1,1
+access_vme_arrears_user,vme.arrears user,model_vme_arrears,base.group_user,1,0,0,0
+access_vme_collection_user,vme.collection user,model_vme_collection,base.group_user,1,1,1,0
+access_vme_collection_reminder_user,vme.collection.reminder user,model_vme_collection_reminder,base.group_user,1,1,1,0
+access_vme_collection_reminder_line_user,vme.collection.reminder.line user,model_vme_collection_reminder_line,base.group_user,1,1,1,1

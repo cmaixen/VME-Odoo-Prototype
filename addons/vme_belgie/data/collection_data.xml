@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Legal interest rate in civil matters, the base of the consumer cap. Update it every January
+         (Settings > Technical > System Parameters). -->
+    <data noupdate="1">
+        <record id="config_legal_interest_rate" model="ir.config_parameter">
+            <field name="key">vme_belgie.legal_interest_rate</field>
+            <field name="value">4.5</field>
+        </record>
+
+        <!-- Proposes the next reminders as drafts every night; it never sends anything. -->
+        <record id="ir_cron_collection_refresh" model="ir.cron">
+            <field name="name">VME: invordering bijwerken</field>
+            <field name="model_id" ref="model_vme_collection"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_refresh()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+
+    <!-- The three Dutch templates, one per level. They fill the draft text of a reminder, which the
+         employee can still change before sending. Edit them under Settings > Technical > Email > Templates. -->
+    <template id="collection_reminder_table">
+        <table style="border-collapse: collapse; width: 100%; margin: 12px 0;">
+            <thead>
+                <tr style="border-bottom: 1px solid #999;">
+                    <th style="text-align: left; padding: 4px;">Omschrijving</th>
+                    <th style="text-align: left; padding: 4px;">Vervaldag</th>
+                    <th style="text-align: left; padding: 4px;">Gestructureerde mededeling</th>
+                    <th style="text-align: left; padding: 4px;">Rekening</th>
+                    <th style="text-align: right; padding: 4px;">Openstaand</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr t-foreach="object.line_ids" t-as="line" style="border-bottom: 1px solid #ddd;">
+                    <td style="padding: 4px;"><t t-out="line.description"/></td>
+                    <td style="padding: 4px;"><t t-out="format_date(line.date_maturity)"/></td>
+                    <td style="padding: 4px; white-space: nowrap;"><t t-out="line.payment_reference"/></td>
+                    <td style="padding: 4px; white-space: nowrap;"><t t-out="line.bank_account"/></td>
+                    <td style="padding: 4px; text-align: right; white-space: nowrap;"><t t-out="format_amount(line.amount, object.currency_id)"/></td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="padding: 4px;"><strong>Openstaand saldo</strong></td>
+                    <td style="padding: 4px; text-align: right; white-space: nowrap;"><strong t-out="format_amount(object.amount_due, object.currency_id)"/></td>
+                </tr>
+            </tbody>
+        </table>
+        <p>Betaal elk bedrag op de vermelde rekening met de gestructureerde mededeling, zodat uw betaling meteen aan de juiste oproep gekoppeld wordt.</p>
+    </template>
+
+    <record id="mail_template_collection_reminder" model="mail.template">
+        <field name="name">Invordering: vriendelijke herinnering</field>
+        <field name="model_id" ref="model_vme_collection_reminder"/>
+        <field name="subject">Vriendelijke herinnering: openstaande bedragen {{ object.association_id.name }}</field>
+        <field name="email_to">{{ object.partner_id.email }}</field>
+        <field name="body_html" type="html">
+<div>
+    <p>Beste <t t-out="object.partner_id.name"/>,</p>
+    <p>
+        Bij het nakijken van de rekeningen van de VME <t t-out="object.association_id.name"/> stelden wij vast dat de
+        volgende bedragen nog niet betaald zijn. Misschien is dit aan uw aandacht ontsnapt.
+    </p>
+    <t t-call="vme_belgie.collection_reminder_table"/>
+    <p>
+        Wij vragen u vriendelijk het openstaande saldo binnen <t t-out="object.association_id.collection_interval_days"/> dagen te betalen.
+        Deze herinnering is kosteloos. Heeft u intussen al betaald, dan mag u deze brief als zonder voorwerp beschouwen.
+    </p>
+    <p>Heeft u een vraag over deze bedragen of wilt u een afbetalingsplan bespreken, neem dan gerust contact met ons op.</p>
+    <p>Met vriendelijke groeten,<br/>De syndicus van <t t-out="object.association_id.name"/></p>
+</div>
+        </field>
+        <field name="auto_delete" eval="False"/>
+    </record>
+
+    <record id="mail_template_collection_demand" model="mail.template">
+        <field name="name">Invordering: aanmaning</field>
+        <field name="model_id" ref="model_vme_collection_reminder"/>
+        <field name="subject">Aanmaning: openstaande bedragen {{ object.association_id.name }}</field>
+        <field name="email_to">{{ object.partner_id.email }}</field>
+        <field name="body_html" type="html">
+<div>
+    <p>Beste <t t-out="object.partner_id.name"/>,</p>
+    <p>
+        Ondanks onze herinnering<t t-if="object.first_reminder_date"> van <t t-out="format_date(object.first_reminder_date)"/></t>
+        hebben wij de volgende bedragen voor de VME <t t-out="object.association_id.name"/> nog niet ontvangen.
+    </p>
+    <t t-call="vme_belgie.collection_reminder_table"/>
+    <p>
+        Wij vragen u dringend het openstaande saldo binnen <t t-out="object.association_id.collection_interval_days"/> dagen te betalen.
+        De andere mede-eigenaars dragen intussen de kosten van het gebouw voor u mee.
+    </p>
+    <p>
+        Zonder betaling binnen die termijn zijn wij verplicht de nalatigheidsinterest van
+        <t t-out="'%g' % object.interest_rate"/>% per jaar en de forfaitaire schadevergoeding aan te rekenen die het
+        reglement van mede-eigendom voorziet.
+    </p>
+    <p>Met vriendelijke groeten,<br/>De syndicus van <t t-out="object.association_id.name"/></p>
+</div>
+        </field>
+        <field name="auto_delete" eval="False"/>
+    </record>
+
+    <record id="mail_template_collection_notice" model="mail.template">
+        <field name="name">Invordering: ingebrekestelling</field>
+        <field name="model_id" ref="model_vme_collection_reminder"/>
+        <field name="subject">Ingebrekestelling: openstaande bedragen {{ object.association_id.name }}</field>
+        <field name="email_to">{{ object.partner_id.email }}</field>
+        <field name="body_html" type="html">
+<div>
+    <p>Beste <t t-out="object.partner_id.name"/>,</p>
+    <p>
+        Ondanks onze herinnering<t t-if="object.first_reminder_date"> van <t t-out="format_date(object.first_reminder_date)"/></t>
+        en onze aanmaning<t t-if="object.second_reminder_date"> van <t t-out="format_date(object.second_reminder_date)"/></t>
+        blijven de volgende bedragen voor de VME <t t-out="object.association_id.name"/> onbetaald.
+        Met deze brief stellen wij u formeel in gebreke.
+    </p>
+    <t t-call="vme_belgie.collection_reminder_table"/>
+    <p>
+        Wij verzoeken u het volledige saldo binnen <t t-out="object.association_id.collection_interval_days"/> dagen te betalen.
+        Op de achterstallige bedragen loopt een nalatigheidsinterest van <t t-out="'%g' % object.interest_rate"/>% per jaar,
+        en een forfaitaire schadevergoeding volgens het reglement van mede-eigendom.
+    </p>
+    <p>
+        Blijft betaling uit, dan dragen wij het dossier zonder verdere verwittiging over aan onze advocaat of
+        gerechtsdeurwaarder. De kosten van de gerechtelijke invordering komen dan bovenop het openstaande saldo.
+    </p>
+    <p>Met vriendelijke groeten,<br/>De syndicus van <t t-out="object.association_id.name"/></p>
+</div>
+        </field>
+        <field name="auto_delete" eval="False"/>
+    </record>
+</odoo>

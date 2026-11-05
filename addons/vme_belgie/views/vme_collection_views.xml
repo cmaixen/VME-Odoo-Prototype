@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Collection rules per VME -->
+    <record id="vme_association_view_form_collection" model="ir.ui.view">
+        <field name="name">vme.association.form.collection</field>
+        <field name="model">vme.association</field>
+        <field name="inherit_id" ref="vme_association_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_collections" type="object" class="oe_stat_button" icon="fa-exclamation-circle">
+                    <field name="collection_count" widget="statinfo" string="Invorderingen"/>
+                </button>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Invordering" name="collection">
+                    <group>
+                        <group string="Herinneringen">
+                            <field name="collection_first_reminder_days"/>
+                            <field name="collection_interval_days"/>
+                            <field name="collection_consumer_rules"/>
+                        </group>
+                        <group string="Kosten volgens het reglement van mede-eigendom">
+                            <field name="collection_interest_rate"/>
+                            <field name="collection_effective_rate" invisible="not collection_consumer_rules"/>
+                            <field name="collection_penalty_percent"/>
+                            <field name="collection_penalty_min"/>
+                        </group>
+                    </group>
+                    <div class="text-muted">
+                        Als consument mag een eigenaar hoogstens de wettelijke interestvoet plus 8 procentpunten betalen,
+                        en een schadevergoeding volgens de wettelijke schaal (20 euro tot 2000 euro). Kosten kunnen pas
+                        aangerekend worden na een kosteloze herinnering en een termijn van 14 dagen.
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Arrears overview over all VMEs -->
+    <record id="vme_arrears_view_list" model="ir.ui.view">
+        <field name="name">vme.arrears.list</field>
+        <field name="model">vme.arrears</field>
+        <field name="arch" type="xml">
+            <list create="0" delete="0" decoration-danger="aging == '90_plus'" decoration-warning="aging == '61_90'">
+                <header>
+                    <button name="action_refresh_collections" type="object" string="Invordering bijwerken" class="btn-primary" display="always"/>
+                </header>
+                <field name="association_id"/>
+                <field name="partner_id"/>
+                <field name="move_name"/>
+                <field name="fund" optional="show"/>
+                <field name="payment_reference" optional="show"/>
+                <field name="date_maturity"/>
+                <field name="days_overdue"/>
+                <field name="aging" widget="badge" decoration-info="aging == '0_30'" decoration-warning="aging in ('31_60', '61_90')" decoration-danger="aging == '90_plus'"/>
+                <field name="collection_id" optional="show"/>
+                <field name="amount_residual" sum="Totaal"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_arrears_view_pivot" model="ir.ui.view">
+        <field name="name">vme.arrears.pivot</field>
+        <field name="model">vme.arrears</field>
+        <field name="arch" type="xml">
+            <pivot string="Achterstallen" sample="1">
+                <field name="association_id" type="row"/>
+                <field name="aging" type="col"/>
+                <field name="amount_residual" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="vme_arrears_view_search" model="ir.ui.view">
+        <field name="name">vme.arrears.search</field>
+        <field name="model">vme.arrears</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="partner_id"/>
+                <field name="association_id"/>
+                <field name="payment_reference"/>
+                <filter name="over_30" string="Meer dan 30 dagen" domain="[('days_overdue', '>', 30)]"/>
+                <filter name="over_60" string="Meer dan 60 dagen" domain="[('days_overdue', '>', 60)]"/>
+                <filter name="over_90" string="Meer dan 90 dagen" domain="[('days_overdue', '>', 90)]"/>
+                <separator/>
+                <filter name="no_dossier" string="Zonder dossier" domain="[('collection_id', '=', False)]"/>
+                <group>
+                    <filter name="group_vme" string="VME" context="{'group_by': 'association_id'}"/>
+                    <filter name="group_partner" string="Eigenaar" context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_aging" string="Ouderdom" context="{'group_by': 'aging'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="vme_arrears_action" model="ir.actions.act_window">
+        <field name="name">Achterstallen</field>
+        <field name="res_model">vme.arrears</field>
+        <field name="view_mode">pivot,list</field>
+        <field name="context">{'pivot_row_groupby': ['association_id', 'partner_id']}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Geen achterstallen</p>
+            <p>Hier verschijnen alle vervallen en onbetaalde provisies en afrekeningen, over alle VME's heen.</p>
+        </field>
+    </record>
+
+    <!-- Dossiers -->
+    <record id="vme_collection_view_list" model="ir.ui.view">
+        <field name="name">vme.collection.list</field>
+        <field name="model">vme.collection</field>
+        <field name="arch" type="xml">
+            <list create="0" decoration-muted="state == 'closed'" decoration-danger="aging == '90_plus'">
+                <header>
+                    <button name="action_refresh" type="object" string="Invordering bijwerken" class="btn-primary" display="always"/>
+                </header>
+                <field name="association_id"/>
+                <field name="partner_id"/>
+                <field name="lot_names" optional="show"/>
+                <field name="amount_due"/>
+                <field name="oldest_due_date" optional="hide"/>
+                <field name="days_overdue"/>
+                <field name="aging" widget="badge" decoration-info="aging == '0_30'" decoration-warning="aging in ('31_60', '61_90')" decoration-danger="aging == '90_plus'"/>
+                <field name="level"/>
+                <field name="last_reminder_date" optional="show"/>
+                <field name="next_step"/>
+                <field name="state" widget="badge" decoration-info="state == 'open'" decoration-warning="state == 'forwarded'"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_collection_view_form" model="ir.ui.view">
+        <field name="name">vme.collection.form</field>
+        <field name="model">vme.collection</field>
+        <field name="arch" type="xml">
+            <form create="0">
+                <header>
+                    <button name="action_propose_reminder" type="object" string="Volgend niveau voorstellen" class="btn-primary"
+                            invisible="not next_level"/>
+                    <button name="action_charge_costs" type="object" string="Kosten aanrekenen"
+                            invisible="state == 'closed' or (not interest_preview and not penalty_preview)"
+                            confirm="Interest en schadevergoeding boeken op de eigenaar?"/>
+                    <button name="action_forward" type="object" string="Doorsturen" invisible="state != 'open' or level != '3'"/>
+                    <button name="action_print_overview" type="object" string="Overzicht (PDF)"/>
+                    <button name="action_close" type="object" string="Afsluiten" invisible="state == 'closed'"/>
+                    <button name="action_reopen" type="object" string="Heropenen" invisible="state == 'open'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_reminders" type="object" class="oe_stat_button" icon="fa-envelope-o">
+                            <div class="o_stat_info"><span class="o_stat_text">Herinneringen</span></div>
+                        </button>
+                    </div>
+                    <div class="oe_title"><h1><field name="partner_id" readonly="1"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="association_id" readonly="1"/>
+                            <field name="lot_names"/>
+                            <field name="email"/>
+                            <field name="amount_due"/>
+                            <field name="oldest_due_date"/>
+                            <field name="days_overdue"/>
+                            <field name="aging"/>
+                        </group>
+                        <group>
+                            <field name="level"/>
+                            <field name="last_reminder_date"/>
+                            <field name="next_level"/>
+                            <field name="next_step"/>
+                            <field name="forward_partner_id" options="{'no_quick_create': True}"/>
+                            <field name="forward_date" invisible="not forward_date"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Achterstallen" name="arrears">
+                            <field name="arrears_ids" readonly="1">
+                                <list>
+                                    <field name="move_name"/>
+                                    <field name="fund"/>
+                                    <field name="date_maturity"/>
+                                    <field name="days_overdue"/>
+                                    <field name="payment_reference"/>
+                                    <field name="amount_residual" sum="Totaal"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Herinneringen" name="reminders">
+                            <field name="reminder_ids" readonly="1">
+                                <list decoration-muted="state == 'cancel'">
+                                    <field name="level"/>
+                                    <field name="date"/>
+                                    <field name="sent_date"/>
+                                    <field name="amount_due"/>
+                                    <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-success="state == 'sent'"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Interest en schadevergoeding" name="costs">
+                            <group>
+                                <group string="Nu aan te rekenen">
+                                    <field name="interest_preview"/>
+                                    <field name="penalty_preview"/>
+                                    <div colspan="2" class="text-warning" invisible="not costs_blocked_reason">
+                                        <field name="costs_blocked_reason" nolabel="1"/>
+                                    </div>
+                                </group>
+                                <group string="Al aangerekend">
+                                    <field name="interest_until"/>
+                                    <field name="penalty_date"/>
+                                </group>
+                            </group>
+                            <field name="cost_summary" nolabel="1"/>
+                        </page>
+                        <page string="Notities" name="notes">
+                            <field name="note" placeholder="Afspraken met de eigenaar, afbetalingsplan, ..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="vme_collection_view_search" model="ir.ui.view">
+        <field name="name">vme.collection.search</field>
+        <field name="model">vme.collection</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="partner_id"/>
+                <field name="association_id"/>
+                <filter name="active_dossiers" string="Lopend of doorgestuurd" domain="[('state', '!=', 'closed')]"/>
+                <filter name="forwarded" string="Doorgestuurd" domain="[('state', '=', 'forwarded')]"/>
+                <filter name="closed" string="Afgesloten" domain="[('state', '=', 'closed')]"/>
+                <group>
+                    <filter name="group_vme" string="VME" context="{'group_by': 'association_id'}"/>
+                    <filter name="group_level" string="Niveau" context="{'group_by': 'level'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="vme_collection_action" model="ir.actions.act_window">
+        <field name="name">Invorderingsdossiers</field>
+        <field name="res_model">vme.collection</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_active_dossiers': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Geen lopende invorderingen</p>
+            <p>Klik op "Invordering bijwerken": Odoo opent een dossier voor elke eigenaar met achterstallen.</p>
+        </field>
+    </record>
+
+    <!-- Reminders -->
+    <record id="vme_collection_reminder_view_list" model="ir.ui.view">
+        <field name="name">vme.collection.reminder.list</field>
+        <field name="model">vme.collection.reminder</field>
+        <field name="arch" type="xml">
+            <list create="0" decoration-muted="state == 'cancel'">
+                <header>
+                    <button name="action_mark_sent" type="object" string="Per post verstuurd"/>
+                    <button name="action_print" type="object" string="Afdrukken"/>
+                </header>
+                <field name="association_id"/>
+                <field name="partner_id"/>
+                <field name="level"/>
+                <field name="date"/>
+                <field name="amount_due"/>
+                <field name="email" optional="show"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-success="state == 'sent'"/>
+                <field name="sent_date" optional="show"/>
+                <button name="action_open_composer" type="object" string="Versturen" icon="fa-envelope" invisible="state != 'draft' or not email"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_collection_reminder_view_form" model="ir.ui.view">
+        <field name="name">vme.collection.reminder.form</field>
+        <field name="model">vme.collection.reminder</field>
+        <field name="arch" type="xml">
+            <form create="0">
+                <header>
+                    <button name="action_open_composer" type="object" string="Versturen" class="btn-primary" invisible="state != 'draft' or not email"/>
+                    <button name="action_print" type="object" string="Afdrukken"/>
+                    <button name="action_mark_sent" type="object" string="Per post verstuurd" invisible="state != 'draft'"/>
+                    <button name="action_update" type="object" string="Bijwerken" invisible="state != 'draft'"/>
+                    <button name="action_cancel" type="object" string="Annuleren" invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,sent"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h2><field name="level" readonly="1"/></h2></div>
+                    <group>
+                        <group>
+                            <field name="collection_id" readonly="1"/>
+                            <field name="partner_id"/>
+                            <field name="email"/>
+                        </group>
+                        <group>
+                            <field name="date" readonly="1"/>
+                            <field name="amount_due"/>
+                            <field name="sent_date" invisible="not sent_date"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Tekst" name="text">
+                            <field name="subject" readonly="state != 'draft'" placeholder="Onderwerp"/>
+                            <field name="body_html" readonly="state != 'draft'" options="{'codeview': true}"/>
+                        </page>
+                        <page string="Openstaande bedragen" name="lines">
+                            <field name="line_ids" readonly="1">
+                                <list>
+                                    <field name="move_name"/>
+                                    <field name="description"/>
+                                    <field name="date_maturity"/>
+                                    <field name="payment_reference"/>
+                                    <field name="bank_account"/>
+                                    <field name="amount" sum="Totaal"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                    <div class="text-muted">
+                        Niets wordt automatisch verstuurd: "Versturen" maakt de brief als PDF en opent een e-mail die u
+                        nakijkt en zelf verstuurt. Verstuurt u per post, druk dan af en klik op "Per post verstuurd".
+                    </div>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="vme_collection_reminder_view_search" model="ir.ui.view">
+        <field name="name">vme.collection.reminder.search</field>
+        <field name="model">vme.collection.reminder</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="partner_id"/>
+                <field name="association_id"/>
+                <filter name="draft" string="Te versturen" domain="[('state', '=', 'draft')]"/>
+                <filter name="sent" string="Verstuurd" domain="[('state', '=', 'sent')]"/>
+                <separator/>
+                <filter name="level_1" string="Vriendelijke herinnering" domain="[('level', '=', '1')]"/>
+                <filter name="level_2" string="Aanmaning" domain="[('level', '=', '2')]"/>
+                <filter name="level_3" string="Ingebrekestelling" domain="[('level', '=', '3')]"/>
+                <group>
+                    <filter name="group_level" string="Niveau" context="{'group_by': 'level'}"/>
+                    <filter name="group_vme" string="VME" context="{'group_by': 'association_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="vme_collection_reminder_action" model="ir.actions.act_window">
+        <field name="name">Herinneringen</field>
+        <field name="res_model">vme.collection.reminder</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_draft': 1, 'search_default_group_level': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Geen herinneringen te versturen</p>
+            <p>"Invordering bijwerken" stelt per dossier het volgende niveau voor, als concept.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_vme_collection_root" name="Invordering" parent="menu_vme_root" sequence="48"/>
+    <menuitem id="menu_vme_arrears" name="Achterstallen" parent="menu_vme_collection_root" action="vme_arrears_action" sequence="10"/>
+    <menuitem id="menu_vme_collection" name="Dossiers" parent="menu_vme_collection_root" action="vme_collection_action" sequence="20"/>
+    <menuitem id="menu_vme_collection_reminder" name="Herinneringen" parent="menu_vme_collection_root" action="vme_collection_reminder_action" sequence="30"/>
+</odoo>

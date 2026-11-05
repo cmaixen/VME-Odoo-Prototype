@@ -14,6 +14,7 @@ Interne documentatie voor wie aan de module `vme_belgie` werkt. De gebruikersdoc
 | [av-planner.md](av-planner.md) | AV-periodes, blokken en de planner (stap 6c) |
 | [algemene-vergadering.md](algemene-vergadering.md) | Agenda, oproeping, quorum, stemming en notulen (stap 11) |
 | [verkoop-notaris.md](verkoop-notaris.md) | Verkoopdossier, antwoord aan de notaris en overdracht bij de akte (stap 9) |
+| [invordering.md](invordering.md) | Achterstallen, ouderdom, herinneringen in drie niveaus, interest en schadevergoeding, doorsturen (stap 10) |
 | [facturen-per-mail.md](facturen-per-mail.md) | Mailalias per VME op het aankoopdagboek (stap 7b) |
 | [ai-assistent.md](ai-assistent.md) | Het losse script in `ai/` voor mails van eigenaars (stap 7) |
 | [legal-checks.md](legal-checks.md) | Alle `LEGAL-CHECK`-punten uit de code (gegenereerd) |
