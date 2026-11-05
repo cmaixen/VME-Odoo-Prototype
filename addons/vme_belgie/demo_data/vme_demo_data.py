@@ -96,6 +96,12 @@ SUPPLIERS = {
     },
 }
 
+# Confirmed accounts of suppliers (bank code 999 does not exist).
+SUPPLIER_IBANS = {
+    "energy": "BE86999000900150",
+    "elevator": "BE75999000900251",
+}
+
 INSPECTION_SUPPLIERS = {
     "inspection_body": {
         "name": "Keuringsdienst Voorbeeld vzw",
@@ -299,6 +305,18 @@ class VmeAssociation(models.Model):
             installations |= installation
         return installations
 
+    def _demo_supplier_banks(self, suppliers):
+        """Confirmed bank accounts of the suppliers whose bills are read from PDF (step 21).
+
+        The AI reading compares the IBAN on a bill with these; the energy supplier's one is the
+        IBAN in its UBL bills.
+        """
+        banks = self.env["res.partner.bank"].create([
+            {"acc_number": iban, "partner_id": suppliers[code].id} for code, iban in SUPPLIER_IBANS.items()
+        ])
+        if all(bank._user_can_trust() for bank in banks):
+            banks.allow_out_payment = True
+
     @api.model
     def _load_demo_data(self):
         if self.with_context(active_test=False).search_count([("name", "=", BUILDINGS[0]["name"])]):
@@ -312,6 +330,7 @@ class VmeAssociation(models.Model):
             code: Partner.create({**vals, "is_company": True, "country_id": self.env.ref("base.be").id})
             for code, vals in {**SUPPLIERS, **INSPECTION_SUPPLIERS}.items()
         }
+        self._demo_supplier_banks(suppliers)
         rule_accounts = []  # (rule, account code): set once the chart of accounts exists
 
         for building in BUILDINGS:

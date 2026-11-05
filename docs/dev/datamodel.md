@@ -45,6 +45,7 @@ erDiagram
 | `vme.arrears` | Achterstal (SQL-view) | Open, vervallen debiteurenlijnen van alle VME's met ouderdom; zie [invordering.md](invordering.md). |
 | `vme.collection` | Invorderingsdossier | Per VME en eigenaar; niveau, kosten, doorsturen. Eén niet-afgesloten dossier per VME en eigenaar. |
 | `vme.collection.reminder` | Herinnering | Niveau 1-3, concept of verstuurd, momentopname van de open bedragen en de tekst. |
+| `vme.bill.ai.check` | Controle van een door AI gelezen factuurveld | Per factuur één rij per gelezen veld: `field_code`, `name`, `value`, `confidence` (hoog/gemiddeld/laag), `status` (in orde/nakijken/gevaar), `message`. Wordt bij elke controle vervangen. Zie [pdf-ai-lezen.md](pdf-ai-lezen.md). |
 | `vme.migration` | Overstap uit een ander pakket | `attachment_ids` (exportbestanden), `source_format`, `state` (nieuw, proefrun gedaan, geïmporteerd), `report_html`, `error_count`, `warning_count`, `transition_date`, `association_id`, `opening_move_id`. Zie [migratie.md](migratie.md). |
 
 Wizards (transient): `vme.provision.call.wizard` en `vme.annual.statement.wizard`, elk met een HTML-voorbeeld (`preview_html`).
@@ -58,6 +59,8 @@ Wizards (transient): `vme.provision.call.wizard` en `vme.annual.statement.wizard
 | `account.move` | `vme_allocation_ids` | De kostenverdeling van deze factuur. |
 | `account.move` | `vme_provision_call_id`, `vme_fund` | Op provisiefacturen: de oproep en het fonds (`working` of `reserve`). |
 | `account.move` | `vme_collection_id` | Op een factuur met nalatigheidsinterest en schadevergoeding: het invorderingsdossier. |
+| `account.move` | `vme_ai_state`, `vme_ai_reading`, `vme_ai_model`, `vme_ai_iban`, `vme_ai_check_ids`, `vme_ai_danger_count`, `vme_ai_warning_count`, `vme_ai_reviewed_by_id`, `vme_ai_reviewed_date` | PDF-factuur zonder UBL, gelezen door AI (stap 21, zie [pdf-ai-lezen.md](pdf-ai-lezen.md)). `vme_ai_iban` is het IBAN zoals gelezen; het wordt nooit een `res.partner.bank`. |
+| `vme.association` | `vme_receive_document()`, `_vme_document_folder()` | Door AI geklasseerd document als bijlage op de VME; het tweede is het uitbreidingspunt voor de mappen van stap 15. |
 | `account.bank.statement.line` | `vme_bank_fund`, `vme_match_state`, `vme_exception`, `vme_days_late`, `vme_match_note`, `vme_structured_reference`, `vme_candidate_move_ids`, `vme_matched_move_ids`, `vme_follow_up` | Koppeling van bankbewegingen met provisies en leveranciersfacturen (stap 12, zie [bankafschriften.md](bankafschriften.md)). |
 | `account.move.line` | `vme_key_id` | Verdeelsleutel per regel; opgeslagen compute die alleen een lege sleutel invult vanuit de verdeelregel. |
 

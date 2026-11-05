@@ -76,3 +76,18 @@ Geen API-sleutel en geen Odoo nodig: het taalmodel en de Odoo-API worden nageboo
 ```
 
 De drie mails komen van de fictieve energieleverancier uit de demodata, met de UBL-facturen uit `addons/vme_belgie/demo_data/facturen/` als bijlage. Een tweede run maakt geen nieuwe facturen: Odoo herkent de Message-ID. Uitleg voor medewerkers: `docs/kb/facturen-per-mail.md`; architectuur: `docs/dev/facturen-per-mail.md`.
+
+## PDF-facturen en documenten lezen (stap 21)
+
+Een PDF zonder UBL op het factuuradres (of opgeladen in Odoo) wordt een conceptfactuur met de vlag "Te lezen door AI". `pdf_facturen.py` leest die facturen met Claude (of `--mock`) en laat Odoo elk veld controleren en invullen; een nieuwe leverancier of een ander IBAN dan de bevestigde rekening is altijd een waarschuwing. `documenten.py` klasseert de PDF's in `documenten_inbox/` (soort en VME) en zet ze bij de VME.
+
+```bash
+.venv/bin/python facturen_mailgate.py --inbox facturen_pdf_inbox --lees-pdf --mock   # aanleveren en meteen lezen
+.venv/bin/python pdf_facturen.py --mock                    # alle facturen die nog gelezen moeten worden
+.venv/bin/python pdf_facturen.py --mock --dry-run          # tonen wat gelezen wordt, niets invullen
+.venv/bin/python pdf_facturen.py --mock --bestand PAD.pdf  # één PDF lezen, zonder Odoo
+.venv/bin/python documenten.py --mock                      # documenten klasseren en bij de VME zetten
+.venv/bin/python tools/maak_demo_pdfs.py                   # fictieve PDF's en mails opnieuw maken
+```
+
+De mock leest alleen de tekst van de eigen demo-PDF's; een echte PDF of scan heeft Claude nodig. Uitleg voor medewerkers: `docs/kb/pdf-facturen-ai.md`; architectuur: `docs/dev/pdf-ai-lezen.md`.

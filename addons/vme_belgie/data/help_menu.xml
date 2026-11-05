@@ -115,6 +115,13 @@
         <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/migratie.md"}</field>
     </record>
 
+    <record id="action_help_pdf_ai" model="ir.actions.server">
+        <field name="name">Help: PDF-facturen en documenten lezen met AI</field>
+        <field name="model_id" ref="model_vme_association"/>
+        <field name="state">code</field>
+        <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/pdf-facturen-ai.md"}</field>
+    </record>
+
     <menuitem id="menu_vme_help" name="Help" parent="menu_vme_root" sequence="99"/>
     <menuitem id="menu_vme_help_kb" name="Kennisbank" parent="menu_vme_help" action="action_help_kb" sequence="1"/>
     <menuitem id="menu_vme_help_vme" name="VME aanmaken en bankrekeningen" parent="menu_vme_help" action="action_help_vme" sequence="10"/>
@@ -130,6 +137,7 @@
     <menuitem id="menu_vme_help_planner" name="Algemene vergaderingen plannen" parent="menu_vme_help" action="action_help_planner" sequence="90"/>
     <menuitem id="menu_vme_help_assembly" name="De algemene vergadering" parent="menu_vme_help" action="action_help_assembly" sequence="100"/>
     <menuitem id="menu_vme_help_bill_mail" name="Facturen per e-mail" parent="menu_vme_help" action="action_help_bill_mail" sequence="110"/>
+    <menuitem id="menu_vme_help_pdf_ai" name="PDF-facturen en documenten lezen met AI" parent="menu_vme_help" action="action_help_pdf_ai" sequence="115"/>
     <menuitem id="menu_vme_help_ai" name="Voorstellen van de AI-assistent" parent="menu_vme_help" action="action_help_ai" sequence="120"/>
     <menuitem id="menu_vme_help_collection" name="Invordering van achterstallen" parent="menu_vme_help" action="action_help_collection" sequence="75"/>
     <menuitem id="menu_vme_help_migration" name="Overstap uit een ander pakket" parent="menu_vme_help" action="action_help_migration" sequence="130"/>

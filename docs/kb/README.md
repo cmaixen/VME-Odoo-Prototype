@@ -38,12 +38,13 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 ### Post en mails
 
 13. [Leveranciersfacturen per e-mail ontvangen](facturen-per-mail.md)
-14. [Een antwoord behandelen dat de AI-assistent voorstelt](ai-voorstellen-mails.md)
-15. [Bankafschriften inlezen en betalingen koppelen](bankafschriften.md)
+14. [PDF-facturen en documenten laten lezen door de AI-assistent](pdf-facturen-ai.md)
+15. [Een antwoord behandelen dat de AI-assistent voorstelt](ai-voorstellen-mails.md)
+16. [Bankafschriften inlezen en betalingen koppelen](bankafschriften.md)
 
 ### Overstappen
 
-16. [Een VME overnemen uit een ander syndicuspakket](migratie.md)
+17. [Een VME overnemen uit een ander syndicuspakket](migratie.md)
 
 ## Zo is het platform opgebouwd
 
