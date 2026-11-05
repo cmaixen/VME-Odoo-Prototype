@@ -1,3 +1,5 @@
 ai/.env
 *.pyc
 __pycache__/
+ai/.venv/
+.pytest_cache/
