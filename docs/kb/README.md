@@ -25,39 +25,40 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 
 8. [Budget en provisieoproepen, met de 5%-regel voor het reservefonds](budget-en-provisieoproepen.md)
 9. [De jaarafrekening lezen en afdrukken](jaarafrekening.md)
-10. [Invordering van achterstallen: herinneringen, interest en doorsturen](invordering.md)
+10. [De balans en resultatenrekening van een VME maken](balans-en-resultatenrekening.md)
+11. [Invordering van achterstallen: herinneringen, interest en doorsturen](invordering.md)
 
 ### Gebouw en installaties
 
-11. [Keuringen en liften opvolgen](keuringen.md)
-12. [Werken opvolgen, van offertes tot oplevering](werken.md)
-13. [Een schadegeval behandelen met de verzekering](schadegevallen.md)
+12. [Keuringen en liften opvolgen](keuringen.md)
+13. [Werken opvolgen, van offertes tot oplevering](werken.md)
+14. [Een schadegeval behandelen met de verzekering](schadegevallen.md)
 
 ### Algemene vergaderingen
 
-14. [Algemene vergaderingen plannen in blokken](av-planner.md)
-15. [De algemene vergadering: oproeping, stemming en notulen](algemene-vergadering.md)
-16. [Een hybride of online algemene vergadering houden](digitale-av.md)
+15. [Algemene vergaderingen plannen in blokken](av-planner.md)
+16. [De algemene vergadering: oproeping, stemming en notulen](algemene-vergadering.md)
+17. [Een hybride of online algemene vergadering houden](digitale-av.md)
 
 ### Post en mails
 
-17. [Leveranciersfacturen per e-mail ontvangen](facturen-per-mail.md)
-18. [Een antwoord behandelen dat de AI-assistent voorstelt](ai-voorstellen-mails.md)
-19. [Bankafschriften inlezen en betalingen koppelen](bankafschriften.md)
+18. [Leveranciersfacturen per e-mail ontvangen](facturen-per-mail.md)
+19. [Een antwoord behandelen dat de AI-assistent voorstelt](ai-voorstellen-mails.md)
+20. [Bankafschriften inlezen en betalingen koppelen](bankafschriften.md)
 
 ### Overstappen
 
-20. [Een VME overnemen uit een ander syndicuspakket](migratie.md)
+21. [Een VME overnemen uit een ander syndicuspakket](migratie.md)
 
 ### Documenten en eigenaars
 
-21. [Documenten van een VME en van een kavel bewaren](documenten.md)
-22. [Het eigenaarsportaal: toegang, wat de eigenaar ziet, adreswijzigingen](eigenaarsportaal.md)
-23. [De raad van mede-eigendom en de commissaris van de rekeningen](raad-en-commissaris.md)
+22. [Documenten van een VME en van een kavel bewaren](documenten.md)
+23. [Het eigenaarsportaal: toegang, wat de eigenaar ziet, adreswijzigingen](eigenaarsportaal.md)
+24. [De raad van mede-eigendom en de commissaris van de rekeningen](raad-en-commissaris.md)
 
 ### Overzichten
 
-24. [De gebouwkaart, de budgetopvolging en de portefeuille](gebouwkaart.md)
+25. [De gebouwkaart, de budgetopvolging en de portefeuille](gebouwkaart.md)
 
 ### Post en mails
 
@@ -73,7 +74,7 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 
 ### Overstappen
 
-25. [Contracten en personeel opvolgen](contracten.md)
+26. [Contracten en personeel opvolgen](contracten.md)
 
 ### Algemene vergaderingen
 
@@ -83,26 +84,26 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 
 ### Bewoners
 
-26. [Aanvragen van bewoners: sleutels, badges en andere vaste procedures](aanvragen-sleutels-badges.md)
+27. [Aanvragen van bewoners: sleutels, badges en andere vaste procedures](aanvragen-sleutels-badges.md)
 
 ### Overstappen
 
-27. [Leveranciers betalen en provisies domiciliëren](betalingen.md)
+28. [Leveranciers betalen en provisies domiciliëren](betalingen.md)
 
 ### Overstappen
 
-28. [PDF-facturen en documenten laten lezen door de AI-assistent](pdf-facturen-ai.md)
+29. [PDF-facturen en documenten laten lezen door de AI-assistent](pdf-facturen-ai.md)
 
 ### Overstappen
 
-29. [Communicatie met eigenaars: mededelingen, bevragingen en aangetekende brieven](communicatie.md)
+30. [Communicatie met eigenaars: mededelingen, bevragingen en aangetekende brieven](communicatie.md)
 
 ### Overstappen
 
 
 ### Rentmeester
 
-30. [Een verhuurd appartement beheren: huurcontract, huurfacturen, indexering en afrekening aan de huurder](rentmeester.md)
+31. [Een verhuurd appartement beheren: huurcontract, huurfacturen, indexering en afrekening aan de huurder](rentmeester.md)
 
 ## Zo is het platform opgebouwd
 

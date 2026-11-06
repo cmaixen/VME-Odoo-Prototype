@@ -95,3 +95,14 @@ Voorbeeld (uit `test_consumption.py`): 1000 euro, 30% vast, A1 600/1000 en 100 e
 - **Controle**: `is_complete` als er geen geboekte factuur zonder verdeling is en de som van de verdeling gelijk is aan de som van de facturen.
 
 Het rapport (`report/vme_annual_statement_report.xml`) toont per eigenaar kavels, kosten per sleutel, afrekening werkkapitaal, reservekapitaal en het detail per factuur.
+
+## Balans en resultatenrekening
+
+`vme.association._get_financial_statements(year)` (stap 26) rekent uit de geboekte regels van de VME, met het vorige jaar ernaast:
+
+- **Balans per 31/12**: elke rekening in een rubriek van het KB; 48901 = saldo 100200, 48902 = saldo 100100 + het resultaat van alle jaren.
+- **Kosten** per rubriek, bruto: de overboekingen van werken naar het reservekapitaal tellen niet mee. Met de niet-aftrekbare btw zijn ze gelijk aan de som van `price_total` van de leveranciersfacturen van het jaar (op boekingsdatum).
+- **Opbrengsten**: 700/701 = de beweging op 100200/100100 in het jaar (zonder overboekingen voor werken), 75 en 76.
+- **Over te dragen middelen** per fonds: beginstand + voorschotten + andere opbrengsten − kosten ten laste = eindstand, gelijk aan 48901/48902.
+
+Details en de indeling van de rekeningen staan in [financiele-rapporten.md](financiele-rapporten.md).

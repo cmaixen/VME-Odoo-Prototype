@@ -170,9 +170,28 @@ class TestAnnualStatementDemo(TransactionCase):
         beuken = self.env["vme.association"].search([("name", "=", "Hof ter Beuken")])
         data = beuken._get_annual_statement(2026)
         self.assertTrue(data["is_complete"])
-        paid_all = [st for st in data["statements"] if st["working"]["open"] == 0]
-        self.assertTrue(any(st["balance"] > 0 for st in paid_all))
-        self.assertTrue(any(st["balance"] < 0 for st in paid_all))
+        # The budget follows gas and caretaker (docs/beslissingen.md): heavy gas users pay extra, light ones get money back.
+        settled = [st["balance"] for st in data["statements"] if st["working"]["open"] == 0]
+        self.assertTrue(any(balance > 0 for balance in settled))
+        self.assertTrue(any(balance < 0 for balance in settled))
+
+    def test_financial_statements_of_demo_history(self):
+        """Stap 26: the balance sheet and income statement 2026 of every demo VME agree with the books."""
+        for vme in self.env["vme.association"].search([]):
+            data = vme._get_financial_statements(2026)
+            self.assertTrue(data["balance_ok"], vme.name)
+            self.assertTrue(data["carry_ok"], vme.name)
+            self.assertFalse(data["unclassified"], vme.name)
+            bills = self.env["account.move"].search([
+                ("company_id", "=", vme.company_id.id), ("move_type", "in", ("in_invoice", "in_refund")),
+                ("state", "=", "posted"), ("date", ">=", date(2026, 1, 1)), ("date", "<=", date(2026, 12, 31))])
+            # VAT is a cost: the costs of the year are the bills VAT included.
+            self.assertAlmostEqual(data["costs_total"]["amount"], -sum(bills.mapped("amount_total_signed")), places=2,
+                                   msg=vme.name)
+            capital = vme._get_capital_history(date(2026, 12, 31))
+            liabilities = {row["code"]: row["amount"] for row in data["liabilities"]}
+            self.assertAlmostEqual(liabilities["48901"], capital["reserve"], places=2, msg=vme.name)
+            self.assertAlmostEqual(liabilities["48902"], capital["working"], places=2, msg=vme.name)
 
     def test_demo_bank_statements(self):
         """The fictitious CODA/CAMT files (stap 12) still match the invoice numbers of the demo history."""

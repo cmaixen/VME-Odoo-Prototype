@@ -93,6 +93,7 @@ Draai dit ongeveer 15 minuten voor de demo, in de map van het project. Docker (O
 3. In de tabel: eigenaar A1 krijgt 515,64 € terug, A3 heeft nog 432 € open staan, en de verkoper en de koper van A5 hebben elk hun eigen afrekening.
 4. Klik op **Afdrukken (PDF)** en toon één pagina: kosten per sleutel, provisies, saldo, reservekapitaal apart, detail per factuur.
 5. Kies daarna *Hof ter Beuken*: daar betalen de grote verbruikers bij en krijgen de kleine geld terug, door de gasfactuur van de centrale verwarming. Die is verdeeld op verbruik (30% vast, 70% volgens de kostenverdelers): onder de verwarmingssleutel staat per eigenaar zijn verbruik.
+6. Open de VME *Residentie Linde* en klik op **Balans en resultatenrekening**, boekjaar *2026*: de balans sluit (groene controle), de kosten staan per rubriek van het wettelijke rekeningstelsel, en wat overblijft, gaat per fonds naar 2027. Toon de PDF; de commissaris van de rekeningen kan hetzelfde openen voor zijn VME.
 
 > Boodschap: "De afrekening die u nu een week kost, staat klaar zodra de laatste factuur geboekt is."
 

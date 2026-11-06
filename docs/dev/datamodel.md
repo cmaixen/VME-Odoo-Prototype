@@ -79,7 +79,7 @@ erDiagram
 | `vme.capital.movement` | Verloop kapitalen (SQL-view) | Provisies en gebruik van werk- en reservekapitaal per datum, voor een gecumuleerde lijngrafiek. |
 | `vme.migration` | Overstap uit een ander pakket | `attachment_ids` (exportbestanden), `source_format`, `state` (nieuw, proefrun gedaan, geïmporteerd), `report_html`, `error_count`, `warning_count`, `transition_date`, `association_id`, `opening_move_id`. Zie [migratie.md](migratie.md). |
 
-Wizards (transient): `vme.provision.call.wizard` en `vme.annual.statement.wizard`, elk met een HTML-voorbeeld (`preview_html`).
+Wizards (transient): `vme.provision.call.wizard`, `vme.annual.statement.wizard` en `vme.financial.statements.wizard` (balans en resultatenrekening, stap 26), elk met een HTML-voorbeeld (`preview_html`).
 
 ### Documenten en portaal (stap 15)
 
@@ -127,7 +127,7 @@ De modellen van de rentmeester (`vme.rent.*`) staan in de module `vme_rentmeeste
 | 100200 | Reservekapitaal | Idem voor reservekapitaal |
 | 416100 | Door te rekenen privékosten | Privé-aanrekening van een aanvraag (factuur aan de eigenaar, credit) en de factuur van de slotenmaker (debet); wordt de eerste keer aangemaakt. Zie [aanvragen.md](aanvragen.md). |
 
-De codes 100100 en 100200 zijn eigen keuzes en moeten nog afgestemd worden op het minimumrekeningenstelsel voor VME's (`# LEGAL-CHECK: KB 12 juli 2012`).
+De codes 100100 en 100200 zijn eigen keuzes: het minimumrekeningstelsel voor VME's (KB 12 juli 2012) heeft geen klasse 10. De balans en resultatenrekening van stap 26 tonen ze als voorschotten 700/701 en over te dragen middelen 489; zie [financiele-rapporten.md](financiele-rapporten.md). Btw op leveranciersfacturen staat sinds stap 26 op de kostenrekening, niet op 411000.
 
 ## Bankdagboeken
 

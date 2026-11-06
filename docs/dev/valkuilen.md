@@ -104,6 +104,12 @@ De webclient leest records met `bin_size=True` in de context. Een binair veld (o
 
 Sinds er buitengewone AV's zijn, kan een VME meer dan één AV per jaar hebben. Code of tests die "de AV van VME X in jaar Y" zoeken, filteren op `assembly_type = 'ordinary'`, anders krijgen ze twee records (`ensure_one` faalt, of een vergelijking op een recordset van twee).
 
+## Btw op aankopen en de verdeelregels van een belasting (stap 26)
+
+- **Btw kwam op 411000 terecht.** Het Belgische rekeningstelsel boekt aankoopbtw als terug te vorderen; voor een VME is ze een kost. Een btw-verdeelregel zonder rekening laat Odoo de btw op de rekening van de factuurregel boeken. Belastingen met een negatieve verdeelregel (verlegging) slaan we over, anders komen +21% en −21% op dezelfde kostenrekening.
+- **Facturen van vóór de migratie** houden hun btw op 411000. Op een bestaande database staat die dan als "diverse vorderingen" op de balans; een verse demo heeft dat niet.
+- **`_read_group` met `move_id` in de groepering** geeft één groep per boeking. Voor 200 VME's per rapport is dat snel genoeg (één VME per keer); voor een rapport over alle VME's samen zou je per rekening en dagboek groeperen en de fondsen apart opzoeken.
+
 ## Bekende problemen (nog open)
 
 - Geen op dit moment.
