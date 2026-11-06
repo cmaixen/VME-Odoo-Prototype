@@ -27,7 +27,7 @@
                 <tr t-foreach="assembly.item_ids" t-as="item">
                     <td t-out="item.sequence"/>
                     <td>
-                        <span t-out="item.name"/>
+                        <span t-out="item.name"/><t t-if="item.allow_advance_vote"> *</t>
                         <div t-if="item.description" class="text-muted small" t-out="item.description"/>
                     </td>
                     <td><span t-field="item.majority"/></td>
@@ -47,7 +47,7 @@
                         <div class="row mb-4">
                             <div class="col-6">
                                 <h2 class="mb-0">Oproeping</h2>
-                                <div class="text-muted">Gewone algemene vergadering <t t-out="assembly.year"/></div>
+                                <div class="text-muted"><t t-if="assembly.assembly_type == 'extraordinary'">Buitengewone</t><t t-else="">Gewone</t> algemene vergadering <t t-out="assembly.year"/><t t-if="assembly.subject">: <t t-out="assembly.subject"/></t></div>
                                 <div class="text-muted">VME <t t-out="vme.name"/><t t-if="vme.kbo_number"> · KBO <t t-out="vme.kbo_number"/></t></div>
                             </div>
                             <div class="col-5 offset-1">
@@ -57,12 +57,21 @@
                         </div>
                         <p>Beste mede-eigenaar,</p>
                         <p>
-                            De syndicus nodigt u uit op de gewone algemene vergadering van de VME <t t-out="vme.name"/>
+                            De syndicus nodigt u uit op de <t t-if="assembly.assembly_type == 'extraordinary'">buitengewone</t><t t-else="">gewone</t> algemene vergadering van de VME <t t-out="vme.name"/>
                             op <strong><span t-field="assembly.datetime_start" t-options="{'tz': 'Europe/Brussels', 'format': 'EEEE d MMMM yyyy \'om\' HH:mm'}"/></strong>,
                             <t t-if="assembly.slot_id.location_type == 'room'">
                                 in <strong t-out="assembly.slot_id.room_id.name"/><t t-if="assembly.slot_id.room_id.address">, <t t-out="assembly.slot_id.room_id.address"/></t>.
                             </t>
-                            <t t-else="">online. U ontvangt de link voor de vergadering apart.</t>
+                            <t t-else="">online.</t>
+                        </p>
+                        <p t-if="assembly.meeting_mode != 'in_person'">
+                            <t t-if="assembly.meeting_mode == 'hybrid'">U kunt ook online deelnemen en stemmen.</t>
+                            <t t-else="">U neemt online deel en stemt in het eigenaarsportaal.</t>
+                            Gebruik daarvoor deze link en meld u aan in het eigenaarsportaal:
+                            <strong t-out="assembly.online_url"/>. Online aanwezigen tellen mee voor het quorum.
+                        </p>
+                        <p t-if="assembly.item_ids.filtered('allow_advance_vote')">
+                            Over de punten met een * kunt u vooraf schriftelijk stemmen in het eigenaarsportaal, tot de vergadering begint.
                         </p>
                         <p>
                             U beschikt over <strong t-out="'%g' % o.shares"/> stemmen (quotiteiten in de gemene delen).
@@ -73,7 +82,7 @@
                         <p class="small text-muted">
                             Een volmachthouder mag niet meer dan drie volmachten aannemen, tenzij hij met zijn eigen stemmen
                             en die van zijn volmachtgevers niet meer dan 10% van alle stemmen heeft.
-                            Uw jaarafrekening van <t t-out="assembly.year - 1"/> zit als aparte bijlage bij deze oproeping.
+                            <t t-if="assembly.assembly_type == 'ordinary'">Uw jaarafrekening van <t t-out="assembly.year - 1"/> zit als aparte bijlage bij deze oproeping.</t>
                         </p>
                         <p>Met vriendelijke groeten,<br/>De syndicus</p>
 
@@ -82,7 +91,7 @@
                         <p>Ondergetekende, <strong t-out="o.partner_id.name"/>, eigenaar van kavel(s) <t t-out="o.lot_names"/>
                             in de VME <t t-out="vme.name"/>, geeft volmacht aan</p>
                         <p class="mt-4">Naam: ..............................................................................................</p>
-                        <p>om hem of haar te vertegenwoordigen op de gewone algemene vergadering van
+                        <p>om hem of haar te vertegenwoordigen op de algemene vergadering van
                             <span t-field="assembly.date"/>, deel te nemen aan de beraadslaging en te stemmen over de agendapunten:</p>
                         <table class="table table-sm">
                             <thead><tr><th>Nr.</th><th>Agendapunt</th><th class="text-center">Voor</th><th class="text-center">Tegen</th><th class="text-center">Onthouding</th></tr></thead>
@@ -114,12 +123,12 @@
                     <div class="page">
                         <h2 class="mb-0">Notulen</h2>
                         <div class="text-muted mb-3">
-                            Gewone algemene vergadering <t t-out="assembly.year"/> · VME <t t-out="vme.name"/>
+                            <t t-if="assembly.assembly_type == 'extraordinary'">Buitengewone</t><t t-else="">Gewone</t> algemene vergadering <t t-out="assembly.year"/><t t-if="assembly.subject">: <t t-out="assembly.subject"/></t> · VME <t t-out="vme.name"/>
                             <t t-if="vme.kbo_number"> · KBO <t t-out="vme.kbo_number"/></t>
                         </div>
                         <p>
                             Vergadering van <span t-field="assembly.datetime_start" t-options="{'tz': 'Europe/Brussels', 'format': 'd MMMM yyyy \'om\' HH:mm'}"/>
-                            in <t t-out="assembly.location"/>.
+                            in <t t-out="assembly.location"/><t t-if="assembly.meeting_mode == 'hybrid'"> en online</t>.
                             <t t-if="assembly.chair_id">Voorzitter: <t t-out="assembly.chair_id.name"/>.</t>
                             <t t-if="assembly.secretary_id">Secretaris: <t t-out="assembly.secretary_id.name"/>.</t>
                         </p>
@@ -140,6 +149,7 @@
                                     <td class="text-end" t-out="'%g' % att.shares"/>
                                     <td>
                                         <span t-field="att.attendance"/>
+                                        <t t-if="att.attendance == 'present' and att.attendance_mode in ('online', 'written')"> (<span t-field="att.attendance_mode"/>)</t>
                                         <t t-if="att.attendance == 'represented'"> door <t t-out="att.proxy_holder_id.name"/></t>
                                     </td>
                                 </tr>
@@ -156,6 +166,13 @@
                                 Voor: <t t-out="'%g' % item.votes_for"/>, tegen: <t t-out="'%g' % item.votes_against"/>,
                                 onthouding: <t t-out="'%g' % item.votes_abstain"/>.
                                 <strong>Uitslag: <span t-field="item.outcome"/>.</strong>
+                                <t t-set="remote_votes" t-value="item.vote_ids.filtered(lambda v: v.source != 'room')"/>
+                                <span t-if="remote_votes" class="small text-muted">
+                                    (<t t-out="len(remote_votes.filtered(lambda v: v.source == 'online'))"/> online en
+                                    <t t-out="len(remote_votes.filtered(lambda v: v.source == 'written'))"/> schriftelijke stemmen
+                                    via het portaal<t t-if="item.voting_closed_at">, stemming gesloten om
+                                    <span t-field="item.voting_closed_at" t-options="{'tz': 'Europe/Brussels', 'format': 'HH:mm'}"/></t>.)
+                                </span>
                                 <div t-if="item.vote_ids.filtered(lambda v: v.vote != 'for')" class="small text-muted">
                                     Tegen of onthouding:
                                     <t t-out="', '.join('%s (%s)' % (v.partner_id.name, dict(v._fields['vote']._description_selection(v.env))[v.vote].lower()) for v in item.vote_ids.filtered(lambda v: v.vote != 'for'))"/>
@@ -164,6 +181,10 @@
                             <div t-if="item.decision"><em t-out="item.decision"/></div>
                         </div>
 
+                        <p t-if="assembly.meeting_mode != 'in_person'" class="small text-muted mt-4">
+                            Deze notulen kunnen elektronisch ondertekend worden in het eigenaarsportaal. Het auditspoor
+                            (naam, tijdstip, IP-adres en SHA-256 van deze PDF per ondertekenaar) bewaart de syndicus.
+                        </p>
                         <div class="row mt-5" style="page-break-inside: avoid;">
                             <div class="col-4">De voorzitter</div>
                             <div class="col-4">De secretaris</div>

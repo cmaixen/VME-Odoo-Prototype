@@ -96,7 +96,8 @@ class TestDemoData(TransactionCase):
         self.assertTrue(self.env["res.users"].search([("login", "=", "medewerker.voorbeeld@example.com")]))
 
     def test_demo_assembly_linde_2026(self):
-        assembly = self.env["vme.assembly"].search([("association_id", "=", self.linde.id), ("year", "=", 2026)])
+        assembly = self.env["vme.assembly"].search([
+            ("association_id", "=", self.linde.id), ("year", "=", 2026), ("assembly_type", "=", "ordinary")])
         self.assertEqual(assembly.state, "held")
         self.assertEqual((assembly.owners_total, assembly.owners_present), (12, 10))
         self.assertTrue(assembly.quorum_reached)
@@ -108,6 +109,20 @@ class TestDemoData(TransactionCase):
         self.assertFalse(roof.activity_ids)
         self.assertEqual(roof.works_ids.state, "awarded")
         self.assertEqual(len(assembly.item_ids.filtered("decision_number")), 7)
+
+    def test_demo_hybrid_assembly_linde(self):
+        assembly = self.env["vme.assembly"].search([
+            ("association_id", "=", self.linde.id), ("assembly_type", "=", "extraordinary")])
+        self.assertEqual((assembly.state, assembly.meeting_mode, assembly.date), ("confirmed", "hybrid", date(2026, 11, 19)))
+        self.assertTrue(assembly.online_url)
+        self.assertFalse(assembly.online_open)
+        a1 = self.env["res.partner"].search([("name", "=", "Eigenaar Linde A1")])
+        rights = assembly.attendee_ids.filtered(lambda a: a.proxy_holder_id == a1)
+        self.assertEqual(rights.partner_id.name, "Eigenaar Linde A7")
+        self.assertEqual(len(assembly.item_ids), 3)
+        self.assertEqual(len(assembly.item_ids.filtered("allow_advance_vote")), 1)
+        for login in ("eigenaar.linde.a1@example.com", "eigenaar.linde.a6@example.com"):
+            self.assertTrue(self.env["res.users"].search([("login", "=", login), ("share", "=", True)]))
 
     def test_demo_sale_linde_a3(self):
         sale = self.env["vme.sale.file"].search([("association_id", "=", self.linde.id)])

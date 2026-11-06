@@ -70,11 +70,13 @@ class VmeAssembly(models.Model):
     def create(self, vals_list):
         assemblies = super().create(vals_list)
         for assembly in assemblies.filtered(lambda a: not a.item_ids):
+            # An extraordinary assembly only gets the opening; its own points are added by hand.
+            agenda = DEFAULT_AGENDA if assembly.assembly_type == "ordinary" else DEFAULT_AGENDA[:1]
             assembly.item_ids = [fields.Command.create({
                 "sequence": index,
                 "name": title.format(prev=assembly.year - 1, year=assembly.year),
                 "majority": majority,
-            }) for index, (title, majority) in enumerate(DEFAULT_AGENDA, start=1)]
+            }) for index, (title, majority) in enumerate(agenda, start=1)]
         return assemblies
 
     @api.depends("convocation_ids")
@@ -309,15 +311,17 @@ class VmeAssemblyItem(models.Model):
         return "adopted" if adopted else "rejected"
 
     def _prepare_votes(self):
+        """A vote line in the room for every present or represented owner who does not vote through the portal."""
         Vote = self.env["vme.assembly.vote"]
         for item in self:
-            attendees = item.assembly_id.attendee_ids.filtered(lambda a: a.attendance in ("present", "represented"))
+            attendees = item.assembly_id.attendee_ids.filtered(
+                lambda a: a.attendance in ("present", "represented") and not a.votes_remotely)
             missing = attendees - item.vote_ids.attendee_id
             Vote.create([{"item_id": item.id, "attendee_id": a.id} for a in missing])
 
     def action_all_for(self):
         self._prepare_votes()
-        self.vote_ids.vote = "for"
+        self.vote_ids.filtered(lambda v: v.source == "room").vote = "for"
 
     def action_open_votes(self):
         self.ensure_one()
@@ -450,7 +454,7 @@ class VmeAssemblyConvocation(models.Model):
                 "year": assembly.year - 1,
                 "partner_ids": [fields.Command.set(convocation.partner_id.ids)],
             })
-            if statement._get_statement()["statements"]:
+            if assembly.assembly_type == "ordinary" and statement._get_statement()["statements"]:
                 content, _ext = Report._render_qweb_pdf("vme_belgie.action_report_annual_statement", statement.ids)
                 attachments |= self.env["ir.attachment"].create({
                     "name": f"Jaarafrekening {assembly.year - 1} - {convocation.partner_id.name}.pdf",
@@ -465,13 +469,31 @@ class VmeAssemblyConvocation(models.Model):
         """Open the mail composer with the documents; the employee checks and sends it."""
         self.ensure_one()
         assembly = self.assembly_id
-        body = self.env._(
-            "<p>Beste %(owner)s,</p><p>Als eigenaar van %(lots)s nodigen wij u uit op de gewone algemene "
-            "vergadering van %(vme)s op %(date)s in %(place)s. In bijlage vindt u de oproeping met de agenda, "
-            "een volmachtformulier en uw jaarafrekening.</p><p>Met vriendelijke groeten,<br/>De syndicus</p>",
-            owner=self.partner_id.name, lots=self.lot_names, vme=assembly.association_id.name,
-            date=format_date(self.env, assembly.date), place=assembly.location,
-        )
+        if assembly.assembly_type == "ordinary":
+            body = self.env._(
+                "<p>Beste %(owner)s,</p><p>Als eigenaar van %(lots)s nodigen wij u uit op de gewone algemene "
+                "vergadering van %(vme)s op %(date)s in %(place)s. In bijlage vindt u de oproeping met de agenda, "
+                "een volmachtformulier en uw jaarafrekening.</p>",
+                owner=self.partner_id.name, lots=self.lot_names, vme=assembly.association_id.name,
+                date=format_date(self.env, assembly.date), place=assembly.location,
+            )
+        else:
+            body = self.env._(
+                "<p>Beste %(owner)s,</p><p>Als eigenaar van %(lots)s nodigen wij u uit op een buitengewone algemene "
+                "vergadering van %(vme)s op %(date)s in %(place)s. In bijlage vindt u de oproeping met de agenda "
+                "en een volmachtformulier.</p>",
+                owner=self.partner_id.name, lots=self.lot_names, vme=assembly.association_id.name,
+                date=format_date(self.env, assembly.date), place=assembly.location,
+            )
+        if assembly.online_url:
+            # LEGAL-CHECK: art. 3.87 §1 BW - the convocation states how to take part at a distance.
+            body += self.env._(
+                "<p>U kunt ook online deelnemen en stemmen. Gebruik op de avond van de vergadering deze link en "
+                "meld u aan in het eigenaarsportaal: <a href=\"%(url)s\">%(url)s</a>.</p>", url=assembly.online_url)
+        if assembly.item_ids.filtered("allow_advance_vote"):
+            body += self.env._(
+                "<p>Over sommige punten kunt u vooraf schriftelijk stemmen in het portaal, tot de vergadering begint.</p>")
+        body += self.env._("<p>Met vriendelijke groeten,<br/>De syndicus</p>")
         return {
             "type": "ir.actions.act_window",
             "res_model": "mail.compose.message",
@@ -481,8 +503,7 @@ class VmeAssemblyConvocation(models.Model):
                 "default_model": self._name,
                 "default_res_ids": self.ids,
                 "default_composition_mode": "comment",
-                "default_subject": self.env._("Oproeping gewone AV %(year)s %(vme)s",
-                                              year=assembly.year, vme=assembly.association_id.name),
+                "default_subject": self.env._("Oproeping %s", assembly.name),
                 "default_body": body,
                 "default_partner_ids": self.partner_id.ids,
                 "default_attachment_ids": self.attachment_ids.ids,

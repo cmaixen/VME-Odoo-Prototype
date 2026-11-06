@@ -39,7 +39,8 @@ Legende: ✅ gebouwd · 🔨 wordt nu gebouwd · 📋 gepland · ➖ bewust late
 | | Werken met offertes en schadegevallen met de verzekeraar | ✅ | stap 14 |
 | Algemene vergadering | Planning in blokken | ✅ | stap 6c |
 | | Agenda, oproeping, stemming, notulen en opvolging | ✅ | stap 11 |
-| | Hybride en digitaal vergaderen, elektronisch stemmen en tekenen | 🔨 | stap 24 |
+| | Hybride en digitaal vergaderen, elektronisch stemmen en tekenen | ✅ | stap 24 |
+| | Buitengewone AV naast de gewone | ✅ | stap 24 |
 | Gebouwbeheer en eigendomsbeheer | Gebouwen, kavels, quotiteiten, eigenaars | ✅ | stap 2 |
 | | Gebouwkaart met de financiële toestand en een overzicht van de portefeuille | ✅ | stap 22 |
 | | Raad van mede-eigendom met overzicht van de lopende dossiers | ✅ | stap 16 |
@@ -67,4 +68,5 @@ Legende: ✅ gebouwd · 🔨 wordt nu gebouwd · 📋 gepland · ➖ bewust late
 - Kosten per dag verdeeld bij een verkoop, met de kostperiode uit de Peppol-factuur (stap 4b).
 - Een mail "ik wil een extra badge" wordt een aanvraag die de aanvrager herkent, het juiste bewijs opvraagt, de bestelling bij de slotenmaker klaarzet en de kost privé aanrekent; het sleutelregister volgt de eigendom tot in de akte (stap 19).
 - Portefeuille met signalen over alle VME's (reservefonds onder 5%, achterstallen, AV buiten de periode, vervallen keuring), live berekend (stap 22).
+- Hybride AV zonder Enterprise: online stemmen met dezelfde rekenregels als in de zaal, en notulen ondertekend in het portaal met een auditspoor (naam, tijdstip, IP en SHA-256 van de PDF) (stap 24).
 - Alles op Odoo Community, zonder licentiekosten per gebruiker.

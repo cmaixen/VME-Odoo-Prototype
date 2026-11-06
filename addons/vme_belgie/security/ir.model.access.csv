@@ -64,3 +64,4 @@ access_vme_registered_mail_user,vme.registered.mail user,model_vme_registered_ma
 access_vme_budget_line_user,vme.budget.line user,model_vme_budget_line,base.group_user,1,1,1,1
 access_vme_budget_analysis_user,vme.budget.analysis user,model_vme_budget_analysis,base.group_user,1,0,0,0
 access_vme_capital_movement_user,vme.capital.movement user,model_vme_capital_movement,base.group_user,1,0,0,0
+access_vme_assembly_signature_user,vme.assembly.signature user,model_vme_assembly_signature,base.group_user,1,1,1,1

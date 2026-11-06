@@ -40,6 +40,7 @@ Een nieuwe eigenaar ziet dus de oudere documenten van het gebouw (basisakte, not
 | `/my/vme/<id>/statement/<jaar>` en `/pdf` | Afrekening van die eigenaar; de PDF gebruikt het bestaande rapport via een tijdelijke `vme.annual.statement.wizard` met alleen die eigenaar |
 | `/my/vme/document/<id>` | Bestand via `ir.binary._get_stream_from`; `?download=1` als bijlage |
 | `/my/vme/address` | Formulier; maakt `vme.address.request` en een taak voor de beheerder |
+| `/av/<code>`, `/my/vme/assembly/<id>` | Online deelnemen, stemmen en notulen ondertekenen (stap 24, zie [digitale-av.md](digitale-av.md)) |
 
 De PDF van een provisie is Odoo's eigen factuurroute (`move.get_portal_url(report_type="pdf")`), met het toegangstoken van de factuur: de portaalgebruiker heeft geen toegang tot de company van de VME, het token volstaat.
 
@@ -61,7 +62,7 @@ De knop **Portaaltoegang** in het register opent Odoo's `portal.wizard`. Die stu
 
 ## Testen in de browser
 
-Testlogins in de demo (wachtwoord `portaal-demo`): `eigenaar.linde.a1@example.com` (A1 en G1) en `eigenaar.linde.a5@example.com` (verkocht A5 en G5 op 1 juli 2026). Gebruik voor een tweede demo een eigen hostnaam, zoals `http://portaal.localhost:8570`: zie [valkuilen](valkuilen.md#sessiecookies-per-hostnaam).
+Testlogins in de demo (wachtwoord `portaal-demo`): `eigenaar.linde.a1@example.com` (A1 en G1), `eigenaar.linde.a5@example.com` (verkocht A5 en G5 op 1 juli 2026) en `eigenaar.linde.a6@example.com` (A6 en G6, secretaris van de hybride AV van stap 24). Gebruik voor een tweede demo een eigen hostnaam, zoals `http://portaal.localhost:8570`: zie [valkuilen](valkuilen.md#sessiecookies-per-hostnaam).
 
 ## Nog niet gebouwd
 

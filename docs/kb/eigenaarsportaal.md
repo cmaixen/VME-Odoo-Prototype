@@ -17,6 +17,7 @@ Na het inloggen klikt de eigenaar op **Mijn mede-eigendom**. Per VME ziet hij:
 
 - **Zijn kavels**, met de datum waarop hij eigenaar werd (en tot wanneer, na een verkoop).
 - **De volgende algemene vergadering**: de periode, of zodra ze gepland is de datum, de plaats en de agenda.
+- Bij een hybride of online AV een knop **Online deelnemen en stemmen**, en na de vergadering de melding **Notulen te ondertekenen** (zie [Een hybride of online algemene vergadering houden](digitale-av.md)).
 - **Provisies**: elke provisieoproep met fonds, vervaldag, bedrag, wat nog te betalen is en de status (betaald, deels betaald, open, vervallen). Met een PDF per oproep.
 - **Jaarafrekeningen**: per jaar zijn kosten per verdeelsleutel, de facturen, wat hij betaalde en zijn saldo, ook als PDF. Het lopende jaar staat er als "voorlopig".
 - **Documenten**, per map (zie [Documenten van een VME en van een kavel](documenten.md)).

@@ -244,22 +244,34 @@ class VmeAssembly(models.Model):
         string="Signaal", compute="_compute_warning", search="_search_warning_level",
     )
     calendar_event_id = fields.Many2one("calendar.event", string="Afspraak", readonly=True, copy=False)
+    # LEGAL-CHECK: art. 3.87 §2 BW - besides the ordinary assembly in its yearly period, the syndic
+    # convenes an extraordinary assembly whenever a decision is needed.
+    assembly_type = fields.Selection(
+        [("ordinary", "Gewone AV"), ("extraordinary", "Buitengewone AV")],
+        string="Soort", required=True, default="ordinary",
+    )
+    subject = fields.Char(string="Onderwerp", help="Voor een buitengewone AV, bv. Laadpalen in de garage")
 
-    _unique_year_per_association = models.Constraint(
-        "UNIQUE (association_id, year)",
+    # One ordinary assembly per VME and year; extraordinary assemblies are free.
+    _unique_ordinary_year = models.UniqueIndex(
+        "(association_id, year) WHERE assembly_type = 'ordinary'",
         "Er bestaat al een gewone AV voor deze VME en dit jaar.",
     )
 
-    @api.depends("association_id.name", "year")
+    @api.depends("association_id.name", "year", "assembly_type", "subject")
     def _compute_name(self):
         for assembly in self:
-            assembly.name = self.env._("Gewone AV %(year)s %(vme)s", year=assembly.year,
-                                       vme=assembly.association_id.name or "")
+            vme = assembly.association_id.name or ""
+            if assembly.assembly_type == "extraordinary":
+                assembly.name = self.env._("Buitengewone AV %(year)s %(vme)s", year=assembly.year, vme=vme) + (
+                    f": {assembly.subject}" if assembly.subject else "")
+            else:
+                assembly.name = self.env._("Gewone AV %(year)s %(vme)s", year=assembly.year, vme=vme)
 
-    @api.depends("association_id.assembly_period_month", "association_id.assembly_period_day", "year")
+    @api.depends("association_id.assembly_period_month", "association_id.assembly_period_day", "year", "assembly_type")
     def _compute_period(self):
         for assembly in self:
-            if assembly.association_id and assembly.year:
+            if assembly.association_id and assembly.year and assembly.assembly_type == "ordinary":
                 assembly.period_start, assembly.period_end = assembly.association_id._get_assembly_period(assembly.year)
             else:
                 assembly.period_start = assembly.period_end = False
@@ -312,6 +324,12 @@ class VmeAssembly(models.Model):
         """(message, level) for the planning dashboard; (False, "ok") when all is well."""
         self.ensure_one()
         if self.state in ("held", "cancelled"):
+            return False, "ok"
+        if self.assembly_type == "extraordinary":
+            if self.date and not self.convocation_sent_date and today > self.convocation_deadline:
+                return self.env._(
+                    "De oproeping zou te laat vertrekken: uiterlijk %s.",
+                    format_date(self.env, self.convocation_deadline)), "danger"
             return False, "ok"
         if not self.period_start:
             return self.env._("De VME heeft geen AV-periode."), "warning"
@@ -412,7 +430,7 @@ class VmeAssembly(models.Model):
                 "user_id": slot.user_id.id,
                 "partner_ids": [fields.Command.set(slot.user_id.partner_id.ids)],
                 "location": slot.room_id.address and f"{slot.room_id.name}, {slot.room_id.address}" or assembly.location,
-                "description": self.env._("Gewone algemene vergadering van %s.", assembly.association_id.name),
+                "description": assembly.name,
                 "res_model_id": model,
                 "res_id": assembly.id,
             }
@@ -436,7 +454,8 @@ class VmeAssembly(models.Model):
     def _create_missing_assemblies(self, year, associations=None):
         """One ordinary assembly per VME with an assembly period, if it does not exist yet."""
         associations = (associations or self.env["vme.association"].search([])).filtered("assembly_period_month")
-        existing = self.search([("year", "=", year), ("association_id", "in", associations.ids)]).association_id
+        existing = self.search([("year", "=", year), ("association_id", "in", associations.ids),
+                                ("assembly_type", "=", "ordinary")]).association_id
         return self.create([{"association_id": vme.id, "year": year} for vme in associations - existing])
 
     def _propose_schedule(self, today=None):
@@ -448,7 +467,7 @@ class VmeAssembly(models.Model):
         Returns the assemblies that could not be planned.
         """
         today = today or self._today()
-        todo = self.filtered(lambda a: a.state == "draft" and a.period_start)
+        todo = self.filtered(lambda a: a.state == "draft" and a.period_start and a.assembly_type == "ordinary")
         if not todo:
             return todo
         # A block is only usable if the convocation can still leave on time.

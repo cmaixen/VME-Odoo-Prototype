@@ -32,3 +32,4 @@ from . import vme_communication
 from . import vme_budget_tracking
 from . import vme_building_card
 from . import res_partner_supplier_card
+from . import vme_assembly_online

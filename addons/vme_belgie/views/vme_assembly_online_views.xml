@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Digital and hybrid assembly (step 24): online reception, electronic votes, signatures. -->
+    <record id="vme_assembly_view_form_online" model="ir.ui.view">
+        <field name="name">vme.assembly.form.online</field>
+        <field name="model">vme.assembly</field>
+        <field name="inherit_id" ref="vme_belgie.vme_assembly_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_mark_held']" position="before">
+                <button name="action_open_online" type="object" string="Online onthaal openen" class="btn-primary"
+                        invisible="state != 'confirmed' or meeting_mode == 'in_person' or online_open"/>
+                <button name="action_close_online" type="object" string="Online onthaal sluiten"
+                        invisible="not online_open"/>
+            </xpath>
+            <xpath expr="//button[@name='action_print_minutes']" position="after">
+                <button name="action_prepare_signing" type="object" string="Notulen ter ondertekening"
+                        invisible="state != 'held' or signature_state not in ('none', 'invalid')"
+                        confirm="De notulen worden als PDF vastgezet. Wie ze ondertekent, tekent precies deze PDF."/>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_minutes_pdf" type="object" class="oe_stat_button" icon="fa-file-pdf-o"
+                        invisible="not minutes_attachment_id">
+                    <div class="o_stat_info"><span class="o_stat_text">Notulen</span><span class="o_stat_text">ter ondertekening</span></div>
+                </button>
+            </xpath>
+            <xpath expr="//field[@name='association_id']" position="after">
+                <field name="assembly_type" readonly="id"/>
+                <field name="subject" invisible="assembly_type != 'extraordinary'"/>
+            </xpath>
+            <xpath expr="//field[@name='period_start']" position="attributes">
+                <attribute name="invisible">assembly_type != 'ordinary'</attribute>
+            </xpath>
+            <xpath expr="//field[@name='period_end']" position="attributes">
+                <attribute name="invisible">assembly_type != 'ordinary'</attribute>
+            </xpath>
+            <xpath expr="//div[hasclass('oe_title')]" position="after">
+                <div class="alert alert-info" role="status" invisible="not online_open">
+                    Het online onthaal is open: <field name="online_attendee_count" class="oe_inline"/> eigenaars online aanwezig.
+                    Open per agendapunt de stemming en sluit ze als iedereen gestemd heeft.
+                </div>
+                <div class="alert alert-danger" role="alert" invisible="signature_state != 'invalid'">
+                    De notulen zijn gewijzigd nadat ze ondertekend werden: de handtekeningen zijn ongeldig.
+                    Zet de notulen opnieuw ter ondertekening.
+                </div>
+            </xpath>
+            <xpath expr="//field[@name='item_ids']/list/field[@name='decision_number']" position="after">
+                <field name="allow_advance_vote" optional="hide" readonly="voting_state != 'not_open'"/>
+                <field name="voting_state" widget="badge" optional="show" decoration-warning="voting_state == 'open'"
+                       decoration-muted="voting_state == 'closed'" column_invisible="parent.meeting_mode == 'in_person'"/>
+                <field name="online_vote_count" string="Portaal" optional="show" column_invisible="parent.meeting_mode == 'in_person'"/>
+                <button name="action_open_voting" type="object" string="Stemming openen" icon="fa-unlock"
+                        invisible="parent.meeting_mode == 'in_person' or parent.state != 'confirmed' or voting_state != 'not_open' or majority == 'none' or not id"/>
+                <button name="action_close_voting" type="object" string="Stemming sluiten" icon="fa-lock"
+                        invisible="voting_state != 'open'"/>
+            </xpath>
+            <xpath expr="//field[@name='attendee_ids']/list/field[@name='attendance']" position="after">
+                <field name="attendance_mode" invisible="attendance != 'present'"/>
+                <field name="checked_in_at" optional="show"/>
+                <field name="check_in_ip" optional="hide"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Online" name="online">
+                    <group>
+                        <group>
+                            <field name="meeting_mode" readonly="state in ('held', 'cancelled')"/>
+                            <field name="video_url" widget="url" invisible="meeting_mode == 'in_person'"/>
+                            <field name="online_url" widget="CopyClipboardChar" invisible="not online_url"/>
+                            <field name="online_open" invisible="meeting_mode == 'in_person'"/>
+                        </group>
+                        <div class="text-muted" colspan="2">
+                            De link voor online deelname staat in de concept-oproeping. Eigenaars melden zich aan in het
+                            portaal zodra het online onthaal open is, en stemmen per agendapunt zolang de stemming open is.
+                            Wie een volmacht gaf, kan zich niet zelf aanmelden. Er wordt niets automatisch verstuurd.
+                        </div>
+                    </group>
+                </page>
+                <page string="Ondertekening" name="signatures" invisible="not signature_ids">
+                    <group>
+                        <field name="signature_state"/>
+                        <field name="minutes_attachment_id" invisible="1"/>
+                        <field name="minutes_sha256"/>
+                    </group>
+                    <field name="signature_ids" readonly="1">
+                        <list decoration-success="is_valid" decoration-danger="state == 'signed' and not is_valid">
+                            <field name="partner_id"/>
+                            <field name="role"/>
+                            <field name="state" widget="badge" decoration-success="state == 'signed'"/>
+                            <field name="signed_at"/>
+                            <field name="signed_name" optional="show"/>
+                            <field name="ip_address"/>
+                            <field name="document_sha256" optional="hide"/>
+                            <field name="user_agent" optional="hide"/>
+                            <field name="is_valid"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="vme_assembly_item_view_form_online" model="ir.ui.view">
+        <field name="name">vme.assembly.item.form.online</field>
+        <field name="model">vme.assembly.item</field>
+        <field name="inherit_id" ref="vme_belgie.vme_assembly_item_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/button[@name='action_all_for']" position="after">
+                <button name="action_open_voting" type="object" string="Stemming openen"
+                        invisible="voting_state != 'not_open' or majority == 'none'"/>
+                <button name="action_close_voting" type="object" string="Stemming sluiten" class="btn-primary"
+                        invisible="voting_state != 'open'"/>
+            </xpath>
+            <xpath expr="//field[@name='decision_number']" position="after">
+                <field name="voting_state"/>
+                <field name="allow_advance_vote" readonly="voting_state != 'not_open'"/>
+                <field name="voting_opened_at" invisible="not voting_opened_at"/>
+                <field name="voting_closed_at" invisible="not voting_closed_at"/>
+            </xpath>
+            <xpath expr="//field[@name='vote_ids']/list" position="attributes">
+                <attribute name="decoration-info">source != 'room'</attribute>
+            </xpath>
+            <xpath expr="//field[@name='vote_ids']/list/field[@name='vote']" position="attributes">
+                <attribute name="readonly">source != 'room'</attribute>
+            </xpath>
+            <xpath expr="//field[@name='vote_ids']/list/field[@name='vote']" position="after">
+                <field name="source"/>
+                <field name="voter_partner_id" optional="show"/>
+                <field name="cast_at" optional="show"/>
+                <field name="ip_address" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

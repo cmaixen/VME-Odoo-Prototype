@@ -37,26 +37,27 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 
 14. [Algemene vergaderingen plannen in blokken](av-planner.md)
 15. [De algemene vergadering: oproeping, stemming en notulen](algemene-vergadering.md)
+16. [Een hybride of online algemene vergadering houden](digitale-av.md)
 
 ### Post en mails
 
-16. [Leveranciersfacturen per e-mail ontvangen](facturen-per-mail.md)
-17. [Een antwoord behandelen dat de AI-assistent voorstelt](ai-voorstellen-mails.md)
-18. [Bankafschriften inlezen en betalingen koppelen](bankafschriften.md)
+17. [Leveranciersfacturen per e-mail ontvangen](facturen-per-mail.md)
+18. [Een antwoord behandelen dat de AI-assistent voorstelt](ai-voorstellen-mails.md)
+19. [Bankafschriften inlezen en betalingen koppelen](bankafschriften.md)
 
 ### Overstappen
 
-19. [Een VME overnemen uit een ander syndicuspakket](migratie.md)
+20. [Een VME overnemen uit een ander syndicuspakket](migratie.md)
 
 ### Documenten en eigenaars
 
-20. [Documenten van een VME en van een kavel bewaren](documenten.md)
-21. [Het eigenaarsportaal: toegang, wat de eigenaar ziet, adreswijzigingen](eigenaarsportaal.md)
-22. [De raad van mede-eigendom en de commissaris van de rekeningen](raad-en-commissaris.md)
+21. [Documenten van een VME en van een kavel bewaren](documenten.md)
+22. [Het eigenaarsportaal: toegang, wat de eigenaar ziet, adreswijzigingen](eigenaarsportaal.md)
+23. [De raad van mede-eigendom en de commissaris van de rekeningen](raad-en-commissaris.md)
 
 ### Overzichten
 
-23. [De gebouwkaart, de budgetopvolging en de portefeuille](gebouwkaart.md)
+24. [De gebouwkaart, de budgetopvolging en de portefeuille](gebouwkaart.md)
 
 ### Post en mails
 
@@ -72,7 +73,7 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 
 ### Overstappen
 
-24. [Contracten en personeel opvolgen](contracten.md)
+25. [Contracten en personeel opvolgen](contracten.md)
 
 ### Algemene vergaderingen
 
@@ -82,26 +83,26 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 
 ### Bewoners
 
-25. [Aanvragen van bewoners: sleutels, badges en andere vaste procedures](aanvragen-sleutels-badges.md)
+26. [Aanvragen van bewoners: sleutels, badges en andere vaste procedures](aanvragen-sleutels-badges.md)
 
 ### Overstappen
 
-26. [Leveranciers betalen en provisies domiciliëren](betalingen.md)
+27. [Leveranciers betalen en provisies domiciliëren](betalingen.md)
 
 ### Overstappen
 
-27. [PDF-facturen en documenten laten lezen door de AI-assistent](pdf-facturen-ai.md)
+28. [PDF-facturen en documenten laten lezen door de AI-assistent](pdf-facturen-ai.md)
 
 ### Overstappen
 
-28. [Communicatie met eigenaars: mededelingen, bevragingen en aangetekende brieven](communicatie.md)
+29. [Communicatie met eigenaars: mededelingen, bevragingen en aangetekende brieven](communicatie.md)
 
 ### Overstappen
 
 
 ### Rentmeester
 
-29. [Een verhuurd appartement beheren: huurcontract, huurfacturen, indexering en afrekening aan de huurder](rentmeester.md)
+30. [Een verhuurd appartement beheren: huurcontract, huurfacturen, indexering en afrekening aan de huurder](rentmeester.md)
 
 ## Zo is het platform opgebouwd
 
