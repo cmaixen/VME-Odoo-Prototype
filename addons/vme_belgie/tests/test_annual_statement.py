@@ -75,6 +75,18 @@ class TestAnnualStatementSmall(TransactionCase):
         # B: costs 400, paid 240 (second call open), balance +160 to pay; 240 still open.
         self.assertEqual((b["cost_total"], b["working"]["paid"], b["working"]["open"], b["balance"]), (400.0, 240.0, 240.0, 160.0))
 
+    def test_reversed_call_is_not_paid(self):
+        unpaid = self.env["account.move"].search([
+            ("vme_provision_call_id.association_id", "=", self.vme.id), ("partner_id", "=", self.owner_b.id),
+            ("vme_fund", "=", "working"), ("vme_provision_call_id.number", "=", 2),
+        ])
+        unpaid._reverse_moves(cancel=True)
+        self.assertEqual(unpaid.payment_state, "reversed")
+        _data, b = self._statement(self.owner_b)
+        # The cancelled call of 240 is neither invoiced nor paid: B still owes 400 - 240.
+        self.assertEqual((b["working"]["invoiced"], b["working"]["paid"], b["working"]["open"], b["balance"]),
+                         (240.0, 240.0, 0.0, 160.0))
+
     def test_reserve_capital_is_not_settled(self):
         _data, a = self._statement(self.owner_a)
         self.assertEqual((a["reserve"]["invoiced"], a["reserve"]["paid"]), (120.0, 120.0))
