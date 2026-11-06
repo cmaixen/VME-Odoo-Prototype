@@ -13,6 +13,7 @@ import re
 import zipfile
 from datetime import date, datetime
 
+from dateutil.relativedelta import relativedelta
 from markupsafe import Markup
 
 from odoo import api, fields, models
@@ -31,9 +32,13 @@ TABLES = {
     "kavels": ["kavel", "type", "verdieping"],
     "eigenaars": ["code", "naam", "email", "telefoon", "straat", "postcode", "gemeente"],
     "eigendommen": ["kavel", "eigenaar", "begindatum", "einddatum"],
-    "sleutels": ["sleutel", "soort", "totaal", "kavel", "quotiteit"],
+    "sleutels": ["sleutel", "soort", "totaal", "kavel", "quotiteit", "meerderheid"],
     "leveranciers": ["code", "naam", "btw", "email", "iban", "sleutel"],
     "openingsbalans": ["soort", "code", "bedrag", "omschrijving"],
+    # What the minutes of the previous syndic left open (docs/dev/overname-ai.md).
+    "werken": ["omschrijving", "bedrag", "financiering", "sleutel", "datum_av"],
+    "procedures": ["omschrijving", "tegenpartij", "stand"],
+    "mandaten": ["rol", "naam", "begindatum", "einddatum"],
 }
 REQUIRED_COLUMNS = {
     "vme": ["naam", "kbo", "overstapdatum"],
@@ -43,8 +48,13 @@ REQUIRED_COLUMNS = {
     "sleutels": ["sleutel", "soort", "totaal", "kavel", "quotiteit"],
     "leveranciers": ["code", "naam"],
     "openingsbalans": ["soort", "bedrag"],
+    "werken": ["omschrijving", "bedrag"],
+    "procedures": ["omschrijving"],
+    "mandaten": ["rol", "naam", "begindatum"],
 }
-OPTIONAL_TABLES = {"leveranciers"}
+OPTIONAL_TABLES = {"leveranciers", "werken", "procedures", "mandaten"}
+# Optional tables whose absence is worth a warning.
+EXPECTED_TABLES = {"leveranciers"}
 
 LOT_TYPES = {
     "appartement": "apartment", "garage": "garage", "berging": "storage",
@@ -59,6 +69,8 @@ OPENING_KINDS = {
     "bank_werkkapitaal": 1, "bank_reservekapitaal": 1, "eigenaar": 1, "rekening": 1,
     "fonds_werkkapitaal": -1, "fonds_reservekapitaal": -1, "leverancier": -1,
 }
+FINANCING = {"werkkapitaal": "working", "reservekapitaal": "reserve"}
+MANDATE_ROLES = {"voorzitter": "chair", "lid": "member", "commissaris": "auditor"}
 DATE_FORMATS = ("%d/%m/%Y", "%Y-%m-%d", "%d-%m-%Y", "%d.%m.%Y")
 
 
@@ -96,6 +108,18 @@ def is_valid_be_number(value):
     """KBO number or Belgian VAT number: 10 digits, the last two a mod-97 check."""
     digits = re.sub(r"\D", "", value or "")
     return len(digits) == 10 and digits[0] in "01" and 97 - int(digits[:8]) % 97 == int(digits[8:])
+
+
+def is_four_fifths(majority):
+    """Whether a majority as written in the minutes is at least four fifths of the votes."""
+    text = (majority or "").lower()
+    if re.search(r"unaniem|eenparig|alle stemmen|vier vijfde", text):
+        return True
+    fraction = re.search(r"(\d+)\s*/\s*(\d+)", text)
+    percent = re.search(r"(\d+(?:[.,]\d+)?)\s*%", text)
+    if fraction and int(fraction[2]):
+        return int(fraction[1]) / int(fraction[2]) >= 0.8
+    return bool(percent) and float(percent[1].replace(",", ".")) >= 80
 
 
 def _cell(value):
@@ -218,6 +242,10 @@ class VmeMigration(models.Model):
     def _convert_standard(self, tables):
         return tables
 
+    def _apply_proposal(self, tables, messages):
+        """Extension point: the accepted lines of the AI reading of deed and minutes (vme_migration_ai.py)."""
+        return tables
+
     # --- Checking ---
 
     def _check(self):
@@ -229,6 +257,7 @@ class VmeMigration(models.Model):
         self.ensure_one()
         tables, pdfs, messages = self._read_files()
         tables = self._convert_files(tables)
+        tables = self._apply_proposal(tables, messages)
         checker = _Checker(self.env, tables, messages)
         plan = checker.run()
         plan["archive"] = pdfs
@@ -330,7 +359,11 @@ class VmeMigration(models.Model):
             self.env._("Openingsboeking: %(count)s regels, totaal %(total)s", count=len(plan["opening"]),
                        total=formatLang(self.env, debit, currency_obj=currency)),
             self.env._("%s PDF's voor het archief", len(plan["archive"])),
-        ]
+        ] + [line for line in (
+            plan["works"] and self.env._("%s werken uit de notulen (in voorbereiding)", len(plan["works"])),
+            plan["procedures"] and self.env._("%s lopende procedures (als taak op de VME)", len(plan["procedures"])),
+            plan["mandates"] and self.env._("%s mandaten (raad en commissaris)", len(plan["mandates"])),
+        ) if line]
 
     # --- Import ---
 
@@ -418,12 +451,43 @@ class VmeMigration(models.Model):
                 })
             suppliers[code] = partner
 
+        self._import_minutes(vme, plan, keys, owners)
         move = self._create_opening_move(vme, plan, journals, owners, suppliers)
         self._archive_documents(vme, plan["archive"])
         vme.message_post(body=self.env._(
             "Overgenomen uit een ander pakket via %(migration)s, overstapdatum %(date)s.",
             migration=self.name, date=data["date"].strftime("%d/%m/%Y")))
         return vme, move
+
+    def _import_minutes(self, vme, plan, keys, owners):
+        """What the minutes left open: works in preparation, mandates, and a to-do per procedure."""
+        for works in plan["works"]:
+            decided = works["date"] and self.env._("Beslist door de AV van %s.", works["date"].strftime("%d/%m/%Y"))
+            self.env["vme.works"].create({
+                "name": works["name"], "association_id": vme.id, "budget": works["amount"],
+                "key_id": keys[works["key"]].id if works["key"] else False, "financing": works["financing"],
+                "description": Markup("<p>%s %s</p>") % (
+                    decided or "", self.env._("Overgenomen van de vorige syndicus bij de overstap.")),
+            })
+        Partner = self.env["res.partner"]
+        for mandate in plan["mandates"]:
+            partner = owners[mandate["owner"]] if mandate["owner"] else Partner.create({"name": mandate["name"]})
+            self.env["vme.mandate"].create({
+                "association_id": vme.id, "role": mandate["role"], "partner_id": partner.id,
+                "date_start": mandate["start"], **({"date_end": mandate["end"]} if mandate["end"] else {}),
+            })
+        if plan["procedures"]:
+            # The proceedings also go to the notary with every sale (vme_sale_file.py).
+            vme.legal_proceedings = Markup("<p>%s</p><ul>%s</ul>") % (
+                self.env._("Overgenomen van de vorige syndicus:"),
+                Markup("").join(Markup("<li>%s</li>") % p["name"] for p in plan["procedures"]))
+        for procedure in plan["procedures"]:
+            vme.activity_schedule(
+                "mail.mail_activity_data_todo", user_id=self.env.user.id,
+                summary=self.env._("Lopende procedure: %s", procedure["counterparty"] or procedure["name"][:60]),
+                note=Markup("<p>%s</p><p>%s</p>") % (procedure["name"], procedure["status"] or self.env._(
+                    "Overgenomen van de vorige syndicus: vraag het dossier op bij de advocaat.")),
+            )
 
     def _create_opening_move(self, vme, plan, journals, owners, suppliers):
         """One posted entry with all balances on the transition date."""
@@ -519,7 +583,7 @@ class _Checker:
 
     def run(self):
         plan = {"vme": None, "lots": [], "owners": {}, "ownerships": [], "keys": {},
-                "suppliers": {}, "opening": []}
+                "suppliers": {}, "opening": [], "works": [], "procedures": [], "mandates": []}
         if not self._check_tables():
             return plan
         plan["vme"] = self._check_vme()
@@ -530,6 +594,9 @@ class _Checker:
         plan["keys"] = self._check_keys(lot_names)
         plan["suppliers"] = self._check_suppliers(plan["keys"])
         plan["opening"] = self._check_opening(plan)
+        plan["works"] = self._check_works(plan["keys"])
+        plan["procedures"] = self._check_procedures()
+        plan["mandates"] = self._check_mandates(plan)
         self._check_coverage(plan)
         return plan
 
@@ -537,6 +604,8 @@ class _Checker:
         ok = True
         for table, columns in REQUIRED_COLUMNS.items():
             if table not in self.tables:
+                if table in OPTIONAL_TABLES and table not in EXPECTED_TABLES:
+                    continue
                 if table in OPTIONAL_TABLES:
                     self.add("warning", table, 0, self._("Bestand %s.csv ontbreekt; er worden geen leveranciers "
                                                          "overgenomen.", table))
@@ -724,7 +793,8 @@ class _Checker:
             if total is None or shares is None:
                 continue
             key = keys.setdefault(name, {"key_type": KEY_TYPES[key_type], "total": total, "lines": {},
-                                         "_line": row["_line"]})
+                                         "_line": row["_line"], "majority": ""})
+            key["majority"] = key["majority"] or self._text(row, "meerderheid")
             if KEY_TYPES[key_type] != key["key_type"] or float_compare(total, key["total"], SHARES_PRECISION):
                 self.add("error", "sleutels", row["_line"], self._(
                     "Sleutel %s heeft niet op elke regel dezelfde soort en hetzelfde totaal.", name))
@@ -745,6 +815,13 @@ class _Checker:
                     "De quotiteiten van sleutel %(key)s tellen op tot %(sum)s, maar het totaal is %(total)s "
                     "(verschil: %(diff)s).", key=name, sum=f"{total_sum:g}", total=f"{key['total']:g}",
                     diff=f"{key['total'] - total_sum:g}"))
+            if key["majority"] and not is_four_fifths(key["majority"]):
+                # LEGAL-CHECK: art. 3.88 §1, 2°, a) BW - changing the distribution of the charges of the
+                # co-ownership is a change of the statutes and needs four fifths of the votes.
+                self.add("warning", "sleutels", key["_line"], self._(
+                    "Sleutel %(key)s werd aangenomen met %(majority)s. Een afwijking van de verdeling in de "
+                    "basisakte vraagt 4/5 van de stemmen: kijk na of de beslissing geldig is.",
+                    key=name, majority=key["majority"]))
         general = [name for name, key in keys.items() if key["key_type"] == "general"]
         if not general:
             self.add("error", "sleutels", 0, self._(
@@ -844,6 +921,78 @@ class _Checker:
         if not lines:
             self.add("warning", "openingsbalans", 0, self._("De openingsbalans is leeg; er komt geen openingsboeking."))
         return lines
+
+    def _check_works(self, keys):
+        works = []
+        for row in self.rows("werken"):
+            if not self._required("werken", row, REQUIRED_COLUMNS["werken"]):
+                continue
+            amount = self._amount("werken", row, "bedrag")
+            financing = self._text(row, "financiering").lower() or "reservekapitaal"
+            key, ok = self._text(row, "sleutel"), amount is not None
+            if amount is not None and float_compare(amount, 0.0, precision_digits=2) <= 0:
+                self.add("error", "werken", row["_line"], self._("Het geraamde bedrag moet groter zijn dan 0."))
+                ok = False
+            if financing not in FINANCING:
+                self.add("error", "werken", row["_line"], self._(
+                    "Onbekende financiering %s; kies werkkapitaal of reservekapitaal.", financing))
+                ok = False
+            if key and key not in keys:
+                self.add("error", "werken", row["_line"], self._("Sleutel %s bestaat niet in de sleutels.", key))
+                ok = False
+            elif not key:
+                self.add("warning", "werken", row["_line"], self._(
+                    "Geen sleutel bij %s; het werkdossier gebruikt de algemene sleutel.", self._text(row, "omschrijving")))
+            date = self._date("werken", row, "datum_av")
+            if ok:
+                works.append({"name": self._text(row, "omschrijving"), "amount": amount, "key": key,
+                              "financing": FINANCING[financing], "date": date})
+        return works
+
+    def _check_procedures(self):
+        return [{"name": self._text(row, "omschrijving"), "counterparty": self._text(row, "tegenpartij"),
+                 "status": self._text(row, "stand")}
+                for row in self.rows("procedures") if self._required("procedures", row, ["omschrijving"])]
+
+    def _check_mandates(self, plan):
+        mandates = []
+        by_name = {owner["name"].lower(): code for code, owner in plan["owners"].items()}
+        for row in self.rows("mandaten"):
+            if not self._required("mandaten", row, REQUIRED_COLUMNS["mandaten"]):
+                continue
+            role, name = self._text(row, "rol").lower(), self._text(row, "naam")
+            start, end = self._date("mandaten", row, "begindatum"), self._date("mandaten", row, "einddatum")
+            if role not in MANDATE_ROLES:
+                self.add("error", "mandaten", row["_line"], self._(
+                    "Onbekende rol %s; kies voorzitter, lid of commissaris.", role))
+                continue
+            if not start or (end and end < start):
+                if start:
+                    self.add("error", "mandaten", row["_line"], self._("De einddatum ligt vóór de begindatum."))
+                continue
+            owner = by_name.get(name.lower())
+            owns = owner and any(
+                o["owner"] == owner and o["start"] <= start and (not o["end"] or o["end"] >= start)
+                for o in plan["ownerships"])
+            if MANDATE_ROLES[role] in ("chair", "member") and not owns:
+                # LEGAL-CHECK: art. 3.90 §1 BW - only co-owners sit on the council (as vme.mandate checks).
+                self.add("error", "mandaten", row["_line"], self._(
+                    "%(name)s is op %(date)s geen eigenaar volgens de eigendommen; alleen mede-eigenaars "
+                    "zetelen in de raad van mede-eigendom.", name=name, date=start.strftime("%d/%m/%Y")))
+                continue
+            if not owner:
+                self.add("info", "mandaten", row["_line"], self._(
+                    "%s is geen eigenaar en wordt als nieuw contact aangemaakt.", name))
+            mandates.append({"role": MANDATE_ROLES[role], "name": name, "owner": owner, "start": start, "end": end,
+                             "_line": row["_line"]})
+        chairs = sorted((m for m in mandates if m["role"] == "chair"), key=lambda m: m["start"])
+        for previous, current in zip(chairs, chairs[1:]):
+            # Without an end date a mandate runs one year, as in vme.mandate.
+            end = previous["end"] or previous["start"] + relativedelta(years=1, days=-1)
+            if end >= current["start"]:
+                self.add("error", "mandaten", current["_line"], self._(
+                    "Er is al een voorzitter van de raad in deze periode (%s).", previous["name"]))
+        return mandates
 
     def _check_coverage(self, plan):
         owned = {o["owner"] for o in plan["ownerships"]}

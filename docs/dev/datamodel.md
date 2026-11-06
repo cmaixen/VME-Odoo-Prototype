@@ -36,6 +36,7 @@ erDiagram
     vme_contract }o--o| vme_installation : "installation_id (onderhoudscontract)"
     vme_migration }o--o| vme_association : "association_id (na import)"
     vme_migration }o--o| account_move : "opening_move_id (openingsboeking)"
+    vme_migration ||--o{ vme_migration_proposal : "proposal_ids (voorstel uit basisakte en notulen)"
 ```
 
 ## Eigen modellen
@@ -78,7 +79,8 @@ erDiagram
 | `vme.budget.analysis` | Budgetopvolging (SQL-view) | Budgetregels, niet-ingedeeld budget en werkelijke kosten per VME, jaar, rekening en sleutel; `budget_to_date` gespreid per dag tot vandaag. |
 | `vme.capital.movement` | Verloop kapitalen (SQL-view) | Provisies en gebruik van werk- en reservekapitaal per datum, voor een gecumuleerde lijngrafiek. |
 | `vme.cycle.step` | Stap in de jaarcyclus | Uniek per VME, jaar, `code` en `sequence` (nummer van de provisieoproep); `date_ready`, `date_deadline`, `state` (gepland, klaargezet, afgerond, niet van toepassing), `user_id`, `res_model`/`res_id` van het concept; berekend `is_late`. Op `vme.association`: `cycle_start_date`, `cycle_user_id`, `cycle_current_step`, `cycle_late_count`. Zie [jaarcyclus.md](jaarcyclus.md). |
-| `vme.migration` | Overstap uit een ander pakket | `attachment_ids` (exportbestanden), `source_format`, `state` (nieuw, proefrun gedaan, geïmporteerd), `report_html`, `error_count`, `warning_count`, `transition_date`, `association_id`, `opening_move_id`. Zie [migratie.md](migratie.md). |
+| `vme.migration` | Overstap uit een ander pakket | `attachment_ids` (exportbestanden), `document_ids` (basisakte en notulen), `ai_state` (geen, te lezen, gelezen), `ai_model`, `source_format`, `state` (nieuw, proefrun gedaan, geïmporteerd), `report_html`, `error_count`, `warning_count`, `transition_date`, `association_id`, `opening_move_id`. Zie [migratie.md](migratie.md). |
+| `vme.migration.proposal` | Voorstelregel uit de basisakte of de notulen | `migration_id`, `sequence`, `kind` (vme, kavel, aandeel, werken, procedure, mandaat), waardevelden per soort (tekst), bron `attachment_id`/`page`/`fragment`, `confidence`, `note`, `origin` (ai, manueel), `state` (na te kijken, aanvaard, geweigerd), `edited`, berekend `uncertain`. Zie [overname-ai.md](overname-ai.md). |
 
 Wizards (transient): `vme.provision.call.wizard`, `vme.annual.statement.wizard` en `vme.financial.statements.wizard` (balans en resultatenrekening, stap 26), elk met een HTML-voorbeeld (`preview_html`).
 Wizards (transient): `vme.provision.call.wizard` en `vme.annual.statement.wizard`, elk met een HTML-voorbeeld (`preview_html`). Meer dan 20 VME's in de provisiewizard worden een `vme.provision.call.run` (budgetjaar, nummer, datums, VME's, verwerkte VME's, status, logboek), die een cron VME per VME afwerkt (zie [schaal.md](schaal.md)).

@@ -18,6 +18,7 @@ from . import vme_collection
 from . import vme_payment
 from . import account_bank_statement_line
 from . import vme_migration
+from . import vme_migration_ai
 from . import vme_works
 from . import vme_damage
 from . import vme_document
