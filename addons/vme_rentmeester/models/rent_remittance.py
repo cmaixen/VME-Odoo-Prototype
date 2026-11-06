@@ -125,6 +125,13 @@ class VmeRentRemittance(models.Model):
         return self.env["vme.rent.contract"].with_context(active_test=False).search([
             ("landlord_id", "=", self.landlord_id.id), ("company_id", "=", self.company_id.id)])
 
+    @api.ondelete(at_uninstall=False)
+    def _unlink_except_confirmed(self):
+        # Its lines mark what was already paid out: without them the next remittance pays it again.
+        if confirmed := self.filtered(lambda r: r.state == "confirmed"):
+            raise UserError(self.env._(
+                "Een bevestigde doorstorting kan niet verwijderd worden: %s.", ", ".join(confirmed.mapped("name"))))
+
     def _done_lines(self):
         """Lines already in a confirmed remittance: never taken twice."""
         return self.env["vme.rent.remittance.line"].sudo().search([
