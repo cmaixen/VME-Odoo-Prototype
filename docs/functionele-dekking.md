@@ -61,6 +61,25 @@ Legende: ✅ gebouwd · 🔨 wordt nu gebouwd · 📋 gepland · ➖ bewust late
 | | Aanvragen per mail als vaste procedure (AI) | ✅ | stap 19 |
 | | Aanvragen en antwoorden op bevragingen via het portaal | 📋 | koppelplaatsen in stap 19 en 23 bestaan; aansluiten op het portaal van stap 15 |
 
+## Vergelijking met de VME-pagina van Odoo
+
+Odoo beschrijft op zijn sectorpagina "Vereniging van eigenaren" (november 2026) wat zijn eigen Enterprise-pakket biedt. Dat pakket gebruiken we niet (licentie); dit is alleen de vergelijking van de functies.
+
+| Functie volgens Odoo | Status | Waar |
+| --- | --- | --- |
+| Vastgoed snel instellen, elk type kavel | ✅ | stap 2, overstap uit een ander pakket |
+| Eigenaars, huurders en leveranciers op één plek | ✅ | stap 2, 19, 22, 25 |
+| Taken automatisch aangemaakt voor beheer, onderhoud en financiën | ✅ | stap 6b, 10, 18, 19 |
+| Facturen voor werk- en reservefonds, kosten verdeeld op aandelen | ✅ | stap 4, 5 |
+| Bankrekeningen, inkomende en uitgaande betalingen | ✅ | stap 12, 20 (rechtstreekse koppeling ➖) |
+| Financiële rapporten voor eigenaars, van overzicht tot jaarbudget | ✅ | stap 5, 6, 15, 22 |
+| Stemmen automatisch geteld op aandelen | ✅ | stap 11, 24 |
+| Wettelijke rapporten per VME: balans en resultatenrekening | 📋 | Odoo Community heeft geen financiële rapporten (die zitten in Enterprise); een eigen balans en resultatenrekening per VME volgens het minimumrekeningstelsel komt in een volgende stap |
+| Auditklaar: financiële historiek, communicatie en notulen | ✅ | chatter, stap 11, 16, 23 |
+| Serviceverzoeken centraal (Helpdesk) | ✅ | stap 19, zonder de Helpdesk-app |
+| Vergaderingen plannen (Kalender) | ✅ | stap 6c |
+| Documenten | ✅ | stap 15 |
+
 ## Waar het prototype verder gaat
 
 - AI-assistent die mails van eigenaars aan VME en kavel koppelt en een antwoord voorstelt (stap 7).
