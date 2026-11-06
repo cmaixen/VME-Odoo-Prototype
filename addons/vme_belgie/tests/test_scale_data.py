@@ -34,6 +34,8 @@ class TestScaleData(TransactionCase):
         self.assertTrue(all(o.email.endswith("@example.com") for o in owners))
         self.assertFalse(vme.untrusted_fund_bank_ids)
         self.assertTrue(vme.budget_ids and vme.installation_ids)
+        self.assertTrue(vme.construction_year and vme._building_policies())
+        self.assertTrue(vme.document_ids.filtered(lambda d: d.certificate_type == "epc_common"))
 
 
 # About a hundred payments in one test transaction: slow in Odoo's test environment, like the demo year.

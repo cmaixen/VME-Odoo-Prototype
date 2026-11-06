@@ -11,6 +11,7 @@ steps per batch, each followed by a commit (tools/scale_data.py does that):
 2. _load_scale_history(): accounts on rules and budget lines, provision calls 2026 with payments,
    and a year of supplier bills, distributed automatically when posted.
 """
+import base64
 import math
 import random
 from datetime import date, timedelta
@@ -27,6 +28,8 @@ SCALE_PREFIX = "Residentie Test"
 # Bank account numbers far above those of the demo, so both can live in one database.
 SCALE_ACCOUNT_OFFSET = 500000
 SCALE_TODAY = date(2026, 11, 5)  # the demo date
+# Placeholder file of the generated certificates.
+SCALE_CERTIFICATE_PDF = base64.b64encode(b"%PDF-1.4\n% Fictief attest voor de schaaltest\n")
 
 # Fictitious suppliers (VAT 0000 + number with valid check digits): key type, account, VAT on bill.
 SCALE_SUPPLIERS = {
@@ -53,6 +56,8 @@ UNPAID_OWNER_RATE = 0.06
 SCALE_STAFF = 10
 # Share of VMEs without a held ordinary assembly in 2026 (assembly signal).
 NO_ASSEMBLY_RATE = 0.05
+# Share of VMEs built before 2001 without an asbestos certificate yet (certificate signal).
+NO_ASBESTOS_RATE = 0.1
 
 
 def _check_digits_number(number, digits=8):
@@ -256,7 +261,42 @@ class VmeAssociation(models.Model):
             assembly = self.env["vme.assembly"].create({
                 "association_id": vme.id, "year": HISTORY_YEAR, "slot_id": slot.id})
             assembly.state = "held"
+        self._create_scale_compliance(vme, suppliers)
         return vme
+
+    def _create_scale_compliance(self, vme, suppliers):
+        """Building insurance, electrical inspection and certificates (vme_compliance.py).
+
+        A separate random seed, so the portfolio generated before this step stays the same.
+        """
+        rng = random.Random(f"compliance-{vme.name}")
+        vme.construction_year = rng.randint(1960, 2020)
+        # The due dates are spread over the coming year: about one in twelve within 30 days.
+        date_end = SCALE_TODAY + timedelta(days=rng.randint(1, 365))
+        self.env["vme.insurance.policy"].create({
+            "association_id": vme.id, "name": "Brandverzekering gebouw", "policy_type": "building",
+            "insurer_id": suppliers["insurance"].id, "policy_number": f"BR-{vme.kbo_number}",
+            "date_start": date_end - timedelta(days=364), "date_end": date_end,
+            "insured_value": round(len(vme.lot_ids) * rng.randint(150000, 250000), -4),
+        })
+        electrical = self.env["vme.installation"].create({
+            "association_id": vme.id, "name": "Elektrische installatie gemene delen", "installation_type": "electrical",
+            "inspection_partner_id": suppliers["inspection"].id,
+        })
+        self.env["vme.inspection"].create({
+            "installation_id": electrical.id, "kind": "inspection", "result": "compliant",
+            "partner_id": suppliers["inspection"].id, "date": SCALE_TODAY - timedelta(days=rng.randint(60, 1500)),
+        })
+        certificates = [("epc_common", "vme_belgie.folder_certificates", "EPC gemeenschappelijke delen")]
+        if vme.construction_year >= 2001:
+            certificates.append(("pid", "vme_belgie.folder_pid", "Postinterventiedossier"))
+        elif rng.random() >= NO_ASBESTOS_RATE:
+            certificates.append(("asbestos", "vme_belgie.folder_certificates", "Asbestattest gemene delen"))
+        self.env["vme.document"].create([{
+            "name": title, "association_id": vme.id, "folder_id": self.env.ref(folder).id,
+            "certificate_type": certificate_type, "datas": SCALE_CERTIFICATE_PDF, "filename": f"{title}.pdf",
+            "date": SCALE_TODAY - timedelta(days=rng.randint(30, 3000)),
+        } for certificate_type, folder, title in certificates])
 
     def _load_scale_history(self):
         """Accounts, provision calls with payments and supplier bills of 2026 for these VMEs.

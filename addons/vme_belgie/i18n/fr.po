@@ -3753,6 +3753,7 @@ msgstr "Extincteurs et dévidoirs"
 
 #. module: vme_belgie
 #: model:ir.model.fields.selection,name:vme_belgie.selection__vme_insurance_policy__policy_type__building
+#: model_terms:ir.ui.view,arch_db:vme_belgie.vme_insurance_policy_view_search
 msgid "Brandverzekering gebouw"
 msgstr "Assurance incendie immeuble"
 
@@ -7562,11 +7563,6 @@ msgid "Geen quorum"
 msgstr "Pas de quorum"
 
 #. module: vme_belgie
-#: model_terms:ir.ui.view,arch_db:vme_belgie.building_card_content
-msgid "Geen signalen: reservefonds, achterstallen, AV en keuringen zijn in orde."
-msgstr "Aucun signal : fonds de réserve, arriérés, AG et contrôles sont en ordre."
-
-#. module: vme_belgie
 #: model:ir.model.fields.selection,name:vme_belgie.selection__vme_assembly_item__majority__none
 #: model:ir.model.fields.selection,name:vme_belgie.selection__vme_assembly_item__outcome__info
 msgid "Geen stemming"
@@ -7699,7 +7695,10 @@ msgid "Geldig"
 msgstr "Valable"
 
 #. module: vme_belgie
+#: model:ir.model.fields,field_description:vme_belgie.field_vme_document__valid_until
 #: model:ir.model.fields,field_description:vme_belgie.field_vme_works_quote__validity_date
+#: model_terms:ir.ui.view,arch_db:vme_belgie.compliance_content
+#: model_terms:ir.ui.view,arch_db:vme_belgie.notary_information_body
 msgid "Geldig tot"
 msgstr "Valable jusqu'au"
 
@@ -9201,10 +9200,13 @@ msgstr ""
 "                        et les documents d'un lot uniquement si leur date tombe pendant sa propriété."
 
 #. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_compliance.py:0
 #: model:ir.model.fields.selection,name:vme_belgie.selection__vme_assembly__warning_level__ok
 #: model:ir.model.fields.selection,name:vme_belgie.selection__vme_bill_ai_check__status__ok
 #: model:ir.model.fields.selection,name:vme_belgie.selection__vme_installation__due_state__ok
 #: model:ir.model.fields.selection,name:vme_belgie.selection__vme_installation__risk_analysis_due_state__ok
+#: model:ir.model.fields.selection,name:vme_belgie.selection__vme_insurance_policy__due_state__ok
 #: model:ir.model.fields.selection,name:vme_belgie.selection__vme_syndic_mandate__renewal_state__ok
 msgid "In orde"
 msgstr "En ordre"
@@ -13260,7 +13262,9 @@ msgid "Opzeggen of verlengen: %s"
 msgstr "Résilier ou prolonger : %s"
 
 #. module: vme_belgie
+#: model:ir.model.fields,field_description:vme_belgie.field_vme_insurance_policy__notice_deadline
 #: model_terms:ir.ui.view,arch_db:vme_belgie.building_card_content
+#: model_terms:ir.ui.view,arch_db:vme_belgie.compliance_content
 #: model_terms:ir.ui.view,arch_db:vme_belgie.supplier_card_content
 msgid "Opzeggen uiterlijk"
 msgstr "Résilier au plus tard"
@@ -13673,6 +13677,8 @@ msgstr "Planning"
 #. module: vme_belgie
 #: model:ir.model.fields,field_description:vme_belgie.field_vme_damage_claim__policy_id
 #: model:ir.model.fields,field_description:vme_belgie.field_vme_insurance_policy__name
+#: model_terms:ir.ui.view,arch_db:vme_belgie.compliance_content
+#: model_terms:ir.ui.view,arch_db:vme_belgie.vme_insurance_policy_view_form
 msgid "Polis"
 msgstr "Police"
 
@@ -13724,6 +13730,7 @@ msgid "Postcode"
 msgstr "Code postal"
 
 #. module: vme_belgie
+#: model:ir.model.fields.selection,name:vme_belgie.selection__vme_document__certificate_type__pid
 #: model:vme.document.folder,name:vme_belgie.folder_pid
 msgid "Postinterventiedossier"
 msgstr "Dossier d'intervention ultérieure"
@@ -14475,6 +14482,7 @@ msgstr "Résumé : %s"
 #. module: vme_belgie
 #: model:ir.model.fields.selection,name:vme_belgie.selection__vme_council_dossier__dossier_type__damage
 #: model_terms:ir.ui.view,arch_db:vme_belgie.building_card_content
+#: model_terms:ir.ui.view,arch_db:vme_belgie.vme_insurance_policy_view_form
 msgid "Schade"
 msgstr "Sinistre"
 
@@ -15172,6 +15180,7 @@ msgstr ""
 
 #. module: vme_belgie
 #: model:ir.model.fields,field_description:vme_belgie.field_vme_contract__auto_renew
+#: model:ir.model.fields,field_description:vme_belgie.field_vme_insurance_policy__tacit_renewal
 msgid "Stilzwijgende verlenging"
 msgstr "Reconduction tacite"
 
@@ -16881,13 +16890,16 @@ msgstr "Envoie la demande de justificatif de l'onglet Messages au demandeur."
 #. module: vme_belgie
 #: model:ir.model.fields,field_description:vme_belgie.field_vme_arrears__date_maturity
 #: model:ir.model.fields,field_description:vme_belgie.field_vme_collection_reminder_line__date_maturity
+#: model:ir.model.fields,field_description:vme_belgie.field_vme_insurance_policy__date_end
 #: model:ir.model.fields,field_description:vme_belgie.field_vme_payment_batch_line__date_due
 #: model_terms:ir.ui.view,arch_db:vme_belgie.building_card_content
 #: model_terms:ir.ui.view,arch_db:vme_belgie.collection_reminder_table
+#: model_terms:ir.ui.view,arch_db:vme_belgie.compliance_content
 #: model_terms:ir.ui.view,arch_db:vme_belgie.notary_information_body
 #: model_terms:ir.ui.view,arch_db:vme_belgie.portal_my_vme_detail
 #: model_terms:ir.ui.view,arch_db:vme_belgie.report_collection_overview_document
 #: model_terms:ir.ui.view,arch_db:vme_belgie.supplier_card_content
+#: model_terms:ir.ui.view,arch_db:vme_belgie.vme_insurance_policy_view_form
 msgid "Vervaldag"
 msgstr "Échéance"
 
@@ -16905,8 +16917,11 @@ msgid "Vervaldatum ligt voor de factuurdatum: niet overgenomen."
 msgstr "La date d'échéance précède la date de la facture : non reprise."
 
 #. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_compliance.py:0
 #: model:ir.model.fields.selection,name:vme_belgie.selection__vme_installation__due_state__overdue
 #: model:ir.model.fields.selection,name:vme_belgie.selection__vme_installation__risk_analysis_due_state__overdue
+#: model:ir.model.fields.selection,name:vme_belgie.selection__vme_insurance_policy__due_state__overdue
 #: model_terms:ir.ui.view,arch_db:vme_belgie.portal_my_vme_detail
 #: model_terms:ir.ui.view,arch_db:vme_belgie.vme_installation_view_search
 msgid "Vervallen"
@@ -16941,6 +16956,7 @@ msgstr "Expire dans les 60 jours"
 
 #. module: vme_belgie
 #: model_terms:ir.ui.view,arch_db:vme_belgie.vme_installation_view_search
+#: model_terms:ir.ui.view,arch_db:vme_belgie.vme_insurance_policy_view_search
 msgid "Vervalt binnen 90 dagen"
 msgstr "Expire dans les 90 jours"
 
@@ -16970,6 +16986,9 @@ msgstr "Rejeté"
 #. module: vme_belgie
 #: model:ir.model.fields,field_description:vme_belgie.field_vme_damage_claim__insurer_id
 #: model:ir.model.fields,field_description:vme_belgie.field_vme_insurance_policy__insurer_id
+#: model_terms:ir.ui.view,arch_db:vme_belgie.compliance_content
+#: model_terms:ir.ui.view,arch_db:vme_belgie.notary_information_body
+#: model_terms:ir.ui.view,arch_db:vme_belgie.vme_insurance_policy_view_search
 msgid "Verzekeraar"
 msgstr "Assureur"
 
@@ -18773,3 +18792,437 @@ msgstr "☐ Je propose d'approuver les comptes, avec les remarques ci-dessus."
 #: model_terms:ir.ui.view,arch_db:vme_belgie.report_auditor_document
 msgid "☐ Ik stel voor de rekeningen niet goed te keuren, om de redenen hierboven."
 msgstr "☐ Je propose de ne pas approuver les comptes, pour les raisons ci-dessus."
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_compliance.py:0
+msgid "%(label)s geldig tot %(date)s."
+msgstr "%(label)s valable jusqu'au %(date)s."
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_compliance.py:0
+msgid "%(label)s vervallen sinds %(date)s."
+msgstr "%(label)s expiré depuis le %(date)s."
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_compliance.py:0
+msgid "%(policy)s is vervallen sinds %(date)s."
+msgstr "%(policy)s est échue depuis le %(date)s."
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_compliance.py:0
+msgid "%(policy)s vervalt op %(date)s: verlenging nakijken bij %(insurer)s."
+msgstr ""
+"%(policy)s arrive à échéance le %(date)s : vérifier la reconduction auprès de %(insurer)s."
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_damage.py:0
+msgid "%(prefix)s: %(policy)s vervalt op %(date)s"
+msgstr "%(prefix)s : %(policy)s arrive à échéance le %(date)s"
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_compliance.py:0
+msgid "%s ontbreekt."
+msgstr "%s : manquant."
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_compliance.py:0
+msgid "%s: vul het bouwjaar in om te weten of dit attest verplicht is."
+msgstr ""
+"%s : indiquez l'année de construction pour savoir si cette attestation est obligatoire."
+
+#. module: vme_belgie
+#: model_terms:ir.ui.view,arch_db:vme_belgie.notary_information_body
+msgid "10. Brandverzekering van het gebouw"
+msgstr "10. Assurance incendie de l'immeuble"
+
+#. module: vme_belgie
+#: model_terms:ir.ui.view,arch_db:vme_belgie.notary_information_body
+msgid "9. Verplichte attesten van de gemene delen"
+msgstr "9. Attestations obligatoires des parties communes"
+
+#. module: vme_belgie
+#: model:ir.model.fields,field_description:vme_belgie.field_vme_insurance_policy__claim_count
+msgid "Aantal schadegevallen"
+msgstr "Nombre de sinistres"
+
+#. module: vme_belgie
+#: model:ir.model.fields,help:vme_belgie.field_vme_association__region
+msgid ""
+"Afgeleid uit de postcode. Asbestattest en EPC gemene delen volgen de Vlaamse regels."
+msgstr ""
+"Déduite du code postal. L'attestation amiante et le PEB des parties communes suivent les règles flamandes."
+
+#. module: vme_belgie
+#: model:ir.model.fields.selection,name:vme_belgie.selection__vme_document__certificate_type__asbestos
+msgid "Asbestattest gemene delen"
+msgstr "Attestation amiante des parties communes"
+
+#. module: vme_belgie
+#: model_terms:ir.ui.view,arch_db:vme_belgie.vme_association_view_form_compliance
+msgid "Asbestattest toevoegen"
+msgstr "Ajouter l'attestation amiante"
+
+#. module: vme_belgie
+#: model:ir.model.fields,field_description:vme_belgie.field_vme_document__certificate_type
+#: model_terms:ir.ui.view,arch_db:vme_belgie.compliance_content
+#: model_terms:ir.ui.view,arch_db:vme_belgie.notary_information_body
+msgid "Attest"
+msgstr "Attestation"
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_compliance.py:0
+msgid "Attest toegevoegd: %s."
+msgstr "Attestation ajoutée : %s."
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_compliance.py:0
+msgid "Attest toevoegen"
+msgstr "Ajouter une attestation"
+
+#. module: vme_belgie
+#: model_terms:ir.ui.view,arch_db:vme_belgie.vme_document_view_search
+msgid "Attesten"
+msgstr "Attestations"
+
+#. module: vme_belgie
+#: model:vme.document.folder,name:vme_belgie.folder_certificates
+msgid "Attesten (asbest, EPC)"
+msgstr "Attestations (amiante, PEB)"
+
+#. module: vme_belgie
+#: model:ir.model.fields,field_description:vme_belgie.field_vme_insurance_policy__valuation_basis
+msgid "Basis verzekerde waarde"
+msgstr "Base de la valeur assurée"
+
+#. module: vme_belgie
+#: model:ir.model.fields,field_description:vme_belgie.field_vme_insurance_policy__date_start
+msgid "Begin lopende periode"
+msgstr "Début de la période en cours"
+
+#. module: vme_belgie
+#: model:ir.model.fields,help:vme_belgie.field_vme_association__construction_year
+msgid ""
+"Bepaalt welke attesten verplicht zijn (asbestattest, postinterventiedossier)."
+msgstr ""
+"Détermine les attestations obligatoires (attestation amiante, dossier d'intervention ultérieure)."
+
+#. module: vme_belgie
+#: model:ir.model.fields,field_description:vme_belgie.field_vme_association__construction_year
+msgid "Bouwjaar"
+msgstr "Année de construction"
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_compliance.py:0
+msgid "Bouwjaar ontbreekt"
+msgstr "Année de construction manquante"
+
+#. module: vme_belgie
+#: model_terms:ir.ui.view,arch_db:vme_belgie.compliance_content
+msgid "Brandverzekering en andere polissen"
+msgstr "Assurance incendie et autres polices"
+
+#. module: vme_belgie
+#: model:ir.ui.menu,name:vme_belgie.menu_vme_help_compliance
+msgid "Brandverzekering en verplichte attesten"
+msgstr "Assurance incendie et attestations obligatoires"
+
+#. module: vme_belgie
+#: model:ir.model.fields,field_description:vme_belgie.field_vme_association__signal_insurance
+msgid "Brandverzekering vervalt of ontbreekt"
+msgstr "Assurance incendie échue ou manquante"
+
+#. module: vme_belgie
+#: model:ir.model.fields.selection,name:vme_belgie.selection__vme_association__region__brussels
+msgid "Brussel"
+msgstr "Bruxelles"
+
+#. module: vme_belgie
+#: model_terms:ir.ui.view,arch_db:vme_belgie.vme_insurance_policy_view_form
+msgid "De polis is nagekeken en loopt een jaar verder. Er wordt niets verstuurd."
+msgstr "La police a été vérifiée et court un an de plus. Rien n'est envoyé."
+
+#. module: vme_belgie
+#: model_terms:ir.ui.view,arch_db:vme_belgie.compliance_content
+msgid "Document of installatie"
+msgstr "Document ou installation"
+
+#. module: vme_belgie
+#: model:ir.model.fields.selection,name:vme_belgie.selection__vme_document__certificate_type__epc_common
+msgid "EPC gemeenschappelijke delen"
+msgstr "PEB des parties communes"
+
+#. module: vme_belgie
+#: model_terms:ir.ui.view,arch_db:vme_belgie.vme_association_view_form_compliance
+msgid "EPC gemene delen toevoegen"
+msgstr "Ajouter le PEB des parties communes"
+
+#. module: vme_belgie
+#: model_terms:ir.ui.view,arch_db:vme_belgie.vme_association_view_form_compliance
+msgid ""
+"Een attest is een document met een soort attest. De elektrische keuring komt uit de installatie\n"
+"                        \"Elektrische installatie gemene delen\" (tab Installaties). Een taak of signaal verstuurt niets."
+msgstr ""
+"Une attestation est un document avec un type d'attestation. Le contrôle électrique provient de l'installation « Installation électrique des parties communes » (onglet Installations). Une tâche ou un signal n'envoie rien."
+
+#. module: vme_belgie
+#: model_terms:ir.ui.view,arch_db:vme_belgie.notary_information_body
+msgid ""
+"Een ontbrekend of vervallen attest is nog niet beschikbaar bij de syndicus. De bestaande attesten zijn bijgevoegd of op aanvraag beschikbaar."
+msgstr ""
+"Une attestation manquante ou expirée n'est pas encore disponible chez le syndic. Les attestations existantes sont jointes ou disponibles sur demande."
+
+#. module: vme_belgie
+#: model:ir.model.fields,help:vme_belgie.field_vme_insurance_policy__date_end
+msgid ""
+"Einde van de lopende periode. Zonder opzeg verlengt de polis meestal stilzwijgend met een jaar."
+msgstr ""
+"Fin de la période en cours. Sans résiliation, la police est généralement reconduite tacitement pour un an."
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_compliance.py:0
+msgid "Elektrische keuring gemene delen"
+msgstr "Contrôle électrique des parties communes"
+
+#. module: vme_belgie
+#: model_terms:ir.ui.view,arch_db:vme_belgie.notary_information_body
+msgid "Er is geen brandverzekering van het gebouw geregistreerd bij de syndicus."
+msgstr "Aucune assurance incendie de l'immeuble n'est enregistrée chez le syndic."
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_compliance.py:0
+msgid "Geen brandverzekering van het gebouw geregistreerd."
+msgstr "Aucune assurance incendie de l'immeuble enregistrée."
+
+#. module: vme_belgie
+#: model_terms:ir.ui.view,arch_db:vme_belgie.building_card_content
+msgid ""
+"Geen signalen: reservefonds, achterstallen, AV, keuringen, verzekering en attesten zijn in orde."
+msgstr ""
+"Aucun signal : fonds de réserve, arriérés, AG, contrôles, assurance et attestations sont en ordre."
+
+#. module: vme_belgie
+#: model_terms:ir.ui.view,arch_db:vme_belgie.compliance_content
+msgid "Geen verplichte attesten voor dit gebouw."
+msgstr "Aucune attestation obligatoire pour cet immeuble."
+
+#. module: vme_belgie
+#: model:ir.model.fields,field_description:vme_belgie.field_vme_association__region
+msgid "Gewest"
+msgstr "Région"
+
+#. module: vme_belgie
+#: model:ir.model.fields.selection,name:vme_belgie.selection__vme_insurance_policy__valuation_basis__abex
+msgid "Geïndexeerd (ABEX)"
+msgstr "Indexée (ABEX)"
+
+#. module: vme_belgie
+#: model:ir.actions.server,name:vme_belgie.action_help_compliance
+msgid "Help: verzekering en attesten"
+msgstr "Aide : assurance et attestations"
+
+#. module: vme_belgie
+#: model:ir.model.fields,field_description:vme_belgie.field_vme_insurance_policy__premium
+msgid "Jaarpremie"
+msgstr "Prime annuelle"
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_damage.py:0
+msgid ""
+"Kijk de polis van %(vme)s na: verzekerde waarde, premie en dekking. Verlengen of opzeggen (opzeg uiterlijk %(notice)s). Na de verlenging: knop Verlengd."
+msgstr ""
+"Vérifiez la police de %(vme)s : valeur assurée, prime et couverture. Reconduire ou résilier (résiliation au plus tard le %(notice)s). Après la reconduction : bouton Reconduite."
+
+#. module: vme_belgie
+#: model:ir.model.fields,help:vme_belgie.field_vme_insurance_policy__notice_deadline
+msgid "Laatste dag om de polis op te zeggen tegen de vervaldag."
+msgstr "Dernier jour pour résilier la police à l'échéance."
+
+#. module: vme_belgie
+#: model:ir.model.fields,help:vme_belgie.field_vme_document__valid_until
+msgid "Leeg: geen einddatum."
+msgstr "Vide : pas de date de fin."
+
+#. module: vme_belgie
+#: model:ir.model.fields.selection,name:vme_belgie.selection__vme_insurance_policy__valuation_basis__unknown
+msgid "Niet gekend"
+msgstr "Inconnue"
+
+#. module: vme_belgie
+#: model:ir.model.fields.selection,name:vme_belgie.selection__vme_insurance_policy__valuation_basis__new_value
+msgid "Nieuwbouwwaarde"
+msgstr "Valeur à neuf"
+
+#. module: vme_belgie
+#: model_terms:ir.ui.view,arch_db:vme_belgie.compliance_content
+msgid "Nog geen polis geregistreerd."
+msgstr "Aucune police enregistrée."
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_compliance.py:0
+msgid "Ontbreekt"
+msgstr "Manquante"
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_damage.py:0
+msgid "Polis verlengd: nieuwe vervaldag %s."
+msgstr "Police reconduite : nouvelle échéance le %s."
+
+#. module: vme_belgie
+#: model_terms:ir.ui.view,arch_db:vme_belgie.vme_association_view_form_compliance
+msgid "Postinterventiedossier toevoegen"
+msgstr "Ajouter le dossier d'intervention ultérieure"
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_damage.py:0
+msgid "Schadedossiers %s"
+msgstr "Dossiers sinistre %s"
+
+#. module: vme_belgie
+#: model_terms:ir.ui.view,arch_db:vme_belgie.compliance_content
+#: model_terms:ir.ui.view,arch_db:vme_belgie.vme_insurance_policy_view_form
+msgid "Schadegevallen"
+msgstr "Sinistres"
+
+#. module: vme_belgie
+#: model:ir.model.fields,field_description:vme_belgie.field_vme_insurance_policy__due_state
+msgid "Status vervaldag"
+msgstr "Statut de l'échéance"
+
+#. module: vme_belgie
+#: model_terms:ir.ui.view,arch_db:vme_belgie.notary_information_body
+msgid "Toestand"
+msgstr "État"
+
+#. module: vme_belgie
+#: model:ir.actions.server,name:vme_belgie.ir_cron_vme_certificate_activities_ir_actions_server
+msgid "VME: taken voor ontbrekende of vervallen attesten"
+msgstr "ACP : tâches pour les attestations manquantes ou expirées"
+
+#. module: vme_belgie
+#: model:ir.actions.server,name:vme_belgie.ir_cron_vme_policy_activities_ir_actions_server
+msgid "VME: taken voor verzekeringspolissen die binnenkort vervallen"
+msgstr "ACP : tâches pour les polices d'assurance qui expirent bientôt"
+
+#. module: vme_belgie
+#: model_terms:ir.ui.view,arch_db:vme_belgie.vme_insurance_policy_view_form
+msgid "Verlengd"
+msgstr "Reconduite"
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_damage.py:0
+msgid "Verlengd tot %s."
+msgstr "Reconduite jusqu'au %s."
+
+#. module: vme_belgie
+#: model:ir.model.fields,field_description:vme_belgie.field_vme_association__signal_certificate
+msgid "Verplicht attest ontbreekt"
+msgstr "Attestation obligatoire manquante"
+
+#. module: vme_belgie
+#: model:ir.model.fields,help:vme_belgie.field_vme_document__certificate_type
+msgid ""
+"Verplicht attest van het gebouw. Telt mee in de opvolging op de gebouwkaart en bij een verkoop."
+msgstr ""
+"Attestation obligatoire de l'immeuble. Prise en compte dans le suivi de la fiche immeuble et lors d'une vente."
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_compliance.py:0
+msgid "Verplicht bij elke verkoop van een kavel en uiterlijk op %s."
+msgstr "Obligatoire à chaque vente d'un lot et au plus tard le %s."
+
+#. module: vme_belgie
+#: model_terms:ir.ui.view,arch_db:vme_belgie.compliance_content
+msgid "Verplichte attesten van het gebouw"
+msgstr "Attestations obligatoires de l'immeuble"
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_compliance.py:0
+msgid "Vervalt binnenkort"
+msgstr "Expire bientôt"
+
+#. module: vme_belgie
+#: model:ir.model.fields,field_description:vme_belgie.field_vme_insurance_policy__insured_value
+#: model_terms:ir.ui.view,arch_db:vme_belgie.compliance_content
+#: model_terms:ir.ui.view,arch_db:vme_belgie.notary_information_body
+msgid "Verzekerde waarde"
+msgstr "Valeur assurée"
+
+#. module: vme_belgie
+#: model:ir.model.fields,field_description:vme_belgie.field_vme_association__compliance_html
+#: model_terms:ir.ui.view,arch_db:vme_belgie.building_card_content
+#: model_terms:ir.ui.view,arch_db:vme_belgie.vme_association_view_form_compliance
+msgid "Verzekering en attesten"
+msgstr "Assurance et attestations"
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_damage.py:0
+msgid "Verzekering nakijken"
+msgstr "Vérifier l'assurance"
+
+#. module: vme_belgie
+#: model:ir.model.fields.selection,name:vme_belgie.selection__vme_association__region__flanders
+msgid "Vlaanderen"
+msgstr "Flandre"
+
+#. module: vme_belgie
+#: model_terms:ir.ui.view,arch_db:vme_belgie.notary_information_body
+msgid "Voor dit gebouw zijn geen attesten van de gemene delen vereist."
+msgstr "Aucune attestation des parties communes n'est requise pour cet immeuble."
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_damage.py:0
+msgid "Vul eerst de vervaldag van %s in."
+msgstr "Indiquez d'abord l'échéance de %s."
+
+#. module: vme_belgie
+#: model_terms:ir.ui.view,arch_db:vme_belgie.vme_insurance_policy_view_form
+msgid "Waarde en premie"
+msgstr "Valeur et prime"
+
+#. module: vme_belgie
+#: model:ir.model.fields,help:vme_belgie.field_vme_insurance_policy__insured_value
+msgid "Waarde waarvoor het gebouw verzekerd is."
+msgstr "Valeur pour laquelle l'immeuble est assuré."
+
+#. module: vme_belgie
+#: model:ir.model.fields.selection,name:vme_belgie.selection__vme_association__region__wallonia
+msgid "Wallonië"
+msgstr "Wallonie"
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_compliance.py:0
+msgid "laten opmaken"
+msgstr "à faire établir"
+
+#. module: vme_belgie
+#: model_terms:ir.ui.view,arch_db:vme_belgie.compliance_content
+msgid "onbeperkt"
+msgstr "illimitée"
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_compliance.py:0
+msgid "vernieuwen"
+msgstr "à renouveler"

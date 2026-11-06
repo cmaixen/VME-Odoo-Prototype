@@ -47,6 +47,7 @@
         "views/vme_damage_views.xml",
         "data/document_folders.xml",
         "views/vme_document_views.xml",
+        "views/vme_compliance_views.xml",
         "views/vme_portal_views.xml",
         "views/portal_templates.xml",
         "views/portal_assembly_templates.xml",

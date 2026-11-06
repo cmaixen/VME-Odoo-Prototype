@@ -232,7 +232,9 @@
                             <field name="name"/>
                             <field name="insurer_id"/>
                             <field name="policy_number"/>
+                            <field name="insured_value"/>
                             <field name="date_end"/>
+                            <field name="due_state" widget="badge"/>
                         </list>
                     </field>
                 </page>

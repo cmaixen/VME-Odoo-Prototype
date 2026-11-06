@@ -154,6 +154,13 @@
         <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/schadegevallen.md"}</field>
     </record>
 
+    <record id="action_help_compliance" model="ir.actions.server">
+        <field name="name">Help: verzekering en attesten</field>
+        <field name="model_id" ref="model_vme_association"/>
+        <field name="state">code</field>
+        <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/verzekeringen-en-attesten.md"}</field>
+    </record>
+
     <record id="action_help_documents" model="ir.actions.server">
         <field name="name">Help: documenten</field>
         <field name="model_id" ref="model_vme_association"/>
@@ -265,6 +272,7 @@
     <menuitem id="menu_vme_help_inspections" name="Keuringen en liften" parent="menu_vme_help" action="action_help_inspections" sequence="80"/>
     <menuitem id="menu_vme_help_works" name="Werken opvolgen" parent="menu_vme_help" action="action_help_works" sequence="85"/>
     <menuitem id="menu_vme_help_damage" name="Schadegevallen en verzekering" parent="menu_vme_help" action="action_help_damage" sequence="86"/>
+    <menuitem id="menu_vme_help_compliance" name="Brandverzekering en verplichte attesten" parent="menu_vme_help" action="action_help_compliance" sequence="87"/>
     <menuitem id="menu_vme_help_planner" name="Algemene vergaderingen plannen" parent="menu_vme_help" action="action_help_planner" sequence="90"/>
     <menuitem id="menu_vme_help_assembly" name="De algemene vergadering" parent="menu_vme_help" action="action_help_assembly" sequence="100"/>
     <menuitem id="menu_vme_help_bill_mail" name="Facturen per e-mail" parent="menu_vme_help" action="action_help_bill_mail" sequence="110"/>

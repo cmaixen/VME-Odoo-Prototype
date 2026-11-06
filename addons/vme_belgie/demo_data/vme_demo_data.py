@@ -50,6 +50,7 @@ BUILDINGS = [
         "street": "Lindedreef 12",
         "zip": "2000",
         "city": "Voorbeeldstad",
+        "construction_year": 1995,
         "lots": _apartments("A", 4, [72, 95, 68])
         + [{"name": f"G{i}", "lot_type": "garage", "floor": "Kelder", "floor_number": -1, "area": 15}
            for i in range(1, 9)],
@@ -64,6 +65,8 @@ BUILDINGS = [
         "street": "Beukenhof 3",
         "zip": "9000",
         "city": "Voorbeeldstad",
+        # Built before 2001 and no asbestos certificate of the common parts yet (signal on the card).
+        "construction_year": 1978,
         "lots": _apartments("B", 6, [85, 110, 78, 92]),
         # Heating is split on consumption: heat cost allocators per radiator (readings in demo_data/meterstanden).
         "keys": ["general", "consumption"],
@@ -76,6 +79,7 @@ BUILDINGS = [
         "street": "Kaaistraat 7",
         "zip": "8000",
         "city": "Voorbeeldstad",
+        "construction_year": 2012,
         "lots": _apartments("K", 3, [64, 88]),
         "keys": ["general"],
     },
@@ -165,10 +169,16 @@ INSTALLATIONS = {
         ("Rookluiken", "smoke_vents", "Dak trappenhal", "fire_safety", "fire_safety", [
             (date(2025, 11, 25), "inspection", "compliant", []),  # due within 30 days
         ]),
+        ("Elektrische installatie gemene delen", "electrical", "Kelder", None, "inspection_body", [
+            (date(2023, 6, 20), "inspection", "compliant", []),
+        ]),
     ],
     "Kaaihuis": [
         ("Brandblussers", "fire_extinguishers", "Gelijkvloers", "fire_safety", "fire_safety", [
             (date(2026, 3, 1), "inspection", "compliant", []),
+        ]),
+        ("Elektrische installatie gemene delen", "electrical", "Technische ruimte", None, "inspection_body", [
+            (date(2024, 2, 8), "inspection", "compliant", []),
         ]),
     ],
 }
@@ -392,6 +402,7 @@ class VmeAssociation(models.Model):
                 "street": building["street"],
                 "zip": building["zip"],
                 "city": building["city"],
+                "construction_year": building["construction_year"],
                 "assembly_period_month": ASSEMBLY_PERIODS[building["name"]][0],
                 "assembly_period_day": ASSEMBLY_PERIODS[building["name"]][1],
                 **({"arrears_signal_threshold": ARREARS_SIGNAL_THRESHOLDS[building["name"]]}
@@ -553,6 +564,8 @@ class VmeAssociation(models.Model):
         # as the daily crons would create them.
         self.env["vme.installation"]._cron_schedule_inspection_activities()
         self.env["vme.contract"]._cron_schedule_contract_activities()
+        self.env["vme.insurance.policy"]._cron_schedule_policy_activities()
+        self.env["vme.association"]._cron_schedule_certificate_activities()
 
         return {
             "type": "ir.actions.client",

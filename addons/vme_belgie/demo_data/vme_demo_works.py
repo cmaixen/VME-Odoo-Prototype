@@ -1,8 +1,14 @@
 """Fictitious works, insurance policies and damage claims for the demo (step 14)."""
+import base64
 from datetime import date
+
+from dateutil.relativedelta import relativedelta
 
 from odoo import api, models
 from odoo.fields import Command
+
+from ..models.vme_compliance import CERTIFICATE_FOLDERS
+from .vme_demo_portal import simple_pdf
 
 # Fictitious contractors, insurer and expert: VAT numbers start with 0000 (valid check digits, cannot be real).
 WORKS_PARTNERS = {
@@ -15,12 +21,28 @@ WORKS_PARTNERS = {
 # The insurer also bills the yearly premium in the demo history; it is created here once.
 INSURER = ("Verzekeringen Voorbeeld NV", "BE0000000691", "facturen@verzekeringen.example.com", "Polislaan 5")
 
-# Building insurance per VME: policy number, deductible.
+# Building insurance per VME: policy number, deductible, start of the running year, insured value,
+# yearly premium. Kaaihuis is due on 1 December 2026, within 30 days of the demo date (signal).
 POLICIES = {
-    "Residentie Linde": ("BR-LINDE-2019-0042", 300),
-    "Hof ter Beuken": ("BR-BEUKEN-2017-0117", 300),
-    "Kaaihuis": ("BR-KAAI-2021-0009", 250),
+    "Residentie Linde": ("BR-LINDE-2019-0042", 300, date(2026, 4, 1), 4250000, 4200),
+    "Hof ter Beuken": ("BR-BEUKEN-2017-0117", 300, date(2026, 7, 1), 7900000, 6500),
+    "Kaaihuis": ("BR-KAAI-2021-0009", 250, date(2025, 12, 2), 1650000, 1800),
 }
+
+# Certificates of the common parts (vme_compliance.py): vme, type, date, title, lines of the PDF.
+# Hof ter Beuken (built 1978) has no asbestos certificate yet: the building card shows it.
+CERTIFICATES = [
+    ("Residentie Linde", "asbestos", date(2024, 9, 18), "Asbestattest gemene delen Residentie Linde",
+     ["Fictief asbestattest voor de demo.", "Asbestinventaris van de gemene delen: geen asbest met risico."]),
+    ("Residentie Linde", "epc_common", date(2022, 5, 3), "EPC gemeenschappelijke delen Residentie Linde",
+     ["Fictief EPC gemeenschappelijke delen.", "Label C, aanbevelingen voor dakisolatie."]),
+    ("Hof ter Beuken", "epc_common", date(2023, 2, 14), "EPC gemeenschappelijke delen Hof ter Beuken",
+     ["Fictief EPC gemeenschappelijke delen.", "Label D, aanbevelingen voor de stookplaats."]),
+    ("Kaaihuis", "epc_common", date(2021, 11, 30), "EPC gemeenschappelijke delen Kaaihuis",
+     ["Fictief EPC gemeenschappelijke delen.", "Label B."]),
+    ("Kaaihuis", "pid", date(2012, 10, 1), "Postinterventiedossier nieuwbouw Kaaihuis",
+     ["Fictief postinterventiedossier van de nieuwbouw.", "Plannen, materialen en nutsleidingen."]),
+]
 
 # The roof works decided by the 2026 assembly of Residentie Linde: three quotes, awarded in June,
 # execution from 16 November 2026 (after the demo date), so the works are still open.
@@ -80,19 +102,35 @@ class VmeAssociation(models.Model):
         """Insurance policies for every demo VME, the roof works and the water damage of Residentie Linde."""
         partners = {code: self._demo_partner(*vals) for code, vals in WORKS_PARTNERS.items()}
         insurer = self._demo_partner(*INSURER)
-        for vme_name, (number, deductible) in POLICIES.items():
+        for vme_name, (number, deductible, start, value, premium) in POLICIES.items():
             vme = self.search([("name", "=", vme_name)])
             self.env["vme.insurance.policy"].create({
                 "association_id": vme.id, "name": "Brandverzekering gebouw", "policy_type": "building",
                 "insurer_id": insurer.id, "policy_number": number, "deductible": deductible,
-                "date_start": date(2026, 1, 1), "date_end": date(2026, 12, 31),
+                "date_start": start, "date_end": start + relativedelta(years=1, days=-1),
+                "insured_value": value, "valuation_basis": "abex", "premium": premium,
                 "coverage": "Brand en aanverwante gevaren, waterschade, storm en hagel, glasbreuk, "
                             "burgerlijke aansprakelijkheid gebouw.",
             })
+        self._load_demo_certificates()
         admin = self.env.ref("base.user_admin")
         works = self._load_demo_roof_works(partners, admin)
         claim = self._load_demo_water_damage(partners, admin)
         return works, claim
+
+    @api.model
+    def _load_demo_certificates(self):
+        Document = self.env["vme.document"]
+        for vme_name, certificate_type, day, title, lines in CERTIFICATES:
+            Document.create({
+                "name": title,
+                "association_id": self.search([("name", "=", vme_name)]).id,
+                "folder_id": self.env.ref(CERTIFICATE_FOLDERS[certificate_type]).id,
+                "certificate_type": certificate_type,
+                "date": day,
+                "datas": base64.b64encode(simple_pdf(title, lines)),
+                "filename": f"{title}.pdf",
+            })
 
     @api.model
     def _load_demo_roof_works(self, partners, user):
