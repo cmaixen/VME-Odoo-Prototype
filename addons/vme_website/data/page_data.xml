@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="page_features_page" model="website.page">
+        <field name="url">/functies</field>
+        <field name="is_published">True</field>
+        <field name="view_id" ref="page_features"/>
+        <field name="website_meta_description">Functies van Quotis: boekhouding en verdeling, provisies, AV, technisch beheer, communicatie en rentmeesterij.</field>
+    </record>
+    <record id="page_owners_page" model="website.page">
+        <field name="url">/voor-eigenaars</field>
+        <field name="is_published">True</field>
+        <field name="view_id" ref="page_owners"/>
+    </record>
+    <record id="page_pricing_page" model="website.page">
+        <field name="url">/prijzen</field>
+        <field name="is_published">True</field>
+        <field name="view_id" ref="page_pricing"/>
+    </record>
+    <record id="page_contact_page" model="website.page">
+        <field name="url">/contact</field>
+        <field name="is_published">True</field>
+        <field name="view_id" ref="page_contact"/>
+    </record>
+    <record id="page_demo_thanks_page" model="website.page">
+        <field name="url">/demo-aangevraagd</field>
+        <field name="is_published">True</field>
+        <field name="website_indexed" eval="False"/>
+        <field name="view_id" ref="page_demo_thanks"/>
+    </record>
+    <record id="page_login_choice_page" model="website.page">
+        <field name="url">/inloggen</field>
+        <field name="is_published">True</field>
+        <field name="view_id" ref="page_login_choice"/>
+    </record>
+
+    <!-- Odoo's own contact page mails the company (mail.mail); ours only creates a lead. -->
+    <record id="rewrite_contactus" model="website.rewrite">
+        <field name="name">Contact: naar het eigen formulier</field>
+        <field name="url_from">/contactus</field>
+        <field name="url_to">/contact</field>
+        <field name="redirect_type">301</field>
+    </record>
+</odoo>

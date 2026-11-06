@@ -1,0 +1,604 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Pages of the product website, built from Odoo's standard snippets so that they stay
+         editable in the website editor. All content is fictitious (see CLAUDE.md). -->
+
+    <!-- Demo request form: creates a crm.lead through Odoo's website form, nothing is mailed. -->
+    <template id="demo_request_form" name="Formulier demo aanvragen">
+        <section class="s_website_form" data-vcss="001" data-snippet="s_website_form">
+            <div class="container">
+                <form id="vme_demo_form" action="/website/form/" method="post" enctype="multipart/form-data"
+                      class="o_mark_required" data-mark="*" data-model_name="crm.lead"
+                      data-success-mode="redirect" data-success-page="/demo-aangevraagd" data-pre-fill="true">
+                    <div class="s_website_form_rows row s_col_no_bgcolor">
+                        <div class="mb-3 col-lg-6 s_website_form_field s_website_form_required" data-type="char" data-name="Field">
+                            <label class="s_website_form_label" for="vme_demo_contact">
+                                <span class="s_website_form_label_content">Uw naam</span>
+                                <span class="s_website_form_mark"> *</span>
+                            </label>
+                            <input id="vme_demo_contact" type="text" class="form-control s_website_form_input" name="contact_name" required="" data-fill-with="name"/>
+                        </div>
+                        <div class="mb-3 col-lg-6 s_website_form_field" data-type="char" data-name="Field">
+                            <label class="s_website_form_label" for="vme_demo_office">
+                                <span class="s_website_form_label_content">Syndicuskantoor</span>
+                            </label>
+                            <input id="vme_demo_office" type="text" class="form-control s_website_form_input" name="partner_name" data-fill-with="commercial_company_name"/>
+                        </div>
+                        <div class="mb-3 col-lg-6 s_website_form_field s_website_form_required s_website_form_model_required" data-type="email" data-name="Field">
+                            <label class="s_website_form_label" for="vme_demo_email">
+                                <span class="s_website_form_label_content">E-mail</span>
+                                <span class="s_website_form_mark"> *</span>
+                            </label>
+                            <input id="vme_demo_email" type="email" class="form-control s_website_form_input" name="email_from" required="" data-fill-with="email"/>
+                        </div>
+                        <div class="mb-3 col-lg-6 s_website_form_field" data-type="char" data-name="Field">
+                            <label class="s_website_form_label" for="vme_demo_phone">
+                                <span class="s_website_form_label_content">Telefoon</span>
+                            </label>
+                            <input id="vme_demo_phone" type="tel" class="form-control s_website_form_input" name="phone" data-fill-with="phone"/>
+                        </div>
+                        <div class="mb-3 col-lg-6 s_website_form_field s_website_form_custom" data-type="integer" data-name="Field">
+                            <label class="s_website_form_label" for="vme_demo_count">
+                                <span class="s_website_form_label_content">Aantal VME's in beheer</span>
+                            </label>
+                            <input id="vme_demo_count" type="number" min="0" class="form-control s_website_form_input" name="Aantal VME's"/>
+                        </div>
+                        <div class="mb-3 col-12 s_website_form_field" data-type="text" data-name="Field">
+                            <label class="s_website_form_label" for="vme_demo_message">
+                                <span class="s_website_form_label_content">Wat wilt u zien in de demo?</span>
+                            </label>
+                            <textarea id="vme_demo_message" class="form-control s_website_form_input" name="description" rows="4"></textarea>
+                        </div>
+                        <div class="mb-3 col-12 s_website_form_field s_website_form_dnone">
+                            <input id="vme_demo_subject" type="hidden" class="form-control s_website_form_input" name="name" value="Demo-aanvraag via de website"/>
+                        </div>
+                        <div class="mb-0 py-2 col-12 s_website_form_submit s_website_form_no_submit_label" data-name="Submit Button">
+                            <a href="#" role="button" class="btn btn-primary btn-lg s_website_form_send">Demo aanvragen</a>
+                            <span id="s_website_form_result"></span>
+                            <p class="small text-muted mt-2 mb-0">We bewaren uw aanvraag en een medewerker neemt persoonlijk contact op. U krijgt geen automatische mails.</p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </template>
+
+    <!-- Home -->
+    <template id="homepage" name="Home Quotis" inherit_id="website.homepage">
+        <xpath expr="//div[@id='wrap']" position="replace">
+            <div id="wrap" class="oe_structure">
+                <section class="s_text_image o_cc o_cc1 pt64 pb64" data-snippet="s_text_image" data-name="Hero">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-lg-5 pt16 pb16">
+                                <p class="o_vme_eyebrow">Software voor syndici</p>
+                                <h1 class="display-6 fw-bold">Uw gebouwen in één systeem. Elke beslissing bij uw medewerker.</h1>
+                                <p class="lead">Quotis verdeelt facturen over de eigenaars, maakt provisieoproepen en jaarafrekeningen, en zet klaar wat naar buiten moet. Uw medewerker kijkt na en verstuurt.</p>
+                                <p>
+                                    <a href="/prijzen#demo" class="btn btn-primary btn-lg mb-2 me-2">Demo aanvragen</a>
+                                    <a href="/functies" class="btn btn-outline-primary btn-lg mb-2">Bekijk de functies</a>
+                                </p>
+                            </div>
+                            <div class="col-lg-7 pt16 pb16">
+                                <img src="/vme_website/static/src/img/screen_building_card.png" class="img img-fluid o_vme_screenshot"
+                                     alt="Gebouwkaart van de fictieve Residentie Linde"/>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="s_features o_cc o_cc2 pt64 pb48" data-snippet="s_features" data-name="Sterke punten">
+                    <div class="container">
+                        <p class="o_vme_eyebrow">Wat Quotis voor u doet</p>
+                        <h2 class="h3-fs">Het werk van een syndicus, van factuur tot afrekening</h2>
+                        <div class="row">
+                            <div class="col-lg-4 col-md-6 pt24 o_vme_feature">
+                                <i class="fa fa-random" role="img"/>
+                                <h3 class="h5-fs">Facturen verdelen</h3>
+                                <p>Een leveranciersfactuur wordt verdeeld over de juiste eigenaars, volgens quotiteit of sleutel. Bij een verkoop per dag tussen verkoper en koper.</p>
+                            </div>
+                            <div class="col-lg-4 col-md-6 pt24 o_vme_feature">
+                                <i class="fa fa-calendar-check-o" role="img"/>
+                                <h3 class="h5-fs">Provisieoproepen</h3>
+                                <p>Werk- en reservekapitaal apart, berekend uit het budget. De oproepen staan klaar voor alle VME's tegelijk.</p>
+                            </div>
+                            <div class="col-lg-4 col-md-6 pt24 o_vme_feature">
+                                <i class="fa fa-file-text-o" role="img"/>
+                                <h3 class="h5-fs">Jaarafrekening per eigenaar</h3>
+                                <p>Werkelijke kosten per sleutel min de betaalde provisies, ook op verbruik. Na te rekenen tot op de factuur.</p>
+                            </div>
+                            <div class="col-lg-4 col-md-6 pt24 o_vme_feature">
+                                <i class="fa fa-exchange" role="img"/>
+                                <h3 class="h5-fs">Peppol en e-facturen</h3>
+                                <p>Facturen in UBL komen binnen via Peppol of per mail. Verdeelregels vullen sleutel en rekening in; PDF-facturen leest de AI.</p>
+                            </div>
+                            <div class="col-lg-4 col-md-6 pt24 o_vme_feature">
+                                <i class="fa fa-gavel" role="img"/>
+                                <h3 class="h5-fs">Inlichtingen voor de notaris</h3>
+                                <p>Het verkoopdossier met termijnen en de stand van de eigenaar. Bij de akte wisselt de kavel van eigenaar op de juiste datum.</p>
+                            </div>
+                            <div class="col-lg-4 col-md-6 pt24 o_vme_feature">
+                                <i class="fa fa-users" role="img"/>
+                                <h3 class="h5-fs">Digitale en hybride AV</h3>
+                                <p>Plannen, oproepen, online deelnemen en stemmen met dezelfde rekenregels als in de zaal, en notulen ondertekenen in het portaal.</p>
+                            </div>
+                            <div class="col-lg-4 col-md-6 pt24 o_vme_feature">
+                                <i class="fa fa-home" role="img"/>
+                                <h3 class="h5-fs">Eigenaarsportaal</h3>
+                                <p>Eigenaars zien hun provisies, afrekeningen en documenten, en vragen een adreswijziging aan die u goedkeurt.</p>
+                            </div>
+                            <div class="col-lg-4 col-md-6 pt24 o_vme_feature">
+                                <i class="fa fa-magic" role="img"/>
+                                <h3 class="h5-fs">AI-assistent voor mails</h3>
+                                <p>Een mail van een eigenaar wordt gekoppeld aan de juiste VME en kavel, met een voorstel van antwoord. Uw medewerker beslist.</p>
+                            </div>
+                            <div class="col-lg-4 col-md-6 pt24 o_vme_feature">
+                                <i class="fa fa-key" role="img"/>
+                                <h3 class="h5-fs">Rentmeesterij</h3>
+                                <p>Huurcontracten, indexering per gewest en de afrekening van lasten aan huurders, apart van de boekhouding van de VME.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="s_text_image pt64 pb64" data-snippet="s_text_image" data-name="AI-assistent">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-lg-6 pt16 pb16 order-lg-2">
+                                <img src="/vme_website/static/src/img/screen_ai.png" class="img img-fluid o_vme_screenshot"
+                                     alt="Voorgesteld antwoord op een mail van een fictieve eigenaar"/>
+                            </div>
+                            <div class="col-lg-5 offset-lg-1 pt16 pb16 order-lg-1">
+                                <p class="o_vme_eyebrow">AI-assistent</p>
+                                <h2 class="h3-fs">De AI stelt voor. Uw medewerker beslist.</h2>
+                                <p>Een eigenaar mailt over een lek, een badge of een factuur. Quotis herkent de VME en de kavel, vat de vraag samen en schrijft een voorstel van antwoord.</p>
+                                <p>Het voorstel staat als taak op de VME. Uw medewerker past het aan en verstuurt het, of niet.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="s_text_image o_cc o_cc2 pt64 pb64" data-snippet="s_text_image" data-name="Portaal">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-lg-6 pt16 pb16">
+                                <img src="/vme_website/static/src/img/screen_portal.png" class="img img-fluid o_vme_screenshot"
+                                     alt="Eigenaarsportaal van een fictieve eigenaar"/>
+                            </div>
+                            <div class="col-lg-5 offset-lg-1 pt16 pb16">
+                                <p class="o_vme_eyebrow">Voor eigenaars en huurders</p>
+                                <h2 class="h3-fs">Minder telefoontjes, meer overzicht</h2>
+                                <p>Eigenaars loggen in op hun portaal en zien wat over hun kavels gaat: provisies en betaalstatus, jaarafrekeningen, documenten van het gebouw en de volgende AV.</p>
+                                <p><a href="/voor-eigenaars" class="btn btn-outline-primary">Meer over het portaal</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="s_text_block pt64 pb48" data-snippet="s_text_block" data-name="Een mens beslist">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-5">
+                                <p class="o_vme_eyebrow">Zo werken we</p>
+                                <h2 class="h3-fs">Niets vertrekt vanzelf</h2>
+                                <p class="lead">Quotis bereidt voor, uw kantoor beslist. Dat geldt voor elke stap die een eigenaar, leverancier of bank bereikt.</p>
+                            </div>
+                            <div class="col-lg-6 offset-lg-1">
+                                <ul class="list-unstyled">
+                                    <li class="mb-3"><i class="fa fa-check text-o-color-1 me-2"/>Provisieoproepen, brieven en rappels staan als concept klaar tot een medewerker ze verstuurt.</li>
+                                    <li class="mb-3"><i class="fa fa-check text-o-color-1 me-2"/>Betalingen aan leveranciers worden goedgekeurd, boven een drempel door een tweede persoon.</li>
+                                    <li class="mb-3"><i class="fa fa-check text-o-color-1 me-2"/>Een bestelling bij de slotenmaker of een antwoord van de AI is een voorstel, geen verzending.</li>
+                                    <li class="mb-3"><i class="fa fa-check text-o-color-1 me-2"/>Elke VME heeft een eigen boekhouding, met werk- en reservekapitaal op aparte rekeningen.</li>
+                                    <li class="mb-3"><i class="fa fa-check text-o-color-1 me-2"/>Gebouwd op Odoo Community: geen licentie per gebruiker.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="s_call_to_action o_cc o_cc5 pt64 pb64" data-snippet="s_call_to_action" data-name="Demo aanvragen">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-lg-8">
+                                <h2 class="h3-fs">Zien hoe het werkt met uw gebouwen?</h2>
+                                <p class="lead mb-lg-0">We tonen het in tien minuten, op een demo met fictieve VME's.</p>
+                            </div>
+                            <div class="col-lg-4 text-lg-end">
+                                <a href="/prijzen#demo" class="btn btn-secondary btn-lg">Demo aanvragen</a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </xpath>
+    </template>
+
+    <!-- Functies -->
+    <template id="page_features" name="Functies">
+        <t t-call="website.layout">
+            <t t-set="additional_title">Functies</t>
+            <div id="wrap" class="oe_structure">
+                <section class="s_title o_cc o_cc5 pt64 pb48" data-snippet="s_title">
+                    <div class="container">
+                        <p class="o_vme_eyebrow">Functies</p>
+                        <h1>Alles voor het beheer van een VME</h1>
+                        <p class="lead mb-0">Van de basisakte tot de jaarafrekening, met één boekhouding per VME.</p>
+                    </div>
+                </section>
+
+                <section class="s_text_image pt64 pb32" data-snippet="s_text_image" data-name="Boekhouding">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-lg-5 pt16 pb16">
+                                <h2 class="h3-fs">Boekhouding en verdeling</h2>
+                                <ul>
+                                    <li>Elke VME is een eigen bedrijf met Belgisch rekeningstelsel en KBO-nummer.</li>
+                                    <li>Kavels, quotiteiten en verdeelsleutels: algemeen, lift, verwarming of op verbruik.</li>
+                                    <li>Een factuur wordt bij het bevestigen verdeeld over de eigenaars op de kostdatum.</li>
+                                    <li>Verdeelregels per leverancier vullen sleutel en rekening vanzelf in.</li>
+                                    <li>Bankafschriften (CODA en CAMT) inlezen en koppelen aan provisies.</li>
+                                </ul>
+                            </div>
+                            <div class="col-lg-6 offset-lg-1 pt16 pb16">
+                                <img src="/vme_website/static/src/img/screen_distribution.png" class="img img-fluid o_vme_screenshot"
+                                     alt="Verdeling van een fictieve factuur over de eigenaars"/>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="s_three_columns o_cc o_cc2 pt48 pb48" data-snippet="s_three_columns" data-name="Domeinen">
+                    <div class="container">
+                        <div class="row d-flex align-items-stretch">
+                            <div class="col-lg-4 pt16 pb16">
+                                <div class="s_card card h-100 o_cc o_cc1 my-0" data-snippet="s_card">
+                                    <div class="card-body">
+                                        <h3 class="card-title h5-fs"><i class="fa fa-bank me-2 text-o-color-1"/>Kapitalen en provisies</h3>
+                                        <ul class="card-text ps-3">
+                                            <li>Budget per VME, verdeeld per rekening en sleutel</li>
+                                            <li>Provisieoproepen voor werk- en reservekapitaal</li>
+                                            <li>Controle op de jaarlijkse opbouw van het reservefonds</li>
+                                            <li>Domiciliëringen en betaalbatches (SEPA)</li>
+                                            <li>Rappels in niveaus, met interest</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 pt16 pb16">
+                                <div class="s_card card h-100 o_cc o_cc1 my-0" data-snippet="s_card">
+                                    <div class="card-body">
+                                        <h3 class="card-title h5-fs"><i class="fa fa-users me-2 text-o-color-1"/>Algemene vergadering</h3>
+                                        <ul class="card-text ps-3">
+                                            <li>Het AV-seizoen plannen in blokken</li>
+                                            <li>Agenda, oproeping, volmachten en stemming</li>
+                                            <li>Hybride en online, met elektronisch stemmen</li>
+                                            <li>Notulen ondertekenen in het portaal</li>
+                                            <li>Raad van mede-eigendom en commissaris</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 pt16 pb16">
+                                <div class="s_card card h-100 o_cc o_cc1 my-0" data-snippet="s_card">
+                                    <div class="card-body">
+                                        <h3 class="card-title h5-fs"><i class="fa fa-wrench me-2 text-o-color-1"/>Technisch beheer</h3>
+                                        <ul class="card-text ps-3">
+                                            <li>Keuringen en liften met vervaldata</li>
+                                            <li>Contracten met opzegtermijnen</li>
+                                            <li>Werken met offertes, schadegevallen met de verzekeraar</li>
+                                            <li>Sleutels, badges en codes per kavel</li>
+                                            <li>Meterstanden en verbruik</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 pt16 pb16">
+                                <div class="s_card card h-100 o_cc o_cc1 my-0" data-snippet="s_card">
+                                    <div class="card-body">
+                                        <h3 class="card-title h5-fs"><i class="fa fa-envelope-o me-2 text-o-color-1"/>Communicatie</h3>
+                                        <ul class="card-text ps-3">
+                                            <li>Brieven, e-mail en aangetekend per VME, blok of kavel</li>
+                                            <li>Voorkeur papier of e-mail per eigenaar</li>
+                                            <li>Mails van eigenaars gekoppeld, met een voorstel van antwoord</li>
+                                            <li>Aanvragen als vaste procedure</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 pt16 pb16">
+                                <div class="s_card card h-100 o_cc o_cc1 my-0" data-snippet="s_card">
+                                    <div class="card-body">
+                                        <h3 class="card-title h5-fs"><i class="fa fa-gavel me-2 text-o-color-1"/>Verkoop van een kavel</h3>
+                                        <ul class="card-text ps-3">
+                                            <li>Inlichtingen voor de notaris met termijnen</li>
+                                            <li>Kosten per dag tussen verkoper en koper</li>
+                                            <li>Kavelwissel op de datum van de akte</li>
+                                            <li>Welkomstbrief voor de nieuwe eigenaar, als concept</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 pt16 pb16">
+                                <div class="s_card card h-100 o_cc o_cc1 my-0" data-snippet="s_card">
+                                    <div class="card-body">
+                                        <h3 class="card-title h5-fs"><i class="fa fa-key me-2 text-o-color-1"/>Rentmeesterij</h3>
+                                        <ul class="card-text ps-3">
+                                            <li>Huurcontracten, waarborg en maandelijkse huur</li>
+                                            <li>Indexering met de regels per gewest</li>
+                                            <li>Afrekening van lasten aan huurders</li>
+                                            <li>Een aparte module: installeer ze alleen als u ze nodig hebt</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="s_text_image pt64 pb64" data-snippet="s_text_image" data-name="Overzicht">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-lg-6 pt16 pb16">
+                                <img src="/vme_website/static/src/img/screen_building_card.png" class="img img-fluid o_vme_screenshot"
+                                     alt="Gebouwkaart van een fictieve VME"/>
+                            </div>
+                            <div class="col-lg-5 offset-lg-1 pt16 pb16">
+                                <h2 class="h3-fs">Overzicht over al uw VME's</h2>
+                                <p>De gebouwkaart toont per VME de kapitalen, het budget tegenover de werkelijke kosten, achterstallen, keuringen en de volgende AV.</p>
+                                <p>De portefeuille zet signalen over alle gebouwen naast elkaar: een reservefonds onder de opbouw, een vervallen keuring, een AV buiten de periode.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="s_call_to_action o_cc o_cc5 pt48 pb48" data-snippet="s_call_to_action">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-lg-8"><h2 class="h3-fs mb-lg-0">Benieuwd naar een functie in het bijzonder?</h2></div>
+                            <div class="col-lg-4 text-lg-end"><a href="/prijzen#demo" class="btn btn-secondary btn-lg">Demo aanvragen</a></div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+
+    <!-- Voor eigenaars -->
+    <template id="page_owners" name="Voor eigenaars">
+        <t t-call="website.layout">
+            <t t-set="additional_title">Voor eigenaars</t>
+            <div id="wrap" class="oe_structure">
+                <section class="s_title o_cc o_cc5 pt64 pb48" data-snippet="s_title">
+                    <div class="container">
+                        <p class="o_vme_eyebrow">Voor eigenaars en huurders</p>
+                        <h1>Uw appartement, uw cijfers, altijd bij de hand</h1>
+                        <p class="lead mb-0">Werkt uw syndicus met Quotis? Dan hebt u een eigen portaal.</p>
+                    </div>
+                </section>
+
+                <section class="s_text_image pt64 pb32" data-snippet="s_text_image">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-lg-5 pt16 pb16">
+                                <h2 class="h3-fs">Wat u ziet in het portaal</h2>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2"><i class="fa fa-check text-o-color-1 me-2"/>Uw provisies en of ze betaald zijn, met de PDF</li>
+                                    <li class="mb-2"><i class="fa fa-check text-o-color-1 me-2"/>Uw jaarafrekening per jaar</li>
+                                    <li class="mb-2"><i class="fa fa-check text-o-color-1 me-2"/>Documenten van het gebouw en van uw kavel</li>
+                                    <li class="mb-2"><i class="fa fa-check text-o-color-1 me-2"/>De volgende algemene vergadering, online deelnemen en stemmen</li>
+                                    <li class="mb-2"><i class="fa fa-check text-o-color-1 me-2"/>Een adreswijziging aanvragen; uw syndicus keurt ze goed</li>
+                                </ul>
+                                <p class="mt-4"><a href="/web/login?redirect=/my" class="btn btn-primary btn-lg">Naar het eigenaarsportaal</a></p>
+                            </div>
+                            <div class="col-lg-6 offset-lg-1 pt16 pb16">
+                                <img src="/vme_website/static/src/img/screen_portal.png" class="img img-fluid o_vme_screenshot"
+                                     alt="Eigenaarsportaal van een fictieve eigenaar"/>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="s_three_columns o_cc o_cc2 pt48 pb48" data-snippet="s_three_columns">
+                    <div class="container">
+                        <h2 class="h3-fs mb-3">Veelgestelde vragen</h2>
+                        <div class="row d-flex align-items-stretch">
+                            <div class="col-lg-4 pt16 pb16">
+                                <div class="s_card card h-100 o_cc o_cc1 my-0" data-snippet="s_card">
+                                    <div class="card-body">
+                                        <h3 class="card-title h5-fs">Hoe krijg ik een login?</h3>
+                                        <p class="card-text">Uw syndicus geeft u toegang. U krijgt dan een uitnodiging om een wachtwoord te kiezen.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 pt16 pb16">
+                                <div class="s_card card h-100 o_cc o_cc1 my-0" data-snippet="s_card">
+                                    <div class="card-body">
+                                        <h3 class="card-title h5-fs">Ik heb mijn appartement verkocht.</h3>
+                                        <p class="card-text">U ziet nog alles van de periode dat u eigenaar was, maar geen nieuwe documenten van de kavel.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 pt16 pb16">
+                                <div class="s_card card h-100 o_cc o_cc1 my-0" data-snippet="s_card">
+                                    <div class="card-body">
+                                        <h3 class="card-title h5-fs">Ik ben huurder.</h3>
+                                        <p class="card-text">Werkt uw verhuurder met een rentmeester op Quotis, dan logt u op dezelfde manier in.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+
+    <!-- Prijzen en demo aanvragen -->
+    <template id="page_pricing" name="Prijzen">
+        <t t-call="website.layout">
+            <t t-set="additional_title">Prijzen</t>
+            <div id="wrap" class="oe_structure">
+                <section class="s_title o_cc o_cc5 pt64 pb48" data-snippet="s_title">
+                    <div class="container">
+                        <p class="o_vme_eyebrow">Prijzen</p>
+                        <h1>Een prijs per VME, geen licentie per gebruiker</h1>
+                        <p class="lead mb-0">Quotis draait op Odoo Community. U betaalt voor de gebouwen die u beheert, niet voor het aantal medewerkers.</p>
+                    </div>
+                </section>
+
+                <section class="s_three_columns pt64 pb48" data-snippet="s_three_columns" data-name="Formules">
+                    <div class="container">
+                        <div class="row d-flex align-items-stretch">
+                            <div class="col-lg-4 pt16 pb16">
+                                <div class="s_card card h-100 o_cc o_cc1 my-0" data-snippet="s_card">
+                                    <div class="card-body">
+                                        <h2 class="card-title h4-fs">Start</h2>
+                                        <p class="text-muted">Voor een kantoor dat begint, tot 25 VME's</p>
+                                        <ul class="card-text ps-3">
+                                            <li>Boekhouding, verdeling en provisies</li>
+                                            <li>Jaarafrekening en eigenaarsportaal</li>
+                                            <li>Peppol-facturen</li>
+                                        </ul>
+                                        <p class="fw-bold mb-0">Prijs op aanvraag</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 pt16 pb16">
+                                <div class="s_card card h-100 o_cc o_cc1 my-0 border-primary border-2" data-snippet="s_card">
+                                    <div class="card-body">
+                                        <h2 class="card-title h4-fs">Kantoor</h2>
+                                        <p class="text-muted">Voor een kantoor met een vaste portefeuille</p>
+                                        <ul class="card-text ps-3">
+                                            <li>Alles van Start</li>
+                                            <li>Digitale AV, communicatie en aanvragen</li>
+                                            <li>AI-assistent voor mails en PDF-facturen</li>
+                                            <li>Overstap uit uw huidige pakket</li>
+                                        </ul>
+                                        <p class="fw-bold mb-0">Prijs op aanvraag</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 pt16 pb16">
+                                <div class="s_card card h-100 o_cc o_cc1 my-0" data-snippet="s_card">
+                                    <div class="card-body">
+                                        <h2 class="card-title h4-fs">Kantoor + rentmeester</h2>
+                                        <p class="text-muted">Voor wie ook huurbeheer doet</p>
+                                        <ul class="card-text ps-3">
+                                            <li>Alles van Kantoor</li>
+                                            <li>Huurcontracten en indexering</li>
+                                            <li>Afrekening van lasten aan huurders</li>
+                                        </ul>
+                                        <p class="fw-bold mb-0">Prijs op aanvraag</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="small text-muted mt-3 mb-0">De formules zijn een werkvoorstel voor het prototype. We bespreken prijs en begeleiding persoonlijk.</p>
+                    </div>
+                </section>
+
+                <section id="demo" class="s_text_block o_cc o_cc2 pt64 pb64" data-snippet="s_text_block" data-name="Demo aanvragen">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-4 pb24">
+                                <h2 class="h3-fs">Demo aanvragen</h2>
+                                <p>Laat uw gegevens na. Een medewerker neemt contact op om een moment af te spreken.</p>
+                                <p>In de demo tonen we een factuur die binnenkomt en verdeeld wordt, de jaarafrekening, de provisieoproepen en het eigenaarsportaal, op fictieve gebouwen.</p>
+                            </div>
+                            <div class="col-lg-8">
+                                <t t-call="vme_website.demo_request_form"/>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+
+    <!-- Contact -->
+    <template id="page_contact" name="Contact">
+        <t t-call="website.layout">
+            <t t-set="additional_title">Contact</t>
+            <div id="wrap" class="oe_structure">
+                <section class="s_title o_cc o_cc5 pt64 pb48" data-snippet="s_title">
+                    <div class="container">
+                        <h1>Contact</h1>
+                        <p class="lead mb-0">Een vraag over Quotis? Laat een bericht na; we antwoorden persoonlijk.</p>
+                    </div>
+                </section>
+                <section class="s_text_block pt64 pb64" data-snippet="s_text_block">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-8 pb24">
+                                <t t-call="vme_website.demo_request_form"/>
+                            </div>
+                            <div class="col-lg-3 offset-lg-1">
+                                <h5>Quotis</h5>
+                                <ul class="list-unstyled">
+                                    <li><i class="fa fa-map-marker fa-fw me-2"/>Voorbeeldstraat 1</li>
+                                    <li><i class="fa fa-fw me-2"/>2000 Antwerpen</li>
+                                    <li><i class="fa fa-envelope fa-fw me-2"/><a href="mailto:info@quotis.example">info@quotis.example</a></li>
+                                </ul>
+                                <h5 class="mt-4">Al klant?</h5>
+                                <p>Log in via de knop <a href="/inloggen">Inloggen</a> bovenaan.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+
+    <!-- Bedankt -->
+    <template id="page_demo_thanks" name="Demo aangevraagd">
+        <t t-call="website.layout">
+            <t t-set="additional_title">Bedankt</t>
+            <div id="wrap" class="oe_structure">
+                <section class="s_text_block pt96 pb96" data-snippet="s_text_block">
+                    <div class="container text-center">
+                        <i class="fa fa-check-circle fa-3x text-o-color-1 mb-3"/>
+                        <h1>Bedankt voor uw aanvraag</h1>
+                        <p class="lead">We hebben uw gegevens goed ontvangen. Een medewerker neemt persoonlijk contact met u op.</p>
+                        <p><a href="/" class="btn btn-outline-primary">Terug naar de startpagina</a></p>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+
+    <!-- Inloggen: the two routes as a page, for mobile and for direct links -->
+    <template id="page_login_choice" name="Inloggen">
+        <t t-call="website.layout">
+            <t t-set="additional_title">Inloggen</t>
+            <div id="wrap" class="oe_structure">
+                <section class="s_text_block pt64 pb64" data-snippet="s_text_block">
+                    <div class="container">
+                        <h1 class="text-center mb-2">Inloggen</h1>
+                        <p class="lead text-center mb-5">Kies hoe u inlogt.</p>
+                        <div class="row justify-content-center">
+                            <div class="col-lg-4 col-md-6 pb16">
+                                <a href="/web/login?redirect=/odoo/action-vme_belgie.vme_association_action" class="card h-100 text-reset text-decoration-none o_vme_login_choice">
+                                    <div class="card-body p-4">
+                                        <i class="fa fa-briefcase fa-2x text-o-color-1 mb-3"/>
+                                        <h2 class="h4-fs">Medewerker van de syndicus</h2>
+                                        <p class="mb-0">Naar de beheeromgeving: VME's, facturen, provisies, AV's en taken.</p>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-lg-4 col-md-6 pb16">
+                                <a href="/web/login?redirect=/my" class="card h-100 text-reset text-decoration-none o_vme_login_choice">
+                                    <div class="card-body p-4">
+                                        <i class="fa fa-home fa-2x text-o-color-1 mb-3"/>
+                                        <h2 class="h4-fs">Eigenaar of huurder</h2>
+                                        <p class="mb-0">Naar uw portaal: provisies, afrekeningen, documenten en de AV.</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <p class="text-center small text-muted mt-4">Kiest u de verkeerde knop, dan brengt Quotis u na het inloggen toch naar de juiste plaats.</p>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="48" viewBox="0 0 180 48">
+  <g fill="none" fill-rule="evenodd">
+    <rect x="2" y="6" width="36" height="36" rx="8" fill="#1F5F6B"/>
+    <path d="M10 34V18l10-6 10 6v16" stroke="#FFFFFF" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M20 34V24h0" stroke="#C8893B" stroke-width="4" stroke-linecap="round"/>
+    <text x="48" y="33" font-family="Inter, Helvetica, Arial, sans-serif" font-size="26" font-weight="700" fill="#12252A">Quotis</text>
+  </g>
+</svg>

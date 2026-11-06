@@ -111,6 +111,10 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 
 34. [Medewerkers toegang geven tot alle of enkele VME's](toegang-medewerkers.md)
 
+### De website
+
+35. [De website en inloggen voor medewerkers en eigenaars](website-en-inloggen.md)
+
 ## Zo is het platform opgebouwd
 
 - **Eén VME = één bedrijf in Odoo.** Elke VME heeft haar eigen boekhouding, eigen rekeningnummers en eigen facturen. Rechtsboven in Odoo kies je in welke VME je werkt wanneer je facturen ingeeft. De schermen in de app **VME** (kavels, sleutels, provisieoproepen, jaarafrekening) tonen altijd alle VME's samen waartoe je toegang hebt.

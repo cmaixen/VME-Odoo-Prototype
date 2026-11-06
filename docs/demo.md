@@ -15,7 +15,7 @@ Draai dit ongeveer 15 minuten voor de demo, in de map van het project. Docker (O
    ```bash
    docker compose stop odoo
    docker compose exec db dropdb -U odoo --if-exists vme_demo
-   docker compose run --rm odoo odoo -d vme_demo -i vme_belgie,vme_rentmeester --load-language=nl_BE --stop-after-init
+   docker compose run --rm odoo odoo -d vme_demo -i vme_belgie,vme_rentmeester,vme_website --load-language=nl_BE --stop-after-init
    echo "env = env(user=env.ref('base.user_admin')); env['vme.association']._load_demo_data(); env.cr.commit()" | docker compose run --rm -T odoo odoo shell -d vme_demo --no-http
    echo "env = env(user=env.ref('base.user_admin')); env['vme.association']._load_demo_history(); env.cr.commit()" | docker compose run --rm -T odoo odoo shell -d vme_demo --no-http
    docker compose up -d odoo
@@ -29,7 +29,7 @@ Draai dit ongeveer 15 minuten voor de demo, in de map van het project. Docker (O
 
    Met een Anthropic-API-sleutel in `ai/.env` schrijft de AI-assistent echte antwoorden met Claude; zonder sleutel gebruikt u `--mock` (vaste sjablonen met plaatshouders zoals `[datum]`).
 
-3. **Inloggen** op http://localhost:8069 met `admin` / `admin`, in een browservenster op volledig scherm. Werkt de eerste login na het opbouwen niet ("400 Bad Request"), herlaad de pagina en log opnieuw in.
+3. **Inloggen**: open http://localhost:8069 (de productwebsite), klik op **Inloggen > Medewerker van de syndicus** en log in met `admin` / `admin`, in een browservenster op volledig scherm. U komt meteen in de app VME. Werkt de eerste login na het opbouwen niet ("400 Bad Request"), herlaad de pagina en log opnieuw in.
 
 4. **Zet bovenaan rechts het bedrijf op Residentie Linde** (bedrijvenkiezer). De schermen van de app VME tonen altijd alle VME's; de facturen ziet u per bedrijf.
 
@@ -171,9 +171,20 @@ Na stap 8 staan er ook drie aanvragen in **VME > Aanvragen**.
 3. **Schadedossiers**: *Waterschade badkamer A4*, uit de mail van A4 (zie stap 8), aangegeven bij de verzekeraar op 3 november, expertise op 12 november.
 
 > Boodschap: "Van AV-beslissing tot oplevering in één dossier, en geen aangiftetermijn die ontsnapt."
+### Extra: de website en de knop Inloggen (1 minuut)
+
+Doe dit vóór u inlogt, of in een privévenster.
+
+1. Open http://localhost:8069: de productwebsite (werktitel **Quotis**) met de sterke punten, **Functies**, **Voor eigenaars** en **Prijzen**. Alles is fictief: geen echte klanten of getuigenissen.
+2. Klik op **Inloggen**: één knop met twee routes, **Medewerker van de syndicus** en **Eigenaar of huurder**.
+3. Kies bewust **Medewerker van de syndicus** en log in als eigenaar (`eigenaar.linde.a1@example.com`, `portaal-demo`): u komt toch in het eigenaarsportaal, nooit in de beheeromgeving.
+4. Optioneel: **Prijzen > Demo aanvragen** maakt een lead in **CRM**, zonder mail naar de bezoeker.
+
+> Boodschap: "Eén adres voor uw kantoor en uw eigenaars; het platform weet wie waar hoort."
+
 ### Extra: het eigenaarsportaal (1 minuut)
 
-1. Open een privévenster (of een tweede browser) op http://localhost:8069/my en log in als eigenaar: `eigenaar.linde.a1@example.com`, wachtwoord `portaal-demo`. Zo blijft de sessie van de syndicus open.
+1. Open een privévenster (of een tweede browser) op http://localhost:8069, klik op **Inloggen > Eigenaar of huurder** en log in als eigenaar: `eigenaar.linde.a1@example.com`, wachtwoord `portaal-demo`. Zo blijft de sessie van de syndicus open.
 2. **Mijn mede-eigendom > Residentie Linde**: zijn kavels A1 en G1, de provisies van 2026 met de betaalstatus en een PDF per oproep, de voorlopige jaarafrekening 2026, en de documenten van het gebouw en van A1.
 3. Vertel erbij: de verkoper van A5 (`eigenaar.linde.a5@example.com`) ziet niets meer van na de verkoop, en een eigenaar ziet nooit een ander gebouw of een andere kavel.
 4. **Adres wijzigen**: de aanvraag van A1 wacht al op goedkeuring. Terug als syndicus: **VME > Eigenaars > Adreswijzigingen > Goedkeuren**.
