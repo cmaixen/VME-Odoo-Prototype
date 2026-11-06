@@ -222,6 +222,15 @@ Kies rechtsboven ook het bedrijf **Rentmeester Voorbeeld BV**, anders blijven de
 
 > Boodschap: "De jaarafrekening van de VME is meteen de basis voor de afrekening aan de huurder, zonder overtikken."
 
+### Extra: de huur doorstorten aan de verhuurder (1 minuut)
+
+1. **Rentmeester > Doorstortingen**: januari tot september zijn doorgestort; oktober staat klaar als concept, per verhuurder. *Linde A7* betaalde oktober niet, dus die huur zit er niet in.
+2. Open de doorstorting van oktober voor de verhuurder van *Linde A2*: ontvangen huur en lasten, ereloon 7 % op de huur met 21 % btw, saldo. Klik op **Afrekening (PDF)**.
+3. **Bevestigen** (ereloonfactuur, doorstortingsstuk en verrekening worden geboekt, niets verstuurd), **Goedkeuren voor betaling**, **Betaalbatch maken**.
+4. In de betaalbatch: **SEPA-bestand maken**. Vertel erbij: het bestand gaat pas naar de bank als iemand het daar oplaadt, en een niet-bevestigde rekening van de verhuurder komt er nooit in.
+
+> Boodschap: "Elke maand per verhuurder één klik: afrekening, ereloonfactuur en overschrijving, en niets vertrekt zonder uw handtekening in de bank."
+
 ## Na de demo
 
 - De demo is daarna niet meer "vers": de factuur, de provisieoproep 2027, de AV-planning, de AI-taken en aanvragen en eventueel het antwoord aan de notaris staan erin. Bouw de database opnieuw op met de commando's hierboven voor een volgende demo.

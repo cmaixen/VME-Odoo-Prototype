@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Beheermandaten -->
+    <record id="vme_rent_mandate_view_list" model="ir.ui.view">
+        <field name="name">vme.rent.mandate.list</field>
+        <field name="model">vme.rent.mandate</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="landlord_id"/>
+                <field name="date_start"/>
+                <field name="date_end" optional="show"/>
+                <field name="fee_type"/>
+                <field name="fee_percent" invisible="fee_type != 'percent'"/>
+                <field name="fee_amount" invisible="fee_type != 'fixed'"/>
+                <field name="partner_bank_id"/>
+                <field name="bank_untrusted" string="Rekening niet bevestigd" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_rent_mandate_view_form" model="ir.ui.view">
+        <field name="name">vme.rent.mandate.form</field>
+        <field name="model">vme.rent.mandate</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_remittances" type="object" class="oe_stat_button" icon="fa-exchange"
+                                string="Doorstortingen"/>
+                    </div>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <div class="alert alert-warning" role="alert" invisible="not bank_untrusted">
+                        De rekening van de verhuurder is nog niet bevestigd. Odoo neemt de doorstorting pas op in een
+                        betaalbatch als een gebruiker met dat recht de rekening bevestigd heeft (schakelaar "Betalen" op de rekening).
+                    </div>
+                    <group>
+                        <group string="Verhuurder">
+                            <field name="landlord_id"/>
+                            <field name="partner_bank_id" context="{'default_partner_id': landlord_id}"/>
+                            <field name="bank_untrusted" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group string="Ereloon">
+                            <field name="currency_id" invisible="1"/>
+                            <field name="fee_type" widget="radio"/>
+                            <field name="fee_percent" invisible="fee_type != 'percent'"/>
+                            <field name="fee_on_charges" invisible="fee_type != 'percent'"/>
+                            <field name="fee_amount" invisible="fee_type != 'fixed'"/>
+                            <field name="fee_tax_id" options="{'no_create': True}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Huurcontracten" name="contracts">
+                            <field name="contract_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="tenant_id"/>
+                                    <field name="date_start"/>
+                                    <field name="current_rent"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notities" name="notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="vme_rent_mandate_action" model="ir.actions.act_window">
+        <field name="name">Beheermandaten</field>
+        <field name="res_model">vme.rent.mandate</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nog geen beheermandaten</p>
+            <p>Een beheermandaat legt per verhuurder het ereloon vast en de rekening waarop de huur doorgestort wordt.</p>
+        </field>
+    </record>
+
+    <!-- Doorstortingen -->
+    <record id="vme_rent_remittance_view_list" model="ir.ui.view">
+        <field name="name">vme.rent.remittance.list</field>
+        <field name="model">vme.rent.remittance</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'cancel'" decoration-danger="balance &lt; 0">
+                <header>
+                    <button name="action_create_payment_batch" type="object" string="Betaalbatch maken"/>
+                </header>
+                <field name="name"/>
+                <field name="month" optional="hide"/>
+                <field name="landlord_id" optional="hide"/>
+                <field name="received" sum="Totaal"/>
+                <field name="costs" sum="Totaal" optional="show"/>
+                <field name="fee_total" sum="Totaal"/>
+                <field name="balance" sum="Totaal"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="partner_bank_id" optional="hide"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-success="state == 'confirmed'"/>
+                <field name="payment_status" widget="badge" decoration-success="payment_status == 'paid'"
+                       decoration-warning="payment_status in ('to_approve', 'to_pay')" decoration-danger="payment_status == 'rejected'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_rent_remittance_view_form" model="ir.ui.view">
+        <field name="name">vme.rent.remittance.form</field>
+        <field name="model">vme.rent.remittance</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_confirm" type="object" string="Bevestigen" class="btn-primary"
+                            invisible="state != 'draft'"
+                            confirm="De ereloonfactuur en het doorstortingsstuk worden geboekt. Er wordt niets verstuurd of betaald. Doorgaan?"/>
+                    <button name="action_recompute" type="object" string="Herberekenen" invisible="state != 'draft'"/>
+                    <button name="action_approve_payout" type="object" string="Goedkeuren voor betaling" class="btn-primary"
+                            invisible="payment_status != 'to_approve'"/>
+                    <button name="action_create_payment_batch" type="object" string="Betaalbatch maken" class="btn-primary"
+                            invisible="payment_status != 'to_pay'"/>
+                    <button name="action_print" type="object" string="Afrekening (PDF)"/>
+                    <button name="action_carry_over" type="object" string="Overdragen" invisible="state != 'draft'"
+                            confirm="Deze maand wordt niets doorgestort; de volgende doorstorting neemt alles mee. Doorgaan?"/>
+                    <button name="action_reset_draft" type="object" string="Terug naar concept" invisible="state != 'cancel'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_fee_invoice" type="object" class="oe_stat_button" icon="fa-file-text-o"
+                                string="Ereloonfactuur" invisible="not fee_invoice_id"/>
+                        <button name="action_open_payout" type="object" class="oe_stat_button" icon="fa-exchange"
+                                string="Doorstortingsstuk" invisible="not payout_move_id"/>
+                    </div>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <div class="alert alert-danger" role="alert" invisible="state != 'draft' or balance &gt;= 0">
+                        Het saldo is negatief: de kosten en het ereloon zijn hoger dan wat er ontvangen is. Kies
+                        "Overdragen"; de volgende doorstorting neemt alles mee.
+                    </div>
+                    <div class="alert alert-warning" role="alert" invisible="not bank_untrusted">
+                        De rekening van de verhuurder is nog niet bevestigd: de doorstorting komt niet in een betaalbatch
+                        tot iemand met dat recht ze bevestigt.
+                    </div>
+                    <div class="alert alert-info" role="alert" invisible="not note">
+                        <field name="note"/>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="landlord_id" readonly="state != 'draft'"/>
+                            <field name="month" readonly="state != 'draft'"/>
+                            <field name="partner_bank_id" readonly="state != 'draft'"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="state != 'draft'"/>
+                            <field name="payment_status" invisible="state != 'confirmed'"/>
+                            <field name="bank_untrusted" invisible="1"/>
+                            <field name="fee_invoice_id" invisible="1"/>
+                            <field name="payout_move_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="received"/>
+                            <field name="costs"/>
+                            <field name="fee_untaxed"/>
+                            <field name="fee_tax"/>
+                            <field name="fee_total"/>
+                            <field name="balance" class="fw-bold"/>
+                        </group>
+                    </group>
+                    <field name="line_ids" readonly="1">
+                        <list>
+                            <field name="line_type"/>
+                            <field name="contract_id" optional="show"/>
+                            <field name="move_name"/>
+                            <field name="date" optional="show"/>
+                            <field name="description"/>
+                            <field name="fee_base" optional="hide"/>
+                            <field name="amount"/>
+                            <field name="tax_amount" optional="show"/>
+                            <field name="currency_id" column_invisible="1"/>
+                        </list>
+                    </field>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="vme_rent_remittance_view_search" model="ir.ui.view">
+        <field name="name">vme.rent.remittance.search</field>
+        <field name="model">vme.rent.remittance</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="landlord_id"/>
+                <field name="month"/>
+                <filter name="draft" string="Concepten" domain="[('state', '=', 'draft')]"/>
+                <filter name="confirmed" string="Bevestigd" domain="[('state', '=', 'confirmed')]"/>
+                <separator/>
+                <filter name="group_landlord" string="Verhuurder" context="{'group_by': 'landlord_id'}"/>
+                <filter name="group_month" string="Maand" context="{'group_by': 'month:month'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="vme_rent_remittance_action" model="ir.actions.act_window">
+        <field name="name">Doorstortingen</field>
+        <field name="res_model">vme.rent.remittance</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nog geen doorstortingen</p>
+            <p>Maak elke maand de doorstortingen via "Doorstortingen maken": per verhuurder de ontvangen huur min het ereloon en de kosten.</p>
+        </field>
+    </record>
+
+    <record id="vme_rent_remittance_wizard_view_form" model="ir.ui.view">
+        <field name="name">vme.rent.remittance.wizard.form</field>
+        <field name="model">vme.rent.remittance.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <p>Maakt per verhuurder een concept met de huur en lasten die tot het einde van de maand ontvangen zijn en nog
+                    niet doorgestort werden, min de kosten die het kantoor voor hem betaalde en het ereloon. Er wordt niets geboekt of betaald.</p>
+                <group>
+                    <field name="month"/>
+                    <field name="company_id" options="{'no_create': True}"/>
+                    <field name="landlord_ids" widget="many2many_tags"/>
+                </group>
+                <footer>
+                    <button name="action_create" type="object" string="Doorstortingen maken" class="btn-primary"/>
+                    <button special="cancel" string="Annuleren"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="vme_rent_remittance_wizard_action" model="ir.actions.act_window">
+        <field name="name">Doorstortingen maken</field>
+        <field name="res_model">vme.rent.remittance.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Betaalbatches van het kantoor (vme_belgie, stap 20) -->
+    <record id="vme_payment_batch_view_form_rent" model="ir.ui.view">
+        <field name="name">vme.payment.batch.form.rent</field>
+        <field name="model">vme.payment.batch</field>
+        <field name="inherit_id" ref="vme_belgie.vme_payment_batch_view_form"/>
+        <field name="arch" type="xml">
+            <field name="association_id" position="attributes">
+                <attribute name="invisible">rent_company_id</attribute>
+                <attribute name="required">not rent_company_id</attribute>
+            </field>
+            <field name="association_id" position="after">
+                <field name="rent_company_id" invisible="not rent_company_id" readonly="1"/>
+            </field>
+            <field name="batch_type" position="attributes">
+                <attribute name="readonly">state != 'draft' or line_ids or rent_company_id</attribute>
+            </field>
+            <field name="fund" position="attributes">
+                <attribute name="invisible">batch_type != 'transfer' or rent_company_id</attribute>
+                <attribute name="required">batch_type == 'transfer' and not rent_company_id</attribute>
+            </field>
+            <field name="move_id" position="after">
+                <field name="rent_remittance_id" optional="show" column_invisible="not parent.rent_company_id"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="rent_payment_batch_action" model="ir.actions.act_window">
+        <field name="name">Betaalbatches</field>
+        <field name="res_model">vme.payment.batch</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('rent_company_id', '!=', False)]</field>
+        <field name="context">{'create': False}</field>
+    </record>
+
+    <!-- Huurcontract: beheermandaat en doorstortingen -->
+    <record id="vme_rent_contract_view_form_remittance" model="ir.ui.view">
+        <field name="name">vme.rent.contract.form.remittance</field>
+        <field name="model">vme.rent.contract</field>
+        <field name="inherit_id" ref="vme_rentmeester.vme_rent_contract_view_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button name="action_open_remittances" type="object" class="oe_stat_button" icon="fa-exchange"
+                        string="Doorstortingen"/>
+            </div>
+            <field name="landlord_id" position="after">
+                <field name="mandate_id"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Leveranciersfactuur betaald voor een verhuurder -->
+    <record id="account_move_view_form_rent_cost" model="ir.ui.view">
+        <field name="name">account.move.form.rent.cost</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="vme_rentmeester.account_move_view_form_rent"/>
+        <field name="arch" type="xml">
+            <field name="rent_contract_id" position="attributes">
+                <attribute name="invisible">not rent_contract_id and move_type not in ('in_invoice', 'in_refund')</attribute>
+                <attribute name="readonly">state != 'draft' or move_type not in ('in_invoice', 'in_refund')</attribute>
+                <attribute name="string">Huurcontract (kost voor de verhuurder)</attribute>
+            </field>
+            <field name="rent_period" position="after">
+                <field name="rent_remittance_id" invisible="not rent_remittance_id"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Kantoor: derdenrekening -->
+    <record id="res_company_view_form_rent" model="ir.ui.view">
+        <field name="name">res.company.form.rent</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <field name="currency_id" position="after">
+                <field name="is_rent_management"/>
+                <field name="rent_bank_id" invisible="not is_rent_management" context="{'default_partner_id': partner_id}"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="rent_office_action" model="ir.actions.act_window">
+        <field name="name">Kantoor</field>
+        <field name="res_model">res.company</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('is_rent_management', '=', True)]</field>
+    </record>
+
+    <menuitem id="menu_rent_remittances_top" name="Doorstortingen" parent="menu_rent_root" sequence="50"/>
+    <menuitem id="menu_rent_remittances" name="Doorstortingen" parent="menu_rent_remittances_top" action="vme_rent_remittance_action" sequence="10"/>
+    <menuitem id="menu_rent_remittance_wizard" name="Doorstortingen maken" parent="menu_rent_remittances_top" action="vme_rent_remittance_wizard_action" sequence="20"/>
+    <menuitem id="menu_rent_payment_batches" name="Betaalbatches" parent="menu_rent_remittances_top" action="rent_payment_batch_action" sequence="30"/>
+    <menuitem id="menu_rent_mandates" name="Beheermandaten" parent="menu_rent_configuration" action="vme_rent_mandate_action" sequence="5"/>
+    <menuitem id="menu_rent_office" name="Kantoor en derdenrekening" parent="menu_rent_configuration" action="rent_office_action" sequence="30"/>
+</odoo>

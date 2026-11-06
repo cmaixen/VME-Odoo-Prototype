@@ -39,3 +39,13 @@ class TestRentDemo(TransactionCase):
             "audience": "tenants", "reference_date": date(2026, 11, 5),
         })
         self.assertIn(contract.tenant_id, [partner for partner, _lots, _role in mailing._get_recipients()])
+
+    def test_demo_mandates(self):
+        mandates = self.contracts.mandate_id
+        self.assertEqual(len(mandates), 3)
+        self.assertEqual(sorted(mandates.mapped("fee_type")), ["fixed", "percent", "percent"])
+        self.assertTrue(all(m.fee_tax_id.amount == 21.0 for m in mandates))
+        office = self.contracts.company_id
+        self.assertTrue(office.rent_bank_id)
+        # Loaded as admin, so the accounts are trusted (Odoo's own check, never bypassed).
+        self.assertTrue(all(b.allow_out_payment for b in mandates.partner_bank_id | office.rent_bank_id))

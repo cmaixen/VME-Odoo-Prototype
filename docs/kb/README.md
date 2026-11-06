@@ -104,6 +104,7 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 ### Rentmeester
 
 31. [Een verhuurd appartement beheren: huurcontract, huurfacturen, indexering en afrekening aan de huurder](rentmeester.md)
+32. [De huur doorstorten aan de verhuurder: ereloon, kosten, afrekening en betaalbatch](doorstorting-verhuurder.md)
 
 ## Zo is het platform opgebouwd
 

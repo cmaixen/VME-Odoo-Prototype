@@ -30,3 +30,10 @@ class ReportRentSettlement(models.AbstractModel):
     _inherit = "vme.rent.report.mixin"
     _description = "Afrekening lasten huurder"
     _report_model = "vme.rent.settlement"
+
+
+class ReportRentRemittance(models.AbstractModel):
+    _name = "report.vme_rentmeester.report_rent_remittance"
+    _inherit = "vme.rent.report.mixin"
+    _description = "Afrekening verhuurder"
+    _report_model = "vme.rent.remittance"

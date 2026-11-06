@@ -9,3 +9,7 @@ access_vme_rent_settlement_user,vme.rent.settlement user,model_vme_rent_settleme
 access_vme_rent_settlement_line_user,vme.rent.settlement.line user,model_vme_rent_settlement_line,base.group_user,1,1,1,1
 access_vme_rent_invoice_wizard_user,vme.rent.invoice.wizard user,model_vme_rent_invoice_wizard,base.group_user,1,1,1,1
 access_vme_rent_settlement_wizard_user,vme.rent.settlement.wizard user,model_vme_rent_settlement_wizard,base.group_user,1,1,1,1
+access_vme_rent_mandate_user,vme.rent.mandate user,model_vme_rent_mandate,base.group_user,1,1,1,1
+access_vme_rent_remittance_user,vme.rent.remittance user,model_vme_rent_remittance,base.group_user,1,1,1,1
+access_vme_rent_remittance_line_user,vme.rent.remittance.line user,model_vme_rent_remittance_line,base.group_user,1,1,1,1
+access_vme_rent_remittance_wizard_user,vme.rent.remittance.wizard user,model_vme_rent_remittance_wizard,base.group_user,1,1,1,1

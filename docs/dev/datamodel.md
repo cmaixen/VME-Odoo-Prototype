@@ -88,7 +88,7 @@ Wizards (transient): `vme.provision.call.wizard`, `vme.annual.statement.wizard` 
 | `vme.document.folder` | Documentmap | `scope` (`vme` of `lot`), `portal_visible` als standaard voor nieuwe documenten. Vaste mappen in `data/document_folders.xml`. |
 | `vme.document` | Document | `association_id`, `lot_id` (verplicht in een kavelmap, verboden in een VME-map, zelfde VME), `folder_id`, `date` (bepaalt de zichtbaarheid), `datas` (bijlage), `filename`, `portal_visible`. `_portal_domain_for(partner)` is de zichtbaarheidsregel, zie [portaal.md](portaal.md). |
 | `vme.address.request` | Adreswijziging | `partner_id`, nieuwe `street`, `street2`, `zip`, `city`, `country_id`, `phone`, `email`, `old_address` (tekst bij de aanvraag), `state` (`to_approve`, `approved`, `refused`). Goedkeuren schrijft naar de partner. |
-De modellen van de rentmeester (`vme.rent.*`) staan in de module `vme_rentmeester`; zie [rentmeester.md](rentmeester.md#datamodel).
+De modellen van de rentmeester (`vme.rent.*`, ook beheermandaten en doorstortingen) staan in de module `vme_rentmeester`; zie [rentmeester.md](rentmeester.md#datamodel). Die module breidt ook `vme.payment.batch` uit met `rent_company_id`.
 
 ## Uitbreidingen op Odoo-modellen
 

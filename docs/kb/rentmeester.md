@@ -8,7 +8,8 @@ Wat de app doet:
 - elke maand de **huurfacturen** klaarzetten;
 - jaarlijks de **indexering** berekenen volgens de gezondheidsindex, met de **indexatiebrief** als concept;
 - de **lasten afrekenen** met de huurder, vertrekkend van de jaarafrekening van de VME aan de eigenaar;
-- **opzeggingen en einde huur** opvolgen, met een taak vóór elke termijn.
+- **opzeggingen en einde huur** opvolgen, met een taak vóór elke termijn;
+- elke maand de huur **doorstorten aan de verhuurder**, min het ereloon en de kosten: zie [de huur doorstorten](doorstorting-verhuurder.md).
 
 Er wordt nooit iets automatisch verstuurd: brieven en facturen zijn concepten die je zelf nakijkt en verstuurt.
 

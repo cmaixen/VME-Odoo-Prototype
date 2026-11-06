@@ -52,7 +52,7 @@ Legende: ✅ gebouwd · 🔨 wordt nu gebouwd · 📋 gepland · ➖ bewust late
 | Documentbeheer | Mappen per VME en kavel, delen of niet delen, acties op meerdere documenten | ✅ | stap 15 |
 | | Automatisch ordenen met AI | ✅ | stap 21 (soort en VME) met de mappen van stap 15 |
 | Huurcontractbeheer | Huurcontracten, huurders, waarborg, maandelijkse huur, opzeg en einde huur | ✅ | stap 25 |
-| | Doorstorting aan de verhuurder en ereloon van de rentmeester | 📋 | na stap 25 |
+| | Doorstorting aan de verhuurder en ereloon van de rentmeester | ✅ | stap 25b |
 | Centraal communicatiebeheer | Brieven, e-mail en aangetekend per VME, blok of kavel, met voorkeur papier of e-mail | ✅ | stap 23 |
 | | Sms, push en elektronisch aangetekend | ✅ | stap 23, provider-interface met een simulatie; een echte dienst ➖ vraagt een contract |
 | | Sjablonen, updates, bevragingen met antwoorden, communicatielog per eigenaar | ✅ | stap 23 |
