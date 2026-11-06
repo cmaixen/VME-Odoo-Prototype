@@ -10,7 +10,7 @@ Legende: ✅ gebouwd · 🔨 wordt nu gebouwd · 📋 gepland · ➖ bewust late
 | | PDF-facturen zonder UBL gelezen met AI, met waarschuwing bij een onbekend IBAN | ✅ | stap 21 |
 | | Goedkeuren vóór betaling, met een tweede goedkeuring boven een drempel | ✅ | stap 20 |
 | Boekhouding | Eén boekhouding per VME, Belgisch rekeningstelsel, boekingsregels (verdeelregels), opvragingen | ✅ | stap 1–6 |
-| | Minimumrekeningstelsel VME (KB 12 juli 2012) nakijken | 📋 | LEGAL-CHECK |
+| | Minimumrekeningstelsel VME (KB 12 juli 2012) nagekeken: rubrieken in balans en resultatenrekening, btw als kost | ✅ | stap 26, LEGAL-CHECK |
 | Betalingsverkeer | Bankafschriften inlezen (CODA/CAMT) en koppelen | ✅ | stap 12 |
 | | Betaalbatches voor leveranciers (SEPA pain.001) | ✅ | stap 20 |
 | | Domiciliëringen van provisies (SEPA pain.008) met mandaten en terugkoppeling | ✅ | stap 20 |
@@ -74,7 +74,7 @@ Odoo beschrijft op zijn sectorpagina "Vereniging van eigenaren" (november 2026) 
 | Bankrekeningen, inkomende en uitgaande betalingen | ✅ | stap 12, 20 (rechtstreekse koppeling ➖) |
 | Financiële rapporten voor eigenaars, van overzicht tot jaarbudget | ✅ | stap 5, 6, 15, 22 |
 | Stemmen automatisch geteld op aandelen | ✅ | stap 11, 24 |
-| Wettelijke rapporten per VME: balans en resultatenrekening | 📋 | Odoo Community heeft geen financiële rapporten (die zitten in Enterprise); een eigen balans en resultatenrekening per VME volgens het minimumrekeningstelsel komt in een volgende stap |
+| Wettelijke rapporten per VME: balans en resultatenrekening | ✅ | stap 26: eigen balans en resultatenrekening per VME en boekjaar volgens het minimumrekeningstelsel, met vergelijking en PDF (Odoo Community heeft geen financiële rapporten) |
 | Auditklaar: financiële historiek, communicatie en notulen | ✅ | chatter, stap 11, 16, 23 |
 | Serviceverzoeken centraal (Helpdesk) | ✅ | stap 19, zonder de Helpdesk-app |
 | Vergaderingen plannen (Kalender) | ✅ | stap 6c |

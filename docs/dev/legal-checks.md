@@ -3,14 +3,15 @@
 Automatisch gemaakt door `python3 tools/legal_checks.py`; niet met de hand bewerken.
 Elke rij is een wettelijke regel in de code die nog juridisch gevalideerd moet worden.
 
-Aantal punten: 101.
+Aantal punten: 107.
 
 ## Per bron
 
 - **AREI (Algemeen Reglement op de Elektrische Installaties)**: [vme_installation.py:22](../../addons/vme_belgie/models/vme_installation.py#L22)
 - **Boek VII WER (omzetting art. 76 PSD2, richtlijn 2015/2366)**: [vme_payment.py:45](../../addons/vme_belgie/models/vme_payment.py#L45)
 - **Brusselse ordonnantie van 13 oktober 2022 (indexering volgens EPB)**: [rent_rules.py:47](../../addons/vme_rentmeester/models/rent_rules.py#L47)
-- **KB 12 juli 2012 (minimum chart of accounts for VMEs)**: [account_chart_template.py:6](../../addons/vme_belgie/models/account_chart_template.py#L6), [vme_association.py:87](../../addons/vme_belgie/models/vme_association.py#L87)
+- **KB 12 juli 2012 (minimum chart of accounts for VMEs)**: [vme_association.py:87](../../addons/vme_belgie/models/vme_association.py#L87)
+- **KB 12 juli 2012, bijlage**: [account_chart_template.py:6](../../addons/vme_belgie/models/account_chart_template.py#L6), [vme_financial_statements.py:7](../../addons/vme_belgie/models/vme_financial_statements.py#L7), [vme_financial_statements.py:39](../../addons/vme_belgie/models/vme_financial_statements.py#L39), [vme_financial_statements.py:61](../../addons/vme_belgie/models/vme_financial_statements.py#L61), [vme_financial_statements.py:310](../../addons/vme_belgie/models/vme_financial_statements.py#L310)
 - **KB 9 maart 2003**: [vme_installation.py:33](../../addons/vme_belgie/models/vme_installation.py#L33)
 - **KB 9 maart 2003 betreffende de beveiliging van liften**: [vme_installation.py:17](../../addons/vme_belgie/models/vme_installation.py#L17)
 - **NBN S21-050**: [vme_installation.py:20](../../addons/vme_belgie/models/vme_installation.py#L20)
@@ -43,7 +44,7 @@ Aantal punten: 101.
 - **art. 3.88 §1, 1°, c) BW**: [vme_works.py:11](../../addons/vme_belgie/models/vme_works.py#L11), [vme_works.py:195](../../addons/vme_belgie/models/vme_works.py#L195)
 - **art. 3.88 §1-3 BW**: [vme_assembly_meeting.py:8](../../addons/vme_belgie/models/vme_assembly_meeting.py#L8)
 - **art. 3.88 §3 BW**: [vme_assembly_meeting.py:304](../../addons/vme_belgie/models/vme_assembly_meeting.py#L304)
-- **art. 3.89 §5 BW**: [account_bank_statement_line.py:165](../../addons/vme_belgie/models/account_bank_statement_line.py#L165), [account_move.py:56](../../addons/vme_belgie/models/account_move.py#L56), [vme_association.py:15](../../addons/vme_belgie/models/vme_association.py#L15), [vme_association.py:34](../../addons/vme_belgie/models/vme_association.py#L34), [vme_association.py:170](../../addons/vme_belgie/models/vme_association.py#L170), [vme_association.py:193](../../addons/vme_belgie/models/vme_association.py#L193), [vme_contract.py:39](../../addons/vme_belgie/models/vme_contract.py#L39), [vme_migration.py:621](../../addons/vme_belgie/models/vme_migration.py#L621), [vme_provision_call_wizard.py:115](../../addons/vme_belgie/wizard/vme_provision_call_wizard.py#L115)
+- **art. 3.89 §5 BW**: [account_bank_statement_line.py:165](../../addons/vme_belgie/models/account_bank_statement_line.py#L165), [account_move.py:56](../../addons/vme_belgie/models/account_move.py#L56), [vme_association.py:15](../../addons/vme_belgie/models/vme_association.py#L15), [vme_association.py:34](../../addons/vme_belgie/models/vme_association.py#L34), [vme_association.py:170](../../addons/vme_belgie/models/vme_association.py#L170), [vme_association.py:193](../../addons/vme_belgie/models/vme_association.py#L193), [vme_contract.py:39](../../addons/vme_belgie/models/vme_contract.py#L39), [vme_financial_statements.py:262](../../addons/vme_belgie/models/vme_financial_statements.py#L262), [vme_migration.py:621](../../addons/vme_belgie/models/vme_migration.py#L621), [vme_provision_call_wizard.py:115](../../addons/vme_belgie/wizard/vme_provision_call_wizard.py#L115)
 - **art. 3.89 §5, 12° BW**: [vme_document.py:17](../../addons/vme_belgie/models/vme_document.py#L17)
 - **art. 3.90 §1 BW**: [vme_council.py:16](../../addons/vme_belgie/models/vme_council.py#L16), [vme_council.py:104](../../addons/vme_belgie/models/vme_council.py#L104)
 - **art. 3.90 §1 en art. 3.91 BW**: [vme_council.py:35](../../addons/vme_belgie/models/vme_council.py#L35)
@@ -60,6 +61,7 @@ Aantal punten: 101.
 - **art. 34 Vlaams Woninghuurdecreet**: [rent_rules.py:67](../../addons/vme_rentmeester/models/rent_rules.py#L67)
 - **art. 37 Vlaams Woninghuurdecreet**: [rent_rules.py:80](../../addons/vme_rentmeester/models/rent_rules.py#L80)
 - **art. 37/2 Arbeidsovereenkomstenwet 3 juli 1978**: [vme_contract.py:32](../../addons/vme_belgie/models/vme_contract.py#L32)
+- **art. 45 §1 WBTW**: [account_chart_template.py:49](../../addons/vme_belgie/models/account_chart_template.py#L49)
 - **art. 5.231 BW**: [vme_communication.py:665](../../addons/vme_belgie/models/vme_communication.py#L665)
 - **art. 62 Waals decreet van 15 maart 2018**: [rent_rules.py:86](../../addons/vme_rentmeester/models/rent_rules.py#L86)
 - **art. 74 §1 wet 4 april 2014 betreffende de verzekeringen**: [vme_damage.py:10](../../addons/vme_belgie/models/vme_damage.py#L10)
@@ -78,7 +80,8 @@ Aantal punten: 101.
 | Bestand | Regel | Bron | Tekst |
 | --- | --- | --- | --- |
 | [addons/vme_belgie/models/account_bank_statement_line.py](../../addons/vme_belgie/models/account_bank_statement_line.py#L165) | 165 | art. 3.89 §5 BW | working and reserve capital on separate accounts: never book a provision of one fund silently on the account of the other. |
-| [addons/vme_belgie/models/account_chart_template.py](../../addons/vme_belgie/models/account_chart_template.py#L6) | 6 | KB 12 juli 2012 (minimum chart of accounts for VMEs) | align these codes. |
+| [addons/vme_belgie/models/account_chart_template.py](../../addons/vme_belgie/models/account_chart_template.py#L6) | 6 | KB 12 juli 2012, bijlage | the minimum chart of a VME has no class 10: provisions are advances (700/701) and what is left is "over te dragen middelen" (489). We keep booking the provisions on these two accounts and present them along the KB in the balance sheet and income statement (models/vme_financial_statements.py, docs/dev/financiele-rapporten.md). |
+| [addons/vme_belgie/models/account_chart_template.py](../../addons/vme_belgie/models/account_chart_template.py#L49) | 49 | art. 45 §1 WBTW | a VME that is not liable for VAT cannot deduct it, so the VAT on its purchases is a cost. |
 | [addons/vme_belgie/models/account_move.py](../../addons/vme_belgie/models/account_move.py#L56) | 56 | art. 3.89 §5 BW | a provision is paid to the bank account of its fund. |
 | [addons/vme_belgie/models/account_move.py](../../addons/vme_belgie/models/account_move.py#L155) | 155 | art. 3.94 BW | between seller and buyer, the consumption of each one's ownership period; without a reading at the deed, pro rata per day between two readings. |
 | [addons/vme_belgie/models/account_move.py](../../addons/vme_belgie/models/account_move.py#L259) | 259 | art. 3.94 BW | costs are split between seller and buyer by the number of days each one owned the lot within the cost period. |
@@ -135,6 +138,11 @@ Aantal punten: 101.
 | [addons/vme_belgie/models/vme_damage.py](../../addons/vme_belgie/models/vme_damage.py#L10) | 10 | art. 74 §1 wet 4 april 2014 betreffende de verzekeringen | the insured reports a claim as soon as reasonably possible, and in any case within the term set in the policy. |
 | [addons/vme_belgie/models/vme_damage.py](../../addons/vme_belgie/models/vme_damage.py#L14) | 14 | art. 88 §1 wet 4 april 2014 betreffende de verzekeringen | a claim against the insurer lapses three years after the event that gives rise to it. |
 | [addons/vme_belgie/models/vme_document.py](../../addons/vme_belgie/models/vme_document.py#L17) | 17 | art. 3.89 §5, 12° BW | the syndic gives every co-owner access to the documents of the co-ownership, also via a website. Which documents exactly is not yet validated; minutes go to every co-owner within 30 days (art. 3.87 §10 BW). |
+| [addons/vme_belgie/models/vme_financial_statements.py](../../addons/vme_belgie/models/vme_financial_statements.py#L7) | 7 | KB 12 juli 2012, bijlage | minimum chart of accounts for VMEs: the headings of the balance sheet (inventory) and the income statement. A VME has no equity (no class 10): what is left at year end is a debt to the owners on 489 "over te dragen middelen" (CBN advice 2012/14). |
+| [addons/vme_belgie/models/vme_financial_statements.py](../../addons/vme_belgie/models/vme_financial_statements.py#L39) | 39 | KB 12 juli 2012, bijlage | costs (61 to 66) and income (70, 75, 76) of a VME. |
+| [addons/vme_belgie/models/vme_financial_statements.py](../../addons/vme_belgie/models/vme_financial_statements.py#L61) | 61 | KB 12 juli 2012, bijlage | mapping of the Belgian PCMN accounts that Odoo's chart uses onto the cost headings of the VME chart; the longest prefix wins. Bills of a works file go to 611 (renovation and exceptional works), whatever their account. |
+| [addons/vme_belgie/models/vme_financial_statements.py](../../addons/vme_belgie/models/vme_financial_statements.py#L262) | 262 | art. 3.89 §5 BW | working and reserve capital on separate bank accounts. |
+| [addons/vme_belgie/models/vme_financial_statements.py](../../addons/vme_belgie/models/vme_financial_statements.py#L310) | 310 | KB 12 juli 2012, bijlage | provisions are income: 700 reserve capital, 701 working capital. |
 | [addons/vme_belgie/models/vme_installation.py](../../addons/vme_belgie/models/vme_installation.py#L17) | 17 | KB 9 maart 2003 betreffende de beveiliging van liften | preventive inspection by an accredited inspection body (EDTC). |
 | [addons/vme_belgie/models/vme_installation.py](../../addons/vme_belgie/models/vme_installation.py#L20) | 20 | NBN S21-050 | yearly maintenance check of portable fire extinguishers and hoses. |
 | [addons/vme_belgie/models/vme_installation.py](../../addons/vme_belgie/models/vme_installation.py#L22) | 22 | AREI (Algemeen Reglement op de Elektrische Installaties) | periodic inspection of the common parts of residential buildings. |

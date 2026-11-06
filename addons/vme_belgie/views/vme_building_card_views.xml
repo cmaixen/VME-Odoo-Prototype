@@ -11,6 +11,7 @@
                     <button name="action_open_budget_analysis" type="object" string="Budgetopvolging"/>
                     <button name="action_open_capital_history" type="object" string="Verloop kapitalen"/>
                     <button name="action_open_annual_statement" type="object" string="Jaarafrekening"/>
+                    <button name="action_open_financial_statements" type="object" string="Balans en resultatenrekening"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
