@@ -1,9 +1,12 @@
 import re
 from datetime import date
+from unittest.mock import patch
 
 from odoo.exceptions import UserError
 from odoo.fields import Command
 from odoo.tests import Form, TransactionCase, tagged
+
+from ..wizard import vme_provision_call_wizard as provision_wizard
 
 
 @tagged("post_install", "-at_install")
@@ -168,3 +171,40 @@ class TestProvisionCall(TransactionCase):
         self.assertEqual(self.budget.previous_year_charges, 30000.0)
         self.assertEqual(self.budget.reserve_minimum, 1500.0)
         self.assertTrue(self.budget.reserve_warning)  # 1000 < 1500
+
+    def test_large_selection_runs_in_background(self):
+        # More than BACKGROUND_THRESHOLD VMEs: queued, then made VME per VME by the cron (docs/dev/schaal.md).
+        other = self.env["vme.association"].create({"name": "Residentie Zonder Budget"})
+        wizard = self.env["vme.provision.call.wizard"].create({
+            "association_ids": [Command.set((self.vme | other).ids)], "year": 2026, "number": 1,
+            "invoice_date": date(2026, 1, 15), "date_due": date(2026, 1, 28), "post_invoices": True,
+        })
+        with patch.object(provision_wizard, "BACKGROUND_THRESHOLD", 1):
+            action = wizard.action_create_calls()
+        run = self.env["vme.provision.call.run"].browse(action["res_id"])
+        self.assertEqual(run.state, "queued")
+        self.assertFalse(self.budget.provision_call_ids)
+        steps = []
+        run._process(lambda: steps.append(1) or 60)
+        self.assertEqual((run.state, len(steps)), ("done", 2))
+        self.assertEqual(run.done_association_ids, self.vme | other)
+        self.assertIn("Residentie Zonder Budget: geen budget voor 2026", run.log)
+        invoices = self.budget.provision_call_ids.invoice_ids
+        self.assertEqual(len(invoices), 4)
+        self.assertEqual(set(invoices.mapped("state")), {"posted"})
+        self.assertEqual(self.env["vme.provision.call"].search(run.action_open_calls()["domain"]), self.budget.provision_call_ids)
+
+    def test_background_run_stops_when_out_of_time_and_logs_errors(self):
+        other = self.env["vme.association"].create({"name": "Residentie Zonder Sleutel"})
+        self.env["vme.budget"].create({"association_id": other.id, "year": 2026, "working_capital_budget": 100,
+                                       "reserve_capital_contribution": 10})
+        run = self.env["vme.provision.call.run"].create({
+            "year": 2026, "number": 1, "invoice_date": date(2026, 1, 15), "date_due": date(2026, 1, 28),
+            "association_ids": [Command.set((other | self.vme).ids)],
+        })
+        run._process(lambda: 0)  # no time left after the first VME
+        self.assertEqual((run.state, len(run.done_association_ids)), ("queued", 1))
+        run._process()
+        self.assertEqual(run.state, "done")
+        self.assertIn("Residentie Zonder Sleutel:", run.log)
+        self.assertTrue(self.budget.provision_call_ids)

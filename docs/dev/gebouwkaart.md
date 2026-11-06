@@ -55,7 +55,7 @@ Vreemde munt: `price_total` staat in de munt van de factuur. Alle VME's werken i
 | `assembly` | `_get_assembly_signal`: een niet-geannuleerde AV van dit jaar met een datum buiten haar periode (gehouden, of nog te komen), of de periode van dit jaar is voorbij zonder gehouden AV in de periode | `# LEGAL-CHECK: art. 3.87 §2 BW` |
 | `inspection` | een installatie met `due_state` of `risk_analysis_due_state` = `overdue` (stap 6b) | de termijnen zelf staan in `vme_installation.py` |
 
-"Vandaag" komt uit `fields.Date.context_today`, of uit de context `vme_today` zoals bij de AV-planner. De zoekmethodes (`_search_signal`, `_search_signal_count`) berekenen de signalen opnieuw voor alle VME's die de gebruiker mag lezen: de waarden hangen af van veel andere modellen en zitten niet in de cache-afhankelijkheden. Voor 200 VME's is dat een paar seconden; wordt het te traag, dan kan een nachtelijke cron de signalen opslaan.
+"Vandaag" komt uit `fields.Date.context_today`, of uit de context `vme_today` zoals bij de AV-planner. De portefeuille en de zoekmethodes (`_search_signal`, `_search_signal_count`) rekenen live, maar voor alle VME's samen in een vast aantal queries (`_get_portfolio_figures`, met `_read_group` op de SQL-views van kapitalen, achterstallen en budgetopvolging); `_get_signals()` van één VME gebruikt dezelfde functie. Bij 200 VME's is dat ruim snel genoeg om niets op te slaan; de metingen staan in [schaal.md](schaal.md).
 
 `vme.arrears` gebruikt `CURRENT_DATE` van de databank, niet `vme_today`.
 
@@ -80,7 +80,7 @@ Vreemde munt: `price_total` staat in de munt van de factuur. Alle VME's werken i
 
 ## Tests
 
-`tests/test_building_card.py` (16 tests, ongeveer 3 seconden) en `test_demo_portfolio_signals` in `tests/test_demo_data.py` (de signalen van de demo op 5 november 2026): spreiding per dag, budget per rekening en sleutel tot een datum (creditnota, concept, ander jaar), kosten zonder budget en regels zonder sleutel, werken uit het reservekapitaal, view tegenover Python, kapitalen per jaar en op de rekening, elk signaal met en zonder uitzondering, de zoekfilters, de inhoud van beide kaarten, het portaal en de toegang van de commissaris.
+`tests/test_building_card.py` (18 tests, ongeveer 3 seconden) en `test_demo_portfolio_signals` in `tests/test_demo_data.py` (de signalen van de demo op 5 november 2026): spreiding per dag, budget per rekening en sleutel tot een datum (creditnota, concept, ander jaar), kosten zonder budget en regels zonder sleutel, werken uit het reservekapitaal, view tegenover Python, kapitalen per jaar en op de rekening, elk signaal met en zonder uitzondering, de zoekfilters, portefeuille tegenover kaart en een vast aantal queries per portefeuille, de inhoud van beide kaarten, het portaal en de toegang van de commissaris.
 
 ## Demo
 

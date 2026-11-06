@@ -47,8 +47,9 @@ class VmeBudget(models.Model):
     @api.depends("association_id", "year", "working_capital_budget", "reserve_capital_contribution",
                  "reserve_exception_by_general_assembly")
     def _compute_reserve_check(self):
+        charges_by_budget = self._get_previous_year_charges_by_budget()
         for budget in self:
-            charges = budget._get_previous_year_charges()
+            charges = charges_by_budget[budget]
             budget.previous_year_charges_estimated = not charges
             budget.previous_year_charges = charges or budget.working_capital_budget
             budget.reserve_minimum = budget.previous_year_charges * RESERVE_MINIMUM_RATE
@@ -70,18 +71,27 @@ class VmeBudget(models.Model):
                 budget.reserve_warning = False
 
     def _get_previous_year_charges(self):
-        """Posted vendor bills (incl. VAT, which is a cost for a VME) of the previous year."""
         self.ensure_one()
-        if not self.company_id or not self.year:
-            return 0.0
-        bills = self.env["account.move"].sudo().search([
-            ("company_id", "=", self.company_id.id),
-            ("move_type", "in", ("in_invoice", "in_refund")),
-            ("state", "=", "posted"),
-            ("invoice_date", ">=", f"{self.year - 1}-01-01"),
-            ("invoice_date", "<=", f"{self.year - 1}-12-31"),
-        ])
-        return -sum(bills.mapped("amount_total_signed"))
+        return self._get_previous_year_charges_by_budget()[self]
+
+    def _get_previous_year_charges_by_budget(self):
+        """Posted vendor bills (incl. VAT, which is a cost for a VME) of the previous year, per budget.
+
+        One query for all budgets: the portfolio checks the budgets of all VMEs at once.
+        """
+        dated = self.filtered(lambda b: b.company_id and b.year)
+        totals = {}
+        if dated:
+            years = dated.mapped("year")
+            for company, year_start, amount in self.env["account.move"].sudo()._read_group([
+                ("company_id", "in", dated.company_id.ids),
+                ("move_type", "in", ("in_invoice", "in_refund")),
+                ("state", "=", "posted"),
+                ("invoice_date", ">=", f"{min(years) - 1}-01-01"),
+                ("invoice_date", "<=", f"{max(years) - 1}-12-31"),
+            ], ["company_id", "invoice_date:year"], ["amount_total_signed:sum"]):
+                totals[company.id, year_start.year] = -amount
+        return {budget: totals.get((budget.company_id.id, budget.year - 1), 0.0) for budget in self}
 
     @api.depends("association_id.name", "year")
     def _compute_display_name(self):
