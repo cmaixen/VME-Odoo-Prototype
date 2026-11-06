@@ -1,6 +1,5 @@
 import base64
 from datetime import date, timedelta
-from unittest.mock import patch
 
 from freezegun import freeze_time
 
@@ -8,7 +7,6 @@ from odoo.exceptions import UserError
 from odoo.fields import Command
 from odoo.tests import TransactionCase, tagged
 
-from odoo.addons.vme_belgie.models.vme_request import VmeRequest
 
 TODAY = date(2026, 11, 5)
 
@@ -194,12 +192,14 @@ class TestRequests(TransactionCase):
         with self.assertRaises(UserError):
             request.action_send_order()
 
-    def test_auto_send_hook(self):
-        # A later per-VME setting only has to make this hook return True.
-        with patch.object(VmeRequest, "_auto_send_order", return_value=True):
-            request = self._intake("eigenaar.a1@example.com")
-        self.assertEqual(request.state, "ordered")
-        self.assertEqual(self._sent_messages(request).partner_ids, self.locksmith)
+    def test_order_never_leaves_by_itself(self):
+        # A verified owner: the order is ready as a draft, with a task, but only a click sends it.
+        request = self._intake("eigenaar.a1@example.com")
+        self.assertTrue(request.order_ready)
+        self.assertEqual(request.state, "in_progress")
+        self.assertFalse(request.order_sent_date)
+        self.assertFalse(self._sent_messages(request))
+        self.assertTrue(request.activity_ids.filtered(lambda a: a.summary.startswith("Bestelling slotenmaker")))
 
     def test_no_locksmith_gives_a_task(self):
         self.vme.locksmith_partner_id = False

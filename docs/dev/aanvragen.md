@@ -50,13 +50,7 @@ De concepten staan als bewerkbare velden op de aanvraag (`proof_mail_body`, `ord
 
 `_mark_verified()` roept bij `key` `_prepare_order()` aan: de PDF `vme_belgie.action_report_request_order` wordt een bijlage op de aanvraag (`order_attachment_id`) en de conceptmail wordt ingevuld. Zonder slotenmaker op de VME komt er een To-do "Slotenmaker instellen" en de knop **Bestelling opnieuw opmaken**.
 
-Daarna: `if self.order_ready and self._auto_send_order(): self.action_send_order()`. `_auto_send_order()` geeft nu altijd `False`. Beslist de gebruiker dat de bestelling per VME automatisch mag vertrekken (zie `docs/beslissingen.md`), dan volstaat:
-
-1. een Boolean op `vme.association`, bv. `auto_send_key_orders`, met een LEGAL-CHECK of een verwijzing naar die beslissing;
-2. `_auto_send_order()` geeft `self.association_id.auto_send_key_orders` terug;
-3. het veld in het tabblad "Sleutels en aanvragen" van de VME.
-
-`test_auto_send_hook` toont dat de rest van de flow dan al werkt.
+Daarna blijft de bestelling een concept met een To-do "Bestelling slotenmaker nakijken en versturen"; alleen **Bestelling versturen** (`action_send_order`) stuurt ze. Er is bewust geen haak of instelling om dat te automatiseren: een mens beslist altijd (harde regel in `CLAUDE.md`). Ook aanvragen uit het portaal (stap 27) eindigen in een taak of concept voor een medewerker. `test_order_never_leaves_by_itself` en de portaaltests bewaken dit.
 
 ## Levering en privé-aanrekening
 

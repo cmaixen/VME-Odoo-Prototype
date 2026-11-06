@@ -1,7 +1,8 @@
 """Requests of owners and tenants (keys, badges, moves, ...): one intake, a fixed procedure per type.
 
 Nothing is sent by itself: the proof request, the reminder and the order to the locksmith are
-prepared as drafts on the request, and a staff member sends each one with a button.
+prepared as drafts on the request, and a staff member sends each one with a button. There is
+deliberately no hook or setting to send them automatically.
 """
 import base64
 import re
@@ -518,18 +519,9 @@ class VmeRequest(models.Model):
         self._close_todos(self.env._("Geverifieerd."))
         self.write({"state": "in_progress", "verified_date": fields.Date.context_today(self)})
         self.message_post(body=self.env._("Geverifieerd: %s", reason))
+        # The order is only prepared: a staff member always sends it (CLAUDE.md, a human decides).
         if self.type_code == "key":
             self._prepare_order()
-            if self.order_ready and self._auto_send_order():
-                self.action_send_order()
-
-    def _auto_send_order(self):
-        """Whether the order may leave without a click after verification.
-
-        Hook for a later per-VME setting ("bestelling automatisch versturen na verificatie");
-        until that decision is taken, nothing is sent by itself (see docs/beslissingen.md).
-        """
-        return False
 
     def _prepare_order(self):
         """Order form for the locksmith as PDF plus a draft mail, ready to send with one click."""
