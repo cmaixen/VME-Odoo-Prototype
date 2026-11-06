@@ -10,9 +10,6 @@ from odoo.tools import formatLang
 from ..models.account_chart_template import VME_FUND_ACCOUNTS
 from ..models.allocation_tools import largest_remainder
 
-FUND_LABELS = {"working": "Werkkapitaal", "reserve": "Reservekapitaal"}
-
-
 class VmeProvisionCallWizard(models.TransientModel):
     _name = "vme.provision.call.wizard"
     _description = "Provisieoproep maken"
@@ -150,10 +147,13 @@ class VmeProvisionCallWizard(models.TransientModel):
             for key_line, amount in zip(key_lines, lot_amounts):
                 if not amount:
                     continue
+                # The line text goes to the owner: write it in the owner's language.
+                owner_env = self.with_context(lang=owners[key_line].lang).env
+                fund_label = owner_env._("Werkkapitaal") if fund == "working" else owner_env._("Reservekapitaal")
                 lines_by_owner.setdefault(owners[key_line], []).append(Command.create({
-                    "name": self.env._(
+                    "name": owner_env._(
                         "%(fund)s oproep %(number)s/%(calls)s %(year)s - kavel %(lot)s (%(shares)s/%(total)s)",
-                        fund=FUND_LABELS[fund], number=self.number, calls=calls, year=self.year,
+                        fund=fund_label, number=self.number, calls=calls, year=self.year,
                         lot=key_line.lot_id.name, shares=f"{key_line.shares:g}", total=f"{key.total_shares:g}",
                     ),
                     "quantity": 1,

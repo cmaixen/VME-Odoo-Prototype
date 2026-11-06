@@ -24,3 +24,4 @@ from . import test_bill_ai_reading
 from . import test_communication
 from . import test_building_card
 from . import test_assembly_online
+from . import test_translation

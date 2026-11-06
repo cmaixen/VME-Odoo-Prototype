@@ -26,25 +26,30 @@
             <t t-foreach="docs" t-as="o">
                 <t t-set="vme" t-value="o.association_id"/>
                 <t t-set="company" t-value="vme.company_id"/>
-                <t t-call="web.external_layout">
-                    <div class="page">
-                        <div class="row mb-4">
-                            <div class="col-6">
-                                <h2 class="mb-0" t-field="o.level"/>
-                                <div class="text-muted">VME <t t-out="vme.name"/><t t-if="vme.kbo_number"> · KBO <t t-out="vme.kbo_number"/></t></div>
-                                <div class="text-muted"><span t-field="o.date"/></div>
-                            </div>
-                            <div class="col-5 offset-1">
-                                <strong t-out="o.partner_id.name"/>
-                                <div t-if="o.partner_id.street" t-out="o.partner_id.street"/>
-                                <div t-if="o.partner_id.city"><t t-out="o.partner_id.zip"/> <t t-out="o.partner_id.city"/></div>
-                                <div class="text-muted" t-if="o.collection_id.lot_names">Kavels: <t t-out="o.collection_id.lot_names"/></div>
-                            </div>
-                        </div>
-                        <div t-out="o.body_html"/>
-                    </div>
-                </t>
+                <t t-call="vme_belgie.report_collection_reminder_document" t-lang="o.partner_id.lang"/>
             </t>
+        </t>
+    </template>
+
+    <!-- In the language of the recipient: see docs/dev/vertaling.md -->
+    <template id="report_collection_reminder_document">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <div class="row mb-4">
+                    <div class="col-6">
+                        <h2 class="mb-0" t-field="o.level"/>
+                        <div class="text-muted">VME <t t-out="vme.name"/><t t-if="vme.kbo_number"> · KBO <t t-out="vme.kbo_number"/></t></div>
+                        <div class="text-muted"><span t-field="o.date"/></div>
+                    </div>
+                    <div class="col-5 offset-1">
+                        <strong t-out="o.partner_id.name"/>
+                        <div t-if="o.partner_id.street" t-out="o.partner_id.street"/>
+                        <div t-if="o.partner_id.city"><t t-out="o.partner_id.zip"/> <t t-out="o.partner_id.city"/></div>
+                        <div class="text-muted" t-if="o.collection_id.lot_names">Kavels: <t t-out="o.collection_id.lot_names"/></div>
+                    </div>
+                </div>
+                <div t-out="o.body_html"/>
+            </div>
         </t>
     </template>
 
@@ -55,84 +60,89 @@
                 <t t-set="vme" t-value="o.association_id"/>
                 <t t-set="company" t-value="vme.company_id"/>
                 <t t-set="data" t-value="o._get_overview_data()"/>
-                <t t-call="web.external_layout">
-                    <div class="page">
-                        <h2>Invorderingsdossier</h2>
-                        <div class="row mb-3">
-                            <div class="col-6">
-                                <div><strong>VME:</strong> <t t-out="vme.name"/><t t-if="vme.kbo_number"> (KBO <t t-out="vme.kbo_number"/>)</t></div>
-                                <div t-if="vme.street"><t t-out="vme.street"/>, <t t-out="vme.zip"/> <t t-out="vme.city"/></div>
-                                <div><strong>Toestand op:</strong> <t t-out="data['today']" t-options="{'widget': 'date'}"/></div>
-                            </div>
-                            <div class="col-6">
-                                <div><strong>Eigenaar:</strong> <t t-out="o.partner_id.name"/></div>
-                                <div t-if="o.partner_id.street"><t t-out="o.partner_id.street"/>, <t t-out="o.partner_id.zip"/> <t t-out="o.partner_id.city"/></div>
-                                <div t-if="o.partner_id.email"><t t-out="o.partner_id.email"/></div>
-                                <div t-if="o.lot_names"><strong>Kavels:</strong> <t t-out="o.lot_names"/></div>
-                            </div>
-                        </div>
-
-                        <h5>Openstaande bedragen</h5>
-                        <table class="table table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Factuur</th><th>Omschrijving</th><th>Factuurdatum</th><th>Vervaldag</th>
-                                    <th class="text-end">Dagen te laat</th><th>Mededeling</th><th class="text-end">Openstaand</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr t-foreach="data['lines']" t-as="line">
-                                    <td t-out="line['name']"/>
-                                    <td t-out="line['description']"/>
-                                    <td t-out="line['invoice_date']" t-options="{'widget': 'date'}"/>
-                                    <td t-out="line['date_maturity']" t-options="{'widget': 'date'}"/>
-                                    <td class="text-end" t-out="line['days']"/>
-                                    <td class="text-nowrap" t-out="line['reference']"/>
-                                    <td class="text-end text-nowrap" t-out="line['amount']" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
-                                </tr>
-                                <tr>
-                                    <td colspan="6"><strong>Totaal openstaand</strong></td>
-                                    <td class="text-end text-nowrap"><strong t-out="data['total']" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/></td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <h5>Verstuurde herinneringen</h5>
-                        <table class="table table-sm">
-                            <thead><tr><th>Niveau</th><th>Verstuurd op</th><th class="text-end">Saldo op dat moment</th></tr></thead>
-                            <tbody>
-                                <tr t-foreach="o.reminder_ids.filtered(lambda r: r.state == 'sent').sorted('sent_date')" t-as="reminder">
-                                    <td><span t-field="reminder.level"/></td>
-                                    <td><span t-field="reminder.sent_date"/></td>
-                                    <td class="text-end"><span t-field="reminder.amount_due"/></td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <t t-if="data['costs']">
-                            <h5>Aangerekende interest en schadevergoeding</h5>
-                            <table class="table table-sm">
-                                <thead><tr><th>Factuur</th><th>Datum</th><th class="text-end">Bedrag</th><th class="text-end">Nog open</th></tr></thead>
-                                <tbody>
-                                    <tr t-foreach="data['costs']" t-as="cost">
-                                        <td t-out="cost['name']"/>
-                                        <td t-out="cost['date']" t-options="{'widget': 'date'}"/>
-                                        <td class="text-end" t-out="cost['amount']" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
-                                        <td class="text-end" t-out="cost['residual']" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </t>
-
-                        <p class="small text-muted">
-                            Reglement van mede-eigendom: nalatigheidsinterest <t t-out="'%g' % vme.collection_effective_rate"/>% per jaar,
-                            forfaitaire schadevergoeding <t t-out="'%g' % vme.collection_penalty_percent"/>% van het saldo
-                            (minimum <t t-out="vme.collection_penalty_min" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>).
-                        </p>
-                        <div t-if="o.note"><h5>Notities</h5><p t-out="o.note"/></div>
-                    </div>
-                </t>
+                <t t-call="vme_belgie.report_collection_overview_document" t-lang="company.partner_id.lang"/>
             </t>
+        </t>
+    </template>
+
+    <!-- In the language of the recipient: see docs/dev/vertaling.md -->
+    <template id="report_collection_overview_document">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <h2>Invorderingsdossier</h2>
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <div><strong>VME:</strong> <t t-out="vme.name"/><t t-if="vme.kbo_number"> (KBO <t t-out="vme.kbo_number"/>)</t></div>
+                        <div t-if="vme.street"><t t-out="vme.street"/>, <t t-out="vme.zip"/> <t t-out="vme.city"/></div>
+                        <div><strong>Toestand op:</strong> <t t-out="data['today']" t-options="{'widget': 'date'}"/></div>
+                    </div>
+                    <div class="col-6">
+                        <div><strong>Eigenaar:</strong> <t t-out="o.partner_id.name"/></div>
+                        <div t-if="o.partner_id.street"><t t-out="o.partner_id.street"/>, <t t-out="o.partner_id.zip"/> <t t-out="o.partner_id.city"/></div>
+                        <div t-if="o.partner_id.email"><t t-out="o.partner_id.email"/></div>
+                        <div t-if="o.lot_names"><strong>Kavels:</strong> <t t-out="o.lot_names"/></div>
+                    </div>
+                </div>
+
+                <h5>Openstaande bedragen</h5>
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Factuur</th><th>Omschrijving</th><th>Factuurdatum</th><th>Vervaldag</th>
+                            <th class="text-end">Dagen te laat</th><th>Mededeling</th><th class="text-end">Openstaand</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="data['lines']" t-as="line">
+                            <td t-out="line['name']"/>
+                            <td t-out="line['description']"/>
+                            <td t-out="line['invoice_date']" t-options="{'widget': 'date'}"/>
+                            <td t-out="line['date_maturity']" t-options="{'widget': 'date'}"/>
+                            <td class="text-end" t-out="line['days']"/>
+                            <td class="text-nowrap" t-out="line['reference']"/>
+                            <td class="text-end text-nowrap" t-out="line['amount']" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                        </tr>
+                        <tr>
+                            <td colspan="6"><strong>Totaal openstaand</strong></td>
+                            <td class="text-end text-nowrap"><strong t-out="data['total']" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h5>Verstuurde herinneringen</h5>
+                <table class="table table-sm">
+                    <thead><tr><th>Niveau</th><th>Verstuurd op</th><th class="text-end">Saldo op dat moment</th></tr></thead>
+                    <tbody>
+                        <tr t-foreach="o.reminder_ids.filtered(lambda r: r.state == 'sent').sorted('sent_date')" t-as="reminder">
+                            <td><span t-field="reminder.level"/></td>
+                            <td><span t-field="reminder.sent_date"/></td>
+                            <td class="text-end"><span t-field="reminder.amount_due"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <t t-if="data['costs']">
+                    <h5>Aangerekende interest en schadevergoeding</h5>
+                    <table class="table table-sm">
+                        <thead><tr><th>Factuur</th><th>Datum</th><th class="text-end">Bedrag</th><th class="text-end">Nog open</th></tr></thead>
+                        <tbody>
+                            <tr t-foreach="data['costs']" t-as="cost">
+                                <td t-out="cost['name']"/>
+                                <td t-out="cost['date']" t-options="{'widget': 'date'}"/>
+                                <td class="text-end" t-out="cost['amount']" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                <td class="text-end" t-out="cost['residual']" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+
+                <p class="small text-muted">
+                    Reglement van mede-eigendom: nalatigheidsinterest <t t-out="'%g' % vme.collection_effective_rate"/>% per jaar,
+                    forfaitaire schadevergoeding <t t-out="'%g' % vme.collection_penalty_percent"/>% van het saldo
+                    (minimum <t t-out="vme.collection_penalty_min" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>).
+                </p>
+                <div t-if="o.note"><h5>Notities</h5><p t-out="o.note"/></div>
+            </div>
         </t>
     </template>
 </odoo>

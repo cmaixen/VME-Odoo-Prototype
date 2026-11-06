@@ -1,0 +1,1941 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* vme_rentmeester
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0-20261102\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-06 08:39+0000\n"
+"PO-Revision-Date: 2026-11-06 08:33+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_contract.py:0
+msgid " (%(days)s van %(total)s dagen)"
+msgstr " (%(days)s sur %(total)s jours)"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement_line__tenant_percent
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_rent_settlement_document
+msgid "% huurder"
+msgstr "% locataire"
+
+#. module: vme_rentmeester
+#: model:ir.actions.report,print_report_name:vme_rentmeester.action_report_rent_settlement
+msgid "'Afrekening lasten %s %s' % (object.year, object.tenant_id.name)"
+msgstr "'Décompte des charges %s %s' % (object.year, object.tenant_id.name)"
+
+#. module: vme_rentmeester
+#: model:ir.actions.report,print_report_name:vme_rentmeester.action_report_indexation_letter
+msgid "'Indexatiebrief %s %s' % (object.anniversary_date.year, object.tenant_id.name)"
+msgstr "'Lettre d\\'indexation %s %s' % (object.anniversary_date.year, object.tenant_id.name)"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_indexation_letter_document
+msgid "(EPC-label"
+msgstr "(label PEB"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_indexation_letter_document
+msgid ", ingegaan op"
+msgstr ", ayant pris cours le"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_indexation_letter_document
+msgid ", rentmeester"
+msgstr ", gestionnaire locatif"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_indexation_letter_document
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_rent_settlement_document
+msgid ", verhuurder"
+msgstr ", bailleur"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_contract__epc_label__a
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_indexation__epc_label__a
+msgid "A"
+msgstr "A"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_contract__epc_label__a+
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_indexation__epc_label__a+
+msgid "A+"
+msgstr "A+"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement_line__owner_amount
+msgid "Aandeel verhuurder"
+msgstr "Part du bailleur"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__start_index
+msgid "Aanvangsindex"
+msgstr "Indice de départ"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_indexation_letter_document
+msgid "Aanvangsindex ("
+msgstr "Indice de départ ("
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__message_needaction
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__message_needaction
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement__message_needaction
+msgid "Action Needed"
+msgstr "Action nécessaire"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_charge_category__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__activity_ids
+msgid "Activities"
+msgstr "Activités"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Décoration d'activité d'exception"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__activity_notice_deadline
+msgid "Activity Notice Deadline"
+msgstr "Délai de notification de l'activité"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__activity_state
+msgid "Activity State"
+msgstr "État de l'activité"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Icône de type d'activité"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__property_address
+msgid "Adres van het pand"
+msgstr "Adresse du bien"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_settlement_view_form
+msgid "Afrekening (PDF)"
+msgstr "Décompte (PDF)"
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_settlement.py:0
+msgid "Afrekening in naam en voor rekening van %(landlord)s (verhuurder)."
+msgstr "Décompte au nom et pour compte de %(landlord)s (bailleur)."
+
+#. module: vme_rentmeester
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__account_move_line__rent_line_type__settlement
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_contract_view_form
+msgid "Afrekening lasten"
+msgstr "Décompte des charges"
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_settlement.py:0
+msgid "Afrekening lasten %(year)s - %(contract)s"
+msgstr "Décompte des charges %(year)s - %(contract)s"
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_settlement.py:0
+msgid "Afrekening lasten %s"
+msgstr "Décompte des charges %s"
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_contract.py:0
+#: model:ir.actions.report,name:vme_rentmeester.action_report_rent_settlement
+#: model:ir.model,name:vme_rentmeester.model_report_vme_rentmeester_report_rent_settlement
+msgid "Afrekening lasten huurder"
+msgstr "Décompte des charges locataire"
+
+#. module: vme_rentmeester
+#: model:ir.model,name:vme_rentmeester.model_vme_rent_settlement_wizard
+msgid "Afrekening lasten huurder maken"
+msgstr "Établir le décompte des charges locataire"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_rent_settlement_document
+msgid "Afrekening van de lasten"
+msgstr "Décompte des charges"
+
+#. module: vme_rentmeester
+#: model:ir.model,name:vme_rentmeester.model_vme_rent_settlement
+msgid "Afrekening van lasten aan de huurder"
+msgstr "Décompte des charges au locataire"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__settlement_ids
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_contract_view_form
+msgid "Afrekeningen"
+msgstr "Décomptes"
+
+#. module: vme_rentmeester
+#: model:ir.actions.act_window,name:vme_rentmeester.vme_rent_settlement_action
+#: model:ir.ui.menu,name:vme_rentmeester.menu_rent_settlements
+msgid "Afrekeningen huurders"
+msgstr "Décomptes locataires"
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_contract.py:0
+msgid "Afrekeningen lasten"
+msgstr "Décomptes des charges"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_charge_category__key_type__general
+msgid "Algemeen"
+msgstr "Général"
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_contract.py:0
+msgid "Alle kavels van een huurcontract liggen in dezelfde VME."
+msgstr "Tous les lots d'un bail se situent dans la même ACP."
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_indexation.py:0
+msgid "Alleen een concept kan herberekend worden."
+msgstr "Seul un brouillon peut être recalculé."
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_settlement.py:0
+msgid "Alleen een contract voor kavels van een VME kan uit de jaarafrekening afrekenen."
+msgstr "Seul un bail portant sur des lots d'une ACP peut être décompté à partir du décompte annuel."
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__analytic_account_id
+msgid "Analytische rekening verhuurder"
+msgstr "Compte analytique bailleur"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_charge_category__key_type__other
+msgid "Andere"
+msgstr "Autre"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_contract__lease_type__other
+msgid "Andere duur"
+msgstr "Autre durée"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_invoice_wizard__post
+msgid "Anders blijven de facturen concepten. Er wordt niets verstuurd."
+msgstr "Sinon, les factures restent en brouillon. Rien n'est envoyé."
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_indexation_view_form
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_invoice_wizard_view_form
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_settlement_wizard_view_form
+msgid "Annuleren"
+msgstr "Annuler"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_contract__lot_ids
+msgid "Appartement en eventueel garage of berging."
+msgstr "Appartement et éventuellement garage ou cave."
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__message_attachment_count
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__message_attachment_count
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_contract__epc_label__b
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_indexation__epc_label__b
+msgid "B"
+msgstr "B"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_contract__deposit_type__bank_guarantee
+msgid "Bankwaarborg"
+msgstr "Garantie bancaire"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__base_rent
+msgid "Basishuur"
+msgstr "Loyer de base"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_indexation_letter_document
+msgid "Basishuur in het contract"
+msgstr "Loyer de base du bail"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__rent
+msgid "Basishuur per maand"
+msgstr "Loyer de base par mois"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_charge_category__account_prefixes
+msgid "Begin van de kostenrekeningen van deze rubriek, gescheiden door komma's (bv. 612, 6125)."
+msgstr "Début des comptes de charges de cette rubrique, séparés par des virgules (p. ex. 612, 6125)."
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_settlement_wizard_view_form
+msgid "Berekenen"
+msgstr "Calculer"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_indexation_view_form
+msgid "Berekening"
+msgstr "Calcul"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_indexation_letter_document
+msgid "Berekening:"
+msgstr "Calcul :"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_settlement_wizard_view_form
+msgid "Berekent het deel van de huurder in de kosten uit de jaarafrekening van de verhuurder, per rubriek, en trekt de gefactureerde provisies af."
+msgstr "Calcule la part du locataire dans les frais à partir du décompte annuel du bailleur, par rubrique, et déduit les provisions facturées."
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_indexation_letter_document
+msgid ""
+"Beste huurder,<br/>\n"
+"                    Zoals het huurcontract toelaat, passen we de huurprijs aan aan de gezondheidsindex op de\n"
+"                    verjaardag van het contract,"
+msgstr ""
+"Cher locataire,<br/>\n"
+"                    Comme le bail le permet, nous adaptons le loyer à l'indice santé à la date\n"
+"                    anniversaire du bail,"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_indexation_letter_document
+msgid "Betreft: huurcontract"
+msgstr "Concerne : bail"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_indexation__state__confirmed
+msgid "Bevestigd"
+msgstr "Confirmé"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_indexation_view_form
+msgid "Bevestigen"
+msgstr "Confirmer"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_contract__state__ended
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_contract_view_search
+msgid "Beëindigd"
+msgstr "Terminé"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_rent_settlement_document
+msgid "Bij te betalen"
+msgstr "À payer"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_contract__region__brussels
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_indexation__region__brussels
+msgid "Brussel"
+msgstr "Bruxelles"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_contract__epc_label__c
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_indexation__epc_label__c
+msgid "C"
+msgstr "C"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_rent_settlement_document
+msgid "CONCEPT"
+msgstr "BROUILLON"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_indexation_letter_document
+msgid "CONCEPT - nog niet verstuurd"
+msgstr "BROUILLON - pas encore envoyé"
+
+#. module: vme_rentmeester
+#: model:ir.model,name:vme_rentmeester.model_res_company
+msgid "Companies"
+msgstr "Sociétés"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_contract__state__draft
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_indexation__state__draft
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_settlement__state__draft
+msgid "Concept"
+msgstr "Brouillon"
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_contract.py:0
+msgid "Concept aangemaakt door de dagelijkse controle."
+msgstr "Brouillon créé par le contrôle quotidien."
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_settlement_view_form
+msgid "Conceptfactuur maken"
+msgstr "Créer une facture brouillon"
+
+#. module: vme_rentmeester
+#: model:ir.ui.menu,name:vme_rentmeester.menu_rent_configuration
+msgid "Configuratie"
+msgstr "Configuration"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__name
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract_charge__contract_id
+msgid "Contract"
+msgstr "Contrat"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_contract_view_form
+msgid "Contract activeren"
+msgstr "Activer le bail"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_invoice_wizard__contract_ids
+msgid "Contracten"
+msgstr "Contrats"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__correction_factor
+msgid "Correctiefactor"
+msgstr "Facteur de correction"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_indexation_letter_document
+msgid "Correctiefactor voor de indexstop van"
+msgstr "Facteur de correction pour le gel de l'indexation de"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_charge_category__create_uid
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__create_uid
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract_charge__create_uid
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_index__create_uid
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__create_uid
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_invoice_wizard__create_uid
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement__create_uid
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement_line__create_uid
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement_wizard__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_charge_category__create_date
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__create_date
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract_charge__create_date
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_index__create_date
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__create_date
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_invoice_wizard__create_date
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement__create_date
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement_line__create_date
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement_wizard__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__currency_id
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__currency_id
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement__currency_id
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement_line__currency_id
+msgid "Currency"
+msgstr "Devise"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_contract__epc_label__d
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_indexation__epc_label__d
+msgid "D"
+msgstr "D"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement_line__period_days
+msgid "Dagen periode"
+msgstr "Jours de la période"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement_line__lease_days
+msgid "Dagen verhuurd"
+msgstr "Jours loués"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__request_date
+msgid "Datum van de brief"
+msgstr "Date de la lettre"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_indexation_letter_document
+msgid "Datum:"
+msgstr "Date :"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_contract__date_signed
+msgid "De aanvangsindex is de gezondheidsindex van de maand vóór deze datum."
+msgstr "L'indice de départ est l'indice santé du mois précédant cette date."
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_contract.py:0
+msgid "De conceptbrief voor de indexering op %s staat klaar."
+msgstr "Le projet de lettre pour l'indexation au %s est prêt."
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_indexation_letter_document
+msgid "De correctiefactor houdt rekening met de beperkte indexering volgens het EPC-label tijdens de indexstop van 2022-2023; die gemiste indexering wordt niet ingehaald."
+msgstr "Le facteur de correction tient compte de l'indexation limitée selon le label PEB pendant le gel de l'indexation de 2022-2023 ; cette indexation manquée n'est pas rattrapée."
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_contract.py:0
+msgid "De duur van een huurcontract is minstens één jaar."
+msgstr "La durée d'un bail est d'au moins un an."
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_contract__tenant_id
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_indexation__tenant_id
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_settlement__tenant_id
+msgid "De eerste huurder ontvangt de facturen."
+msgstr "Le premier locataire reçoit les factures."
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_index.py:0
+msgid "De gezondheidsindex van %s staat nog niet in de tabel. Vul hem aan onder Rentmeester > Configuratie > Gezondheidsindex."
+msgstr "L'indice santé de %s ne figure pas encore dans le tableau. Complétez-le sous Gestion locative > Configuration > Indice santé."
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_contract.py:0
+msgid "De huur eindigt op %(date)s. Plan de plaatsbeschrijving bij vertrek, de opname van de meters en de vrijgave van de huurwaarborg."
+msgstr "Le bail prend fin le %(date)s. Planifiez l'état des lieux de sortie, le relevé des compteurs et la libération de la garantie locative."
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_contract__rent
+msgid "De huur in het contract, zonder lasten. De indexering vertrekt altijd hiervan."
+msgstr "Le loyer du bail, hors charges. L'indexation part toujours de ce montant."
+
+#. module: vme_rentmeester
+#: model:ir.model.constraint,message:vme_rentmeester.constraint_vme_rent_contract_positive_rent
+msgid "De huur kan niet negatief zijn."
+msgstr "Le loyer ne peut pas être négatif."
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,help:vme_rentmeester.field_res_company__is_rent_management
+msgid "De huurcontracten, huurfacturen en afrekeningen aan huurders komen in deze company."
+msgstr "Les baux, factures de loyer et décomptes aux locataires sont enregistrés dans cette société."
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_contract__company_id
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_indexation__company_id
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_settlement__company_id
+msgid "De huurfacturen en afrekeningen komen in de boekhouding van deze company."
+msgstr "Les factures de loyer et décomptes sont repris dans la comptabilité de cette société."
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_contract__region
+msgid "De huurwetgeving verschilt per gewest; afgeleid uit de postcode van de VME."
+msgstr "La législation sur les baux diffère selon la région ; déduite du code postal de l'ACP."
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_indexation__request_date
+msgid "De indexering geldt hoogstens drie maanden vóór deze datum."
+msgstr "L'indexation s'applique au plus trois mois avant cette date."
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_settlement_view_form
+msgid "De jaarafrekening van de VME is nog niet volledig: er zijn geboekte facturen zonder verdeling."
+msgstr "Le décompte annuel de l'ACP n'est pas encore complet : des factures comptabilisées n'ont pas été réparties."
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_rent_settlement_document
+msgid "De kosten volgen uit de jaarafrekening van de VME aan de verhuurder, voor de kavels van dit contract en de dagen dat de huur liep. De facturen liggen ter inzage bij de rentmeester. Reservekapitaal en kosten die het contract niet aan de huurder toewijst, blijven ten laste van de verhuurder."
+msgstr "Les frais découlent du décompte annuel de l'ACP au bailleur, pour les lots de ce bail et les jours de location. Les factures peuvent être consultées auprès du gestionnaire locatif. Le fonds de réserve et les frais que le bail n'attribue pas au locataire restent à charge du bailleur."
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_indexation_letter_document
+msgid "De maandelijkse lasten van"
+msgstr "Les charges mensuelles de"
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_contract.py:0
+msgid "De waarborg is hoger dan %(months)s maanden huur, het maximum voor deze soort waarborg in %(region)s."
+msgstr "La garantie dépasse %(months)s mois de loyer, le maximum pour ce type de garantie en %(region)s."
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__deposit_warning
+msgid "Deposit Warning"
+msgstr "Avertissement garantie"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_account_move__display_name
+#: model:ir.model.fields,field_description:vme_rentmeester.field_account_move_line__display_name
+#: model:ir.model.fields,field_description:vme_rentmeester.field_report_vme_rentmeester_report_indexation_letter__display_name
+#: model:ir.model.fields,field_description:vme_rentmeester.field_report_vme_rentmeester_report_rent_settlement__display_name
+#: model:ir.model.fields,field_description:vme_rentmeester.field_res_company__display_name
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_association__display_name
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_lot__display_name
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_charge_category__display_name
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__display_name
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract_charge__display_name
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_index__display_name
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__display_name
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_invoice_wizard__display_name
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_report_mixin__display_name
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement__display_name
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement_line__display_name
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement_wizard__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__duration_years
+msgid "Duur (jaren)"
+msgstr "Durée (années)"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_contract__epc_label__e
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_indexation__epc_label__e
+msgid "E"
+msgstr "E"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__epc_label
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__epc_label
+msgid "EPC-label"
+msgstr "Label PEB"
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_settlement.py:0
+msgid "Een gefactureerde afrekening wordt niet meer herberekend."
+msgstr "Un décompte facturé n'est plus recalculé."
+
+#. module: vme_rentmeester
+#: model_terms:ir.actions.act_window,help:vme_rentmeester.vme_rent_contract_action
+msgid "Een huurcontract koppelt een verhuurder en huurders aan een kavel of pand, met huur, lasten en waarborg."
+msgstr "Un bail relie un bailleur et des locataires à un lot ou un bien, avec loyer, charges et garantie."
+
+#. module: vme_rentmeester
+#: model:ir.model.constraint,message:vme_rentmeester.constraint_vme_rent_index_positive_value
+msgid "Een indexcijfer is groter dan nul."
+msgstr "Un indice est supérieur à zéro."
+
+#. module: vme_rentmeester
+#: model_terms:ir.actions.act_window,help:vme_rentmeester.vme_rent_charge_category_action
+msgid "Een kost uit de jaarafrekening komt in de rubriek van zijn leverancier, anders van de soort sleutel, anders van de kostenrekening."
+msgstr "Un frais du décompte annuel est classé dans la rubrique de son fournisseur, sinon du type de clé, sinon du compte de charges."
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_contract.py:0
+msgid "Een mondeling huurcontract kan niet geïndexeerd worden."
+msgstr "Un bail verbal ne peut pas être indexé."
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_index__month
+msgid "Eerste dag van de maand."
+msgstr "Premier jour du mois."
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__date_end
+msgid "Einddatum"
+msgstr "Date de fin"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__date_moved_out
+msgid "Einde huur"
+msgstr "Fin du bail"
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_contract.py:0
+msgid "Einde huur: plaatsbeschrijving en huurwaarborg"
+msgstr "Fin du bail : état des lieux et garantie locative"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__notice_end_date
+msgid "Einde na opzeg"
+msgstr "Fin après préavis"
+
+#. module: vme_rentmeester
+#: model:ir.model.constraint,message:vme_rentmeester.constraint_vme_rent_index_unique_month
+msgid "Elke maand heeft maar één indexcijfer."
+msgstr "Chaque mois n'a qu'un seul indice."
+
+#. module: vme_rentmeester
+#: model:ir.model.constraint,message:vme_rentmeester.constraint_vme_rent_contract_charge_unique_category
+msgid "Elke rubriek staat maar één keer in een contract."
+msgstr "Chaque rubrique ne figure qu'une fois dans un bail."
+
+#. module: vme_rentmeester
+#: model:ir.model.constraint,message:vme_rentmeester.constraint_vme_rent_settlement_unique_year
+msgid "Er is al een afrekening voor dit contract en jaar."
+msgstr "Il existe déjà un décompte pour ce bail et cette année."
+
+#. module: vme_rentmeester
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_contract__epc_label__f
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_indexation__epc_label__f
+msgid "F"
+msgstr "F"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement__invoice_id
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement_line__move_name
+msgid "Factuur"
+msgstr "Facture"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement_line__move_id
+msgid "Factuur VME"
+msgstr "Facture ACP"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_settlement_view_form
+msgid "Factuur openen"
+msgstr "Ouvrir la facture"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__message_follower_ids
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__message_follower_ids
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__message_partner_ids
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__message_partner_ids
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (Partenaires)"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_contract__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Icône Font Awesome, par ex. fa-tasks"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_contract__charges_type__forfait
+msgid "Forfait"
+msgstr "Forfait"
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_contract.py:0
+msgid "Forfaitaire lasten %(period)s"
+msgstr "Charges forfaitaires %(period)s"
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_settlement.py:0
+msgid "Forfaitaire lasten worden niet afgerekend."
+msgstr "Les charges forfaitaires ne font pas l'objet d'un décompte."
+
+#. module: vme_rentmeester
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_contract__epc_label__g
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_indexation__epc_label__g
+msgid "G"
+msgstr "G"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_indexation__state__cancelled
+msgid "Geannuleerd"
+msgstr "Annulé"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_contract__deposit_type__blocked_account
+msgid "Geblokkeerde rekening"
+msgstr "Compte bloqué"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_contract__epc_label__none
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_indexation__epc_label__none
+msgid "Geen EPC"
+msgstr "Pas de PEB"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_settlement__state__invoiced
+msgid "Gefactureerd"
+msgstr "Facturé"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_rent_settlement_document
+msgid "Gefactureerde provisies lasten"
+msgstr "Provisions pour charges facturées"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__region
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__region
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_contract_view_search
+msgid "Gewest"
+msgstr "Région"
+
+#. module: vme_rentmeester
+#: model:ir.actions.act_window,name:vme_rentmeester.vme_rent_index_action
+#: model:ir.model,name:vme_rentmeester.model_vme_rent_index
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_index__value
+#: model:ir.ui.menu,name:vme_rentmeester.menu_rent_index
+msgid "Gezondheidsindex"
+msgstr "Indice santé"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_index__value
+msgid "Gezondheidsindex met basis 2013 = 100, zoals Statbel die elke maand publiceert."
+msgstr "Indice santé base 2013 = 100, tel que publié chaque mois par Statbel."
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_contract.py:0
+msgid "Geïnd in naam en voor rekening van %(landlord)s (verhuurder)."
+msgstr "Perçu au nom et pour compte de %(landlord)s (bailleur)."
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__has_message
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__has_message
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: vme_rentmeester
+#: model:ir.ui.menu,name:vme_rentmeester.menu_rent_help
+msgid "Help"
+msgstr "Aide"
+
+#. module: vme_rentmeester
+#: model:ir.actions.server,name:vme_rentmeester.action_help_rent
+msgid "Help: rentmeester"
+msgstr "Aide : gestion locative"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_indexation_view_form
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_settlement_view_form
+msgid "Herberekenen"
+msgstr "Recalculer"
+
+#. module: vme_rentmeester
+#: model:ir.model.constraint,message:vme_rentmeester.constraint_vme_rent_contract_charge_percent_range
+msgid "Het aandeel van de huurder ligt tussen 0 en 100%."
+msgstr "La part du locataire est comprise entre 0 et 100 %."
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_settlement.py:0
+msgid "Het contract liep niet in %s."
+msgstr "Le bail n'était pas en cours en %s."
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_contract.py:0
+msgid "Het contract sluit indexering uit."
+msgstr "Le bail exclut l'indexation."
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_contract_view_form
+msgid "Het contract wordt beëindigd; er komen geen huurfacturen meer. Doorgaan?"
+msgstr "Le bail va être résilié ; plus aucune facture de loyer ne sera émise. Continuer ?"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_contract__epc_label
+msgid "Het label tijdens de indexstop van 2022-2023 bepaalt de correctiefactor."
+msgstr "Le label pendant le gel de l'indexation de 2022-2023 détermine le facteur de correction."
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__current_rent
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__previous_rent
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_indexation_letter_document
+msgid "Huidige huur"
+msgstr "Loyer actuel"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_lot__current_tenant_ids
+msgid "Huidige huurders"
+msgstr "Locataires actuels"
+
+#. module: vme_rentmeester
+#: model:ir.model,name:vme_rentmeester.model_vme_rent_report_mixin
+msgid "Hulpfuncties voor de rapporten van de rentmeester"
+msgstr "Fonctions d'aide pour les rapports du gestionnaire locatif"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__account_move_line__rent_line_type__rent
+msgid "Huur"
+msgstr "Loyer"
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_contract.py:0
+msgid "Huur %(period)s"
+msgstr "Loyer %(period)s"
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_contract.py:0
+msgid "Huur %(place)s - %(tenant)s"
+msgstr "Loyer %(place)s - %(tenant)s"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_contract_view_form
+msgid "Huur beëindigen"
+msgstr "Mettre fin au bail"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_contract_view_form
+msgid "Huur en lasten"
+msgstr "Loyer et charges"
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/res_company.py:0
+msgid "Huur en lasten voor rekening van verhuurders"
+msgstr "Loyers et charges pour compte des bailleurs"
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_indexation.py:0
+msgid "Huur geïndexeerd tot %(rent)s per maand vanaf %(date)s."
+msgstr "Loyer indexé à %(rent)s par mois à partir du %(date)s."
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement__date_to
+msgid "Huur tot"
+msgstr "Loué jusqu'au"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement__date_from
+msgid "Huur van"
+msgstr "Loué depuis le"
+
+#. module: vme_rentmeester
+#: model:ir.model,name:vme_rentmeester.model_vme_rent_contract
+#: model:ir.model.fields,field_description:vme_rentmeester.field_account_bank_statement_line__rent_contract_id
+#: model:ir.model.fields,field_description:vme_rentmeester.field_account_move__rent_contract_id
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__contract_id
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement__contract_id
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement_wizard__contract_id
+msgid "Huurcontract"
+msgstr "Bail"
+
+#. module: vme_rentmeester
+#: model:ir.actions.act_window,name:vme_rentmeester.vme_rent_contract_action
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_lot__rent_contract_ids
+#: model:ir.ui.menu,name:vme_rentmeester.menu_rent_contracts
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_lot_view_form_rent
+msgid "Huurcontracten"
+msgstr "Baux"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__tenant_id
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__tenant_id
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement__tenant_id
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_contract__notice_party__tenant
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_rent_settlement_document
+msgid "Huurder"
+msgstr "Locataire"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__tenant_ids
+msgid "Huurders"
+msgstr "Locataires"
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_contract.py:0
+#: code:addons/vme_rentmeester/wizard/rent_invoice_wizard.py:0
+#: model:ir.actions.act_window,name:vme_rentmeester.rent_invoice_action
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__invoice_ids
+#: model:ir.ui.menu,name:vme_rentmeester.menu_rent_invoices
+#: model:ir.ui.menu,name:vme_rentmeester.menu_rent_invoices_top
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_contract_view_form
+msgid "Huurfacturen"
+msgstr "Factures de loyer"
+
+#. module: vme_rentmeester
+#: model:ir.actions.act_window,name:vme_rentmeester.vme_rent_invoice_wizard_action
+#: model:ir.model,name:vme_rentmeester.model_vme_rent_invoice_wizard
+#: model:ir.ui.menu,name:vme_rentmeester.menu_rent_invoice_wizard
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_invoice_wizard_view_form
+msgid "Huurfacturen maken"
+msgstr "Créer les factures de loyer"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_account_bank_statement_line__rent_period
+#: model:ir.model.fields,field_description:vme_rentmeester.field_account_move__rent_period
+msgid "Huurmaand"
+msgstr "Mois de loyer"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_rent_settlement_document
+msgid "Huurperiode in"
+msgstr "Période de location en"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__deposit_amount
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_contract_view_form
+msgid "Huurwaarborg"
+msgstr "Garantie locative"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_account_move__id
+#: model:ir.model.fields,field_description:vme_rentmeester.field_account_move_line__id
+#: model:ir.model.fields,field_description:vme_rentmeester.field_report_vme_rentmeester_report_indexation_letter__id
+#: model:ir.model.fields,field_description:vme_rentmeester.field_report_vme_rentmeester_report_rent_settlement__id
+#: model:ir.model.fields,field_description:vme_rentmeester.field_res_company__id
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_association__id
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_lot__id
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_charge_category__id
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__id
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract_charge__id
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_index__id
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__id
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_invoice_wizard__id
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_report_mixin__id
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement__id
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement_line__id
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement_wizard__id
+msgid "ID"
+msgstr "ID"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__activity_exception_icon
+msgid "Icon"
+msgstr "Icône"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_contract__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Icône pour indiquer une activité d'exception."
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_contract__message_needaction
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_indexation__message_needaction
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_settlement__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_contract__message_has_error
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_contract__message_has_sms_error
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_indexation__message_has_error
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_indexation__message_has_sms_error
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_settlement__message_has_error
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_settlement__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur de livraison."
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_indexation_letter_document
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_rent_settlement_document
+msgid "In naam van"
+msgstr "Au nom de"
+
+#. module: vme_rentmeester
+#: model:ir.actions.report,name:vme_rentmeester.action_report_indexation_letter
+#: model:ir.model,name:vme_rentmeester.model_report_vme_rentmeester_report_indexation_letter
+msgid "Indexatiebrief"
+msgstr "Lettre d'indexation"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_indexation_view_form
+msgid "Indexatiebrief (PDF)"
+msgstr "Lettre d'indexation (PDF)"
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/demo_data/rent_demo.py:0
+#: code:addons/vme_rentmeester/models/rent_contract.py:0
+msgid "Indexatiebrief nakijken en versturen"
+msgstr "Vérifier et envoyer la lettre d'indexation"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__indexation_count
+msgid "Indexation Count"
+msgstr "Nombre d'indexations"
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_indexation.py:0
+msgid "Indexering"
+msgstr "Indexation"
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_indexation.py:0
+msgid "Indexering %(year)s - %(contract)s"
+msgstr "Indexation %(year)s - %(contract)s"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_contract_view_form
+msgid "Indexering berekenen"
+msgstr "Calculer l'indexation"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__indexation_excluded
+msgid "Indexering uitgesloten in het contract"
+msgstr "Indexation exclue par le bail"
+
+#. module: vme_rentmeester
+#: model:ir.model,name:vme_rentmeester.model_vme_rent_indexation
+msgid "Indexering van de huur"
+msgstr "Indexation du loyer"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_indexation_letter_document
+msgid "Indexering van de huurprijs"
+msgstr "Indexation du loyer"
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_contract.py:0
+#: model:ir.actions.act_window,name:vme_rentmeester.vme_rent_indexation_action
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__indexation_ids
+#: model:ir.ui.menu,name:vme_rentmeester.menu_rent_indexations
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_contract_view_form
+msgid "Indexeringen"
+msgstr "Indexations"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_indexation_view_form
+msgid "Indexstop 2022-2023"
+msgstr "Gel de l'indexation 2022-2023"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__date_start
+msgid "Ingangsdatum"
+msgstr "Date de prise d'effet"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__invoice_count
+msgid "Invoice Count"
+msgstr "Nombre de factures"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__message_is_follower
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__message_is_follower
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement__message_is_follower
+msgid "Is Follower"
+msgstr "Est un abonné"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement__year
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement_wizard__year
+msgid "Jaar"
+msgstr "Année"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement__statement_incomplete
+msgid "Jaarafrekening VME onvolledig"
+msgstr "Décompte annuel ACP incomplet"
+
+#. module: vme_rentmeester
+#: model:ir.model,name:vme_rentmeester.model_account_move
+msgid "Journal Entry"
+msgstr "Pièce comptable"
+
+#. module: vme_rentmeester
+#: model:ir.model,name:vme_rentmeester.model_account_move_line
+msgid "Journal Item"
+msgstr "Écriture comptable"
+
+#. module: vme_rentmeester
+#: model:ir.model,name:vme_rentmeester.model_vme_lot
+msgid "Kavel"
+msgstr "Lot"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__lot_ids
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement_line__lots
+msgid "Kavels"
+msgstr "Lots"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_contract__lease_type__short
+msgid "Kortlopend (hoogstens 3 jaar)"
+msgstr "Courte durée (3 ans maximum)"
+
+#. module: vme_rentmeester
+#: model:ir.model,name:vme_rentmeester.model_vme_rent_settlement_line
+msgid "Kost in de afrekening aan de huurder"
+msgstr "Frais dans le décompte au locataire"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_rent_settlement_document
+msgid "Kost kavel"
+msgstr "Coût du lot"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement__line_ids
+msgid "Kosten"
+msgstr "Frais"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_rent_settlement_document
+msgid "Kosten uit de jaarafrekening van de VME"
+msgstr "Frais issus du décompte annuel de l'ACP"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement__owner_total
+msgid "Kosten van de verhuurder"
+msgstr "Frais du bailleur"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_charge_category__partner_ids
+msgid "Kosten van deze leveranciers horen altijd in deze rubriek."
+msgstr "Les frais de ces fournisseurs appartiennent toujours à cette rubrique."
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_charge_category__key_type
+msgid "Kosten verdeeld met een sleutel van deze soort horen in deze rubriek."
+msgstr "Les frais répartis avec une clé de ce type appartiennent à cette rubrique."
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_charge_category__account_prefixes
+msgid "Kostenrekeningen"
+msgstr "Comptes de charges"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_contract__lease_type__long
+msgid "Lange duur (meer dan 9 jaar)"
+msgstr "Longue durée (plus de 9 ans)"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_charge_category__write_uid
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__write_uid
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract_charge__write_uid
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_index__write_uid
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__write_uid
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_invoice_wizard__write_uid
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement__write_uid
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement_line__write_uid
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement_wizard__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_charge_category__write_date
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__write_date
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract_charge__write_date
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_index__write_date
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__write_date
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_invoice_wizard__write_date
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement__write_date
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement_line__write_date
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement_wizard__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__charges_type
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__account_move_line__rent_line_type__charges
+msgid "Lasten"
+msgstr "Charges"
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_settlement.py:0
+msgid "Lasten %(year)s: %(category)s"
+msgstr "Charges %(year)s : %(category)s"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__charges_amount
+msgid "Lasten per maand"
+msgstr "Charges par mois"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__charge_line_ids
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_contract_view_form
+msgid "Lasten per rubriek"
+msgstr "Charges par rubrique"
+
+#. module: vme_rentmeester
+#: model:ir.model,name:vme_rentmeester.model_vme_rent_contract_charge
+msgid "Lasten per rubriek in een huurcontract"
+msgstr "Charges par rubrique dans un bail"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_invoice_wizard__contract_ids
+msgid "Leeg laten voor alle lopende contracten."
+msgstr "Laisser vide pour tous les baux en cours."
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement_line__supplier
+msgid "Leverancier"
+msgstr "Fournisseur"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_rent_settlement_document
+msgid "Leverancier en omschrijving"
+msgstr "Fournisseur et description"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_charge_category__partner_ids
+msgid "Leveranciers"
+msgstr "Fournisseurs"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_charge_category__key_type__elevator
+msgid "Lift"
+msgstr "Ascenseur"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_contract_view_form
+msgid "Looptijd"
+msgstr "Durée"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_contract__state__active
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_contract_view_search
+msgid "Lopend"
+msgstr "En cours"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_invoice_wizard_view_form
+msgid "Maakt voor elk lopend contract de huurfactuur van de maand, met huur en lasten. Een contract dat al een factuur heeft voor die maand, wordt overgeslagen. Er wordt niets verstuurd."
+msgstr "Crée pour chaque bail en cours la facture de loyer du mois, avec loyer et charges. Un bail qui a déjà une facture pour ce mois est ignoré. Rien n'est envoyé."
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_index__month
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_invoice_wizard__month
+msgid "Maand"
+msgstr "Mois"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__start_index_month
+msgid "Maand aanvangsindex"
+msgstr "Mois de l'indice de départ"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__new_index_month
+msgid "Maand nieuw indexcijfer"
+msgstr "Mois du nouvel indice"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__message_has_error
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__message_has_error
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur d'envoi du message"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__message_ids
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__message_ids
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_indexation_letter_document
+msgid "Met vriendelijke groeten,<br/>"
+msgstr "Veuillez agréer nos salutations distinguées,<br/>"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_invoice_wizard__post
+msgid "Meteen boeken"
+msgstr "Comptabiliser directement"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Échéance de mon activité"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_contract__lease_type__nine
+msgid "Negen jaar"
+msgstr "Neuf ans"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Événement de calendrier de la prochaine activité"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Échéance de la prochaine activité"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__activity_summary
+msgid "Next Activity Summary"
+msgstr "Résumé de la prochaine activité"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__activity_type_id
+msgid "Next Activity Type"
+msgstr "Type de la prochaine activité"
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_contract.py:0
+msgid "Nieuw"
+msgstr "Nouveau"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__new_index
+msgid "Nieuw indexcijfer"
+msgstr "Nouvel indice"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_indexation_letter_document
+msgid "Nieuw indexcijfer ("
+msgstr "Nouvel indice ("
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__new_rent
+msgid "Nieuwe huur"
+msgstr "Nouveau loyer"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_indexation_view_form
+msgid ""
+"Nieuwe huur = basishuur × nieuw indexcijfer / aanvangsindex, gedeeld door de correctiefactor als het contract onder de indexstop van 2022-2023 viel.\n"
+"                        De brief is een concept: niets wordt automatisch verstuurd."
+msgstr ""
+"Nouveau loyer = loyer de base × nouvel indice / indice de départ, divisé par le facteur de correction si le bail tombait sous le gel de l'indexation de 2022-2023.\n"
+"                        La lettre est un brouillon : rien n'est envoyé automatiquement."
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_indexation_letter_document
+msgid "Nieuwe huur per maand vanaf"
+msgstr "Nouveau loyer mensuel à partir du"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__effective_date
+msgid "Nieuwe huur vanaf"
+msgstr "Nouveau loyer à partir du"
+
+#. module: vme_rentmeester
+#: model_terms:ir.actions.act_window,help:vme_rentmeester.vme_rent_contract_action
+msgid "Nog geen huurcontracten"
+msgstr "Pas encore de baux"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__notes
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_contract_view_form
+msgid "Notities"
+msgstr "Notes"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__message_needaction_counter
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__message_needaction_counter
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__message_has_error_counter
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__message_has_error_counter
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_contract__message_needaction_counter
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_indexation__message_needaction_counter
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_settlement__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages exigeant une action"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_contract__message_has_error_counter
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_indexation__message_has_error_counter
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_settlement__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec des erreurs d'envoi"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement_line__description
+msgid "Omschrijving"
+msgstr "Description"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__date_signed
+msgid "Ondertekend op"
+msgstr "Signé le"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_charge_category__key_type__consumption
+msgid "Op verbruik"
+msgstr "Selon consommation"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_contract__state__notice
+msgid "Opgezegd"
+msgstr "Résilié"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__notice_party
+msgid "Opzeg door"
+msgstr "Préavis donné par"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_contract_view_form
+msgid "Opzeg en einde"
+msgstr "Préavis et fin"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__notice_date
+msgid "Opzeg gegeven op"
+msgstr "Préavis donné le"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_contract_view_form
+msgid "Opzeg registreren"
+msgstr "Enregistrer le préavis"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__notice_months
+msgid "Opzegtermijn (maanden)"
+msgstr "Délai de préavis (mois)"
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/demo_data/rent_demo.py:0
+#: code:addons/vme_rentmeester/models/rent_contract.py:0
+msgid "Opzegtermijn verstrijkt: %s"
+msgstr "Le délai de préavis expire : %s"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_charge_category__default_tenant_percent
+msgid "Overgenomen in elk nieuw huurcontract; per contract aan te passen."
+msgstr "Repris dans chaque nouveau bail ; modifiable par bail."
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_contract_view_form
+msgid "Pand"
+msgstr "Bien"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_contract_view_form
+msgid "Partijen"
+msgstr "Parties"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_rent_settlement_document
+msgid "Per rubriek"
+msgstr "Par rubrique"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_rent_settlement_document
+msgid "Periode"
+msgstr "Période"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement_line__period_end
+msgid "Periode tot"
+msgstr "Période jusqu'au"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement_line__period_start
+msgid "Periode van"
+msgstr "Période du"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_settlement__balance
+msgid "Positief: de huurder betaalt bij. Negatief: de huurder krijgt terug."
+msgstr "Positif : le locataire doit un supplément. Négatif : le locataire est remboursé."
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_contract.py:0
+msgid "Provisie lasten %(period)s"
+msgstr "Provision pour charges %(period)s"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_contract__charges_type__provision
+msgid "Provisie, jaarlijks afgerekend"
+msgstr "Provision, décompte annuel"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement__provisions
+msgid "Provisies lasten"
+msgstr "Provisions pour charges"
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_settlement.py:0
+msgid "Provisies lasten %s"
+msgstr "Provisions pour charges %s"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__deposit_reference
+msgid "Rekening of referentie waarborg"
+msgstr "Compte ou référence de la garantie"
+
+#. module: vme_rentmeester
+#: model:ir.ui.menu,name:vme_rentmeester.menu_rent_root
+msgid "Rentmeester"
+msgstr "Gestion locative"
+
+#. module: vme_rentmeester
+#: model:ir.ui.menu,name:vme_rentmeester.menu_vme_help_rent
+msgid "Rentmeester: huur, indexering en afrekening"
+msgstr "Gestion locative : loyer, indexation et décompte"
+
+#. module: vme_rentmeester
+#: model:ir.actions.server,name:vme_rentmeester.ir_cron_rent_invoices_ir_actions_server
+msgid "Rentmeester: huurfacturen van de maand (concepten)"
+msgstr "Gestion locative : factures de loyer du mois (brouillons)"
+
+#. module: vme_rentmeester
+#: model:ir.actions.server,name:vme_rentmeester.ir_cron_rent_reminders_ir_actions_server
+msgid "Rentmeester: indexeringen en opzegtermijnen"
+msgstr "Gestion locative : indexations et délais de préavis"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_res_company__is_rent_management
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__company_id
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__company_id
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement__company_id
+msgid "Rentmeesterkantoor"
+msgstr "Bureau de gestion locative"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__activity_user_id
+msgid "Responsible User"
+msgstr "Utilisateur responsable"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_indexation_view_form
+msgid "Resultaat"
+msgstr "Résultat"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_charge_category__name
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract_charge__category_id
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement_line__category_id
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_rent_settlement_document
+msgid "Rubriek"
+msgstr "Rubrique"
+
+#. module: vme_rentmeester
+#: model:ir.model,name:vme_rentmeester.model_vme_rent_charge_category
+msgid "Rubriek van lasten voor huurders"
+msgstr "Rubrique de charges pour locataires"
+
+#. module: vme_rentmeester
+#: model:ir.actions.act_window,name:vme_rentmeester.vme_rent_charge_category_action
+#: model:ir.ui.menu,name:vme_rentmeester.menu_rent_charge_categories
+msgid "Rubrieken van lasten"
+msgstr "Rubriques de charges"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__message_has_sms_error
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__message_has_sms_error
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur d'envoi SMS"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement__balance
+msgid "Saldo"
+msgstr "Solde"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__is_written
+msgid "Schriftelijk contract"
+msgstr "Bail écrit"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_charge_category__sequence
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract_charge__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement_line__settlement_id
+msgid "Settlement"
+msgstr "Décompte"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__settlement_count
+msgid "Settlement Count"
+msgstr "Nombre de décomptes"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement_line__keys
+msgid "Sleutel"
+msgstr "Clé"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__lease_type
+msgid "Soort contract"
+msgstr "Type de bail"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_account_move_line__rent_line_type
+msgid "Soort huurlijn"
+msgstr "Type de ligne de loyer"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_charge_category__key_type
+msgid "Soort sleutel"
+msgstr "Type de clé"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__deposit_type
+msgid "Soort waarborg"
+msgstr "Type de garantie"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_charge_category__default_tenant_percent
+msgid "Standaard ten laste van de huurder (%)"
+msgstr "Par défaut à charge du locataire (%)"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__state
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__state
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement__state
+msgid "Status"
+msgstr "Statut"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_contract__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Statut basé sur les activités\n"
+"En retard : la date d'échéance est déjà dépassée\n"
+"Aujourd'hui : la date de l'activité est aujourd'hui\n"
+"Planifiée : activités futures."
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement__tenant_total
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement_line__tenant_amount
+msgid "Ten laste van de huurder"
+msgstr "À charge du locataire"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract_charge__tenant_percent
+msgid "Ten laste van de huurder (%)"
+msgstr "À charge du locataire (%)"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_rent_settlement_document
+msgid "Terug te krijgen"
+msgstr "À récupérer"
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_settlement.py:0
+msgid "Teveel betaalde provisies lasten %s"
+msgstr "Trop-perçu de provisions pour charges %s"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement_line__lease_amount
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_rent_settlement_document
+msgid "Tijdens de huur"
+msgstr "Pendant la location"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__freeze_rate
+msgid "Toegelaten deel tijdens de indexstop"
+msgstr "Part autorisée pendant le gel de l'indexation"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_contract_view_list
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_settlement_view_form
+msgid "Totaal"
+msgstr "Total"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_rent_settlement_document
+msgid "Totaal ten laste van de huurder"
+msgstr "Total à charge du locataire"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_contract__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Type de l'activité d'exception sur l'enregistrement."
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_contract__notice_deadline
+msgid "Uiterlijk op deze dag opzeggen, anders loopt het contract verder (een kortlopend contract wordt dan een contract van negen jaar)."
+msgstr "Donner congé au plus tard ce jour-là, sinon le bail se poursuit (un bail de courte durée devient alors un bail de neuf ans)."
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__notice_deadline
+msgid "Uiterste opzegdatum"
+msgstr "Date limite de préavis"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_charge_category__note
+msgid "Uitleg"
+msgstr "Explication"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__association_id
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement__association_id
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_contract_view_search
+msgid "VME"
+msgstr "ACP"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_indexation_letter_document
+msgid "Vanaf de huur van"
+msgstr "À partir du loyer de"
+
+#. module: vme_rentmeester
+#: model:ir.model,name:vme_rentmeester.model_vme_association
+msgid "Vereniging van mede-eigenaars"
+msgstr "Association des copropriétaires"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_account_bank_statement_line__rent_landlord_id
+#: model:ir.model.fields,field_description:vme_rentmeester.field_account_move__rent_landlord_id
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__landlord_id
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__landlord_id
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement__landlord_id
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_contract__notice_party__landlord
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_contract_view_search
+msgid "Verhuurder"
+msgstr "Bailleur"
+
+#. module: vme_rentmeester
+#: model:account.analytic.plan,name:vme_rentmeester.analytic_plan_landlords
+msgid "Verhuurders"
+msgstr "Bailleurs"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__anniversary_date
+msgid "Verjaardag"
+msgstr "Anniversaire"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__freeze_anniversary
+msgid "Verjaardag tijdens de indexstop"
+msgstr "Anniversaire pendant le gel de l'indexation"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__increase
+msgid "Verschil"
+msgstr "Différence"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_charge_category__key_type__heating
+msgid "Verwarming"
+msgstr "Chauffage"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_contract__region__flanders
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_indexation__region__flanders
+msgid "Vlaanderen"
+msgstr "Flandre"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__next_anniversary
+msgid "Volgende verjaardag"
+msgstr "Prochain anniversaire"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__theoretical_rent
+msgid "Volledig geïndexeerde huur"
+msgstr "Loyer entièrement indexé"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_rent_settlement_document
+msgid "Voorlopig: de jaarafrekening van de VME is nog niet volledig."
+msgstr "Provisoire : le décompte annuel de l'ACP n'est pas encore complet."
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_contract.py:0
+msgid "Vul de datum van de opzeg en wie opzegt in."
+msgstr "Indiquez la date du préavis et qui donne congé."
+
+#. module: vme_rentmeester
+#: model_terms:ir.actions.act_window,help:vme_rentmeester.vme_rent_index_action
+msgid "Vul elke maand het indexcijfer van Statbel in (basis 2013 = 100). De indexering zoekt hier de aanvangsindex en het nieuwe indexcijfer op."
+msgstr "Encodez chaque mois l'indice de Statbel (base 2013 = 100). L'indexation y recherche l'indice de départ et le nouvel indice."
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_contract.py:0
+msgid "Vul huurders en huur in voor je het contract activeert."
+msgstr "Indiquez les locataires et le loyer avant d'activer le bail."
+
+#. module: vme_rentmeester
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_contract__deposit_type__public_guarantee
+msgid "Waarborg via OCMW of fonds"
+msgstr "Garantie via CPAS ou fonds"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_contract__region__wallonia
+#: model:ir.model.fields.selection,name:vme_rentmeester.selection__vme_rent_indexation__region__wallonia
+msgid "Wallonië"
+msgstr "Wallonie"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__website_message_ids
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_indexation__website_message_ids
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_settlement__website_message_ids
+msgid "Website Messages"
+msgstr "Messages du site web"
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_contract__website_message_ids
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_indexation__website_message_ids
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_settlement__website_message_ids
+msgid "Website communication history"
+msgstr "Historique des communications du site web"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.vme_rent_contract_view_form
+msgid "Welk deel van de kosten uit de jaarafrekening van de verhuurder de huurder draagt."
+msgstr "Quelle part des frais du décompte annuel du bailleur est supportée par le locataire."
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_contract.py:0
+msgid "Wie het kortlopende contract wil laten eindigen op %(end)s, moet uiterlijk op %(deadline)s opzeggen. Anders wordt het een contract van negen jaar vanaf de ingangsdatum."
+msgstr "Pour mettre fin au bail de courte durée le %(end)s, il faut donner congé au plus tard le %(deadline)s. Sinon, il devient un bail de neuf ans à compter de la date de prise d'effet."
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_contract.py:0
+msgid "Wil de verhuurder het contract laten eindigen op %(end)s, dan moet de opzeg uiterlijk op %(deadline)s vertrekken (zes maanden; de huurder heeft drie maanden)."
+msgstr "Si le bailleur veut mettre fin au bail le %(end)s, le congé doit partir au plus tard le %(deadline)s (six mois ; le locataire dispose de trois mois)."
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_indexation_letter_document
+msgid "betaalt u het nieuwe bedrag op de gebruikelijke rekening."
+msgstr "vous payez le nouveau montant sur le compte habituel."
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_indexation_letter_document
+msgid "blijven ongewijzigd."
+msgstr "restent inchangées."
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_contract.py:0
+msgid "contract_id"
+msgstr "contract_id"
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_contract.py:0
+msgid "rent_contract_id"
+msgstr "rent_contract_id"
+
+#. module: vme_rentmeester
+#: model_terms:ir.ui.view,arch_db:vme_rentmeester.report_rent_settlement_document
+msgid "tot"
+msgstr "au"

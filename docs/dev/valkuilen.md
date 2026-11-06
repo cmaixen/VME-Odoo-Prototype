@@ -104,6 +104,13 @@ De webclient leest records met `bin_size=True` in de context. Een binair veld (o
 
 Sinds er buitengewone AV's zijn, kan een VME meer dan één AV per jaar hebben. Code of tests die "de AV van VME X in jaar Y" zoeken, filteren op `assembly_type = 'ordinary'`, anders krijgen ze twee records (`ensure_one` faalt, of een vergelijking op een recordset van twee).
 
+## Vertaling: rapporten in de taal van de ontvanger
+
+- **Een `t-lang` op `web.external_layout` vertaalt de inhoud niet.** De body van een `t-call` hoort bij het aanroepende template en wordt in de taal van dat template vertaald. De inhoud moet in een eigen `_document`-template dat met `t-lang` aangeroepen wordt; zie [vertaling.md](vertaling.md#rapporten-qweb).
+- **`--i18n-overwrite`.** Zonder die optie laat `-u` bestaande vertalingen in de database staan; een verbeterde vertaling in `fr.po` komt er dan niet door.
+- **`odoo i18n export` via `docker compose run`** faalt met "unrecognized arguments: --db_host": het entrypoint plakt de databaseverbinding achter elk commando. Gebruik een configbestand (`-c`), zie [vertaling.md](vertaling.md#nieuwe-termen-bijwerken).
+- **Tekst in een datumformaat of zinnen in stukken** (`'\'om\' HH:mm'`, "op de `<t t-if>`buitengewone`</t>` algemene vergadering") zijn niet te vertalen. Volledige zinnen per tak.
+
 ## Bekende problemen (nog open)
 
 - Geen op dit moment.
