@@ -21,6 +21,8 @@ Wat de generator maakt, per VME met een eigen vaste seed (dezelfde portefeuille 
 - Brandblussers en lift met een keuring die soms vervallen is; een gehouden gewone AV 2026 (behalve ongeveer 5%), geleid door tien fictieve medewerkers (Odoo laat één medewerker maar een paar AV's per avond leiden).
 - Historiek 2026: vier provisieoproepen met betalingen (ongeveer 6% van de eigenaars betaalt oproep 3 en 4 niet), en per VME 7 tot 9 leveranciersfacturen (schoonmaak, energie, verzekering, lift) die bij het boeken automatisch verdeeld worden. De oproepen en betalingen hergebruiken `_demo_history_provisions()` van de demohistoriek.
 
+Er wordt niets naar buiten verstuurd: de oproepen worden geboekt (zoals "Meteen boeken" in de wizard), maar niet gemaild of via Peppol verzonden, en de fictieve medewerkers krijgen geen uitnodigingsmail. Ook de achtergrondverwerking van provisieoproepen boekt alleen; versturen blijft een klik van een medewerker.
+
 Volume na de volledige run:
 
 | | Aantal |
