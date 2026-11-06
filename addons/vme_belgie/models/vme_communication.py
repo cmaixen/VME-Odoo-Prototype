@@ -315,6 +315,7 @@ class VmeCommunication(models.Model):
 
     def action_confirm(self):
         """The employee confirms the draft: only now e-mails are queued, letters printed and the register filled."""
+        check_not_auditor(self.env)  # the mails are created as sudo
         self._check_editable()
         for communication in self:
             if communication.kind == "survey" and not communication.option_ids:

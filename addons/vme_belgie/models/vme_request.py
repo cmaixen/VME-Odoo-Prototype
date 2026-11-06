@@ -593,6 +593,7 @@ class VmeRequest(models.Model):
 
     def action_register_delivery(self):
         """Register the delivered keys in the lot's register and charge the owner privately."""
+        check_not_auditor(self.env)  # the invoice for the owner is created as sudo
         for request in self:
             if request.type_code != "key" or request.state != "ordered":
                 raise UserError(self.env._("Alleen een bestelde sleutel of badge kan geleverd worden."))
