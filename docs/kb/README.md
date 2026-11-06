@@ -54,6 +54,10 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 21. [Het eigenaarsportaal: toegang, wat de eigenaar ziet, adreswijzigingen](eigenaarsportaal.md)
 22. [De raad van mede-eigendom en de commissaris van de rekeningen](raad-en-commissaris.md)
 
+### Overzichten
+
+23. [De gebouwkaart, de budgetopvolging en de portefeuille](gebouwkaart.md)
+
 ### Post en mails
 
 
@@ -68,7 +72,7 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 
 ### Overstappen
 
-23. [Contracten en personeel opvolgen](contracten.md)
+24. [Contracten en personeel opvolgen](contracten.md)
 
 ### Algemene vergaderingen
 
@@ -78,26 +82,26 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 
 ### Bewoners
 
-24. [Aanvragen van bewoners: sleutels, badges en andere vaste procedures](aanvragen-sleutels-badges.md)
+25. [Aanvragen van bewoners: sleutels, badges en andere vaste procedures](aanvragen-sleutels-badges.md)
 
 ### Overstappen
 
-25. [Leveranciers betalen en provisies domiciliëren](betalingen.md)
+26. [Leveranciers betalen en provisies domiciliëren](betalingen.md)
 
 ### Overstappen
 
-26. [PDF-facturen en documenten laten lezen door de AI-assistent](pdf-facturen-ai.md)
+27. [PDF-facturen en documenten laten lezen door de AI-assistent](pdf-facturen-ai.md)
 
 ### Overstappen
 
-27. [Communicatie met eigenaars: mededelingen, bevragingen en aangetekende brieven](communicatie.md)
+28. [Communicatie met eigenaars: mededelingen, bevragingen en aangetekende brieven](communicatie.md)
 
 ### Overstappen
 
 
 ### Rentmeester
 
-28. [Een verhuurd appartement beheren: huurcontract, huurfacturen, indexering en afrekening aan de huurder](rentmeester.md)
+29. [Een verhuurd appartement beheren: huurcontract, huurfacturen, indexering en afrekening aan de huurder](rentmeester.md)
 
 ## Zo is het platform opgebouwd
 

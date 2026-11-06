@@ -73,6 +73,9 @@ erDiagram
 | `vme.communication.log` | Communicatielog | Eén lijn per ontvanger en verzending, ook voor oproepingen en herinneringen (`source_model`, `source_id`); echt kanaal, status, antwoord op een bevraging. |
 | `vme.registered.mail` | Aangetekende zending | Volgnummer `AT/jaar/nnnn`, bestemmeling, adres als tekst, PDF, papier of elektronisch, zendingsnummer, status tot ontvangen of niet afgehaald. |
 | `vme.communication.template` | Sjabloon | Onderwerp, tekst, korte tekst, kanaal, vraag en antwoorden. |
+| `vme.budget.line` | Budget per rekening en sleutel | `budget_id`, `account_id`, `key_id` (optioneel), `name`, `amount`; op `vme.budget` berekend `lines_total` en `unassigned_amount`. Zie [gebouwkaart.md](gebouwkaart.md). |
+| `vme.budget.analysis` | Budgetopvolging (SQL-view) | Budgetregels, niet-ingedeeld budget en werkelijke kosten per VME, jaar, rekening en sleutel; `budget_to_date` gespreid per dag tot vandaag. |
+| `vme.capital.movement` | Verloop kapitalen (SQL-view) | Provisies en gebruik van werk- en reservekapitaal per datum, voor een gecumuleerde lijngrafiek. |
 | `vme.migration` | Overstap uit een ander pakket | `attachment_ids` (exportbestanden), `source_format`, `state` (nieuw, proefrun gedaan, geïmporteerd), `report_html`, `error_count`, `warning_count`, `transition_date`, `association_id`, `opening_move_id`. Zie [migratie.md](migratie.md). |
 
 Wizards (transient): `vme.provision.call.wizard` en `vme.annual.statement.wizard`, elk met een HTML-voorbeeld (`preview_html`).
@@ -110,6 +113,8 @@ De modellen van de rentmeester (`vme.rent.*`) staan in de module `vme_rentmeeste
 | `vme.lot` | `building_block` | Blok, om per blok te communiceren; `_get_tenants_on(date)` is de koppelplaats voor huurders. |
 | `vme.sale.file` | `welcome_communication_id` | Concept-welkomstbrief, gemaakt bij de akte. |
 | `vme.collection.reminder` | `registered_mail_id` | De aangetekende zending van een ingebrekestelling. |
+| `vme.association` | `arrears_signal_threshold`, berekend: `working_capital_balance`, `reserve_capital_balance`, `arrears_amount`, `budget_usage`, `signal_*`, `signal_count`, `building_card_html` | Gebouwkaart en portefeuille (stap 22); de signalen zijn zoekbaar. |
+| `res.partner` | `vme_is_supplier` (zoekbaar), `vme_supplier_contract_count`, `vme_supplier_open_amount`, `vme_supplier_card_html` | Leverancierskaart (stap 22), beperkt tot de VME's die de gebruiker mag lezen. |
 | `account.move.line` | `vme_key_id` | Verdeelsleutel per regel; opgeslagen compute die alleen een lege sleutel invult vanuit de verdeelregel. |
 
 ## Rekeningen

@@ -16,10 +16,10 @@ Legende: ✅ gebouwd · 🔨 wordt nu gebouwd · 📋 gepland · ➖ bewust late
 | | Domiciliëringen van provisies (SEPA pain.008) met mandaten en terugkoppeling | ✅ | stap 20 |
 | | Rechtstreekse bankkoppeling (bv. Swan, Ponto, Isabel) | ➖ | na het prototype, vraagt een contract met de bank of aggregator |
 | Kapitaalbeheer | Werk- en reservekapitaal apart, 5%-regel, werken uit het reservekapitaal | ✅ | stap 5, 14 |
-| | Stand en verloop per VME | 🔨 | stap 22 |
+| | Stand en verloop per VME | ✅ | stap 22 |
 | | Live inzicht voor eigenaars in het portaal | ✅ | stap 15 (uitgebreid in stap 22) |
 | Budgetbeheer | Budget en provisieberekening | ✅ | stap 5 |
-| | Budgetopvolging (budget tegenover werkelijk, per rekening en sleutel) | 🔨 | stap 22 |
+| | Budgetopvolging (budget tegenover werkelijk, per rekening en sleutel) | ✅ | stap 22 |
 | Inlichtingen inzake verkoop | Notarismodule met termijnen, kavelwissel bij de akte | ✅ | stap 9 |
 | | Welkomstbrief voor de nieuwe eigenaar | ✅ | stap 23 |
 | Afrekeningen | Jaarafrekening per eigenaar, ook op verbruik | ✅ | stap 6, 17 |
@@ -41,13 +41,13 @@ Legende: ✅ gebouwd · 🔨 wordt nu gebouwd · 📋 gepland · ➖ bewust late
 | | Agenda, oproeping, stemming, notulen en opvolging | ✅ | stap 11 |
 | | Hybride en digitaal vergaderen, elektronisch stemmen en tekenen | 🔨 | stap 24 |
 | Gebouwbeheer en eigendomsbeheer | Gebouwen, kavels, quotiteiten, eigenaars | ✅ | stap 2 |
-| | Gebouwkaart met de financiële toestand en een overzicht van de portefeuille | 🔨 | stap 22 |
+| | Gebouwkaart met de financiële toestand en een overzicht van de portefeuille | ✅ | stap 22 |
 | | Raad van mede-eigendom met overzicht van de lopende dossiers | ✅ | stap 16 |
 | Beheer mede-eigenaars en huurders | Eigenaars met historiek en register | ✅ | stap 2, 15 |
 | | Profiel in het portaal, adreswijziging met goedkeuring | ✅ | stap 15 |
 | | Huurders als contacten per kavel, gekoppeld aan hun huurcontract | ✅ | stap 19, 25 |
 | Leveranciersbeheer | Leveranciers, verdeelregels, facturen, contracten | ✅ | stap 4b, 18 |
-| | Leverancierskaart met contracten, keuringen, lopende werken en facturen | 🔨 | stap 22 |
+| | Leverancierskaart met contracten, keuringen, lopende werken en facturen | ✅ | stap 22 |
 | Documentbeheer | Mappen per VME en kavel, delen of niet delen, acties op meerdere documenten | ✅ | stap 15 |
 | | Automatisch ordenen met AI | ✅ | stap 21 (soort en VME) met de mappen van stap 15 |
 | Huurcontractbeheer | Huurcontracten, huurders, waarborg, maandelijkse huur, opzeg en einde huur | ✅ | stap 25 |
@@ -66,4 +66,5 @@ Legende: ✅ gebouwd · 🔨 wordt nu gebouwd · 📋 gepland · ➖ bewust late
 - AV-planner die het hele AV-seizoen in blokken plant met de wettelijke periodes en oproepingstermijnen (stap 6c).
 - Kosten per dag verdeeld bij een verkoop, met de kostperiode uit de Peppol-factuur (stap 4b).
 - Een mail "ik wil een extra badge" wordt een aanvraag die de aanvrager herkent, het juiste bewijs opvraagt, de bestelling bij de slotenmaker klaarzet en de kost privé aanrekent; het sleutelregister volgt de eigendom tot in de akte (stap 19).
+- Portefeuille met signalen over alle VME's (reservefonds onder 5%, achterstallen, AV buiten de periode, vervallen keuring), live berekend (stap 22).
 - Alles op Odoo Community, zonder licentiekosten per gebruiker.

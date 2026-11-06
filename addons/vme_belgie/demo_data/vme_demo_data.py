@@ -187,6 +187,32 @@ BUDGETS = {
     "Kaaihuis": (9000, 900),
 }
 BUDGET_YEARS = (2026, 2027)
+# Working capital budget per account and key (step 22): account, key type, description, amount.
+# The rest of the budget stays unassigned. Hof ter Beuken under-budgets heating and the concierge,
+# so the building card shows costs over budget.
+BUDGET_LINES = {
+    "Residentie Linde": [
+        ("611000", "elevator", "Onderhoud lift", 3600),
+        ("611000", "general", "Schoonmaak gemene delen", 6000),
+        ("612500", "general", "Elektriciteit gemene delen", 3500),
+        ("614000", "general", "Brandverzekering", 4300),
+    ],
+    "Hof ter Beuken": [
+        ("612500", "consumption", "Verwarming", 18000),
+        ("611000", "general", "Schoonmaak gemene delen", 9000),
+        ("614000", "general", "Brandverzekering", 6500),
+        ("620300", "general", "Loonkost conciërge", 14500),
+    ],
+    "Kaaihuis": [
+        ("611000", "general", "Schoonmaak gemene delen", 2400),
+        ("612500", "general", "Elektriciteit gemene delen", 1500),
+        ("614000", "general", "Brandverzekering", 1800),
+    ],
+}
+
+# Arrears signal in the portfolio (step 22): the syndic watches Residentie Linde from 250 euros
+# instead of the default 1000, so the demo shows that signal too.
+ARREARS_SIGNAL_THRESHOLDS = {"Residentie Linde": 250}
 
 # Fifteen-day period of the ordinary general assembly (month, first day) per VME.
 # Linde (4-18 March) and Kaaihuis (10-24 March) both fit on 17 March, which only has room
@@ -356,6 +382,7 @@ class VmeAssociation(models.Model):
         }
         self._demo_supplier_banks(suppliers)
         rule_accounts = []  # (rule, account code): set once the chart of accounts exists
+        budget_lines = []  # (budget, account code, key, description, amount): idem
 
         for building in BUILDINGS:
             vme = self.create({
@@ -366,6 +393,8 @@ class VmeAssociation(models.Model):
                 "city": building["city"],
                 "assembly_period_month": ASSEMBLY_PERIODS[building["name"]][0],
                 "assembly_period_day": ASSEMBLY_PERIODS[building["name"]][1],
+                **({"arrears_signal_threshold": ARREARS_SIGNAL_THRESHOLDS[building["name"]]}
+                   if building["name"] in ARREARS_SIGNAL_THRESHOLDS else {}),
             })
             banks = self.env["res.partner.bank"].create([
                 {"acc_number": fake_iban(account_number + offset), "partner_id": vme.partner_id.id}
@@ -431,13 +460,17 @@ class VmeAssociation(models.Model):
                 rule_accounts.append((rule, "611000"))
 
             working, reserve = BUDGETS[building["name"]]
-            self.env["vme.budget"].create([{
+            budgets = self.env["vme.budget"].create([{
                 "association_id": vme.id,
                 "year": year,
                 "working_capital_budget": working,
                 "reserve_capital_contribution": reserve,
                 "calls_per_year": "4",
             } for year in BUDGET_YEARS])
+            budget_lines.extend(
+                (budget, code, key_by_type[key_type], name, amount)
+                for budget in budgets for code, key_type, name, amount in BUDGET_LINES[building["name"]]
+            )
 
             short_name = building["name"].split()[-1]
             owner_by_lot = {}
@@ -499,6 +532,15 @@ class VmeAssociation(models.Model):
                 rule.account_id = self.env["account.account"].with_company(rule.company_id).search(
                     [("company_ids", "in", rule.company_id.id), ("code", "=", code)], limit=1
                 )
+            # Budget lines need the accounts too.
+            self.env["vme.budget.line"].create([{
+                "budget_id": budget.id,
+                "account_id": self.env["account.account"].with_company(budget.company_id).search(
+                    [("company_ids", "in", budget.company_id.id), ("code", "=", code)], limit=1).id,
+                "key_id": key.id,
+                "name": name,
+                "amount": amount,
+            } for budget, code, key, name, amount in budget_lines])
         self.env.cr.precommit.add(set_rule_accounts)
 
         # Tasks for inspections, notice deadlines and evaluations that are (nearly) due,

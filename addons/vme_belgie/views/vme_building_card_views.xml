@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Building card: a second form view on vme.association, read-only, opened from the card overview or the VME. -->
+    <record id="vme_association_view_form_card" model="ir.ui.view">
+        <field name="name">vme.association.form.card</field>
+        <field name="model">vme.association</field>
+        <field name="priority">90</field>
+        <field name="arch" type="xml">
+            <form string="Gebouwkaart" create="0" edit="0" delete="0">
+                <header>
+                    <button name="action_open_budget_analysis" type="object" string="Budgetopvolging"/>
+                    <button name="action_open_capital_history" type="object" string="Verloop kapitalen"/>
+                    <button name="action_open_annual_statement" type="object" string="Jaarafrekening"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                        <div class="text-muted">Gebouwkaart</div>
+                    </div>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="building_card_html" nolabel="1" readonly="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="vme_association_view_kanban_card" model="ir.ui.view">
+        <field name="name">vme.association.kanban.card</field>
+        <field name="model">vme.association</field>
+        <field name="priority">90</field>
+        <field name="arch" type="xml">
+            <kanban create="0" class="o_kanban_small_column">
+                <field name="currency_id"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex justify-content-between">
+                            <field name="name" class="fw-bold fs-5"/>
+                            <span t-if="record.signal_count.raw_value" class="badge text-bg-warning align-self-start">
+                                <field name="signal_count"/> <t t-if="record.signal_count.raw_value == 1">signaal</t><t t-else="">signalen</t>
+                            </span>
+                        </div>
+                        <div class="text-muted"><field name="city"/> · <field name="lot_count"/> kavels</div>
+                        <div class="mt-2 small">
+                            <div>Werkkapitaal: <field name="working_capital_balance" widget="monetary"/></div>
+                            <div>Reservekapitaal: <field name="reserve_capital_balance" widget="monetary"/></div>
+                            <div>Achterstallen: <field name="arrears_amount" widget="monetary"/></div>
+                        </div>
+                        <div t-if="record.signal_summary.raw_value" class="mt-2 small text-warning-emphasis">
+                            <field name="signal_summary"/>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Portfolio: all VMEs in one list with their signals. -->
+    <record id="vme_association_view_list_portfolio" model="ir.ui.view">
+        <field name="name">vme.association.list.portfolio</field>
+        <field name="model">vme.association</field>
+        <field name="priority">90</field>
+        <field name="arch" type="xml">
+            <list create="0" decoration-warning="signal_count &gt; 0">
+                <field name="currency_id" column_invisible="1"/>
+                <field name="name"/>
+                <field name="city" optional="show"/>
+                <field name="lot_count" optional="show"/>
+                <field name="working_capital_balance"/>
+                <field name="reserve_capital_balance"/>
+                <field name="budget_to_date_amount" optional="hide"/>
+                <field name="actual_to_date_amount" optional="hide"/>
+                <field name="budget_usage" widget="percentage" optional="show"/>
+                <field name="arrears_amount"/>
+                <field name="arrears_signal_threshold" optional="hide"/>
+                <field name="signal_reserve" widget="boolean_toggle" readonly="1" string="Reserve &lt; 5%"/>
+                <field name="signal_arrears" widget="boolean_toggle" readonly="1" string="Achterstallen"/>
+                <field name="signal_assembly" widget="boolean_toggle" readonly="1" string="AV"/>
+                <field name="signal_inspection" widget="boolean_toggle" readonly="1" string="Keuring"/>
+                <field name="signal_count" optional="hide"/>
+                <button name="action_open_building_card" type="object" string="Gebouwkaart" icon="fa-id-card-o"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_association_view_search_portfolio" model="ir.ui.view">
+        <field name="name">vme.association.search.portfolio</field>
+        <field name="model">vme.association</field>
+        <field name="priority">90</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="city"/>
+                <filter name="with_signal" string="Met signalen" domain="[('signal_count', '>', 0)]"/>
+                <separator/>
+                <filter name="signal_reserve" string="Reservefonds onder 5%" domain="[('signal_reserve', '=', True)]"/>
+                <filter name="signal_arrears" string="Achterstallen boven de drempel" domain="[('signal_arrears', '=', True)]"/>
+                <filter name="signal_assembly" string="AV buiten de periode" domain="[('signal_assembly', '=', True)]"/>
+                <filter name="signal_inspection" string="Vervallen keuring" domain="[('signal_inspection', '=', True)]"/>
+                <separator/>
+                <filter name="archived" string="Gearchiveerd" domain="[('active', '=', False)]"/>
+                <group>
+                    <filter name="group_city" string="Gemeente" context="{'group_by': 'city'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="vme_portfolio_action" model="ir.actions.act_window">
+        <field name="name">Portefeuille</field>
+        <field name="res_model">vme.association</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="vme_association_view_search_portfolio"/>
+        <field name="view_ids" eval="[Command.clear(),
+            Command.create({'view_mode': 'list', 'view_id': ref('vme_association_view_list_portfolio')}),
+            Command.create({'view_mode': 'kanban', 'view_id': ref('vme_association_view_kanban_card')}),
+            Command.create({'view_mode': 'form', 'view_id': ref('vme_association_view_form_card')})]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nog geen VME's</p>
+            <p>De portefeuille toont alle VME's met hun kapitalen, achterstallen en signalen.</p>
+        </field>
+    </record>
+
+    <record id="vme_building_card_action" model="ir.actions.act_window">
+        <field name="name">Gebouwkaart</field>
+        <field name="res_model">vme.association</field>
+        <field name="view_mode">kanban,form</field>
+        <field name="search_view_id" ref="vme_association_view_search_portfolio"/>
+        <field name="view_ids" eval="[Command.clear(),
+            Command.create({'view_mode': 'kanban', 'view_id': ref('vme_association_view_kanban_card')}),
+            Command.create({'view_mode': 'form', 'view_id': ref('vme_association_view_form_card')})]"/>
+    </record>
+
+    <!-- Button and threshold on the normal VME form -->
+    <record id="vme_association_view_form_inherit_card" model="ir.ui.view">
+        <field name="name">vme.association.form.card.button</field>
+        <field name="model">vme.association</field>
+        <field name="inherit_id" ref="vme_association_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_open_building_card" type="object" string="Gebouwkaart" invisible="not id"/>
+            </xpath>
+            <xpath expr="//page[@name='budgets']" position="inside">
+                <group name="portfolio">
+                    <field name="currency_id" invisible="1"/>
+                    <field name="arrears_signal_threshold"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Budget lines on the budget -->
+    <record id="vme_budget_view_form_inherit_lines" model="ir.ui.view">
+        <field name="name">vme.budget.form.lines</field>
+        <field name="model">vme.budget</field>
+        <field name="inherit_id" ref="vme_budget_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='provision_call_ids']" position="before">
+                <group string="Werkkapitaal per rekening en sleutel">
+                    <field name="line_ids" nolabel="1" colspan="2" context="{'default_budget_id': id}">
+                        <list editable="bottom">
+                            <field name="sequence" widget="handle"/>
+                            <field name="company_id" column_invisible="1"/>
+                            <field name="association_id" column_invisible="1"/>
+                            <field name="currency_id" column_invisible="1"/>
+                            <field name="account_id"/>
+                            <field name="key_id"/>
+                            <field name="name"/>
+                            <field name="amount" sum="Ingedeeld"/>
+                        </list>
+                    </field>
+                    <field name="unassigned_amount"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Budget follow-up -->
+    <record id="vme_budget_analysis_view_pivot" model="ir.ui.view">
+        <field name="name">vme.budget.analysis.pivot</field>
+        <field name="model">vme.budget.analysis</field>
+        <field name="arch" type="xml">
+            <pivot string="Budgetopvolging" disable_linking="0">
+                <field name="association_id" type="row"/>
+                <field name="account_id" type="row"/>
+                <field name="key_id" type="col"/>
+                <field name="budget_amount" type="measure"/>
+                <field name="budget_to_date" type="measure"/>
+                <field name="actual_amount" type="measure"/>
+                <field name="difference" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="vme_budget_analysis_view_graph" model="ir.ui.view">
+        <field name="name">vme.budget.analysis.graph</field>
+        <field name="model">vme.budget.analysis</field>
+        <field name="arch" type="xml">
+            <graph string="Budgetopvolging" type="bar">
+                <field name="account_id"/>
+                <field name="budget_to_date" type="measure"/>
+                <field name="actual_amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="vme_budget_analysis_view_list" model="ir.ui.view">
+        <field name="name">vme.budget.analysis.list</field>
+        <field name="model">vme.budget.analysis</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0" delete="0">
+                <field name="currency_id" column_invisible="1"/>
+                <field name="association_id"/>
+                <field name="year" options="{'enable_formatting': false}"/>
+                <field name="kind"/>
+                <field name="date"/>
+                <field name="account_id"/>
+                <field name="key_id"/>
+                <field name="partner_id" optional="show"/>
+                <field name="name"/>
+                <field name="budget_amount" sum="Totaal"/>
+                <field name="budget_to_date" sum="Totaal"/>
+                <field name="actual_amount" sum="Totaal"/>
+                <field name="difference" sum="Totaal"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_budget_analysis_view_search" model="ir.ui.view">
+        <field name="name">vme.budget.analysis.search</field>
+        <field name="model">vme.budget.analysis</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="association_id"/>
+                <field name="account_id"/>
+                <field name="key_id"/>
+                <field name="partner_id"/>
+                <filter name="this_year" string="Dit jaar"
+                        domain="[('year', '=', context_today().year)]"/>
+                <filter name="last_year" string="Vorig jaar"
+                        domain="[('year', '=', context_today().year - 1)]"/>
+                <separator/>
+                <filter name="actual" string="Werkelijke kosten" domain="[('kind', '=', 'actual')]"/>
+                <filter name="budget" string="Budget" domain="[('kind', '!=', 'actual')]"/>
+                <group>
+                    <filter name="group_association" string="VME" context="{'group_by': 'association_id'}"/>
+                    <filter name="group_account" string="Rekening" context="{'group_by': 'account_id'}"/>
+                    <filter name="group_key" string="Verdeelsleutel" context="{'group_by': 'key_id'}"/>
+                    <filter name="group_month" string="Maand" context="{'group_by': 'date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="vme_budget_analysis_action" model="ir.actions.act_window">
+        <field name="name">Budgetopvolging</field>
+        <field name="res_model">vme.budget.analysis</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="context">{'search_default_this_year': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nog geen budget of kosten</p>
+            <p>Verdeel het werkkapitaalbudget per rekening en sleutel op het budget; de geboekte leveranciersfacturen verschijnen hier vanzelf.</p>
+        </field>
+    </record>
+
+    <!-- Capital history -->
+    <record id="vme_capital_movement_view_graph" model="ir.ui.view">
+        <field name="name">vme.capital.movement.graph</field>
+        <field name="model">vme.capital.movement</field>
+        <field name="arch" type="xml">
+            <graph string="Verloop kapitalen" type="line" cumulated="1" stacked="0">
+                <field name="date" interval="month"/>
+                <field name="fund"/>
+                <field name="amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="vme_capital_movement_view_pivot" model="ir.ui.view">
+        <field name="name">vme.capital.movement.pivot</field>
+        <field name="model">vme.capital.movement</field>
+        <field name="arch" type="xml">
+            <pivot string="Verloop kapitalen">
+                <field name="date" interval="year" type="row"/>
+                <field name="fund" type="col"/>
+                <field name="kind" type="col"/>
+                <field name="amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="vme_capital_movement_view_list" model="ir.ui.view">
+        <field name="name">vme.capital.movement.list</field>
+        <field name="model">vme.capital.movement</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0" delete="0">
+                <field name="currency_id" column_invisible="1"/>
+                <field name="association_id"/>
+                <field name="date"/>
+                <field name="fund"/>
+                <field name="kind"/>
+                <field name="move_id"/>
+                <field name="partner_id"/>
+                <field name="amount" sum="Totaal"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_capital_movement_view_search" model="ir.ui.view">
+        <field name="name">vme.capital.movement.search</field>
+        <field name="model">vme.capital.movement</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="association_id"/>
+                <field name="partner_id"/>
+                <filter name="working" string="Werkkapitaal" domain="[('fund', '=', 'working')]"/>
+                <filter name="reserve" string="Reservekapitaal" domain="[('fund', '=', 'reserve')]"/>
+                <group>
+                    <filter name="group_association" string="VME" context="{'group_by': 'association_id'}"/>
+                    <filter name="group_fund" string="Fonds" context="{'group_by': 'fund'}"/>
+                    <filter name="group_year" string="Jaar" context="{'group_by': 'date:year'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="vme_capital_movement_action" model="ir.actions.act_window">
+        <field name="name">Verloop kapitalen</field>
+        <field name="res_model">vme.capital.movement</field>
+        <field name="view_mode">graph,pivot,list</field>
+    </record>
+
+    <!-- Supplier card -->
+    <record id="res_partner_view_form_supplier_card" model="ir.ui.view">
+        <field name="name">res.partner.form.vme.supplier.card</field>
+        <field name="model">res.partner</field>
+        <field name="priority">90</field>
+        <field name="arch" type="xml">
+            <form string="Leverancierskaart" create="0" edit="0" delete="0">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                        <div class="text-muted">Leverancierskaart</div>
+                    </div>
+                    <field name="vme_supplier_card_html" nolabel="1" readonly="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="res_partner_view_list_supplier" model="ir.ui.view">
+        <field name="name">res.partner.list.vme.supplier</field>
+        <field name="model">res.partner</field>
+        <field name="priority">90</field>
+        <field name="arch" type="xml">
+            <list create="0">
+                <field name="vme_supplier_currency_id" column_invisible="1"/>
+                <field name="name"/>
+                <field name="vat"/>
+                <field name="email" optional="show"/>
+                <field name="vme_supplier_vme_names"/>
+                <field name="vme_supplier_contract_count"/>
+                <field name="vme_supplier_open_amount"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_supplier_card_action" model="ir.actions.act_window">
+        <field name="name">Leveranciers</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('vme_is_supplier', '=', True), ('is_company', '=', True)]</field>
+        <field name="context">{'res_partner_search_mode': 'supplier'}</field>
+        <field name="view_ids" eval="[Command.clear(),
+            Command.create({'view_mode': 'list', 'view_id': ref('res_partner_view_list_supplier')}),
+            Command.create({'view_mode': 'form', 'view_id': ref('res_partner_view_form_supplier_card')})]"/>
+    </record>
+
+    <record id="res_partner_view_form_inherit_supplier_card" model="ir.ui.view">
+        <field name="name">res.partner.form.vme.supplier.card.button</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <field name="supplier_rank" invisible="1"/>
+                <button name="action_open_vme_supplier_card" type="object" class="oe_stat_button" icon="fa-id-card-o"
+                        invisible="not id or supplier_rank == 0" groups="account.group_account_invoice">
+                    <div class="o_stat_info"><span class="o_stat_text">Leverancierskaart</span></div>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <menuitem id="menu_vme_building_card" name="Gebouwkaart" parent="menu_vme_root" action="vme_building_card_action" sequence="5"/>
+    <menuitem id="menu_vme_portfolio" name="Portefeuille" parent="menu_vme_root" action="vme_portfolio_action" sequence="6"
+              groups="account.group_account_invoice"/>
+    <menuitem id="menu_vme_budget_analysis" name="Budgetopvolging" parent="menu_vme_root" action="vme_budget_analysis_action" sequence="46"/>
+    <menuitem id="menu_vme_supplier_card" name="Leveranciers" parent="menu_vme_root" action="vme_supplier_card_action" sequence="49"
+              groups="account.group_account_invoice"/>
+</odoo>

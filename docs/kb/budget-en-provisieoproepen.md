@@ -79,3 +79,7 @@ Nee, alleen de facturen ervan annuleren. Zo blijft er een spoor van elke oproep.
 
 **Wordt er btw aangerekend?**
 Nee. Provisies zijn geen verkoop, dus de facturen hebben geen btw.
+
+## Het budget per rekening en sleutel verdelen
+
+Op het budget kunt u het werkkapitaal verdelen over rekeningen en verdeelsleutels (bv. 611000 Onderhoud lift, Liftsleutel, 3.600 €). Odoo vergelijkt die bedragen dan doorheen het jaar met de werkelijke kosten. Hoe dat werkt, leest u in [De gebouwkaart, de budgetopvolging en de portefeuille](gebouwkaart.md).

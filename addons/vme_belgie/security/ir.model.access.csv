@@ -61,3 +61,6 @@ access_vme_communication_log_user,vme.communication.log user,model_vme_communica
 access_vme_communication_template_user,vme.communication.template user,model_vme_communication_template,base.group_user,1,0,0,0
 access_vme_communication_template_system,vme.communication.template system,model_vme_communication_template,base.group_system,1,1,1,1
 access_vme_registered_mail_user,vme.registered.mail user,model_vme_registered_mail,base.group_user,1,1,1,0
+access_vme_budget_line_user,vme.budget.line user,model_vme_budget_line,base.group_user,1,1,1,1
+access_vme_budget_analysis_user,vme.budget.analysis user,model_vme_budget_analysis,base.group_user,1,0,0,0
+access_vme_capital_movement_user,vme.capital.movement user,model_vme_capital_movement,base.group_user,1,0,0,0

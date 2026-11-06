@@ -88,6 +88,14 @@ Odoo's lijst `/my/invoices` zoekt met de rechten van de portaalgebruiker, en de 
 - **`with_user()` neemt de bedrijvenkiezer mee.** Een andere gebruiker met de geselecteerde bedrijven van de beheerder gaf "Toegang tot ongeautoriseerde of ongeldige bedrijven"; zet `allowed_company_ids` op de bedrijven van de VME.
 - **Een SEPA-domiciliëring na de vervaldag is niet "te laat".** De koppeling van stap 12 zou dagen te laat tellen; bij een inning uit een batch staat `vme_days_late` op 0.
 
+## Gebouwkaart en leverancierskaart (stap 22)
+
+- **Rekeningcodes zijn per company opgeslagen.** `account.account.code` is berekend uit `code_store` (jsonb per hoofdcompany). Met sudo zonder `with_company` is de code van een rekening van een VME leeg; in SQL lees je `account.code_store->>(company_id::text)`.
+- **Een betaling zonder tussenrekening boekt niet op de bankrekening.** Geregistreerde betalingen van provisies staan pas op de standaardrekening van het bankdagboek na een gekoppeld afschrift. "Op de rekening" telt daarom ook de betalingen met `is_matched = False`.
+- **De cache van een berekend veld is gedeeld tussen gebruikers.** Zonder `@api.depends_context("uid")` gaf de leverancierskaart in dezelfde transactie de versie van de commissaris aan de medewerker (en omgekeerd). Velden waarvan de inhoud van de gebruiker afhangt, krijgen die decorator.
+- **`%` in een QWeb-uitdrukking.** `t-out="'%.0f %%' % x"` gaf "incomplete format"; gebruik `str(round(x)) + ' %'`.
+- **Niet-opgeslagen signalen en de cache.** Een zoekmethode die het berekende veld leest, kreeg in dezelfde transactie een oude waarde na een wijziging aan het budget. `_search_signal` rekent de signalen daarom opnieuw uit.
+
 ## Bekende problemen (nog open)
 
 - Geen op dit moment.
