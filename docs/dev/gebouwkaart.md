@@ -54,6 +54,7 @@ Vreemde munt: `price_total` staat in de munt van de factuur. Alle VME's werken i
 | `arrears` | som van `vme.arrears.amount_residual` > `arrears_signal_threshold` | praktijkregel |
 | `assembly` | `_get_assembly_signal`: een niet-geannuleerde AV van dit jaar met een datum buiten haar periode (gehouden, of nog te komen), of de periode van dit jaar is voorbij zonder gehouden AV in de periode | `# LEGAL-CHECK: art. 3.87 §2 BW` |
 | `inspection` | een installatie met `due_state` of `risk_analysis_due_state` = `overdue` (stap 6b) | de termijnen zelf staan in `vme_installation.py` |
+| `cycle` | een stap van de jaarcyclus met `_is_late(today)` (stap 28) | de termijnen staan in `vme_cycle.py`, zie [jaarcyclus.md](jaarcyclus.md) |
 
 "Vandaag" komt uit `fields.Date.context_today`, of uit de context `vme_today` zoals bij de AV-planner. De zoekmethodes (`_search_signal`, `_search_signal_count`) berekenen de signalen opnieuw voor alle VME's die de gebruiker mag lezen: de waarden hangen af van veel andere modellen en zitten niet in de cache-afhankelijkheden. Voor 200 VME's is dat een paar seconden; wordt het te traag, dan kan een nachtelijke cron de signalen opslaan.
 

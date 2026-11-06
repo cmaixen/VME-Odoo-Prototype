@@ -58,6 +58,7 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 ### Overzichten
 
 24. [De gebouwkaart, de budgetopvolging en de portefeuille](gebouwkaart.md)
+31. [Het jaar van een VME opvolgen: de jaarcyclus](jaarcyclus.md)
 
 ### Post en mails
 

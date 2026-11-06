@@ -226,3 +226,33 @@ class TestAnnualStatementDemo(TransactionCase):
         self.assertEqual(debit.rejected_count, 1)
         self.assertEqual(sum(batches.mapped("paid_count")), sum(batches.mapped("line_count")) - 1)
         self.assertTrue(self.env["vme.collection"].search([("partner_id.name", "=", "Eigenaar Beuken B7"), ("state", "=", "open")]))
+
+    def test_demo_cycle(self):
+        """The three demo VMEs each at another point of their yearly cycle on 5 November 2026."""
+        today = date(2026, 11, 5)
+        Vme = self.env["vme.association"].with_context(vme_today=today)
+        linde, hof, kaai = (Vme.search([("name", "=", n)]) for n in ("Residentie Linde", "Hof ter Beuken", "Kaaihuis"))
+        Step = self.env["vme.cycle.step"].with_context(vme_today=today)
+
+        def steps(vme, year):
+            return Step.search([("association_id", "=", vme.id), ("year", "=", year)])
+
+        # Residentie Linde: 2026 done, the assembly of 2027 proposed and waiting for confirmation.
+        self.assertEqual(set(steps(linde, 2026).mapped("state")), {"done"})
+        planning = steps(linde, 2027).filtered(lambda s: s.code == "planning")
+        self.assertEqual(planning.state, "ready")
+        self.assertEqual(self.env["vme.assembly"].browse(planning.res_id).state, "proposed")
+        self.assertEqual(linde.cycle_late_count, 0)
+        self.assertIn("Klaargezet: AV 2027 plannen", linde.cycle_current_step)
+        # Hof ter Beuken: the assembly of 2026 was never planned.
+        late = hof.cycle_step_ids.filtered(lambda s: s._is_late(today))
+        self.assertEqual(sorted(late.mapped("code")), ["agenda", "assembly", "convocation"])
+        self.assertTrue(hof.signal_cycle)
+        self.assertNotIn(linde, Vme.search([("signal_cycle", "=", True)]))
+        # Kaaihuis: taken over in October, next step from 10 November.
+        self.assertEqual(steps(kaai, 2026).mapped("code"), ["provision"])
+        self.assertEqual(steps(kaai, 2026).state, "done")
+        self.assertEqual(kaai.cycle_late_count, 0)
+        self.assertIn("AV 2027 plannen", kaai.cycle_current_step)
+        # The cycle posted nothing: no posted invoice of 2027.
+        self.assertFalse(self.env["account.move"].search([("state", "=", "posted"), ("date", ">=", "2027-01-01")]))

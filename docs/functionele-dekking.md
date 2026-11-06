@@ -35,6 +35,7 @@ Legende: ✅ gebouwd · 🔨 wordt nu gebouwd · 📋 gepland · ➖ bewust late
 | | Sleutels, badges en codes: register per kavel, bestelling bij de slotenmaker, blokkeren | ✅ | stap 19 |
 | | Meterstanden en verbruik | ✅ | stap 17 |
 | Taakbeheer | Taken en activiteiten met termijnen | ✅ | Odoo |
+| | Jaarcyclus per VME: kalender met vaste stappen, provisies, AV en afrekening op tijd klaargezet als concept of taak | ✅ | stap 28 |
 | | Meldingen en workflows per aanvraagtype, met verificatie van de aanvrager | ✅ | stap 19 |
 | | Werken met offertes en schadegevallen met de verzekeraar | ✅ | stap 14 |
 | Algemene vergadering | Planning in blokken | ✅ | stap 6c |
@@ -43,6 +44,7 @@ Legende: ✅ gebouwd · 🔨 wordt nu gebouwd · 📋 gepland · ➖ bewust late
 | | Buitengewone AV naast de gewone | ✅ | stap 24 |
 | Gebouwbeheer en eigendomsbeheer | Gebouwen, kavels, quotiteiten, eigenaars | ✅ | stap 2 |
 | | Gebouwkaart met de financiële toestand en een overzicht van de portefeuille | ✅ | stap 22 |
+| | Waar staat elke VME in haar jaar, wat is te laat | ✅ | stap 28, in de portefeuille van stap 22 |
 | | Raad van mede-eigendom met overzicht van de lopende dossiers | ✅ | stap 16 |
 | Beheer mede-eigenaars en huurders | Eigenaars met historiek en register | ✅ | stap 2, 15 |
 | | Profiel in het portaal, adreswijziging met goedkeuring | ✅ | stap 15 |

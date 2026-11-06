@@ -195,6 +195,13 @@
         <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/gebouwkaart.md"}</field>
     </record>
 
+    <record id="action_help_cycle" model="ir.actions.server">
+        <field name="name">Help: jaarcyclus</field>
+        <field name="model_id" ref="model_vme_association"/>
+        <field name="state">code</field>
+        <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/jaarcyclus.md"}</field>
+    </record>
+
     <record id="action_help_digital_assembly" model="ir.actions.server">
         <field name="name">Help: hybride of online AV</field>
         <field name="model_id" ref="model_vme_association"/>
@@ -232,4 +239,5 @@
     <menuitem id="menu_vme_help_communication" name="Communicatie met eigenaars" parent="menu_vme_help" action="action_help_communication" sequence="115"/>
     <menuitem id="menu_vme_help_building_card" name="Gebouwkaart, budgetopvolging en portefeuille" parent="menu_vme_help" action="action_help_building_card" sequence="15"/>
     <menuitem id="menu_vme_help_digital_assembly" name="Hybride of online AV" parent="menu_vme_help" action="action_help_digital_assembly" sequence="101"/>
+    <menuitem id="menu_vme_help_cycle" name="Het jaar van een VME opvolgen (jaarcyclus)" parent="menu_vme_help" action="action_help_cycle" sequence="16"/>
 </odoo>

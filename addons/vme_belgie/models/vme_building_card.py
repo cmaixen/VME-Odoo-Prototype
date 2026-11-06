@@ -13,6 +13,7 @@ SIGNALS = [
     ("arrears", "Achterstallen boven de drempel"),
     ("assembly", "AV buiten de periode"),
     ("inspection", "Vervallen keuring"),
+    ("cycle", "Stap in de jaarcyclus te laat"),
 ]
 
 
@@ -40,6 +41,8 @@ class VmeAssociation(models.Model):
                                      search="_search_signal_assembly")
     signal_inspection = fields.Boolean(string="Vervallen keuring", compute="_compute_portfolio",
                                        search="_search_signal_inspection")
+    signal_cycle = fields.Boolean(string="Stap in de jaarcyclus te laat", compute="_compute_portfolio",
+                                  search="_search_signal_cycle")
     signal_count = fields.Integer(string="Aantal signalen", compute="_compute_portfolio", search="_search_signal_count")
     signal_summary = fields.Char(string="Signalen", compute="_compute_portfolio")
     building_card_html = fields.Html(string="Gebouwkaart", compute="_compute_building_card_html", sanitize=False)
@@ -177,6 +180,13 @@ class VmeAssociation(models.Model):
             signals.append({"code": "inspection", "message": self.env._(
                 "Vervallen keuring of risicoanalyse: %s.", ", ".join(overdue.mapped("name")))})
 
+        # The deadlines of the yearly cycle carry their LEGAL-CHECK in vme_cycle.py.
+        late = vme.cycle_step_ids.filtered(lambda s: s._is_late(today)).sorted("date_deadline")
+        if late:
+            signals.append({"code": "cycle", "message": self.env._(
+                "Te laat in de jaarcyclus: %s.", ", ".join(
+                    f"{step.name} (uiterlijk {format_date(self.env, step.date_deadline)})" for step in late))})
+
         for signal in signals:
             signal["label"] = labels[signal["code"]]
         return signals
@@ -260,6 +270,9 @@ class VmeAssociation(models.Model):
 
     def _search_signal_inspection(self, operator, value):
         return self._search_signal("inspection", operator, value)
+
+    def _search_signal_cycle(self, operator, value):
+        return self._search_signal("cycle", operator, value)
 
     def _search_signal_count(self, operator, value):
         compare = {

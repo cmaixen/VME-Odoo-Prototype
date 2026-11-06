@@ -221,6 +221,19 @@ Kies rechtsboven ook het bedrijf **Rentmeester Voorbeeld BV**, anders blijven de
 
 > Boodschap: "De jaarafrekening van de VME is meteen de basis voor de afrekening aan de huurder, zonder overtikken."
 
+### Extra: de jaarcyclus, waar staat elke VME? (1,5 minuut)
+
+1. **VME > Portefeuille**: de kolom **Volgende stap** toont per VME waar ze staat in haar jaar. **Hof ter Beuken** heeft het signaal **Jaarcyclus** aan.
+2. **VME > Jaarcyclus** (gegroepeerd per VME):
+   - **Hof ter Beuken**, overgenomen op 5 april 2026: agenda, oproeping en AV van 2026 in het rood. De vorige syndicus plande de AV niet; de stappen erna (notulen, goedgekeurd budget) wachten.
+   - **Residentie Linde**: alles van 2026 is afgerond; **AV 2027 plannen** is klaargezet (blauw). Open de stap: de AV-planner stelt 17 maart 2027 voor. **Open concept** en **Bevestigen** doet de syndicus zelf.
+   - **Kaaihuis**, overgenomen op 1 oktober: de oproep van het vierde kwartaal is afgerond, de AV 2027 wordt klaargezet vanaf 10 november.
+3. Open bij Linde **Provisieoproep 1/4 2027** en klik op **Nu klaarzetten**: twee conceptfacturen per eigenaar staan klaar, niets is geboekt. Het activiteitenicoon toont de taak "nakijken en boeken".
+
+> Boodschap: "Uw jaar per gebouw loopt vanzelf: elke stap staat op tijd klaar als concept, u kijkt na en klikt. En u ziet in één lijst welk gebouw achterloopt."
+
+Doe deze extra **na** stap 5 (de provisieoproep 1 van 2027 met de hand) of sla stap 5 over: een oproep die al bestaat, wordt door de jaarcyclus hergebruikt en niet een tweede keer gemaakt. Wie de AV-planner (stap 7) na deze extra draait met **Voorstellen opnieuw indelen**, krijgt hetzelfde voorstel voor Linde.
+
 ## Na de demo
 
 - De demo is daarna niet meer "vers": de factuur, de provisieoproep 2027, de AV-planning, de AI-taken en aanvragen en eventueel het antwoord aan de notaris staan erin. Bouw de database opnieuw op met de commando's hierboven voor een volgende demo.
@@ -232,4 +245,5 @@ Kies rechtsboven ook het bedrijf **Rentmeester Voorbeeld BV**, anders blijven de
 - **Oproepingen aanmaken duurt ongeveer een minuut** voor 12 eigenaars (twee PDF's per eigenaar). Maak ze vooraf aan of vertel er intussen iets bij. Voor honderden VME's moet dit later sneller.
 - **"Zoek wereldwijd" bij het kiezen van een leverancier** toont echte Belgische bedrijven uit Odoo's eigen bedrijvengegevens. Kies altijd de fictieve leverancier bovenaan de lijst.
 - **De demodatums liggen vast rond 5 november 2026.** Wie de demo veel later toont, ziet meer keuringen in het rood.
+- **De jaarcyclus draait elke nacht op de echte datum.** Vanaf 10 november zet hij ook de AV 2027 van Kaaihuis klaar, vanaf 18 december de provisieoproep 1 van 2027 als concept. Voor een demo op een latere datum bouwt u de database opnieuw op.
 - **"Your logo"** bovenaan de PDF is Odoo's plaatshouder zolang er geen logo van de syndicus is.
