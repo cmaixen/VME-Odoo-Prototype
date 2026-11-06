@@ -1,0 +1,48 @@
+// Small additions on top of the standard snippets.
+.o_vme_eyebrow {
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    font-size: .8rem;
+    font-weight: 600;
+    color: o-color('o-color-2');
+}
+
+.o_vme_feature {
+    .fa {
+        width: 2.75rem;
+        height: 2.75rem;
+        line-height: 2.75rem;
+        border-radius: .6rem;
+        text-align: center;
+        background-color: rgba(o-color('o-color-1'), .1);
+        color: o-color('o-color-1');
+        margin-bottom: .75rem;
+    }
+}
+
+.o_vme_screenshot {
+    border-radius: .75rem;
+    box-shadow: 0 1rem 2.5rem rgba(18, 37, 42, .18);
+    border: 1px solid rgba(18, 37, 42, .08);
+}
+
+.o_vme_human {
+    border-left: 4px solid o-color('o-color-2');
+    padding-left: 1rem;
+}
+
+.o_vme_login_choice {
+    transition: box-shadow .15s ease-in-out, transform .15s ease-in-out;
+    &:hover {
+        box-shadow: 0 .5rem 1.5rem rgba(18, 37, 42, .15);
+        transform: translateY(-2px);
+    }
+}
+
+.o_vme_login_menu .dropdown-item {
+    white-space: normal;
+    small {
+        display: block;
+        opacity: .7;
+    }
+}
