@@ -9,7 +9,7 @@ from types import SimpleNamespace
 import pytest
 
 import offertes
-from classifier import MODEL, RefusalError
+from classifier import MODEL, MODELS, RefusalError
 from offerte_reader import (
     COMPARISON_PROMPT, COMPARISON_SCHEMA, QUOTE_FIELDS, ClaudeQuoteComparer, OfflineQuoteComparer, _post_label,
     clean_comparison, page_count,
@@ -196,10 +196,10 @@ def test_claude_sends_every_pdf_with_the_schema():
     client = FakeClient(answer)
     comparison, model = ClaudeQuoteComparer(client=client).compare(pdfs)
 
-    assert model == MODEL == "claude-opus-5-5"
+    assert model == MODEL
     assert comparison == answer
     [call] = client.calls
-    assert call["model"] == MODEL
+    assert call["model"] == MODELS["quotes"] == "claude-sonnet-5-5"
     content = call["messages"][0]["content"]
     documents = [block for block in content if block["type"] == "document"]
     assert [base64.b64decode(d["source"]["data"]) for d in documents] == [data for _name, data in pdfs]

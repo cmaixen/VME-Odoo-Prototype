@@ -23,6 +23,7 @@ cp .env.example .env   # en vul in
 | `ODOO_URL`, `ODOO_DB` | Odoo en database, standaard `http://localhost:8069` en `vme_demo`. |
 | `ODOO_USER`, `ODOO_PASSWORD` | Gebruiker die alle VME-companies ziet; wachtwoord of API-sleutel. |
 | `ODOO_ACTIVITY_USER_ID` | Optioneel: wie de taken krijgt (standaard de gebruiker hierboven). |
+| `VME_AI_MODEL` | Optioneel: één Claude-model voor alle taken. Standaard heeft elke taak het goedkoopste model dat volstond: Sonnet 5.5 voor mails, offertes en overname, Haiku 5.5 voor facturen en documenten (zie `docs/dev/ai-modellen.md`). |
 
 Odoo heeft de module `vme_belgie` met demodata nodig (zie `CLAUDE.md`).
 
@@ -31,7 +32,7 @@ Odoo heeft de module `vme_belgie` met demodata nodig (zie `CLAUDE.md`).
 ```bash
 .venv/bin/python assistant.py --mock --dry-run   # zonder taalmodel, niets schrijven: toont de voorstellen
 .venv/bin/python assistant.py --mock             # zonder taalmodel, zet taken in Odoo
-.venv/bin/python assistant.py                    # met Claude (claude-opus-5-5), zet taken in Odoo
+.venv/bin/python assistant.py                    # met Claude (Sonnet 5.5), zet taken in Odoo
 ```
 
 | Optie | Effect |
@@ -112,7 +113,7 @@ De testmodus leest alleen de drie demo-offertes (gevelrenovatie Residentie Linde
 ```bash
 .venv/bin/python overname.py --mock --dry-run   # offline, toont wat er gelezen wordt
 .venv/bin/python overname.py --mock             # offline, zet het voorstel in Odoo
-.venv/bin/python overname.py                    # met Claude (claude-opus-5-5)
+.venv/bin/python overname.py                    # met Claude (Sonnet 5.5)
 .venv/bin/python overname.py --mock --json --bestand ../addons/vme_belgie/demo_data/migratie/residentie-wilg-documenten/basisakte-scan.pdf
 .venv/bin/python tools/maak_demo_overname.py    # demodocumenten opnieuw maken (de scan vraagt Pillow)
 ```

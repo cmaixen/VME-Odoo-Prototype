@@ -9,7 +9,7 @@ the table, checks the numbers and keeps it as a draft until the syndic approves 
 import json
 import re
 
-from classifier import MODEL, RefusalError
+from classifier import RefusalError, fallback_options, model_for
 from pdf_reader import pdf_block
 from pdf_text import extract_pages
 
@@ -33,9 +33,11 @@ QUOTE_FIELDS = [
 POST_STATUSES = ["included", "excluded", "absent"]
 AMOUNT_FIELDS = ("amount_untaxed", "amount_total")
 
+# No nullable types: the API limits union types in a schema. "" means not in the quote, page 0
+# unknown; clean_comparison turns both into None.
 _VALUE_SCHEMA = {
     "type": "object",
-    "properties": {"value": {"type": ["string", "null"]}, "page": {"type": ["integer", "null"]}},
+    "properties": {"value": {"type": "string"}, "page": {"type": "integer"}},
     "required": ["value", "page"],
     "additionalProperties": False,
 }
@@ -52,7 +54,7 @@ COMPARISON_SCHEMA = {
                         "type": "array",
                         "items": {
                             "type": "object",
-                            "properties": {"text": {"type": "string"}, "page": {"type": ["integer", "null"]}},
+                            "properties": {"text": {"type": "string"}, "page": {"type": "integer"}},
                             "required": ["text", "page"],
                             "additionalProperties": False,
                         },
@@ -75,9 +77,9 @@ COMPARISON_SCHEMA = {
                             "properties": {
                                 "quote": {"type": "integer"},
                                 "status": {"type": "string", "enum": POST_STATUSES},
-                                "amount": {"type": ["string", "null"]},
-                                "description": {"type": ["string", "null"]},
-                                "page": {"type": ["integer", "null"]},
+                                "amount": {"type": "string"},
+                                "description": {"type": "string"},
+                                "page": {"type": "integer"},
                             },
                             "required": ["quote", "status", "amount", "description", "page"],
                             "additionalProperties": False,
@@ -119,7 +121,7 @@ offerte (quote is het nummer van de offerte), met status:
 - absent: de offerte vermeldt de post niet.
 description is de omschrijving in die offerte, page de pagina.
 
-Staat iets niet in een offerte, geef dan null en page null. Verzin niets en reken niets uit dat \
+Staat iets niet in een offerte, geef dan een lege tekst ("") en page 0. Verzin niets en reken niets uit dat \
 niet in de offerte staat; de controle van de bedragen gebeurt nadien.
 
 Schrijf in "summary" een korte, neutrale samenvatting in het Nederlands (hoogstens vijf zinnen) van \
@@ -211,13 +213,13 @@ def _check_count(pdfs):
 
 
 class ClaudeQuoteComparer:
-    def __init__(self, client=None, model=MODEL):
+    def __init__(self, client=None, model=None):
         if client is None:
             import anthropic  # only needed in this mode
 
             client = anthropic.Anthropic()  # reads ANTHROPIC_API_KEY
         self.client = client
-        self.model = model
+        self.model = model or model_for("quotes")
 
     def compare(self, pdfs):
         """pdfs: [(file name, bytes)] in column order. Returns (comparison, model)."""
@@ -232,9 +234,7 @@ class ClaudeQuoteComparer:
             system=COMPARISON_PROMPT,
             messages=[{"role": "user", "content": content}],
             output_config={"effort": "medium", "format": {"type": "json_schema", "schema": COMPARISON_SCHEMA}},
-            # If a safety classifier declines, the API retries on a suitable fallback model.
-            betas=["server-side-fallback-2026-07-01"],
-            fallbacks="default",
+            **fallback_options(self.model),
         )
         if response.stop_reason == "refusal":
             raise RefusalError("Het taalmodel weigerde de offertes te vergelijken.")

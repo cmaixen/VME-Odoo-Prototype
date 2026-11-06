@@ -30,7 +30,7 @@ Zoals bij de PDF-facturen ([pdf-ai-lezen.md](pdf-ai-lezen.md)): de API-sleutel b
 
 ## De lezing
 
-Eén API-aanroep per document (`ClaudeTakeoverReader`, model `claude-opus-5-5` uit `classifier.MODEL`). De PDF gaat als document-blok mee, dus een scan leest Claude zelf; er is geen OCR in het platform. Gestructureerde uitvoer met `TAKEOVER_SCHEMA`:
+Eén API-aanroep per document (`ClaudeTakeoverReader`, model `claude-sonnet-5-5` (`model_for("takeover")`, zie `ai-modellen.md`)). De PDF gaat als document-blok mee, dus een scan leest Claude zelf; er is geen OCR in het platform. Gestructureerde uitvoer met `TAKEOVER_SCHEMA`:
 
 | Sectie | Velden |
 | --- | --- |
@@ -132,6 +132,8 @@ In Odoo: `tests/test_migration_ai.py` (lezing, onzekere aandelen en de som, impo
 - Twee `Many2many` naar `ir.attachment` op hetzelfde model hebben elk een eigen `relation` nodig, anders delen ze de standaardtabel.
 - `vme.mandate` controleert bij het aanmaken dat een raadslid eigenaar is (`_check_council_owner`). De proefrun doet dezelfde controle op het plan, anders zou de import pas in de transactie falen.
 - Lijsten in een formulier met veel kolommen duwen de knoppen per regel buiten beeld. Status en knoppen staan daarom vóór het fragment; bron, soort en totaal van de sleutel en de opmerking zijn optionele kolommen.
+
+- Geen `null` in `TAKEOVER_SCHEMA` (ook niet in de keuzelijsten): zie de valkuil over unietypes in `pdf-ai-lezen.md`.
 
 ## Uitbreiden
 

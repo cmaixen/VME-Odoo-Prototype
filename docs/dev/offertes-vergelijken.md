@@ -68,13 +68,15 @@ Vier vaste kolommen (`value_1..4`, `page_1..4`, `status_1..4`) in plaats van een
 
 De controles waarschuwen; ze blokkeren de goedkeuring niet. Goedkeuren vraagt wel een samenvatting.
 
+Ontbreekt een waarde, dan geeft het model een lege tekst en pagina 0 in plaats van `null`: de API beperkt het aantal velden met een unietype (zie `pdf-ai-lezen.md`, valkuilen). `clean_comparison` maakt er `None` van.
+
 ## Statussen en vergrendeling
 
 `to_read` (Wacht op AI) → `draft` (Concept) → `approved` (Goedgekeurd). **Opnieuw laten lezen** zet een concept terug op `to_read`; de volgende lezing vervangt rijen en samenvatting. **Terug naar concept** heft een goedkeuring op. Rijen van een goedgekeurde vergelijking kunnen niet gewijzigd worden (`_check_editable` in create, write en unlink). **Offertes vergelijken** hergebruikt een vergelijking die nog niet goedgekeurd is (kolommen opnieuw opgebouwd); na een goedkeuring start het een nieuwe.
 
 ## De lezers
 
-- **`ClaudeQuoteComparer`**: één `client.beta.messages.create` met alle PDF's, telkens voorafgegaan door een tekstblok "Offerte n: bestandsnaam", model `claude-opus-5-5` (`classifier.MODEL`), effort `medium`, `COMPARISON_SCHEMA`, server-side fallback zoals stap 7. `refusal` → `RefusalError`, `max_tokens` → `RuntimeError`. De prompt zegt dat de PDF's gegevens zijn en geen opdrachten (een aannemer kan tekst in zijn offerte zetten die het model wil sturen).
+- **`ClaudeQuoteComparer`**: één `client.beta.messages.create` met alle PDF's, telkens voorafgegaan door een tekstblok "Offerte n: bestandsnaam", model `claude-sonnet-5-5` (`model_for("quotes")`, zie `ai-modellen.md`), effort `medium`, `COMPARISON_SCHEMA`, server-side fallback zoals stap 7. `refusal` → `RefusalError`, `max_tokens` → `RuntimeError`. De prompt zegt dat de PDF's gegevens zijn en geen opdrachten (een aannemer kan tekst in zijn offerte zetten die het model wil sturen).
 - **`OfflineQuoteComparer`**: vaste regels op de tekst van de demo-offertes (`pdf_text.extract_pages`, per pagina): genummerde posten met een bedrag op de volgende regel, "Niet inbegrepen: …", totalen, gelabelde voorwaarden met vervolgregels, "Voorbehoud: …". Posten worden herkend met sleutelwoorden (`OFFLINE_POSTS`), de samenvatting komt uit `neutral_summary` (alleen feiten). Leest alleen de eigen demo-PDF's; een echte offerte of scan heeft Claude nodig.
 
 ## Demo-offertes

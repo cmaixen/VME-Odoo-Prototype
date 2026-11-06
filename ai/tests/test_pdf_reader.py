@@ -13,7 +13,7 @@ import pytest
 import documenten
 import pdf_facturen
 import pdf_reader
-from classifier import MODEL, RefusalError
+from classifier import MODEL, MODELS, RefusalError
 from pdf_reader import (
     DOCUMENT_TYPES, READING_FIELDS, ClaudeDocumentClassifier, ClaudeInvoiceReader, MockDocumentClassifier,
     MockInvoiceReader,
@@ -125,14 +125,14 @@ def test_claude_reader_sends_the_pdf_with_the_schema():
     assert reading["iban"] == {"value": "BE53 9990 0090 0453", "confidence": "high"}  # Odoo normalizes
     assert reading["supplier_vat"] == {"value": None, "confidence": "low"}
     [call] = client.calls
-    assert call["model"] == MODEL
+    assert call["model"] == MODELS["invoice"]
     document, instruction = call["messages"][0]["content"]
     assert document["type"] == "document" and document["source"]["media_type"] == "application/pdf"
     assert base64.b64decode(document["source"]["data"]) == pdf
     assert instruction["type"] == "text"
     assert call["output_config"]["format"]["schema"] == pdf_reader.INVOICE_SCHEMA
     assert set(pdf_reader.INVOICE_SCHEMA["required"]) == {code for code, _label in READING_FIELDS}
-    assert call["fallbacks"] == "default"
+    assert "fallbacks" not in call  # Haiku has no server-side fallback
 
 
 def test_claude_refusal():

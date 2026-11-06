@@ -5,10 +5,34 @@ Two implementations with the same interface:
 - MockClassifier uses simple rules, so the whole flow runs without an API key.
 """
 import json
+import os
 import re
 from dataclasses import dataclass
 
-MODEL = "claude-opus-5-5"
+# Per task the cheapest model that held the quality on the demo documents (docs/dev/ai-modellen.md).
+# VME_AI_MODEL in ai/.env overrides it for every task, e.g. to compare models.
+MODELS = {
+    "mail": "claude-sonnet-5-5",  # Haiku chose the wrong topic for 2 of the 8 demo mails
+    "invoice": "claude-haiku-5-5",  # Odoo checks every field (IBAN, supplier, totals)
+    "document": "claude-haiku-5-5",
+    "quotes": "claude-sonnet-5-5",  # the summary goes to the general meeting
+    "takeover": "claude-sonnet-5-5",  # Haiku did not flag the badly scanned share of B3
+}
+MODEL = MODELS["mail"]
+
+
+def model_for(task):
+    return os.environ.get("VME_AI_MODEL") or MODELS[task]
+
+
+def fallback_options(model):
+    """If a safety classifier declines, the API retries on a suitable fallback model.
+
+    Haiku has no server-side fallback: a refusal there stays a refusal (RefusalError).
+    """
+    if model.startswith("claude-haiku"):
+        return {}
+    return {"betas": ["server-side-fallback-2026-07-01"], "fallbacks": "default"}
 
 # Topic codes and their Dutch labels; the label ends up in the activity in Odoo.
 TOPICS = {
@@ -156,14 +180,14 @@ class RefusalError(Exception):
 
 
 class ClaudeClassifier:
-    def __init__(self, vmes, client=None, model=MODEL):
+    def __init__(self, vmes, client=None, model=None):
         if client is None:
             import anthropic  # only needed in this mode
 
             client = anthropic.Anthropic()  # reads ANTHROPIC_API_KEY
         self.client = client
         self.vmes = vmes
-        self.model = model
+        self.model = model or model_for("mail")
         self.system = [{
             "type": "text",
             "text": SYSTEM_PROMPT + build_context(vmes),
@@ -181,9 +205,7 @@ class ClaudeClassifier:
                 "effort": "medium",
                 "format": {"type": "json_schema", "schema": RESULT_SCHEMA},
             },
-            # If a safety classifier declines, the API retries on a suitable fallback model.
-            betas=["server-side-fallback-2026-07-01"],
-            fallbacks="default",
+            **fallback_options(self.model),
         )
         if response.stop_reason == "refusal":
             raise RefusalError(f"Het taalmodel weigerde deze mail ({mail.path.name}).")

@@ -56,7 +56,7 @@ Op `account.move`: `vme_ai_state`, `vme_ai_reading` (Json, de gelezen velden zoa
 
 ## Lezers in `ai/pdf_reader.py`
 
-- **`ClaudeInvoiceReader`**: één `client.beta.messages.create` per PDF, model `claude-opus-5-5`, effort `medium`, de PDF als `document`-blok (base64) plus een korte instructie, gestructureerde uitvoer met `INVOICE_SCHEMA`, server-side fallback zoals stap 7. `refusal` → `RefusalError`, het script meldt de factuur als manueel in te vullen.
+- **`ClaudeInvoiceReader`**: één `client.beta.messages.create` per PDF, model `claude-haiku-5-5` (`model_for("invoice")`; documenten idem, zie `ai-modellen.md`), effort `medium`, de PDF als `document`-blok (base64) plus een korte instructie, gestructureerde uitvoer met `INVOICE_SCHEMA`; geen server-side fallback, want Haiku heeft er geen. `refusal` → `RefusalError`, het script meldt de factuur als manueel in te vullen.
 - **`ClaudeDocumentClassifier`**: idem met `DOCUMENT_SCHEMA` (`association_id`, `document_type`, `confidence`, `summary`, `reason`); de systeemprompt bevat id, naam en adres van de VME's, met `cache_control`. `validate_document` gooit een onbekende VME-id weg.
 - **Mocks**: `pdf_text.extract_text` haalt de tekst uit de eenvoudige demo-PDF's (Flate of ongecomprimeerd, `Tj`-operatoren) en reguliere expressies lezen de gelabelde regels ("Factuurnummer:", "Te betalen:", "IBAN ..."). Voor documenten sleutelwoorden plus naam of straat van het gebouw. Ze werken alleen op PDF's met tekst zoals de demobestanden; een scan leest de mock als "niets gevonden".
 
@@ -113,6 +113,7 @@ cd ai
 - Het IBAN in de waarschuwing toont Odoo met spaties (`acc_number`); vergelijken gebeurt op `sanitized_acc_number`.
 - `allow_out_payment` kan in tests niet door de systeemgebruiker gezet worden: gebruik `with_user(base.user_admin)`.
 - De mock is geen OCR: hij leest alleen de tekstlagen van de eigen demo-PDF's.
+- Gestructureerde output van de API weigert een schema met meer dan 16 velden met een unietype (`["string", "null"]` of `anyOf`) en een `enum` met `null`. De schema's gebruiken daarom geen `null`: een lege tekst betekent "niet gevonden" en pagina 0 "onbekend"; het opschonen maakt er `None` van. `ai/tests/test_schemas.py` controleert die grenzen offline, want de gewone tests roepen de API niet aan.
 
 ## Naar productie
 

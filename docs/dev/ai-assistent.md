@@ -7,7 +7,7 @@ Een los Python-script naast Odoo, geen Odoo-module: het praat met Odoo via de JS
 ```
 ai/inbox/*.eml|*.txt ──> mails.py ──> assistant.run() ──> classifier ──> odoo_api ──> mail.activity op vme.association
                                          ▲                    │
-                     odoo_api.VmeDirectory.load()             └─ Claude (claude-opus-5-5) of MockClassifier
+                     odoo_api.VmeDirectory.load()             └─ Claude (claude-sonnet-5-5) of MockClassifier
 ```
 
 1. `mails.read_inbox()` leest elke `.eml` (standaard e-mailformaat) of `.txt` (optionele kopregels `Van:`, `Onderwerp:`, `Datum:`, `Message-ID:`, dan een lege regel en de tekst).
@@ -29,7 +29,7 @@ Het script heeft geen code om mails te versturen: het maakt alleen `mail.activit
 ## Classifiers
 
 - **`ClaudeClassifier`**: één `client.beta.messages.create`-aanroep per mail.
-  - Model `claude-opus-5-5`, `output_config.effort = "medium"` (de standaard op dit model; expliciet gezet).
+  - Model `claude-sonnet-5-5` (`model_for("mail")`; waarom: `ai-modellen.md`), `output_config.effort = "medium"` (expliciet gezet).
   - Gestructureerde uitvoer via `output_config.format` met het JSON-schema `RESULT_SCHEMA`: het antwoord is gegarandeerd geldige JSON met de juiste velden en enums.
   - De systeemprompt bevat de instructies plus de volledige directory als JSON, met `cache_control`: voor alle mails van één run is dat dezelfde prefix, dus vanaf de tweede mail wordt ze uit de cache gelezen. De mail zelf is het enige gebruikersbericht.
   - Server-side fallback (`fallbacks="default"`, beta `server-side-fallback-2026-07-01`): als een veiligheidsfilter weigert, probeert de API zelf een geschikt ander model. Weigert ook dat, dan is `stop_reason == "refusal"` en meldt het script de mail als manueel te behandelen.

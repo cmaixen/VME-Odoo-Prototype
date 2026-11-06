@@ -10,7 +10,7 @@ import pytest
 
 import overname
 import overname_reader
-from classifier import MODEL, RefusalError
+from classifier import MODEL, MODELS, RefusalError
 from overname_reader import TAKEOVER_SCHEMA, ClaudeTakeoverReader, MockTakeoverReader, clean_takeover
 from pdf_text import extract_pages, write_pages
 
@@ -211,7 +211,7 @@ def test_claude_reader_sends_the_scan_with_the_schema():
     assert model == MODEL
     assert reading == EXPECTED["basisakte-scan.pdf"]
     [call] = client.calls
-    assert call["model"] == MODEL == "claude-opus-5-5"
+    assert call["model"] == MODELS["takeover"] == "claude-sonnet-5-5"
     document, instruction = call["messages"][0]["content"]
     assert document["type"] == "document" and base64.b64decode(document["source"]["data"]) == pdf
     assert instruction["type"] == "text"
