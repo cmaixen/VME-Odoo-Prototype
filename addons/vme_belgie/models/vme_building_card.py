@@ -195,7 +195,8 @@ class VmeAssociation(models.Model):
         if not start:
             return False
         assemblies = self.env["vme.assembly"].sudo().search([
-            ("association_id", "=", self.id), ("year", "=", today.year), ("state", "!=", "cancelled")])
+            ("association_id", "=", self.id), ("year", "=", today.year), ("state", "!=", "cancelled"),
+            ("assembly_type", "=", "ordinary")])  # an extraordinary assembly (step 24) has no period
         outside = assemblies.filtered(
             lambda a: a.date and not (a.period_start <= a.date <= a.period_end) and (a.state == "held" or a.date >= today))
         if outside:
