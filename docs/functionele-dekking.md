@@ -38,6 +38,7 @@ Legende: ✅ gebouwd · 🔨 wordt nu gebouwd · 📋 gepland · ➖ bewust late
 | | Jaarcyclus per VME: kalender met vaste stappen, provisies, AV en afrekening op tijd klaargezet als concept of taak | ✅ | stap 28 |
 | | Meldingen en workflows per aanvraagtype, met verificatie van de aanvrager | ✅ | stap 19 |
 | | Werken met offertes en schadegevallen met de verzekeraar | ✅ | stap 14 |
+| | Offertes vergelijken met AI: tabel per post met bronpagina, neutrale samenvatting, PDF bij de oproeping | ✅ | offertevergelijking |
 | Algemene vergadering | Planning in blokken | ✅ | stap 6c |
 | | Agenda, oproeping, stemming, notulen en opvolging | ✅ | stap 11 |
 | | Hybride en digitaal vergaderen, elektronisch stemmen en tekenen | ✅ | stap 24 |

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="vme_works_comparison_view_list" model="ir.ui.view">
+        <field name="name">vme.works.comparison.list</field>
+        <field name="model">vme.works.comparison</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'to_read'" decoration-success="state == 'approved'">
+                <field name="association_id"/>
+                <field name="works_id"/>
+                <field name="column_count" string="Offertes"/>
+                <field name="assembly_id" optional="show"/>
+                <field name="ai_model" optional="hide"/>
+                <field name="approved_by_id" optional="show"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-success="state == 'approved'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_works_comparison_view_form" model="ir.ui.view">
+        <field name="name">vme.works.comparison.form</field>
+        <field name="model">vme.works.comparison</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_approve" type="object" string="Goedkeuren" class="btn-primary" invisible="state != 'draft'"
+                            confirm="U keurt de vergelijking goed als bijlage voor de algemene vergadering. Er wordt niets verstuurd. Doorgaan?"/>
+                    <button name="action_open_pdf" type="object" string="PDF bekijken" invisible="state == 'to_read'"/>
+                    <button name="action_read_again" type="object" string="Opnieuw laten lezen" invisible="state != 'draft'"
+                            confirm="De AI leest de offertes opnieuw; uw aanpassingen aan de tabel en de samenvatting gaan verloren. Doorgaan?"/>
+                    <button name="action_reset_draft" type="object" string="Terug naar concept" invisible="state != 'approved'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="to_read,draft,approved"/>
+                </header>
+                <sheet>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="column_count" invisible="1"/>
+                    <div class="alert alert-info" role="alert" invisible="state != 'to_read'">
+                        De AI moet de offertes nog lezen. Laat het script <code>ai/offertes.py</code> lopen; daarna staat hier
+                        een concept met de vergelijkingstabel en een samenvatting. Er wordt niets verstuurd.
+                    </div>
+                    <div class="alert alert-secondary" role="alert" invisible="state != 'draft'">
+                        Concept, gelezen door <field name="ai_model" class="fw-bold"/>. Kijk elke waarde na tegen de offerte
+                        (klik op het paginanummer), pas aan in het tabblad <b>Aanpassen</b> en keur dan goed.
+                    </div>
+                    <div class="alert alert-warning" role="alert" invisible="not attention_count or state == 'to_read'">
+                        <b>Aandachtspunten</b>
+                        <field name="attention" nolabel="1" class="d-block" style="white-space: pre-line;"/>
+                    </div>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="works_id" readonly="1"/>
+                            <field name="association_id"/>
+                            <field name="assembly_id" readonly="state == 'approved'" options="{'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="ai_date" invisible="not ai_date"/>
+                            <field name="approved_by_id" invisible="not approved_by_id"/>
+                            <field name="approved_date" invisible="not approved_date"/>
+                            <field name="report_attachment_id" invisible="not report_attachment_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Vergelijking" name="table" invisible="state == 'to_read'">
+                            <label for="summary" string="Samenvatting (neutraal, zonder aanbeveling)"/>
+                            <field name="summary" readonly="state == 'approved'"
+                                   placeholder="Feitelijke verschillen: prijzen, wat ontbreekt, btw-tarief, termijnen, voorbehouden."/>
+                            <field name="table_html" nolabel="1" class="mt-3"/>
+                        </page>
+                        <page string="Aanpassen" name="edit" invisible="state == 'to_read'">
+                            <field name="line_ids" readonly="state == 'approved'">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="section"/>
+                                    <field name="name"/>
+                                    <field name="value_1"/>
+                                    <field name="page_1"/>
+                                    <field name="status_1"/>
+                                    <field name="value_2"/>
+                                    <field name="page_2"/>
+                                    <field name="status_2"/>
+                                    <field name="value_3" column_invisible="parent.column_count &lt; 3"/>
+                                    <field name="page_3" column_invisible="parent.column_count &lt; 3"/>
+                                    <field name="status_3" column_invisible="parent.column_count &lt; 3"/>
+                                    <field name="value_4" column_invisible="parent.column_count &lt; 4"/>
+                                    <field name="page_4" column_invisible="parent.column_count &lt; 4"/>
+                                    <field name="status_4" column_invisible="parent.column_count &lt; 4"/>
+                                </list>
+                            </field>
+                            <div class="text-muted">Offerte 1 tot 4 volgen de volgorde in het tabblad Offertes. Blz.: pagina in de PDF van die offerte.</div>
+                        </page>
+                        <page string="Offertes" name="columns">
+                            <field name="column_ids" readonly="state != 'draft'">
+                                <list editable="bottom" create="0" delete="0">
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="sequence" readonly="1"/>
+                                    <field name="partner_id"/>
+                                    <field name="contractor_name" optional="hide"/>
+                                    <field name="reference"/>
+                                    <field name="quote_date"/>
+                                    <field name="amount_untaxed"/>
+                                    <field name="vat_rate"/>
+                                    <field name="amount_total"/>
+                                    <field name="attachment_id" readonly="1"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="vme_works_comparison_view_search" model="ir.ui.view">
+        <field name="name">vme.works.comparison.search</field>
+        <field name="model">vme.works.comparison</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="works_id"/>
+                <field name="association_id"/>
+                <filter name="open" string="Na te kijken" domain="[('state', '!=', 'approved')]"/>
+                <filter name="approved" string="Goedgekeurd" domain="[('state', '=', 'approved')]"/>
+                <group>
+                    <filter name="group_association" string="VME" context="{'group_by': 'association_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="vme_works_comparison_action" model="ir.actions.act_window">
+        <field name="name">Offertevergelijkingen</field>
+        <field name="res_model">vme.works.comparison</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nog geen offertevergelijkingen</p>
+            <p>Laad in een werkdossier de PDF van twee tot vier offertes op en klik op <b>Offertes vergelijken</b>.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_vme_works_comparison" name="Offertevergelijkingen" parent="menu_vme_works_root"
+              action="vme_works_comparison_action" sequence="15"/>
+
+    <record id="vme_works_view_form_comparison" model="ir.ui.view">
+        <field name="name">vme.works.form.comparison</field>
+        <field name="model">vme.works</field>
+        <field name="inherit_id" ref="vme_works_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/button[@name='action_start']" position="before">
+                <button name="action_compare_quotes" type="object" string="Offertes vergelijken"
+                        invisible="state not in ('draft', 'quotes', 'awarded') or quote_count &lt; 2"
+                        help="De AI leest de PDF's van de offertes en maakt een vergelijking als concept. Er wordt niets verstuurd."/>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_comparisons" type="object" class="oe_stat_button" icon="fa-columns"
+                        invisible="not comparison_count">
+                    <field name="comparison_count" widget="statinfo" string="Vergelijking"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>

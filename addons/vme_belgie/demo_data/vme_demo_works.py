@@ -1,8 +1,10 @@
 """Fictitious works, insurance policies and damage claims for the demo (step 14)."""
+import base64
 from datetime import date
 
 from odoo import api, models
 from odoo.fields import Command
+from odoo.tools import file_open
 
 # Fictitious contractors, insurer and expert: VAT numbers start with 0000 (valid check digits, cannot be real).
 WORKS_PARTNERS = {
@@ -11,6 +13,10 @@ WORKS_PARTNERS = {
     "builder": ("Bouwbedrijf Voorbeeld NV", "BE0000001384", "info@bouwbedrijf.example.com", "Bouwlaan 21"),
     "expert": ("Expertisebureau Voorbeeld BV", "BE0000001483", "dossiers@expertise.example.com", "Schattersplein 2"),
     "plumber": ("Loodgieter Voorbeeld BV", "BE0000001582", "herstel@loodgieter.example.com", "Buizenstraat 14"),
+    # The three facade contractors: same data as their quote PDFs (ai/tools/maak_demo_offertes.py).
+    "facade_1": ("Gevelwerken Fictief BV", "BE0000001681", "offertes@gevelwerken.example.com", "Voegenstraat 5"),
+    "facade_2": ("Renovatiebedrijf Voorbeeld NV", "BE0000001780", "info@renovatiebedrijf.example.com", "Herstellaan 18"),
+    "facade_3": ("Bouwonderneming Denkbeeld BV", "BE0000001879", "offerte@denkbeeld.example.com", "Metselaarsweg 2"),
 }
 # The insurer also bills the yearly premium in the demo history; it is created here once.
 INSURER = ("Verzekeringen Voorbeeld NV", "BE0000000691", "facturen@verzekeringen.example.com", "Polislaan 5")
@@ -42,6 +48,29 @@ DEMO_WORKS = {
     "award_date": date(2026, 6, 2),
     "planned_start": date(2026, 11, 16),
     "planned_end": date(2026, 12, 18),
+}
+
+# Facade renovation of Residentie Linde, to be put to the 2027 assembly: three quotes received as
+# PDF (demo_data/offertes, made by ai/tools/maak_demo_offertes.py), not yet compared. The quotes
+# differ on purpose: one leaves out the scaffolding, another charges 21% VAT instead of 6%.
+DEMO_FACADE_WORKS = {
+    "vme": "Residentie Linde",
+    "name": "Gevelrenovatie voor- en achtergevel",
+    "description": "<p>Reinigen van de voor- en achtergevel, herstel van het voegwerk, betonherstel aan balkons "
+                   "en lateien en een waterafstotende behandeling. Voor te leggen aan de algemene vergadering "
+                   "van 2027, met een vergelijking van de offertes.</p>",
+    "budget": 50000.00,
+    "quote_deadline": date(2026, 10, 15),
+    # (partner, date, reference, amount incl. VAT as entered, weeks, PDF)
+    "quotes": [
+        ("facade_1", date(2026, 9, 22), "GF-2026-207", 48548.00, 9,
+         "offerte_gevelwerken_fictief_GF-2026-207.pdf"),
+        ("facade_2", date(2026, 10, 3), "RV/26/1189", 36941.00, 7,
+         "offerte_renovatiebedrijf_voorbeeld_RV-26-1189.pdf"),
+        # Entered without VAT by mistake (the quote says 53.240,00 incl. 21%): the comparison flags it.
+        ("facade_3", date(2026, 10, 10), "BD-OF-2026-0611", 44000.00, 10,
+         "offerte_bouwonderneming_denkbeeld_BD-OF-2026-0611.pdf"),
+    ],
 }
 
 # Water damage in A4 of Residentie Linde, reported by mail (ai/inbox/01_lek_badkamer.eml).
@@ -91,6 +120,7 @@ class VmeAssociation(models.Model):
             })
         admin = self.env.ref("base.user_admin")
         works = self._load_demo_roof_works(partners, admin)
+        self._load_demo_facade_works(partners, admin)
         claim = self._load_demo_water_damage(partners, admin)
         return works, claim
 
@@ -118,6 +148,30 @@ class VmeAssociation(models.Model):
         works.activity_ids.filtered(lambda a: a.summary.startswith("Opdrachtbevestiging")).action_feedback(
             feedback="Opdrachtbevestiging verstuurd.")
         decision.activity_ids.action_feedback(feedback="Drie offertes ontvangen, gegund.")
+        return works
+
+    @api.model
+    def _load_demo_facade_works(self, partners, user):
+        spec = DEMO_FACADE_WORKS
+        vme = self.search([("name", "=", spec["vme"])])
+        works = self.env["vme.works"].create({
+            "association_id": vme.id, "name": spec["name"], "description": spec["description"],
+            "budget": spec["budget"], "financing": "reserve", "user_id": user.id,
+            "quote_deadline": spec["quote_deadline"],
+            "key_id": vme.key_ids.filtered(lambda k: k.key_type == "general")[:1].id,
+        })
+        works.action_request_quotes()
+        for code, day, reference, amount, weeks, filename in spec["quotes"]:
+            with file_open(f"vme_belgie/demo_data/offertes/{filename}", "rb") as f:
+                pdf = self.env["ir.attachment"].create({
+                    "name": filename, "datas": base64.b64encode(f.read()), "mimetype": "application/pdf",
+                    "res_model": "vme.works", "res_id": works.id,
+                })
+            works.quote_ids = [Command.create({
+                "partner_id": partners[code].id, "date": day, "reference": reference, "amount": amount,
+                "duration_weeks": weeks, "attachment_ids": [Command.set(pdf.ids)],
+            })]
+        works.activity_ids.action_feedback(feedback="Drie offertes ontvangen.")
         return works
 
     @api.model

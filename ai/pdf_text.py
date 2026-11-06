@@ -24,8 +24,7 @@ def _encode(text):
     return bytes(out)
 
 
-def write_pdf(items, compress=True):
-    """One A4 page. items: (x, y, size, bold, text) for text, or ("line", x1, y1, x2, y2) for a rule."""
+def _content_stream(items, compress):
     ops = []
     for item in items:
         if item[0] == "line":
@@ -40,12 +39,32 @@ def write_pdf(items, compress=True):
     if compress:
         content = zlib.compress(content)
         stream_dict = b"<< /Length %d /Filter /FlateDecode >>" % len(content)
+    return stream_dict + b"\nstream\n" + content + b"\nendstream"
+
+
+def write_pdf(items, compress=True):
+    """One A4 page. items: (x, y, size, bold, text) for text, or ("line", x1, y1, x2, y2) for a rule."""
+    return write_pdf_pages([items], compress)
+
+
+def write_pdf_pages(pages, compress=True):
+    """A4 pages, each a list of items as in write_pdf.
+
+    Objects: catalog, page tree, then page and content per page, then the two fonts; a
+    one-page PDF has the same layout as before multi-page support (the demo files stay the same).
+    """
+    fonts = 3 + 2 * len(pages)
+    kids = " ".join(f"{3 + 2 * index} 0 R" for index in range(len(pages)))
     objects = [
         b"<< /Type /Catalog /Pages 2 0 R >>",
-        b"<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
-        b"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 4 0 R "
-        b"/Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> >>",
-        stream_dict + b"\nstream\n" + content + b"\nendstream",
+        b"<< /Type /Pages /Kids [%s] /Count %d >>" % (kids.encode(), len(pages)),
+    ]
+    for index, items in enumerate(pages):
+        objects.append(
+            b"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents %d 0 R "
+            b"/Resources << /Font << /F1 %d 0 R /F2 %d 0 R >> >> >>" % (4 + 2 * index, fonts, fonts + 1))
+        objects.append(_content_stream(items, compress))
+    objects += [
         b"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>",
         b"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>",
     ]
@@ -82,9 +101,12 @@ def _decode_string(raw):
     return "".join(WIN_ANSI_REVERSE.get(code) or chr(code) for code in out)
 
 
-def extract_text(pdf_bytes):
-    """Text lines of a simple PDF: one line per text object (BT ... ET), in the order written."""
-    lines = []
+def extract_pages(pdf_bytes):
+    """Text lines per page of a simple PDF: one list per content stream, in the order written.
+
+    Each page of the demo PDFs has exactly one content stream, written in page order.
+    """
+    pages = []
     for match in re.finditer(rb"<<(.*?)>>\s*stream\r?\n(.*?)\r?\nendstream", pdf_bytes, re.S):
         header, data = match.groups()
         if b"/FlateDecode" in header:
@@ -92,9 +114,16 @@ def extract_text(pdf_bytes):
                 data = zlib.decompress(data)
             except zlib.error:
                 continue
+        lines = []
         for block in re.findall(rb"BT(.*?)ET", data, re.S):
             parts = re.findall(rb"\(((?:\\.|[^\\)])*)\)\s*Tj", block, re.S)
             text = "".join(_decode_string(part) for part in parts).strip()
             if text:
                 lines.append(text)
-    return lines
+        pages.append(lines)
+    return pages
+
+
+def extract_text(pdf_bytes):
+    """Text lines of a simple PDF: one line per text object (BT ... ET), in the order written."""
+    return [line for page in extract_pages(pdf_bytes) for line in page]

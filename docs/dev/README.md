@@ -23,6 +23,7 @@ Interne documentatie voor wie aan de module `vme_belgie` werkt. De gebruikersdoc
 | [communicatie.md](communicatie.md) | Verzendingen, selectie van ontvangers, communicatielog, verzendregister aangetekend, providers voor sms, push en elektronisch aangetekend, koppelplaats voor huurders (stap 23) |
 | [facturen-per-mail.md](facturen-per-mail.md) | Mailalias per VME op het aankoopdagboek (stap 7b) |
 | [pdf-ai-lezen.md](pdf-ai-lezen.md) | PDF-facturen zonder UBL en documenten lezen met AI, veld- en IBAN-controle, haakje voor de mappen van stap 15 (stap 21) |
+| [offertes-vergelijken.md](offertes-vergelijken.md) | Offertes voor werken vergelijken met AI: tabel per post met bronpagina, deterministische controles, goedkeuring en PDF bij de oproeping van de AV |
 | [ai-assistent.md](ai-assistent.md) | Het losse script in `ai/` voor mails van eigenaars (stap 7) |
 | [portaal.md](portaal.md) | Documenten in vaste mappen, eigenaarsportaal, zichtbaarheidsregels, adreswijzigingen (stap 15); aanvragen en bevragingen in het portaal, ook voor huurders (stap 27) |
 | [raad-commissaris.md](raad-commissaris.md) | Mandaten, leesrechten van de commissaris met record rules, overzicht voor de raad, verslagsjabloon (stap 16) |

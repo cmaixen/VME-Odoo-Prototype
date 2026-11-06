@@ -147,6 +147,13 @@
         <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/werken.md"}</field>
     </record>
 
+    <record id="action_help_quote_comparison" model="ir.actions.server">
+        <field name="name">Help: offertes vergelijken met de AI</field>
+        <field name="model_id" ref="model_vme_association"/>
+        <field name="state">code</field>
+        <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/offertes-vergelijken.md"}</field>
+    </record>
+
     <record id="action_help_damage" model="ir.actions.server">
         <field name="name">Help: schadegevallen</field>
         <field name="model_id" ref="model_vme_association"/>
@@ -257,6 +264,8 @@
     <menuitem id="menu_vme_help_payments" name="Leveranciers betalen en domiciliëren" parent="menu_vme_help" action="action_help_payments" sequence="76"/>
     <menuitem id="menu_vme_help_inspections" name="Keuringen en liften" parent="menu_vme_help" action="action_help_inspections" sequence="80"/>
     <menuitem id="menu_vme_help_works" name="Werken opvolgen" parent="menu_vme_help" action="action_help_works" sequence="85"/>
+    <!-- Same sequence as "Werken opvolgen": created later, so it comes right after it. -->
+    <menuitem id="menu_vme_help_quote_comparison" name="Offertes vergelijken met de AI" parent="menu_vme_help" action="action_help_quote_comparison" sequence="85"/>
     <menuitem id="menu_vme_help_damage" name="Schadegevallen en verzekering" parent="menu_vme_help" action="action_help_damage" sequence="86"/>
     <menuitem id="menu_vme_help_planner" name="Algemene vergaderingen plannen" parent="menu_vme_help" action="action_help_planner" sequence="90"/>
     <menuitem id="menu_vme_help_assembly" name="De algemene vergadering" parent="menu_vme_help" action="action_help_assembly" sequence="100"/>

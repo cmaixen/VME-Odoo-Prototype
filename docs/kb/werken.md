@@ -21,6 +21,7 @@ Bij financiering uit het reservekapitaal ziet u meteen hoeveel er in het reserve
 1. Klik op **Offertes opvragen**. Odoo maakt een taak met de datum waartegen de offertes binnen moeten zijn. De aanvragen zelf stuurt u naar de aannemers.
 2. Vul per offerte op het tabblad **Offertes** de aannemer, de datum, het bedrag (met btw) en de duur in. Hang de PDF eraan.
 3. Odoo toont het verschil met het budget en zet de goedkoopste offerte in het vet.
+4. Hebt u twee tot vier offertes als PDF, klik dan op **Offertes vergelijken**: de AI zet ze per post naast elkaar, met de pagina van elke waarde, als bijlage voor de AV. Zie [Offertes voor werken vergelijken met de AI](offertes-vergelijken.md).
 
 **Hoeveel offertes?** De AV legt een bedrag vast waarboven meerdere offertes verplicht zijn. U vindt het op de VME, tabblad **Werken en verzekeringen**: **Offertes verplicht vanaf** en **Minimum aantal offertes** (standaard 5.000 euro en 3 offertes). Zolang er te weinig offertes zijn, ziet u een melding en kunt u niet gunnen.
 

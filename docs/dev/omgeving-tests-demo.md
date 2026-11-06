@@ -54,6 +54,7 @@ De tests van de rentmeester staan in [rentmeester.md](rentmeester.md#tests).
 | `test_cycle.py` | Jaarcyclus: termijnen per stap, verschuiven met de AV-datum, maandelijkse oproepen, startdatum, VME zonder AV-periode; cron maakt alleen concepten en taken, nooit twee keer; afronden door boeken, versturen, bevestigen, lockdatum en afvinken; signaal in de portefeuille, blok op de gebouwkaart. De demo-test staat in `TestAnnualStatementDemo` (`vme_slow`) |
 | `test_council.py` | Raad en commissaris: mandaat van een jaar, raad alleen met eigenaars, één voorzitter, raad verplicht vanaf 20 kavels; leesrechten van de commissaris (zijn VME wel, andere VME niet), niets wijzigen, knoppen met `sudo` geweigerd, schermen zonder Nieuw/Bewerken, medewerkers houden hun rechten, toegang volgt de mandaten, overzicht voor de raad, verslag |
 | `test_migration.py` | Overstap uit een ander pakket: parsing, proefrun schrijft niets, verwachte fouten en waarschuwingen, openingsbalans in evenwicht, volledige import met openingsboeking, zip met Excel |
+| `test_works_comparison.py` | Offertevergelijking: 2-4 offertes met PDF, tabel met bronpagina's en statussen, aandachtspunten (btw-tarief, rekenfout, bedrag in het werkdossier, ontbrekende post, aanbeveling), maar één keer lezen, goedkeuren met PDF en vergrendeling, niets naar aannemers of eigenaars, PDF bij de oproeping |
 
 De trage test met een volledig demojaar (meer dan 10 minuten) draai je apart, vóór een demo en na wijzigingen aan de verdeling of de afrekening:
 
