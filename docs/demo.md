@@ -164,6 +164,15 @@ Na stap 8 staan er ook drie aanvragen in **VME > Aanvragen**.
 
 > Boodschap: "Een vraag van de notaris is twee minuten werk in plaats van een half uur zoeken, en de termijn ontsnapt u niet."
 
+### Extra: het kantoor van de syndicus (1 minuut)
+
+1. **VME > Syndicus > Beheerovereenkomsten**: Residentie Linde rekent 14 euro per kavel per maand aan, geïndexeerd met de consumptieprijsindex; het tarief van vandaag staat ernaast.
+2. **VME > Syndicus > Prestaties**: de aangifte van de waterschade van A4 staat klaar om te factureren. Beantwoord de notaris in het verkoopdossier van A3 (zie hieronder) en er komt een prestatie bij.
+3. **VME > Syndicus > Ereloonfacturen**: de facturen van het derde kwartaal zijn bevestigd. Open die van Residentie Linde en klik op **Factuur in de VME**: in Linde wacht de leveranciersfactuur als concept op goedkeuring, met de algemene sleutel en de rekening "Andere erelonen".
+4. **VME > Syndicus > Mandaten**: het mandaat in Linde loopt tot 11 maart 2027 en staat oranje (herbenoeming op de AV van maart 2027). Plan de AV's van 2027 (stap 7): het agendapunt staat er vanzelf op. In Kaaihuis is de aanstelling nooit aangeplakt: **Aanplakbrief maken** zet de PDF bij de documenten.
+
+> Boodschap: "Uw eigen omzet en uw mandaat in hetzelfde platform, en geen prestatie die u vergeet aan te rekenen."
+
 ### Extra: werken en een schadegeval (1 minuut)
 
 1. **VME > Werken en schade > Werkdossiers**: *Renovatie plat dak blok A* van Residentie Linde, aan beslissing 2026/06 van de AV. Toon het tabblad **Offertes**: drie offertes naast het budget van 38.000 euro, gegund aan de goedkoopste (36.450 euro). De oranje melding toont dat het reservekapitaal niet volstaat.

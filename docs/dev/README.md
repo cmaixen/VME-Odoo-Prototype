@@ -33,6 +33,7 @@ Interne documentatie voor wie aan de module `vme_belgie` werkt. De gebruikersdoc
 | [jaarcyclus.md](jaarcyclus.md) | Jaarkalender per VME met vaste stappen en termijnen, cron die concepten en taken klaarzet, signaal in de portefeuille, haken voor afsluiting en mandaat van de syndicus (stap 28) |
 | [migratie.md](migratie.md) | Overstap uit een ander pakket: importformaat, proefrun, openingsboeking, omzetters (stap 13) |
 | [rentmeester.md](rentmeester.md) | Module `vme_rentmeester`: huurcontracten, huurfacturen, indexering met de indexstop per gewest, afrekening aan huurders (stap 25), doorstorting aan verhuurders en ereloon (stap 25b) |
+| [syndicus.md](syndicus.md) | Het kantoor van de syndicus: beheerovereenkomst, indexering, prestaties uit de bronnen, ereloonfactuur en leveranciersfactuur in de VME, mandaat, herbenoeming en aanplakking |
 | [rentmeester.md](rentmeester.md) | Module `vme_rentmeester`: huurcontracten, huurfacturen, indexering met de indexstop per gewest, afrekening aan huurders (stap 25) |
 | [toegangsrechten.md](toegangsrechten.md) | Rollen, record rules per company, regels van de commissaris, sudo-knoppen, bevindingen van de review en wat een nieuw model nodig heeft |
 | [website.md](website.md) | Module `vme_website`: productwebsite, knop Inloggen met landing per type gebruiker, demo-aanvraag als lead zonder mail (stap 27) |

@@ -67,3 +67,9 @@ access_vme_capital_movement_user,vme.capital.movement user,model_vme_capital_mov
 access_vme_assembly_signature_user,vme.assembly.signature user,model_vme_assembly_signature,base.group_user,1,1,1,1
 access_vme_financial_statements_wizard_user,vme.financial.statements.wizard user,model_vme_financial_statements_wizard,base.group_user,1,1,1,1
 access_vme_cycle_step_user,vme.cycle.step user,model_vme_cycle_step,base.group_user,1,1,1,1
+access_vme_management_agreement_user,vme.management.agreement user,model_vme_management_agreement,base.group_user,1,1,1,1
+access_vme_service_rate_user,vme.service.rate user,model_vme_service_rate,base.group_user,1,1,1,1
+access_vme_service_line_user,vme.service.line user,model_vme_service_line,base.group_user,1,1,1,1
+access_vme_syndic_mandate_user,vme.syndic.mandate user,model_vme_syndic_mandate,base.group_user,1,1,1,1
+access_vme_consumer_price_index_user,vme.consumer.price.index user,model_vme_consumer_price_index,base.group_user,1,1,1,1
+access_vme_fee_invoice_wizard_user,vme.fee.invoice.wizard user,model_vme_fee_invoice_wizard,base.group_user,1,1,1,1

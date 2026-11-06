@@ -3,7 +3,7 @@
 Automatisch gemaakt door `python3 tools/legal_checks.py`; niet met de hand bewerken.
 Elke rij is een wettelijke regel in de code die nog juridisch gevalideerd moet worden.
 
-Aantal punten: 116.
+Aantal punten: 124.
 
 ## Per bron
 
@@ -47,7 +47,8 @@ Aantal punten: 116.
 - **art. 3.88 §1, 1°, c) BW**: [vme_works.py:11](../../addons/vme_belgie/models/vme_works.py#L11), [vme_works.py:195](../../addons/vme_belgie/models/vme_works.py#L195)
 - **art. 3.88 §1-3 BW**: [vme_assembly_meeting.py:8](../../addons/vme_belgie/models/vme_assembly_meeting.py#L8)
 - **art. 3.88 §3 BW**: [vme_assembly_meeting.py:304](../../addons/vme_belgie/models/vme_assembly_meeting.py#L304)
-- **art. 3.89 §1 BW**: [vme_cycle.py:545](../../addons/vme_belgie/models/vme_cycle.py#L545)
+- **art. 3.89 §1 BW**: [vme_cycle.py:545](../../addons/vme_belgie/models/vme_cycle.py#L545), [vme_syndic.py:40](../../addons/vme_belgie/models/vme_syndic.py#L40), [vme_syndic.py:116](../../addons/vme_belgie/models/vme_syndic.py#L116), [vme_syndic.py:768](../../addons/vme_belgie/models/vme_syndic.py#L768), [vme_syndic.py:791](../../addons/vme_belgie/models/vme_syndic.py#L791)
+- **art. 3.89 §2 BW**: [vme_syndic.py:47](../../addons/vme_belgie/models/vme_syndic.py#L47), [vme_syndic.py:641](../../addons/vme_belgie/models/vme_syndic.py#L641), [vme_syndic_reports.xml:13](../../addons/vme_belgie/report/vme_syndic_reports.xml#L13)
 - **art. 3.89 §5 BW**: [account_bank_statement_line.py:165](../../addons/vme_belgie/models/account_bank_statement_line.py#L165), [account_move.py:57](../../addons/vme_belgie/models/account_move.py#L57), [vme_association.py:15](../../addons/vme_belgie/models/vme_association.py#L15), [vme_association.py:34](../../addons/vme_belgie/models/vme_association.py#L34), [vme_association.py:175](../../addons/vme_belgie/models/vme_association.py#L175), [vme_association.py:198](../../addons/vme_belgie/models/vme_association.py#L198), [vme_contract.py:39](../../addons/vme_belgie/models/vme_contract.py#L39), [vme_financial_statements.py:262](../../addons/vme_belgie/models/vme_financial_statements.py#L262), [vme_migration.py:621](../../addons/vme_belgie/models/vme_migration.py#L621), [vme_provision_call_wizard.py:115](../../addons/vme_belgie/wizard/vme_provision_call_wizard.py#L115)
 - **art. 3.89 §5, 12° BW**: [vme_document.py:17](../../addons/vme_belgie/models/vme_document.py#L17)
 - **art. 3.90 §1 BW**: [vme_council.py:16](../../addons/vme_belgie/models/vme_council.py#L16), [vme_council.py:104](../../addons/vme_belgie/models/vme_council.py#L104)
@@ -57,7 +58,7 @@ Aantal punten: 116.
 - **art. 3.93 BW**: [vme_request.py:701](../../addons/vme_belgie/models/vme_request.py#L701)
 - **art. 3.93 §4 BW**: [vme_assembly_meeting.py:214](../../addons/vme_belgie/models/vme_assembly_meeting.py#L214)
 - **art. 3.94 BW**: [account_move.py:156](../../addons/vme_belgie/models/account_move.py#L156), [account_move.py:260](../../addons/vme_belgie/models/account_move.py#L260)
-- **art. 3.94 §1 BW**: [vme_sale_file.py:10](../../addons/vme_belgie/models/vme_sale_file.py#L10), [vme_sale_file.py:16](../../addons/vme_belgie/models/vme_sale_file.py#L16)
+- **art. 3.94 §1 BW**: [vme_sale_file.py:10](../../addons/vme_belgie/models/vme_sale_file.py#L10), [vme_sale_file.py:16](../../addons/vme_belgie/models/vme_sale_file.py#L16), [vme_syndic.py:952](../../addons/vme_belgie/models/vme_syndic.py#L952)
 - **art. 3.94 §1, 1° BW**: [vme_sale_file.py:264](../../addons/vme_belgie/models/vme_sale_file.py#L264)
 - **art. 3.94 §1, 2° en §2 BW**: [vme_sale_file.py:287](../../addons/vme_belgie/models/vme_sale_file.py#L287)
 - **art. 3.94 §1, 3° BW**: [vme_sale_file.py:279](../../addons/vme_belgie/models/vme_sale_file.py#L279)
@@ -177,10 +178,18 @@ Aantal punten: 116.
 | [addons/vme_belgie/models/vme_sale_file.py](../../addons/vme_belgie/models/vme_sale_file.py#L264) | 264 | art. 3.94 §1, 1° BW | the reserve capital stays with the VME; the notary reports the share of the lot, not a refund to the seller (art. 3.86 §4 BW). |
 | [addons/vme_belgie/models/vme_sale_file.py](../../addons/vme_belgie/models/vme_sale_file.py#L279) | 279 | art. 3.94 §1, 3° BW | unpaid contributions of the seller. |
 | [addons/vme_belgie/models/vme_sale_file.py](../../addons/vme_belgie/models/vme_sale_file.py#L287) | 287 | art. 3.94 §1, 2° en §2 BW | works decided by the assembly before the sale. |
+| [addons/vme_belgie/models/vme_syndic.py](../../addons/vme_belgie/models/vme_syndic.py#L40) | 40 | art. 3.89 §1 BW | the mandate of the syndic lasts at most three years and can be renewed by the general assembly. |
+| [addons/vme_belgie/models/vme_syndic.py](../../addons/vme_belgie/models/vme_syndic.py#L47) | 47 | art. 3.89 §2 BW | an extract of the appointment is posted at the entrance of the building within eight days after the mandate starts. |
+| [addons/vme_belgie/models/vme_syndic.py](../../addons/vme_belgie/models/vme_syndic.py#L116) | 116 | art. 3.89 §1 BW | the assignment of the syndic and his fee are laid down in a written agreement, with the fixed (forfait) services and the price of the additional services. |
+| [addons/vme_belgie/models/vme_syndic.py](../../addons/vme_belgie/models/vme_syndic.py#L641) | 641 | art. 3.89 §2 BW | extract of the appointment posted at the entrance within eight days. |
+| [addons/vme_belgie/models/vme_syndic.py](../../addons/vme_belgie/models/vme_syndic.py#L768) | 768 | art. 3.89 §1 BW | at most three years, renewable by the general assembly. |
+| [addons/vme_belgie/models/vme_syndic.py](../../addons/vme_belgie/models/vme_syndic.py#L791) | 791 | art. 3.89 §1 BW | the general assembly appoints the syndic; absolute majority (art. 3.87 §8 BW) is assumed for the renewal. |
+| [addons/vme_belgie/models/vme_syndic.py](../../addons/vme_belgie/models/vme_syndic.py#L952) | 952 | art. 3.94 §1 BW | the costs of the information to the notary are borne by the selling co-owner; the VME pays the syndic and recharges the seller (not automated yet). |
 | [addons/vme_belgie/models/vme_works.py](../../addons/vme_belgie/models/vme_works.py#L11) | 11 | art. 3.88 §1, 1°, c) BW | the assembly fixes, with an absolute majority, the amount of contracts and works above which competition is compulsory. The law sets no number of quotes; art. 3.89 §5, 15° BW asks the syndic for "several" quotes on the basis of specifications. Three is the usual practice and the default here, editable per VME. |
 | [addons/vme_belgie/models/vme_works.py](../../addons/vme_belgie/models/vme_works.py#L18) | 18 | art. 1792 en 2270 oud BW | ten-year liability of contractor and architect for serious defects, counted from the acceptance of the works (here the provisional delivery). |
 | [addons/vme_belgie/models/vme_works.py](../../addons/vme_belgie/models/vme_works.py#L195) | 195 | art. 3.88 §1, 1°, c) BW | competition above the amount fixed by the assembly. |
 | [addons/vme_belgie/models/vme_works.py](../../addons/vme_belgie/models/vme_works.py#L449) | 449 | art. 3.86 §3 BW en KB 12 juli 2012 (minimum chart of accounts) | the reserve capital pays for works; align the accounts and the treatment of non-deductible VAT. |
+| [addons/vme_belgie/report/vme_syndic_reports.xml](../../addons/vme_belgie/report/vme_syndic_reports.xml#L13) | 13 | art. 3.89 §2 BW | which data the extract must contain is not yet validated. |
 | [addons/vme_belgie/wizard/vme_provision_call_wizard.py](../../addons/vme_belgie/wizard/vme_provision_call_wizard.py#L115) | 115 | art. 3.89 §5 BW | working and reserve capital on separate bank accounts, so each fund gets its own invoice paid to its own account. |
 | [addons/vme_rentmeester/models/remittance_rules.py](../../addons/vme_rentmeester/models/remittance_rules.py#L7) | 7 | art. 18 §1 en art. 37 WBTW, KB nr. 20 (tabel A en B) | het ereloon van de rentmeester is een dienst aan 21% btw. De huur die hij int en doorstort is geen omzet van het kantoor: de verhuur zelf is vrijgesteld (art. 44 §3, 2° WBTW) en hoort bij de verhuurder. |
 | [addons/vme_rentmeester/models/rent_contract.py](../../addons/vme_rentmeester/models/rent_contract.py#L253) | 253 | art. 1728bis oud BW, art. 34 VWHD, art. 224 BHC, art. 26 Waals decreet 15-03-2018 | alleen een schriftelijk contract dat indexering niet uitsluit, kan geïndexeerd worden. |

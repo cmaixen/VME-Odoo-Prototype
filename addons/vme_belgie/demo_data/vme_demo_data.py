@@ -518,6 +518,8 @@ class VmeAssociation(models.Model):
             self.env["vme.ownership"].create(ownership_vals)
             vmes |= vme
 
+        # The syndic's agreements come first: the demo dossiers below register their services.
+        self._load_demo_syndic()
         self._load_demo_assembly_blocks()
         self._load_demo_assembly_2026()
         self._load_demo_sale()

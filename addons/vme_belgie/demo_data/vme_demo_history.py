@@ -93,6 +93,7 @@ class VmeAssociation(models.Model):
         self._demo_history_meter_readings(vmes)
         self._demo_history_bills(vmes)
         self._load_demo_collection()
+        self._load_demo_syndic_history()
         self._load_demo_cycle()
         return {
             "type": "ir.actions.client",

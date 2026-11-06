@@ -36,3 +36,4 @@ from . import vme_assembly_online
 from . import vme_financial_statements
 from . import vme_portal_requests
 from . import vme_cycle
+from . import vme_syndic

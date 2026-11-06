@@ -90,6 +90,12 @@ Wizards (transient): `vme.provision.call.wizard`, `vme.annual.statement.wizard` 
 | `vme.document` | Document | `association_id`, `lot_id` (verplicht in een kavelmap, verboden in een VME-map, zelfde VME), `folder_id`, `date` (bepaalt de zichtbaarheid), `datas` (bijlage), `filename`, `portal_visible`. `_portal_domain_for(partner)` is de zichtbaarheidsregel, zie [portaal.md](portaal.md). |
 | `vme.address.request` | Adreswijziging | `partner_id`, nieuwe `street`, `street2`, `zip`, `city`, `country_id`, `phone`, `email`, `old_address` (tekst bij de aanvraag), `state` (`to_approve`, `approved`, `refused`). Goedkeuren schrijft naar de partner. |
 De modellen van de rentmeester (`vme.rent.*`, ook beheermandaten en doorstortingen) staan in de module `vme_rentmeester`; zie [rentmeester.md](rentmeester.md#datamodel). Die module breidt ook `vme.payment.batch` uit met `rent_company_id`.
+| `vme.management.agreement` | Beheerovereenkomst van de syndicus met een VME | `syndic_company_id` (company met `is_syndic_office`), begin/einde, `fee_basis`, `fee_amount` per maand, `billing_period`, `indexation` (`none`/`cpi`/`percent`), `rate_ids`. Geen overlap per VME. Zie [syndicus.md](syndicus.md). |
+| `vme.service.rate` | Prijs van een extra prestatie in een overeenkomst | `service_type`, `price`; uniek per overeenkomst en soort. |
+| `vme.service.line` | Prestatie van de syndicus | Bron (`res_model`, `res_id`), soort, datum, `price_unit`, `state` (`to_invoice`/`invoiced`/`no_charge`, uit `invoice_line_id`), `recharge_partner_id`. Uniek per bron en soort. |
+| `vme.consumer.price.index` | Consumptieprijsindex per maand | `month`, `value`; voor de indexering van het ereloon. |
+| `vme.syndic.mandate` | Mandaat van de syndicus | Begin, einde (max. 3 jaar), `appointment_item_id`, `previous_mandate_id`, `renewal_assembly_year`, `renewal_state` (zoekbaar), aanplakking (`posting_deadline`, `posted_date`, `posting_document_id`). |
+De modellen van de rentmeester (`vme.rent.*`) staan in de module `vme_rentmeester`; zie [rentmeester.md](rentmeester.md#datamodel).
 
 ## Uitbreidingen op Odoo-modellen
 
@@ -117,6 +123,10 @@ De modellen van de rentmeester (`vme.rent.*`, ook beheermandaten en doorstorting
 | `vme.collection.reminder` | `registered_mail_id` | De aangetekende zending van een ingebrekestelling. |
 | `vme.association` | `arrears_signal_threshold`, berekend: `working_capital_balance`, `reserve_capital_balance`, `arrears_amount`, `budget_usage`, `signal_*`, `signal_count`, `building_card_html` | Gebouwkaart en portefeuille (stap 22); de signalen zijn zoekbaar. |
 | `res.partner` | `vme_is_supplier` (zoekbaar), `vme_supplier_contract_count`, `vme_supplier_open_amount`, `vme_supplier_card_html` | Leverancierskaart (stap 22), beperkt tot de VME's die de gebruiker mag lezen. |
+| `res.company` | `is_syndic_office` | De company van het syndicuskantoor (zijn omzet). |
+| `account.move` | `vme_fee_agreement_id`, `vme_fee_bill_id`, `vme_fee_invoice_id` | Ereloonfactuur van het kantoor en de conceptleveranciersfactuur die ze in de VME klaarzet. |
+| `account.move.line` | `vme_service_line_id` | De prestatie die deze lijn van de ereloonfactuur aanrekent. |
+| `vme.association` | `management_agreement_ids`, `syndic_mandate_ids`, `service_line_ids`, `current_agreement_id`, `current_syndic_mandate_id` | Overeenkomst en mandaat van de syndicus; `_get_syndic_mandate_on(day)` voor de jaarcyclus. |
 | `account.move.line` | `vme_key_id` | Verdeelsleutel per regel; opgeslagen compute die alleen een lege sleutel invult vanuit de verdeelregel. |
 
 ## Rekeningen
