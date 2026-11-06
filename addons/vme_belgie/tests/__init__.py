@@ -33,3 +33,4 @@ from . import test_translation
 from . import test_scale_data
 from . import test_work_items
 from . import test_compliance
+from . import test_works_comparison

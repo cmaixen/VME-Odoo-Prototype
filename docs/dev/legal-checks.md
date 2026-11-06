@@ -3,7 +3,7 @@
 Automatisch gemaakt door `python3 tools/legal_checks.py`; niet met de hand bewerken.
 Elke rij is een wettelijke regel in de code die nog juridisch gevalideerd moet worden.
 
-Aantal punten: 133.
+Aantal punten: 134.
 
 ## Per bron
 
@@ -17,6 +17,7 @@ Aantal punten: 133.
 - **KB 29 juni 2018 (Code van plichtenleer van de vastgoedmakelaars), nakijken welk artikel -**: [res_company.py:15](../../addons/vme_rentmeester/models/res_company.py#L15)
 - **KB 9 maart 2003**: [vme_installation.py:33](../../addons/vme_belgie/models/vme_installation.py#L33)
 - **KB 9 maart 2003 betreffende de beveiliging van liften**: [vme_installation.py:17](../../addons/vme_belgie/models/vme_installation.py#L17)
+- **KB nr. 20 van 20 juli 1970, tabel A, rubriek XXXI**: [vme_works_comparison.py:60](../../addons/vme_belgie/models/vme_works_comparison.py#L60)
 - **NBN S21-050**: [vme_installation.py:20](../../addons/vme_belgie/models/vme_installation.py#L20)
 - **SEPA Core Direct Debit Rulebook (EPC)**: [vme_payment.py:22](../../addons/vme_belgie/models/vme_payment.py#L22)
 - **Verordening (EU) 910/2014 (eIDAS) art. 43-44 en art. XII.25 §3 WER**: [vme_communication.py:518](../../addons/vme_belgie/models/vme_communication.py#L518)
@@ -207,6 +208,7 @@ Aantal punten: 133.
 | [addons/vme_belgie/models/vme_works.py](../../addons/vme_belgie/models/vme_works.py#L18) | 18 | art. 1792 en 2270 oud BW | ten-year liability of contractor and architect for serious defects, counted from the acceptance of the works (here the provisional delivery). |
 | [addons/vme_belgie/models/vme_works.py](../../addons/vme_belgie/models/vme_works.py#L195) | 195 | art. 3.88 §1, 1°, c) BW | competition above the amount fixed by the assembly. |
 | [addons/vme_belgie/models/vme_works.py](../../addons/vme_belgie/models/vme_works.py#L449) | 449 | art. 3.86 §3 BW en KB 12 juli 2012 (minimum chart of accounts) | the reserve capital pays for works; align the accounts and the treatment of non-deductible VAT. |
+| [addons/vme_belgie/models/vme_works_comparison.py](../../addons/vme_belgie/models/vme_works_comparison.py#L60) | 60 | KB nr. 20 van 20 juli 1970, tabel A, rubriek XXXI | 6% VAT for renovation of a private dwelling that is at least ten years old (first occupation), when the contractor bills the owner or the VME directly; otherwise 21%. A different rate between quotes is only flagged. |
 | [addons/vme_belgie/report/vme_syndic_reports.xml](../../addons/vme_belgie/report/vme_syndic_reports.xml#L13) | 13 | art. 3.89 §2 BW | which data the extract must contain is not yet validated. |
 | [addons/vme_belgie/wizard/vme_provision_call_wizard.py](../../addons/vme_belgie/wizard/vme_provision_call_wizard.py#L140) | 140 | art. 3.89 §5 BW | working and reserve capital on separate bank accounts, so each fund gets its own invoice paid to its own account. |
 | [addons/vme_rentmeester/models/remittance_rules.py](../../addons/vme_rentmeester/models/remittance_rules.py#L7) | 7 | art. 18 §1 en art. 37 WBTW, KB nr. 20 (tabel A en B) | het ereloon van de rentmeester is een dienst aan 21% btw. De huur die hij int en doorstort is geen omzet van het kantoor: de verhuur zelf is vrijgesteld (art. 44 §3, 2° WBTW) en hoort bij de verhuurder. |

@@ -40,6 +40,7 @@ We blijven zo dicht mogelijk bij standaard Odoo: elke override roept eerst `supe
 | `account.move.button_draft()` | `models/vme_payment.py` | Wist de goedkeuring voor betaling voor de factuur naar concept gaat | Een gewijzigde factuur moet opnieuw goedgekeurd worden (stap 20). |
 | `account.bank.statement.line._vme_match()` en `_vme_reconcile()` | `models/account_bank_statement_line.py` | Eerst `_vme_match_payment_batch()`; na een uitgaande koppeling worden overschrijvingen uit een batch bevestigd | Terugkoppeling van onze SEPA-bestanden (stap 20, zie [betalingsverkeer.md](betalingsverkeer.md)). |
 | `vme.association._vme_document_folder(attachment, document_type)` | `models/vme_document_intake.py` | Eigen uitbreidingspunt: geeft nu `False`; stap 15 (documentbeheer) overschrijft het om een door AI geklasseerd document in de juiste map te zetten. Zie [pdf-ai-lezen.md](pdf-ai-lezen.md). |
+| `vme.assembly.convocation._generate_documents()` | `models/vme_works_comparison.py` | Na de oproeping en de jaarafrekening: een kopie van de PDF van elke goedgekeurde offertevergelijking voor deze AV | De vergelijking hoort bij de stukken van de AV; de oproeping blijft een concept dat een medewerker verstuurt. |
 | Serveracties `action_help_*` | `data/help_menu.xml` | Geven een `ir.actions.act_url` terug naar `vme_belgie.help_url` + artikel. |
 
 | `account.move._vme_auto_distribute()` | `models/vme_request.py` | Slaat facturen met `vme_request_id` over | De factuur van de slotenmaker voor een privé-aanvraag wordt aan één eigenaar aangerekend, niet verdeeld (stap 19). |

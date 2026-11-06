@@ -27,7 +27,7 @@ Draai dit ongeveer 15 minuten voor de demo, in de map van het project. Docker (O
    cd ai && python3.12 -m venv .venv && .venv/bin/pip install -r requirements.txt && cd ..
    ```
 
-   Met een Anthropic-API-sleutel in `ai/.env` schrijft de AI-assistent echte antwoorden met Claude; zonder sleutel gebruikt u `--mock` (vaste sjablonen met plaatshouders zoals `[datum]`).
+   Met een Anthropic-API-sleutel in `ai/.env` schrijft de AI-assistent echte antwoorden met Claude; zonder sleutel gebruikt u `--mock` (vaste sjablonen met plaatshouders zoals `[datum]`). De offertevergelijking (`offertes.py`) valt zonder sleutel vanzelf terug op haar testmodus.
 
 3. **Inloggen**: open http://localhost:8069 (de productwebsite), klik op **Inloggen > Medewerker van de syndicus** en log in met `admin` / `admin`, in een browservenster op volledig scherm. U komt meteen in de app VME. Werkt de eerste login na het opbouwen niet ("400 Bad Request"), herlaad de pagina en log opnieuw in.
 
@@ -190,6 +190,17 @@ Na stap 8 staan er ook drie aanvragen in **VME > Aanvragen**, naast de sleutel v
 
 > Boodschap: "Geen polis die stilzwijgend verloopt zonder dat iemand ze nakeek, en de notaris krijgt meteen de attesten van de gemene delen."
 
+
+### Extra: drie offertes vergelijken met de AI (1,5 minuut)
+
+1. **VME > Werken en schade > Werkdossiers**: *Gevelrenovatie voor- en achtergevel* van Residentie Linde. Tabblad **Offertes**: drie aannemers, elk met hun PDF. Open er één: drie pagina's, elke aannemer met een andere opbouw.
+2. Klik op **Offertes vergelijken**: de vergelijking staat op **Wacht op AI**.
+3. In een terminal, in de map `ai`: `.venv/bin/python offertes.py` (met sleutel in `ai/.env` leest Claude de PDF's; zonder sleutel of met `--offline` de vaste testmodus, zonder netwerk). Het script meldt "Concept klaar" en de aandachtspunten.
+4. Herlaad de vergelijking. Toon de **tabel**: de stelling in het rood bij Renovatiebedrijf Voorbeeld ("niet inbegrepen", p. 2), 21% btw in het geel bij Bouwonderneming Denkbeeld. Klik op een **(p. 2)**: de offerte opent op die pagina.
+5. Toon de **aandachtspunten**: het btw-tarief verschilt, en in het werkdossier staat 44.000 euro voor Denkbeeld terwijl de offerte 53.240 euro incl. btw vermeldt. De **samenvatting** somt verschillen op, zonder aanbeveling.
+6. Kies **Voor de AV** (bv. een AV van 2027 als die al bestaat), klik op **PDF bekijken** (CONCEPT bovenaan) en dan op **Goedkeuren**: de PDF staat bij het werkdossier en gaat mee met de oproepingen van die AV. Er vertrekt niets.
+
+> Boodschap: "Een avond offertes naast elkaar leggen wordt tien minuten nakijken, met de bron bij elk getal. De AV kiest; wij zetten de feiten klaar."
 ### Extra: de website en de knop Inloggen (1 minuut)
 
 Doe dit vóór u inlogt, of in een privévenster.

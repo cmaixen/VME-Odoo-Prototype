@@ -91,3 +91,18 @@ Een PDF zonder UBL op het factuuradres (of opgeladen in Odoo) wordt een conceptf
 ```
 
 De mock leest alleen de tekst van de eigen demo-PDF's; een echte PDF of scan heeft Claude nodig. Uitleg voor medewerkers: `docs/kb/pdf-facturen-ai.md`; architectuur: `docs/dev/pdf-ai-lezen.md`.
+
+## Offertes voor werken vergelijken
+
+Klikt een medewerker in een werkdossier op **Offertes vergelijken** (twee tot vier offertes met een PDF), dan wacht de vergelijking op AI. `offertes.py` leest de PDF's met Claude en geeft Odoo per offerte de prijzen, het btw-tarief, de posten (inbegrepen, uitdrukkelijk niet inbegrepen of niet vermeld), de voorwaarden, waarborg, verzekering en voorbehouden, telkens met het paginanummer, plus een neutrale samenvatting. Odoo maakt er een concept van met controles; de syndicus keurt het goed. Er wordt niets verstuurd.
+
+```bash
+.venv/bin/python offertes.py                      # Claude (zonder sleutel vanzelf offline)
+.venv/bin/python offertes.py --offline            # vaste testmodus, zonder netwerk
+.venv/bin/python offertes.py --offline --dry-run  # tonen wat gelezen wordt, niets invullen
+.venv/bin/python offertes.py --offline --bestand ../addons/vme_belgie/demo_data/offertes/*.pdf   # zonder Odoo
+.venv/bin/python tools/maak_demo_offertes.py      # de drie fictieve offertes opnieuw maken
+```
+
+De testmodus leest alleen de drie demo-offertes (gevelrenovatie Residentie Linde); een echte offerte of scan heeft Claude nodig. Uitleg voor medewerkers: `docs/kb/offertes-vergelijken.md`; architectuur: `docs/dev/offertes-vergelijken.md`.
+

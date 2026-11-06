@@ -138,8 +138,9 @@ class TestDemoData(TransactionCase):
         self.assertIn("gevelwerken", info["legal_proceedings"])
 
     def test_demo_works_and_damage_linde(self):
-        works = self.env["vme.works"].search([("association_id", "=", self.linde.id)])
-        self.assertEqual(works.name, "Renovatie plat dak blok A")
+        works = self.env["vme.works"].search([
+            ("association_id", "=", self.linde.id), ("name", "=", "Renovatie plat dak blok A")])
+        self.assertEqual(len(works), 1)
         self.assertEqual((works.budget, works.financing, works.state), (38000, "reserve", "awarded"))
         self.assertEqual(len(works.quote_ids), 3)
         self.assertEqual(works.contractor_id.name, "Dakrenovatie Fictief NV")
@@ -152,6 +153,18 @@ class TestDemoData(TransactionCase):
         self.assertEqual(claim.policy_id.insurer_id.name, "Verzekeringen Voorbeeld NV")
         self.assertEqual(claim.mail_reference, "lek-a4-20261102@example.com")
         self.assertEqual(len(self.env["vme.insurance.policy"].search([])), 3)
+
+    def test_demo_facade_quotes_linde(self):
+        """Three quote PDFs to compare, the third amount entered without VAT (the comparison flags it)."""
+        works = self.env["vme.works"].search([
+            ("association_id", "=", self.linde.id), ("name", "=", "Gevelrenovatie voor- en achtergevel")])
+        self.assertEqual((works.state, works.key_id.key_type), ("quotes", "general"))
+        self.assertFalse(works.activity_ids)
+        self.assertEqual(works.quote_ids.mapped("amount"), [36941, 44000, 48548])
+        self.assertTrue(all(q.attachment_ids.raw.startswith(b"%PDF") for q in works.quote_ids))
+        self.assertFalse(works.comparison_ids)
+        comparison = self.env["vme.works.comparison"].browse(works.action_compare_quotes()["res_id"])
+        self.assertEqual((comparison.state, comparison.column_count), ("to_read", 3))
     def test_council_and_auditors(self):
         beuken = self.vmes.filtered(lambda v: v.name == "Hof ter Beuken")
         self.assertTrue(beuken.council_required)
