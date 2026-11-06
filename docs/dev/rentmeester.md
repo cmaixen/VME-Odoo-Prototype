@@ -109,6 +109,8 @@ docker compose run --rm odoo odoo -d vme_test -u vme_belgie,vme_rentmeester --te
 
 ## Uitbreidingspunten en wat ontbreekt
 
+- **Huurders in het portaal (stap 27):** `res.partner._vme_portal_tenant_lots()` (`models/res_partner.py`) voegt de kavels van de huurcontracten van de partner toe; of het contract vandaag loopt, beslist `vme.lot._get_tenants_on`. Zo kan een huurder met een login een aanvraag indienen voor zijn kavel, ook zonder `vme.lot.contact`.
+
 - **Doorstorting aan de verhuurder** en het **ereloon van de rentmeester**: een afrekening per verhuurder uit de analytische rekening (geïnde huur min ereloon en kosten).
 - **Registratie** van het contract, **plaatsbeschrijving** en **huurwaarborg** als eigen dossiers; nu alleen velden en een taak.
 - **Opzeg met reden** door de verhuurder in een contract van negen jaar (eigen gebruik, werken, zonder reden met vergoeding) en de tussentijdse termijnen van drie jaar: niet gemodelleerd.

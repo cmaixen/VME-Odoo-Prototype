@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Requests (step 19) and survey answers (step 23) in the owner portal. -->
+    <template id="portal_breadcrumbs_vme_requests" inherit_id="vme_belgie.portal_breadcrumbs_vme" priority="42">
+        <xpath expr="//li[@t-if=&quot;page_name == 'vme_address'&quot;]" position="after">
+            <li t-if="page_name in ('vme_requests', 'vme_request_new', 'vme_request', 'vme_survey')" class="breadcrumb-item">
+                <a href="/my/vme">Mijn mede-eigendom</a>
+            </li>
+            <li t-if="page_name == 'vme_requests'" class="breadcrumb-item">Mijn aanvragen</li>
+            <li t-if="page_name in ('vme_request_new', 'vme_request')" class="breadcrumb-item">
+                <a href="/my/vme/requests">Mijn aanvragen</a>
+            </li>
+            <li t-if="page_name == 'vme_request_new'" class="breadcrumb-item">Nieuwe aanvraag</li>
+            <li t-if="page_name == 'vme_request'" class="breadcrumb-item" t-out="vme_request.name"/>
+            <li t-if="page_name == 'vme_survey'" class="breadcrumb-item">Bevraging</li>
+        </xpath>
+    </template>
+
+    <template id="portal_vme_request_state_badge" name="Status van een aanvraag">
+        <t t-set="badge_class" t-value="{
+            'waiting_proof': 'text-bg-warning', 'done': 'text-bg-success', 'ordered': 'text-bg-info',
+            'refused': 'text-bg-danger', 'cancelled': 'text-bg-secondary'}.get(req.state, 'text-bg-primary')"/>
+        <span t-attf-class="badge #{badge_class}"><span t-field="req.portal_state"/></span>
+    </template>
+
+    <template id="portal_vme_feedback" name="Melding na een formulier">
+        <div t-if="message" class="alert alert-success mt-3" t-out="message"/>
+        <div t-if="error" class="alert alert-danger mt-3" t-out="error"/>
+    </template>
+
+    <!-- /my/vme: tenants, requests and surveys -->
+    <template id="portal_my_vme_requests_cards" inherit_id="vme_belgie.portal_my_vme" priority="42">
+        <xpath expr="//div[hasclass('alert-info')]" position="attributes">
+            <attribute name="t-if">not ownerships and not tenant_lots</attribute>
+        </xpath>
+        <xpath expr="//t[@t-foreach='associations']" position="after">
+            <div t-if="tenant_lots" class="card mb-3">
+                <div class="card-body">
+                    <h4 class="card-title">Gehuurde kavels</h4>
+                    <table class="table table-sm mb-0">
+                        <thead><tr><th>VME</th><th>Kavel</th><th>Type</th></tr></thead>
+                        <tbody>
+                            <tr t-foreach="tenant_lots" t-as="lot">
+                                <td t-out="lot.association_id.name"/>
+                                <td t-out="lot.name"/>
+                                <td><span t-field="lot.lot_type"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div t-if="surveys" class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Bevragingen</h5>
+                    <table class="table table-sm mb-0">
+                        <tbody>
+                            <tr t-foreach="surveys" t-as="log">
+                                <td><a t-attf-href="/my/vme/survey/#{log.id}" t-out="log.subject"/></td>
+                                <td t-out="log.association_id.name"/>
+                                <td class="text-end">
+                                    <span t-if="log.answer_option_id" class="badge text-bg-success">Beantwoord: <t t-out="log.answer_option_id.name"/></span>
+                                    <span t-elif="log.communication_id._portal_open_for_answers()" class="badge text-bg-warning">Uw antwoord gevraagd</span>
+                                    <span t-else="" class="badge text-bg-secondary">Afgesloten</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div t-if="can_request or my_requests" class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Mijn aanvragen</h5>
+                    <p class="mb-2">Een extra sleutel of badge, een defect, een attest of een andere vraag voor uw kavel.
+                        De syndicus behandelt elke aanvraag en houdt u hier op de hoogte.</p>
+                    <table t-if="my_requests" class="table table-sm mb-2">
+                        <tbody>
+                            <tr t-foreach="my_requests" t-as="req">
+                                <td><a t-attf-href="/my/vme/request/#{req.id}" t-out="req.name"/></td>
+                                <td t-out="req.title"/>
+                                <td class="text-end"><t t-call="vme_belgie.portal_vme_request_state_badge"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <a t-if="can_request" class="btn btn-primary btn-sm" href="/my/vme/requests/new">Nieuwe aanvraag</a>
+                    <a class="btn btn-secondary btn-sm" href="/my/vme/requests">Alle aanvragen</a>
+                </div>
+            </div>
+        </xpath>
+    </template>
+
+    <template id="portal_my_vme_detail_surveys" inherit_id="vme_belgie.portal_my_vme_detail" priority="42">
+        <xpath expr="//h4[text()='Volgende algemene vergadering']" position="before">
+            <div t-foreach="vme_surveys" t-as="log" class="alert alert-info">
+                <strong>Bevraging:</strong> <t t-out="log.subject"/>
+                <a class="ms-2" t-attf-href="/my/vme/survey/#{log.id}">
+                    <t t-if="log.answer_option_id">Uw antwoord bekijken of wijzigen</t>
+                    <t t-else="">Antwoorden</t>
+                </a>
+            </div>
+        </xpath>
+    </template>
+
+    <template id="portal_my_vme_requests" name="Mijn aanvragen">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="False"/>
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <h3>Mijn aanvragen</h3>
+                <a t-if="can_request" class="btn btn-primary btn-sm" href="/my/vme/requests/new">Nieuwe aanvraag</a>
+            </div>
+            <t t-call="vme_belgie.portal_vme_feedback"/>
+            <p t-if="not requests" class="text-muted">U hebt nog geen aanvragen.</p>
+            <t t-else="" t-call="portal.portal_table">
+                <thead><tr><th>Nummer</th><th>Onderwerp</th><th>VME</th><th>Kavel</th><th>Ontvangen</th><th>Via</th><th>Status</th></tr></thead>
+                <tbody>
+                    <tr t-foreach="requests" t-as="req">
+                        <td><a t-attf-href="/my/vme/request/#{req.id}" t-out="req.name"/></td>
+                        <td t-out="req.title"/>
+                        <td t-out="req.association_id.name"/>
+                        <td t-out="req.lot_id.name"/>
+                        <td><span t-field="req.request_date"/></td>
+                        <td><span t-field="req.channel"/></td>
+                        <td><t t-call="vme_belgie.portal_vme_request_state_badge"/></td>
+                    </tr>
+                </tbody>
+            </t>
+        </t>
+    </template>
+
+    <template id="portal_my_vme_request_new" name="Nieuwe aanvraag">
+        <t t-call="portal.portal_layout">
+            <h3 class="mt-3">Nieuwe aanvraag</h3>
+            <p>Uw aanvraag komt bij de syndicus terecht, die ze nakijkt en behandelt. Een extra sleutel of badge
+                wordt alleen besteld voor de eigenaar of met zijn toestemming; de kost wordt aan de eigenaar van de kavel aangerekend.</p>
+            <form action="/my/vme/requests/new" method="post" enctype="multipart/form-data" class="row g-2" style="max-width: 40rem;">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <div t-if="error" class="alert alert-danger" t-out="error"/>
+                <div class="col-12"><label class="form-label" for="lot_id">Kavel</label>
+                    <select class="form-select" name="lot_id" id="lot_id" required="required">
+                        <option t-foreach="lots" t-as="lot" t-att-value="lot.id" t-att-selected="str(lot.id) == post.get('lot_id')">
+                            <t t-out="lot.association_id.name"/> · <t t-out="lot.name"/>
+                            (<t t-if="lot in owned_lots">eigenaar</t><t t-else="">huurder</t>)
+                        </option>
+                    </select></div>
+                <div class="col-12"><label class="form-label" for="request_type">Soort aanvraag</label>
+                    <select class="form-select" name="request_type" id="request_type" required="required">
+                        <option t-foreach="request_types" t-as="rtype" t-att-value="rtype.code"
+                                t-att-selected="rtype.code == post.get('request_type')" t-out="rtype.name"/>
+                    </select></div>
+                <div class="col-12"><label class="form-label" for="subject">Onderwerp</label>
+                    <input class="form-control" name="subject" id="subject" required="required" maxlength="200"
+                           t-att-value="post.get('subject')"/></div>
+                <div class="col-12"><label class="form-label" for="description">Uw vraag</label>
+                    <textarea class="form-control" name="description" id="description" rows="5"
+                              t-out="post.get('description')"/></div>
+                <div class="col-12"><label class="form-label" for="attachments">Bijlagen (optioneel, bijvoorbeeld een foto of het huurcontract)</label>
+                    <input class="form-control" type="file" name="attachments" id="attachments" multiple="multiple"/></div>
+                <div class="col-12 mt-3">
+                    <button type="submit" class="btn btn-primary">Aanvraag indienen</button>
+                    <a href="/my/vme/requests" class="btn btn-link">Annuleren</a>
+                </div>
+            </form>
+        </t>
+    </template>
+
+    <template id="portal_my_vme_request" name="Aanvraag in het portaal">
+        <t t-call="portal.portal_layout">
+            <t t-set="req" t-value="vme_request"/>
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <h3><t t-out="req.name"/> · <t t-out="req.title"/></h3>
+                <t t-call="vme_belgie.portal_vme_request_state_badge"/>
+            </div>
+            <t t-call="vme_belgie.portal_vme_feedback"/>
+            <table class="table table-sm w-auto">
+                <tr><td>VME</td><td t-out="req.association_id.name"/></tr>
+                <tr><td>Kavel</td><td t-out="req.lot_id.name or '-'"/></tr>
+                <tr><td>Soort</td><td t-out="req.request_type_id.name"/></tr>
+                <tr><td>Ontvangen op</td><td><span t-field="req.request_date"/> via <span t-field="req.channel"/></td></tr>
+                <tr t-if="req.order_sent_date"><td>Besteld op</td><td><span t-field="req.order_sent_date"/></td></tr>
+                <tr t-if="req.delivery_date and req.state == 'done'"><td>Geleverd op</td><td><span t-field="req.delivery_date"/></td></tr>
+            </table>
+            <div t-if="req.state == 'refused' and req.refuse_reason" class="alert alert-danger">
+                Reden: <t t-out="req.refuse_reason"/>
+            </div>
+            <div t-if="req.description" class="card mb-3"><div class="card-body">
+                <h6>Uw vraag</h6>
+                <p class="mb-0" style="white-space: pre-line;" t-out="req.description"/>
+            </div></div>
+
+            <div t-if="req._portal_can_add_proof()" class="card mb-3" id="bewijs"><div class="card-body">
+                <h5 class="card-title">Bewijs bezorgen</h5>
+                <p t-if="req.missing_proofs">Voor deze aanvraag heeft de syndicus nodig: <t t-out="req.missing_proofs"/>.</p>
+                <p class="text-muted small">De syndicus kijkt de documenten na voor de aanvraag verder gaat.</p>
+                <form t-attf-action="/my/vme/request/#{req.id}/proof" method="post" enctype="multipart/form-data" style="max-width: 40rem;">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <input class="form-control mb-2" type="file" name="attachments" multiple="multiple" required="required"/>
+                    <input class="form-control mb-2" name="note" maxlength="500" placeholder="Opmerking (optioneel)"/>
+                    <button type="submit" class="btn btn-primary">Documenten versturen naar de syndicus</button>
+                </form>
+            </div></div>
+
+            <h5 t-if="messages">Berichten</h5>
+            <div t-foreach="messages" t-as="msg" class="card mb-2"><div class="card-body">
+                <div class="small text-muted"><span t-field="msg.date"/> · <t t-out="msg.author_id.name"/></div>
+                <div t-if="msg.subject" class="fw-bold" t-out="msg.subject"/>
+                <div t-out="msg.body"/>
+            </div></div>
+        </t>
+    </template>
+
+    <template id="portal_my_vme_survey" name="Bevraging in het portaal">
+        <t t-call="portal.portal_layout">
+            <h3 class="mt-3" t-out="log.subject"/>
+            <div class="text-muted mb-3"><t t-out="log.association_id.name"/>
+                <t t-if="log.lot_names"> · kavels <t t-out="log.lot_names"/></t>
+                <t t-if="communication.answer_deadline"> · antwoorden tegen <span t-field="communication.answer_deadline"/></t>
+            </div>
+            <t t-call="vme_belgie.portal_vme_feedback"/>
+            <h5 t-out="communication.question"/>
+            <form t-if="is_open" t-attf-action="/my/vme/survey/#{log.id}" method="post" style="max-width: 40rem;">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <div t-foreach="communication.option_ids" t-as="option" class="form-check">
+                    <input class="form-check-input" type="radio" name="option_id" required="required"
+                           t-att-id="'option_%s' % option.id" t-att-value="option.id"
+                           t-att-checked="option == log.answer_option_id"/>
+                    <label class="form-check-label" t-att-for="'option_%s' % option.id" t-out="option.name"/>
+                </div>
+                <label class="form-label mt-2" for="note">Opmerking (optioneel)</label>
+                <input class="form-control" name="note" id="note" maxlength="500" t-att-value="log.answer_note"/>
+                <button type="submit" class="btn btn-primary mt-3">
+                    <t t-if="log.answer_option_id">Antwoord wijzigen</t><t t-else="">Antwoord versturen</t>
+                </button>
+            </form>
+            <t t-else="">
+                <p t-if="log.answer_option_id">Uw antwoord: <strong t-out="log.answer_option_id.name"/>
+                    <t t-if="log.answer_note"> · <t t-out="log.answer_note"/></t></p>
+                <p t-else="" class="text-muted">U hebt niet geantwoord.</p>
+                <div class="alert alert-secondary">Deze bevraging is afgesloten.</div>
+            </t>
+            <h6 class="mt-4">De brief</h6>
+            <div class="card"><div class="card-body" t-out="log.body_html"/></div>
+        </t>
+    </template>
+</odoo>

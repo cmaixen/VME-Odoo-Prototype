@@ -84,6 +84,7 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 ### Bewoners
 
 26. [Aanvragen van bewoners: sleutels, badges en andere vaste procedures](aanvragen-sleutels-badges.md)
+31. [Aanvragen en bevragingen in het eigenaarsportaal](portaal-aanvragen-bevragingen.md)
 
 ### Overstappen
 

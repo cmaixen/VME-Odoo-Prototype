@@ -21,6 +21,7 @@ Na het inloggen klikt de eigenaar op **Mijn mede-eigendom**. Per VME ziet hij:
 - **Provisies**: elke provisieoproep met fonds, vervaldag, bedrag, wat nog te betalen is en de status (betaald, deels betaald, open, vervallen). Met een PDF per oproep.
 - **Jaarafrekeningen**: per jaar zijn kosten per verdeelsleutel, de facturen, wat hij betaalde en zijn saldo, ook als PDF. Het lopende jaar staat er als "voorlopig".
 - **Documenten**, per map (zie [Documenten van een VME en van een kavel](documenten.md)).
+- **Bevragingen** om te beantwoorden en **Mijn aanvragen** met hun status (zie [Aanvragen en bevragingen in het eigenaarsportaal](portaal-aanvragen-bevragingen.md)). Ook een huurder met een login ziet die twee, maar niet de documenten en provisies.
 
 Wat de eigenaar nooit ziet: andere VME's, kavels van andere eigenaars, verkoopdossiers, invorderingsdossiers en herinneringen, interne documenten.
 

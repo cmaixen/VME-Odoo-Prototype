@@ -188,3 +188,18 @@ class TestDemoData(TransactionCase):
         self.assertNotIn("assembly", signals["Residentie Linde"])
         self.assertIn("inspection", signals["Residentie Linde"])
         self.assertEqual(self.linde.arrears_signal_threshold, 250)
+
+    def test_demo_portal_request_and_survey(self):
+        # Step 27: A1 filed a request in the portal and answered the survey on charging points there.
+        request = self.env["vme.request"].search([("association_id", "=", self.linde.id), ("channel", "=", "portal")])
+        self.assertEqual(request.requester_id.name, "Eigenaar Linde A1")
+        self.assertEqual(request.state, "in_progress")
+        survey = self.env["vme.communication"].search([("association_id", "=", self.linde.id), ("kind", "=", "survey")])
+        self.assertEqual(survey.state, "sent")
+        self.assertFalse(survey.log_ids.mail_id, "the demo survey queues no mails")
+        answered = survey.log_ids.filtered("answer_option_id")
+        self.assertEqual(len(answered), 3)
+        self.assertEqual(answered.filtered(lambda log: log.answer_channel == "portal").partner_id.name, "Eigenaar Linde A1")
+        tenant = self.env["res.partner"].search([("name", "=", "Huurder Linde A6")])
+        self.assertTrue(tenant.user_ids.share)
+        self.assertEqual(tenant._vme_portal_request_lots().name, "A6")

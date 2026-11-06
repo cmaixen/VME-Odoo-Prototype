@@ -59,7 +59,7 @@ Legende: ✅ gebouwd · 🔨 wordt nu gebouwd · 📋 gepland · ➖ bewust late
 | | Huurders als ontvangers | ✅ | stap 23 met de huurders van stap 19 en 25 |
 | Communicatie in twee richtingen | Mails van eigenaars gekoppeld met een voorgesteld antwoord (AI) | ✅ | stap 7 |
 | | Aanvragen per mail als vaste procedure (AI) | ✅ | stap 19 |
-| | Aanvragen en antwoorden op bevragingen via het portaal | 📋 | koppelplaatsen in stap 19 en 23 bestaan; aansluiten op het portaal van stap 15 |
+| | Aanvragen en antwoorden op bevragingen via het portaal | ✅ | stap 27: eigenaars en huurders, zelfde procedure als per mail |
 
 ## Vergelijking met de VME-pagina van Odoo
 

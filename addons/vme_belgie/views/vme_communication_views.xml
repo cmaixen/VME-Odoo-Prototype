@@ -115,6 +115,7 @@
                                            options="{'no_create': True, 'no_open': True}"/>
                                     <field name="answer_note" column_invisible="parent.kind != 'survey'"/>
                                     <field name="answer_date" column_invisible="parent.kind != 'survey'" optional="hide"/>
+                                    <field name="answer_channel" column_invisible="parent.kind != 'survey'" optional="show" readonly="1"/>
                                     <field name="registered_mail_id" optional="show" readonly="1"/>
                                     <button name="action_print" type="object" icon="fa-print" title="Brief afdrukken"/>
                                 </list>
@@ -218,6 +219,7 @@
                         <field name="answer_option_id" options="{'no_create': True}"/>
                         <field name="answer_note"/>
                         <field name="answer_date"/>
+                        <field name="answer_channel" invisible="not answer_channel"/>
                     </group>
                     <field name="body_html" readonly="1" invisible="not body_html"/>
                     <field name="short_text" readonly="1" invisible="channel not in ('sms', 'push')"/>

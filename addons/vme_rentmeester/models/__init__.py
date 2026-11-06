@@ -6,3 +6,4 @@ from . import rent_indexation
 from . import rent_settlement
 from . import account_move
 from . import vme_lot
+from . import res_partner
