@@ -34,7 +34,7 @@ De gebouwkaart toont:
 
 Klik op een dossier, contract of factuur om het te openen. Met de knoppen bovenaan opent u de **Budgetopvolging**, het **Verloop kapitalen** (een grafiek) en de **Jaarafrekening**.
 
-**Voorbeeld uit de demo.** Open de gebouwkaart van **Hof ter Beuken**. Bovenaan staat het signaal **Reservefonds onder 5%**: de VME bouwt in 2026 1.800 € reserve op, minder dan 5% van de gewone lasten (2.400 €). In het budget ziet u dat de verwarming en de loonkost van de conciërge ruim boven het budget tot vandaag zitten (rode regels). Bij de achterstallen staat Eigenaar Beuken B7, die de laatste twee provisieoproepen niet betaalde.
+**Voorbeeld uit de demo.** Open de gebouwkaart van **Hof ter Beuken**. Bovenaan staat het signaal **Reservefonds onder 5%**: de VME bouwt in 2026 1.800 € reserve op, minder dan 5% van de gewone lasten (4.800 €). In het budget ziet u dat de verwarming en de loonkost van de conciërge boven het budget tot vandaag zitten (rode regels). Bij de achterstallen staat Eigenaar Beuken B7, die de laatste twee provisieoproepen niet betaalde (1.711,50 €), en dus ook het signaal voor achterstallen.
 
 ## Hoe verdeel ik het budget per rekening en sleutel?
 
@@ -74,7 +74,7 @@ De vier signalen:
 
 De drempel voor achterstallen is standaard 1.000 €. U past ze aan per VME op het tabblad **Budgetten** van de VME (**Signaal achterstallen vanaf**).
 
-**Voorbeeld uit de demo.** Op 5 november 2026 heeft Hof ter Beuken het signaal voor het reservefonds en de AV (de periode van 12 tot 26 april is voorbij zonder gehouden AV); Kaaihuis heeft ook het signaal voor de AV. Residentie Linde heeft een vervallen keuring van de brandblussers en achterstallen boven de drempel: de syndicus wil daar al vanaf 250 € een signaal, en Eigenaar Linde A3 betaalde de laatste oproep niet (475,20 €).
+**Voorbeeld uit de demo.** Op 5 november 2026 heeft Hof ter Beuken het signaal voor het reservefonds, de achterstallen van Eigenaar Beuken B7 en de AV (de periode van 12 tot 26 april is voorbij zonder gehouden AV); Kaaihuis heeft ook het signaal voor de AV. Residentie Linde heeft een vervallen keuring van de brandblussers en achterstallen boven de drempel: de syndicus wil daar al vanaf 250 € een signaal, en Eigenaar Linde A3 betaalde de laatste oproep niet (475,20 €).
 
 ## Hoe open ik de leverancierskaart?
 

@@ -180,10 +180,11 @@ RULES = [
 ]
 
 # Yearly budgets (working capital, reserve contribution) for 2026 and 2027, called per quarter.
-# Hof ter Beuken deliberately stays under the 5% reserve minimum to show the warning.
+# Hof ter Beuken deliberately stays under the 5% reserve minimum to show the warning. Its working
+# capital covers the gas contract (48.000 a year) and the concierge (step 17 and 18) only just.
 BUDGETS = {
     "Residentie Linde": (24000, 2400),
-    "Hof ter Beuken": (48000, 1800),
+    "Hof ter Beuken": (96000, 1800),
     "Kaaihuis": (9000, 900),
 }
 BUDGET_YEARS = (2026, 2027)
@@ -198,10 +199,10 @@ BUDGET_LINES = {
         ("614000", "general", "Brandverzekering", 4300),
     ],
     "Hof ter Beuken": [
-        ("612500", "consumption", "Verwarming", 18000),
+        ("612500", "consumption", "Verwarming", 44000),
         ("611000", "general", "Schoonmaak gemene delen", 9000),
         ("614000", "general", "Brandverzekering", 6500),
-        ("620300", "general", "Loonkost conciërge", 14500),
+        ("620300", "general", "Loonkost conciërge", 33000),
     ],
     "Kaaihuis": [
         ("611000", "general", "Schoonmaak gemene delen", 2400),

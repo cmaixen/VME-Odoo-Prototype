@@ -51,7 +51,7 @@ Open een oproep en klik op **Facturen**. Elke eigenaar heeft een factuur voor he
 
 **Residentie Linde** heeft een budget van 24.000 euro werkkapitaal en 2.400 euro reservekapitaal per jaar, per kwartaal opgevraagd: 6.000 en 600 euro per oproep. Appartement A3 heeft 66/1000 in de algemene sleutel en garage G3 6/1000. "Eigenaar Linde A3" krijgt voor het reservekapitaal dus 39,60 + 3,60 = 43,20 euro, te betalen op rekening BE38 9990 0000 0272 met een eigen gestructureerde mededeling.
 
-**Hof ter Beuken** bouwt bewust te weinig reserve op (1.800 euro per jaar). Voor 2027 rekent het platform het minimum uit op de geboekte lasten van 2026 (65.003,50 euro): 3.250,18 euro. Het budget toont daarom de waarschuwing.
+**Hof ter Beuken** bouwt bewust te weinig reserve op (1.800 euro per jaar). Voor 2027 rekent het platform het minimum uit op de geboekte lasten van 2026 (94.253,50 euro): 4.712,68 euro. Het budget toont daarom de waarschuwing.
 
 In de demohistoriek 2026 betaalden bijna alle eigenaars hun vier oproepen. Uitzonderingen: "Eigenaar Linde A3" betaalde oproep 4 niet, "Eigenaar Beuken B7" oproepen 3 en 4 niet.
 
