@@ -1,61 +1,64 @@
 from datetime import date
 
 from odoo import models
+from odoo.tools.translate import LazyTranslate
 
 from .account_chart_template import VME_FUND_ACCOUNTS
+
+_lt = LazyTranslate(__name__)
 
 # LEGAL-CHECK: KB 12 juli 2012, bijlage - minimum chart of accounts for VMEs: the headings of the
 # balance sheet (inventory) and the income statement. A VME has no equity (no class 10): what is
 # left at year end is a debt to the owners on 489 "over te dragen middelen" (CBN advice 2012/14).
 BALANCE_ASSETS = [
-    ("2", "Vaste activa en borgtochten"),
-    ("4100", "Opgevraagd voorschot reservekapitaal"),
-    ("4101", "Opgevraagd voorschot werkkapitaal"),
-    ("416", "Diverse vorderingen"),
-    ("53", "Geldbeleggingen op termijn"),
-    ("550", "Kredietinstelling: reservekapitaal"),
-    ("551", "Kredietinstelling: werkkapitaal"),
-    ("552", "Kredietinstelling: andere rekeningen"),
-    ("57", "Kas"),
-    ("58", "Interne overboekingen"),
-    ("49A", "Overlopende rekeningen en wachtrekeningen"),
-    ("unclassified", "Niet ingedeeld"),
+    ("2", _lt("Vaste activa en borgtochten")),
+    ("4100", _lt("Opgevraagd voorschot reservekapitaal")),
+    ("4101", _lt("Opgevraagd voorschot werkkapitaal")),
+    ("416", _lt("Diverse vorderingen")),
+    ("53", _lt("Geldbeleggingen op termijn")),
+    ("550", _lt("Kredietinstelling: reservekapitaal")),
+    ("551", _lt("Kredietinstelling: werkkapitaal")),
+    ("552", _lt("Kredietinstelling: andere rekeningen")),
+    ("57", _lt("Kas")),
+    ("58", _lt("Interne overboekingen")),
+    ("49A", _lt("Overlopende rekeningen en wachtrekeningen")),
+    ("unclassified", _lt("Niet ingedeeld")),
 ]
 BALANCE_LIABILITIES = [
-    ("17", "Schulden op meer dan één jaar"),
-    ("42", "Schulden op meer dan één jaar die binnen het jaar vervallen"),
-    ("43", "Financiële schulden"),
-    ("440", "Leveranciers"),
-    ("444", "Te ontvangen facturen"),
-    ("45", "Schulden met betrekking tot belastingen, bezoldigingen en sociale lasten"),
-    ("48", "Diverse schulden"),
-    ("48901", "Over te dragen middelen reservekapitaal"),
-    ("48902", "Over te dragen middelen werkkapitaal"),
-    ("49P", "Overlopende rekeningen"),
+    ("17", _lt("Schulden op meer dan één jaar")),
+    ("42", _lt("Schulden op meer dan één jaar die binnen het jaar vervallen")),
+    ("43", _lt("Financiële schulden")),
+    ("440", _lt("Leveranciers")),
+    ("444", _lt("Te ontvangen facturen")),
+    ("45", _lt("Schulden met betrekking tot belastingen, bezoldigingen en sociale lasten")),
+    ("48", _lt("Diverse schulden")),
+    ("48901", _lt("Over te dragen middelen reservekapitaal")),
+    ("48902", _lt("Over te dragen middelen werkkapitaal")),
+    ("49P", _lt("Overlopende rekeningen")),
 ]
 # Rows that always show, also when they are zero.
 BALANCE_FIXED_ROWS = {"550", "551", "48901", "48902"}
 
 # LEGAL-CHECK: KB 12 juli 2012, bijlage - costs (61 to 66) and income (70, 75, 76) of a VME.
 INCOME_STATEMENT_COSTS = [
-    ("610", "Onderhoud gebouw, tuin en terreinen"),
-    ("611", "Renovatie en andere uitzonderlijke werken"),
-    ("612", "Leveringen aan de vereniging"),
-    ("613", "Erelonen, kosten raad van mede-eigendom en commissaris"),
-    ("614", "Verzekeringen"),
-    ("615", "Conciërgewoning"),
-    ("616", "Administratie- en beheerskosten"),
-    ("62", "Bezoldigingen, sociale lasten en pensioenen"),
-    ("63", "Afschrijvingen en waardeverminderingen"),
-    ("64", "Andere kosten"),
-    ("65", "Financiële kosten"),
-    ("66", "Uitzonderlijke kosten"),
+    ("610", _lt("Onderhoud gebouw, tuin en terreinen")),
+    ("611", _lt("Renovatie en andere uitzonderlijke werken")),
+    ("612", _lt("Leveringen aan de vereniging")),
+    ("613", _lt("Erelonen, kosten raad van mede-eigendom en commissaris")),
+    ("614", _lt("Verzekeringen")),
+    ("615", _lt("Conciërgewoning")),
+    ("616", _lt("Administratie- en beheerskosten")),
+    ("62", _lt("Bezoldigingen, sociale lasten en pensioenen")),
+    ("63", _lt("Afschrijvingen en waardeverminderingen")),
+    ("64", _lt("Andere kosten")),
+    ("65", _lt("Financiële kosten")),
+    ("66", _lt("Uitzonderlijke kosten")),
 ]
 INCOME_STATEMENT_INCOME = [
-    ("700", "Voorschotten reservekapitaal"),
-    ("701", "Voorschotten werkkapitaal"),
-    ("75", "Financiële opbrengsten"),
-    ("76", "Uitzonderlijke en andere opbrengsten"),
+    ("700", _lt("Voorschotten reservekapitaal")),
+    ("701", _lt("Voorschotten werkkapitaal")),
+    ("75", _lt("Financiële opbrengsten")),
+    ("76", _lt("Uitzonderlijke en andere opbrengsten")),
 ]
 
 # LEGAL-CHECK: KB 12 juli 2012, bijlage - mapping of the Belgian PCMN accounts that Odoo's chart
@@ -135,8 +138,9 @@ class VmeAssociation(models.Model):
                     continue
                 labels = sorted(set(current["details"]) | set(previous["details"]))
                 result.append({
+                    "key": code,
                     "code": code.rstrip("AP") if code != "unclassified" else "",
-                    "name": name,
+                    "name": self.env._(name),
                     "amount": currency.round(current["amount"]),
                     "previous": currency.round(previous["amount"]),
                     "details": [{
@@ -169,7 +173,7 @@ class VmeAssociation(models.Model):
                              - columns[column_year]["balance"].get(code, {"amount": 0.0})["amount"])
             for column_year in (year, year - 1)
             for fund, code in (("reserve", "48901"), ("working", "48902")))
-        unclassified = [row for row in rows("balance", BALANCE_ASSETS) if row["name"] == "Niet ingedeeld"]
+        unclassified = [row for row in rows("balance", BALANCE_ASSETS) if row["key"] == "unclassified"]
         return {
             "vme": vme,
             "company": company,

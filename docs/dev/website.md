@@ -10,7 +10,7 @@ Een publieke productwebsite op Odoo Community `website`, met één knop **Inlogg
 
 | Bestand | Inhoud |
 | --- | --- |
-| `models/website.py` | `website._vme_setup_product_website()`: naam, logo, `configurator_done`, taal nl_BE, geen standaardverkoper voor leads, Odoo's `/contactus` ongepubliceerd, hoofdmenu |
+| `models/website.py` | `website._vme_setup_product_website()`: naam, logo, `configurator_done`, talen nl_BE (standaard) en fr_BE als die actief is, menu vertaald, geen standaardverkoper voor leads, Odoo's `/contactus` ongepubliceerd, hoofdmenu |
 | `data/website_data.xml` | roept de setup aan bij elke installatie en upgrade |
 | `data/page_data.xml` | `website.page` voor `/functies`, `/voor-eigenaars`, `/prijzen`, `/contact`, `/demo-aangevraagd`, `/inloggen`; `website.rewrite` 301 van `/contactus` naar `/contact` |
 | `views/page_templates.xml` | de pagina's (standaardsnippets `s_text_image`, `s_features`, `s_three_columns`, `s_call_to_action`, `s_title`, `s_website_form`) en de homepage (erft van `website.homepage`) |

@@ -42,6 +42,18 @@ class TestProductWebsite(HttpCase):
             self.assertEqual(response.status_code, 200, url)
             self.assertIn(text, response.text, url)
 
+    def test_site_in_french(self):
+        """With fr_BE installed the site has a French version, menu included (docs/dev/vertaling.md)."""
+        self.env["res.lang"]._activate_lang("nl_BE")
+        lang = self.env["res.lang"]._activate_lang("fr_BE")
+        self.env["ir.module.module"].search([("name", "in", ["website", "vme_website"])])._update_translations(["fr_BE"])
+        self.env["website"]._vme_setup_product_website()
+        self.assertIn("Elke beslissing", self.url_open("/").text)
+        page = self.url_open(f"/{lang.url_code}/").text
+        self.assertIn("Chaque décision chez votre collaborateur", page)
+        self.assertIn("Fonctionnalités", page)
+        self.assertNotIn("Elke beslissing", page)
+
     def test_header_offers_both_routes(self):
         page = self.url_open("/").text
         self.assertIn(f"/web/login?redirect={VME_APP_URL}", page)

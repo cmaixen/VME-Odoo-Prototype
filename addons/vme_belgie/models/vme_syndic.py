@@ -346,9 +346,11 @@ class VmeManagementAgreement(models.Model):
         account = self._chart_ref(office, OFFICE_REVENUE_ACCOUNT)
         tax = self._chart_ref(office, OFFICE_SALE_TAX)
         services = self.service_line_ids.filtered(lambda s: s.state == "to_invoice" and s.date <= period_end)
-        line_vals = self._fixed_fee_lines(period_start, period_end)
+        # The lines are for the VME: in its language (see docs/dev/vertaling.md).
+        vme_lang = self.association_id.partner_id.lang or self.env.lang
+        line_vals = self.with_context(lang=vme_lang)._fixed_fee_lines(period_start, period_end)
         line_vals += [{
-            "name": service._invoice_label(),
+            "name": service.with_context(lang=vme_lang)._invoice_label(),
             "quantity": service.quantity,
             "price_unit": service.price_unit,
             "vme_service_line_id": service.id,
@@ -491,8 +493,15 @@ class VmeServiceLine(models.Model):
 
     def _invoice_label(self):
         self.ensure_one()
-        kind = dict(self._fields["service_type"].selection)[self.service_type]
-        label = self.name if self.name.startswith(kind) else f"{kind}: {self.name}"
+        kind = dict(self._fields["service_type"]._description_selection(self.env))[self.service_type]
+        source = dict(self._fields["service_type"].selection)[self.service_type]
+        if self.name.startswith(kind):
+            label = self.name
+        elif self.name.startswith(source):
+            # A name made in Dutch (before the VME was set to French): translate its prefix.
+            label = kind + self.name[len(source):]
+        else:
+            label = f"{kind}: {self.name}"
         return f"{label} ({format_date(self.env, self.date)})"
 
     @api.model
@@ -835,7 +844,8 @@ class VmeSyndicMandate(models.Model):
         for mandate in self:
             pdf, _ = self.env["ir.actions.report"]._render_qweb_pdf(
                 "vme_belgie.action_report_syndic_posting", mandate.ids)
-            title = self.env._("Aanplakking aanstelling syndicus %s", format_date(self.env, mandate.date_start))
+            vme_env = mandate.with_context(lang=mandate.company_id.partner_id.lang or self.env.lang).env
+            title = vme_env._("Aanplakking aanstelling syndicus %s", format_date(vme_env, mandate.date_start))
             vals = {"name": title, "datas": base64.b64encode(pdf), "filename": f"{title}.pdf",
                     "date": mandate.date_start}
             if mandate.posting_document_id:
@@ -940,6 +950,11 @@ class VmeAssociation(models.Model):
 
 
 # --- Where the services arise ------------------------------------------------------------------
+# The name of a service ends up on the fee invoice to the VME: in the language of the VME.
+
+
+def _vme_env(record):
+    return record.with_context(lang=record.association_id.partner_id.lang or record.env.lang).env
 
 
 class VmeSaleFile(models.Model):
@@ -953,7 +968,7 @@ class VmeSaleFile(models.Model):
                 # the selling co-owner; the VME pays the syndic and recharges the seller (not automated yet).
                 self.env["vme.service.line"]._register_from_source(
                     sale, "sale_file", sale.first_answer_date,
-                    self.env._("Verkoopdossier %s", sale.name), recharge_partner=sale.seller_id)
+                    _vme_env(sale)._("Verkoopdossier %s", sale.name), recharge_partner=sale.seller_id)
         return result
 
 
@@ -964,7 +979,7 @@ class VmeDamageClaim(models.Model):
         result = super().action_declare()
         for claim in self:
             self.env["vme.service.line"]._register_from_source(
-                claim, "damage_claim", claim.declaration_date, self.env._("Schadedossier %s", claim.display_name))
+                claim, "damage_claim", claim.declaration_date, _vme_env(claim)._("Schadedossier %s", claim.display_name))
         return result
 
 
@@ -989,7 +1004,7 @@ class VmeAssembly(models.Model):
             day = assembly.date or fields.Date.context_today(self)
             if assembly.second_session:
                 self.env["vme.service.line"]._register_from_source(
-                    assembly, "extra_meeting", day, self.env._("Tweede vergadering %s", assembly.name))
+                    assembly, "extra_meeting", day, _vme_env(assembly)._("Tweede vergadering %s", assembly.name))
             elif assembly.assembly_type == "extraordinary":
                 self.env["vme.service.line"]._register_from_source(assembly, "extraordinary_assembly", day, assembly.name)
         return result
@@ -1002,7 +1017,7 @@ class VmeRegisteredMail(models.Model):
         for registered in self.filtered(lambda r: r.state != "prepared"):
             self.env["vme.service.line"]._register_from_source(
                 registered, "registered_mail", registered.deposit_date or registered.date,
-                self.env._("Aangetekende zending %(name)s aan %(partner)s",
+                _vme_env(registered)._("Aangetekende zending %(name)s aan %(partner)s",
                            name=registered.name, partner=registered.partner_id.name))
 
     def action_deposit(self):
