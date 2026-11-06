@@ -7439,7 +7439,7 @@ msgstr ""
 #. module: vme_belgie
 #: model_terms:ir.ui.view,arch_db:vme_belgie.building_card_content
 msgid ""
-"Geen signalen: reservefonds, achterstallen, AV en keuringen zijn in orde."
+"Geen signalen: reservefonds, achterstallen, AV, keuringen, verzekering en attesten zijn in orde."
 msgstr ""
 
 #. module: vme_belgie

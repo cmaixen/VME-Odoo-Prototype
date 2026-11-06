@@ -6,6 +6,7 @@ from freezegun import freeze_time
 from odoo.exceptions import UserError
 from odoo.fields import Command
 from odoo.tests import TransactionCase, tagged
+from odoo.tools import format_amount
 
 TODAY = date(2026, 11, 5)
 PDF = base64.b64encode(b"%PDF-1.4\n% fictieve offerte\n%%EOF\n")
@@ -116,7 +117,8 @@ class TestWorksComparison(TransactionCase):
         self.assertEqual(columns.mapped("amount_total"), [48548, 36941, 53240])
         total = self._line(comparison, "Totaal incl. btw")
         self.assertEqual((total.page_1, total.page_2, total.page_3), (2, 2, 2))
-        self.assertIn("53.240,00", total.value_3)
+        # Formatted in the language of the user, like every amount in Odoo.
+        self.assertEqual(total.value_3, format_amount(self.env, 53240, comparison.currency_id))
         # Scaffolding excluded by one quote and water repellent not mentioned by another: missing.
         scaffolding = self._line(comparison, "Stelling")
         self.assertEqual((scaffolding.status_1, scaffolding.status_2, scaffolding.status_3), ("ok", "missing", "ok"))
