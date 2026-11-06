@@ -79,6 +79,14 @@ class VmeBudgetAnalysis(models.Model):
     _description = "Budgetopvolging"
     _auto = False
     _order = "association_id, year desc, account_id, key_id"
+    # Flush pending writes on these fields before the view is read.
+    _depends = {
+        "vme.budget": ["association_id", "company_id", "year", "working_capital_budget"],
+        "vme.budget.line": ["budget_id", "account_id", "key_id", "name", "amount"],
+        "account.move": ["company_id", "move_type", "state", "invoice_date", "partner_id", "vme_reserve_move_id"],
+        "account.move.line": ["move_id", "account_id", "vme_key_id", "name", "price_total", "display_type"],
+        "vme.association": ["company_id"],
+    }
 
     association_id = fields.Many2one("vme.association", string="VME", readonly=True)
     company_id = fields.Many2one("res.company", readonly=True)
