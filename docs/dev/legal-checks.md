@@ -3,7 +3,7 @@
 Automatisch gemaakt door `python3 tools/legal_checks.py`; niet met de hand bewerken.
 Elke rij is een wettelijke regel in de code die nog juridisch gevalideerd moet worden.
 
-Aantal punten: 101.
+Aantal punten: 109.
 
 ## Per bron
 
@@ -43,16 +43,18 @@ Aantal punten: 101.
 - **art. 3.88 §1, 1°, c) BW**: [vme_works.py:11](../../addons/vme_belgie/models/vme_works.py#L11), [vme_works.py:195](../../addons/vme_belgie/models/vme_works.py#L195)
 - **art. 3.88 §1-3 BW**: [vme_assembly_meeting.py:8](../../addons/vme_belgie/models/vme_assembly_meeting.py#L8)
 - **art. 3.88 §3 BW**: [vme_assembly_meeting.py:304](../../addons/vme_belgie/models/vme_assembly_meeting.py#L304)
+- **art. 3.89 §1 BW**: [vme_syndic.py:40](../../addons/vme_belgie/models/vme_syndic.py#L40), [vme_syndic.py:116](../../addons/vme_belgie/models/vme_syndic.py#L116), [vme_syndic.py:768](../../addons/vme_belgie/models/vme_syndic.py#L768), [vme_syndic.py:791](../../addons/vme_belgie/models/vme_syndic.py#L791)
+- **art. 3.89 §2 BW**: [vme_syndic.py:47](../../addons/vme_belgie/models/vme_syndic.py#L47), [vme_syndic.py:641](../../addons/vme_belgie/models/vme_syndic.py#L641), [vme_syndic_reports.xml:13](../../addons/vme_belgie/report/vme_syndic_reports.xml#L13)
 - **art. 3.89 §5 BW**: [account_bank_statement_line.py:165](../../addons/vme_belgie/models/account_bank_statement_line.py#L165), [account_move.py:56](../../addons/vme_belgie/models/account_move.py#L56), [vme_association.py:15](../../addons/vme_belgie/models/vme_association.py#L15), [vme_association.py:34](../../addons/vme_belgie/models/vme_association.py#L34), [vme_association.py:170](../../addons/vme_belgie/models/vme_association.py#L170), [vme_association.py:193](../../addons/vme_belgie/models/vme_association.py#L193), [vme_contract.py:39](../../addons/vme_belgie/models/vme_contract.py#L39), [vme_migration.py:621](../../addons/vme_belgie/models/vme_migration.py#L621), [vme_provision_call_wizard.py:115](../../addons/vme_belgie/wizard/vme_provision_call_wizard.py#L115)
 - **art. 3.89 §5, 12° BW**: [vme_document.py:17](../../addons/vme_belgie/models/vme_document.py#L17)
 - **art. 3.90 §1 BW**: [vme_council.py:16](../../addons/vme_belgie/models/vme_council.py#L16), [vme_council.py:104](../../addons/vme_belgie/models/vme_council.py#L104)
 - **art. 3.90 §1 en art. 3.91 BW**: [vme_council.py:35](../../addons/vme_belgie/models/vme_council.py#L35)
 - **art. 3.90 §3 BW**: [vme_payment.py:69](../../addons/vme_belgie/models/vme_payment.py#L69)
 - **art. 3.91 BW**: [vme_council.py:270](../../addons/vme_belgie/models/vme_council.py#L270)
-- **art. 3.93 BW**: [vme_request.py:702](../../addons/vme_belgie/models/vme_request.py#L702)
+- **art. 3.93 BW**: [vme_request.py:694](../../addons/vme_belgie/models/vme_request.py#L694)
 - **art. 3.93 §4 BW**: [vme_assembly_meeting.py:214](../../addons/vme_belgie/models/vme_assembly_meeting.py#L214)
 - **art. 3.94 BW**: [account_move.py:155](../../addons/vme_belgie/models/account_move.py#L155), [account_move.py:259](../../addons/vme_belgie/models/account_move.py#L259)
-- **art. 3.94 §1 BW**: [vme_sale_file.py:10](../../addons/vme_belgie/models/vme_sale_file.py#L10), [vme_sale_file.py:16](../../addons/vme_belgie/models/vme_sale_file.py#L16)
+- **art. 3.94 §1 BW**: [vme_sale_file.py:10](../../addons/vme_belgie/models/vme_sale_file.py#L10), [vme_sale_file.py:16](../../addons/vme_belgie/models/vme_sale_file.py#L16), [vme_syndic.py:952](../../addons/vme_belgie/models/vme_syndic.py#L952)
 - **art. 3.94 §1, 1° BW**: [vme_sale_file.py:264](../../addons/vme_belgie/models/vme_sale_file.py#L264)
 - **art. 3.94 §1, 2° en §2 BW**: [vme_sale_file.py:287](../../addons/vme_belgie/models/vme_sale_file.py#L287)
 - **art. 3.94 §1, 3° BW**: [vme_sale_file.py:279](../../addons/vme_belgie/models/vme_sale_file.py#L279)
@@ -151,17 +153,25 @@ Aantal punten: 101.
 | [addons/vme_belgie/models/vme_payment.py](../../addons/vme_belgie/models/vme_payment.py#L45) | 45 | Boek VII WER (omzetting art. 76 PSD2, richtlijn 2015/2366) | an owner can ask his bank to refund an authorised direct debit up to eight weeks after the collection; that comes back as MD06. |
 | [addons/vme_belgie/models/vme_payment.py](../../addons/vme_belgie/models/vme_payment.py#L69) | 69 | art. 3.90 §3 BW | the council of co-ownership supervises the syndic; a second approval by a council member is an agreement of the AV or the syndic contract, not a legal obligation. |
 | [addons/vme_belgie/models/vme_request.py](../../addons/vme_belgie/models/vme_request.py#L71) | 71 | art. 3.88 §1, 1°, b) BW | works on the common parts need a two-thirds majority of the assembly; some works (charging points, art. 3.82 §1 BW) follow their own procedure. To be confirmed. |
-| [addons/vme_belgie/models/vme_request.py](../../addons/vme_belgie/models/vme_request.py#L702) | 702 | art. 3.93 BW | the house rules (reglement van orde) bind tenants and occupants once they are made known to them; the checklist asks to send them to the new tenant. To be confirmed. |
+| [addons/vme_belgie/models/vme_request.py](../../addons/vme_belgie/models/vme_request.py#L694) | 694 | art. 3.93 BW | the house rules (reglement van orde) bind tenants and occupants once they are made known to them; the checklist asks to send them to the new tenant. To be confirmed. |
 | [addons/vme_belgie/models/vme_sale_file.py](../../addons/vme_belgie/models/vme_sale_file.py#L10) | 10 | art. 3.94 §1 BW | the syndic answers the notary's first request within 15 days. |
 | [addons/vme_belgie/models/vme_sale_file.py](../../addons/vme_belgie/models/vme_sale_file.py#L12) | 12 | art. 3.94 §2 BW | the syndic answers the second request (after the compromise) within 30 days. |
 | [addons/vme_belgie/models/vme_sale_file.py](../../addons/vme_belgie/models/vme_sale_file.py#L16) | 16 | art. 3.94 §1 BW | the notary receives the minutes of the assemblies of the last three years. |
 | [addons/vme_belgie/models/vme_sale_file.py](../../addons/vme_belgie/models/vme_sale_file.py#L264) | 264 | art. 3.94 §1, 1° BW | the reserve capital stays with the VME; the notary reports the share of the lot, not a refund to the seller (art. 3.86 §4 BW). |
 | [addons/vme_belgie/models/vme_sale_file.py](../../addons/vme_belgie/models/vme_sale_file.py#L279) | 279 | art. 3.94 §1, 3° BW | unpaid contributions of the seller. |
 | [addons/vme_belgie/models/vme_sale_file.py](../../addons/vme_belgie/models/vme_sale_file.py#L287) | 287 | art. 3.94 §1, 2° en §2 BW | works decided by the assembly before the sale. |
+| [addons/vme_belgie/models/vme_syndic.py](../../addons/vme_belgie/models/vme_syndic.py#L40) | 40 | art. 3.89 §1 BW | the mandate of the syndic lasts at most three years and can be renewed by the general assembly. |
+| [addons/vme_belgie/models/vme_syndic.py](../../addons/vme_belgie/models/vme_syndic.py#L47) | 47 | art. 3.89 §2 BW | an extract of the appointment is posted at the entrance of the building within eight days after the mandate starts. |
+| [addons/vme_belgie/models/vme_syndic.py](../../addons/vme_belgie/models/vme_syndic.py#L116) | 116 | art. 3.89 §1 BW | the assignment of the syndic and his fee are laid down in a written agreement, with the fixed (forfait) services and the price of the additional services. |
+| [addons/vme_belgie/models/vme_syndic.py](../../addons/vme_belgie/models/vme_syndic.py#L641) | 641 | art. 3.89 §2 BW | extract of the appointment posted at the entrance within eight days. |
+| [addons/vme_belgie/models/vme_syndic.py](../../addons/vme_belgie/models/vme_syndic.py#L768) | 768 | art. 3.89 §1 BW | at most three years, renewable by the general assembly. |
+| [addons/vme_belgie/models/vme_syndic.py](../../addons/vme_belgie/models/vme_syndic.py#L791) | 791 | art. 3.89 §1 BW | the general assembly appoints the syndic; absolute majority (art. 3.87 §8 BW) is assumed for the renewal. |
+| [addons/vme_belgie/models/vme_syndic.py](../../addons/vme_belgie/models/vme_syndic.py#L952) | 952 | art. 3.94 §1 BW | the costs of the information to the notary are borne by the selling co-owner; the VME pays the syndic and recharges the seller (not automated yet). |
 | [addons/vme_belgie/models/vme_works.py](../../addons/vme_belgie/models/vme_works.py#L11) | 11 | art. 3.88 §1, 1°, c) BW | the assembly fixes, with an absolute majority, the amount of contracts and works above which competition is compulsory. The law sets no number of quotes; art. 3.89 §5, 15° BW asks the syndic for "several" quotes on the basis of specifications. Three is the usual practice and the default here, editable per VME. |
 | [addons/vme_belgie/models/vme_works.py](../../addons/vme_belgie/models/vme_works.py#L18) | 18 | art. 1792 en 2270 oud BW | ten-year liability of contractor and architect for serious defects, counted from the acceptance of the works (here the provisional delivery). |
 | [addons/vme_belgie/models/vme_works.py](../../addons/vme_belgie/models/vme_works.py#L195) | 195 | art. 3.88 §1, 1°, c) BW | competition above the amount fixed by the assembly. |
 | [addons/vme_belgie/models/vme_works.py](../../addons/vme_belgie/models/vme_works.py#L449) | 449 | art. 3.86 §3 BW en KB 12 juli 2012 (minimum chart of accounts) | the reserve capital pays for works; align the accounts and the treatment of non-deductible VAT. |
+| [addons/vme_belgie/report/vme_syndic_reports.xml](../../addons/vme_belgie/report/vme_syndic_reports.xml#L13) | 13 | art. 3.89 §2 BW | which data the extract must contain is not yet validated. |
 | [addons/vme_belgie/wizard/vme_provision_call_wizard.py](../../addons/vme_belgie/wizard/vme_provision_call_wizard.py#L115) | 115 | art. 3.89 §5 BW | working and reserve capital on separate bank accounts, so each fund gets its own invoice paid to its own account. |
 | [addons/vme_rentmeester/models/rent_contract.py](../../addons/vme_rentmeester/models/rent_contract.py#L253) | 253 | art. 1728bis oud BW, art. 34 VWHD, art. 224 BHC, art. 26 Waals decreet 15-03-2018 | alleen een schriftelijk contract dat indexering niet uitsluit, kan geïndexeerd worden. |
 | [addons/vme_rentmeester/models/rent_rules.py](../../addons/vme_rentmeester/models/rent_rules.py#L30) | 30 | art. 1728bis oud BW, art. 34 VWHD, art. 224 BHC, art. 26 Waals decreet 15-03-2018 | in alle drie de gewesten is de geïndexeerde huur = basishuur x nieuw indexcijfer / aanvangsindexcijfer, met de gezondheidsindex. |

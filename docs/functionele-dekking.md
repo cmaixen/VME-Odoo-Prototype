@@ -51,6 +51,11 @@ Legende: ✅ gebouwd · 🔨 wordt nu gebouwd · 📋 gepland · ➖ bewust late
 | | Leverancierskaart met contracten, keuringen, lopende werken en facturen | ✅ | stap 22 |
 | Documentbeheer | Mappen per VME en kavel, delen of niet delen, acties op meerdere documenten | ✅ | stap 15 |
 | | Automatisch ordenen met AI | ✅ | stap 21 (soort en VME) met de mappen van stap 15 |
+| Eigen bedrijf van de syndicus | Beheerovereenkomst per VME: vast ereloon per kavel of per VME, indexering, prijslijst extra prestaties | ✅ | ereloon syndicus |
+| | Extra prestaties geregistreerd waar ze ontstaan (verkoop, schade, buitengewone AV, aangetekend) | ✅ | ereloon syndicus |
+| | Ereloonfactuur per maand of kwartaal, als leveranciersfactuur in de VME op de beheerkosten | ✅ | ereloon syndicus |
+| | Mandaat van de syndicus, herbenoeming op de AV, aanplakking aan de ingang | ✅ | ereloon syndicus |
+| | Kosten van de inlichtingen aan de notaris doorrekenen aan de verkoper | 📋 | `recharge_partner_id` staat klaar |
 | Huurcontractbeheer | Huurcontracten, huurders, waarborg, maandelijkse huur, opzeg en einde huur | ✅ | stap 25 |
 | | Doorstorting aan de verhuurder en ereloon van de rentmeester | 📋 | na stap 25 |
 | Centraal communicatiebeheer | Brieven, e-mail en aangetekend per VME, blok of kavel, met voorkeur papier of e-mail | ✅ | stap 23 |

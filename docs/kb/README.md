@@ -104,6 +104,10 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 
 30. [Een verhuurd appartement beheren: huurcontract, huurfacturen, indexering en afrekening aan de huurder](rentmeester.md)
 
+### Het kantoor van de syndicus
+
+31. [Uw ereloon, extra prestaties en uw mandaat als syndicus](ereloon-en-mandaat.md)
+
 ## Zo is het platform opgebouwd
 
 - **Eén VME = één bedrijf in Odoo.** Elke VME heeft haar eigen boekhouding, eigen rekeningnummers en eigen facturen. Rechtsboven in Odoo kies je in welke VME je werkt wanneer je facturen ingeeft. De schermen in de app **VME** (kavels, sleutels, provisieoproepen, jaarafrekening) tonen altijd alle VME's samen.
@@ -125,6 +129,8 @@ De demo bevat drie verzonnen gebouwen:
 | Kaaihuis | 6 appartementen (K1–K6) | Algemene sleutel | Klein gebouw zonder lift; K2 is verhuurd |
 
 Elk gebouw heeft een sleutelregister en dezelfde verzonnen slotenmaker (Slotenmaker Voorbeeld BV).
+
+De drie gebouwen worden beheerd door het fictieve kantoor **Syndicus Voorbeeld BV**, met een beheerovereenkomst en een mandaat per gebouw; zie [ereloon en mandaat](ereloon-en-mandaat.md).
 
 Bij de demo horen ook drie verhuurde appartementen (Linde A2, Linde A7 en Beuken B23), beheerd door het fictieve kantoor **Rentmeester Voorbeeld BV**; zie [rentmeester](rentmeester.md).
 

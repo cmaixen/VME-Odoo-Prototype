@@ -147,6 +147,15 @@ class TestAnnualStatementDemo(TransactionCase):
         self.assertAlmostEqual(self.data["allocated_total"], sum(bills.mapped("amount_total")), places=2)
         self.assertAlmostEqual(sum(st["cost_total"] for st in self.data["statements"]), self.data["bills_total"], places=2)
 
+    def test_syndic_fee_bills_stay_drafts(self):
+        # Fee invoices of Q3 2026 are confirmed in the office; in the VME they wait as drafts, so the
+        # costs of the demo year do not change.
+        invoices = self.env["account.move"].search([("vme_fee_agreement_id", "!=", False)])
+        self.assertEqual(len(invoices), 5)  # Linde and Kaaihuis per quarter, Hof ter Beuken per month
+        self.assertEqual(set(invoices.mapped("state")), {"posted"})
+        self.assertEqual(set(invoices.vme_fee_bill_id.mapped("state")), {"draft"})
+        self.assertEqual(invoices.vme_fee_bill_id.company_id, self.env["vme.association"].search([]).company_id)
+
     def test_sale_of_a5(self):
         seller = self.by_name["Eigenaar Linde A5"]
         buyer = self.by_name["Nieuwe eigenaar Linde A5"]

@@ -30,6 +30,7 @@ Interne documentatie voor wie aan de module `vme_belgie` werkt. De gebruikersdoc
 | [aanvragen.md](aanvragen.md) | Aanvragen van bewoners: intake, verificatie, bestelling, sleutelregister, privé-aanrekening en koppelplaatsen (stap 19) |
 | [gebouwkaart.md](gebouwkaart.md) | Gebouwkaart, budget per rekening en sleutel, budgetopvolging, kapitalen, signalen, portefeuille, leverancierskaart (stap 22) |
 | [migratie.md](migratie.md) | Overstap uit een ander pakket: importformaat, proefrun, openingsboeking, omzetters (stap 13) |
+| [syndicus.md](syndicus.md) | Het kantoor van de syndicus: beheerovereenkomst, indexering, prestaties uit de bronnen, ereloonfactuur en leveranciersfactuur in de VME, mandaat, herbenoeming en aanplakking |
 | [rentmeester.md](rentmeester.md) | Module `vme_rentmeester`: huurcontracten, huurfacturen, indexering met de indexstop per gewest, afrekening aan huurders (stap 25) |
 | [legal-checks.md](legal-checks.md) | Alle `LEGAL-CHECK`-punten uit de code (gegenereerd) |
 

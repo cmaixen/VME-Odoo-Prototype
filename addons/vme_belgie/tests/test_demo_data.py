@@ -1,5 +1,7 @@
 from datetime import date
 
+from freezegun import freeze_time
+
 from odoo.exceptions import UserError
 from odoo.tests import TransactionCase, tagged
 
@@ -188,3 +190,19 @@ class TestDemoData(TransactionCase):
         self.assertNotIn("assembly", signals["Residentie Linde"])
         self.assertIn("inspection", signals["Residentie Linde"])
         self.assertEqual(self.linde.arrears_signal_threshold, 250)
+
+    @freeze_time(date(2026, 11, 5))
+    def test_demo_syndic(self):
+        office = self.env["res.company"].search([("is_syndic_office", "=", True)])
+        self.assertEqual(office.name, "Syndicus Voorbeeld BV")
+        agreements = self.env["vme.management.agreement"].search([])
+        self.assertEqual(sorted(agreements.mapped("association_id.name")), sorted(self.vmes.mapped("name")))
+        mandates = {m.association_id.name: m for m in self.env["vme.syndic.mandate"].search([])}
+        self.assertEqual(mandates["Residentie Linde"].renewal_assembly_year, 2027)
+        self.assertEqual(mandates["Residentie Linde"].renewal_state, "plan")
+        self.assertEqual(mandates["Hof ter Beuken"].renewal_state, "ok")
+        self.assertEqual(mandates["Kaaihuis"].posting_state, "late")
+        services = {(s.association_id.name, s.service_type) for s in self.env["vme.service.line"].search([])}
+        self.assertEqual(services, {("Residentie Linde", "damage_claim"), ("Hof ter Beuken", "extra_meeting"),
+                                    ("Kaaihuis", "registered_mail")})
+
