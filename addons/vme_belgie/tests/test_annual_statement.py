@@ -284,3 +284,26 @@ class TestAnnualStatementDemo(TransactionCase):
         self.assertIn("AV 2027 plannen", kaai.cycle_current_step)
         # The cycle posted nothing: no posted invoice of 2027.
         self.assertFalse(self.env["account.move"].search([("state", "=", "posted"), ("date", ">=", "2027-01-01")]))
+
+    def test_demo_worklist(self):
+        """Mijn werk vandaag of the demo login on 5 November 2026: late, today and this week are filled."""
+        admin = self.env.ref("base.user_admin")
+        items = self.env["vme.work.item"].with_user(admin).with_context(vme_today=date(2026, 11, 5))._build()
+        mine = items.filtered(lambda i: i.user_id == admin)
+        self.assertEqual(set(mine.mapped("urgency")), {"late", "today", "week"})
+        self.assertEqual(set(mine.association_id.mapped("name")), {"Residentie Linde", "Hof ter Beuken"})
+        by_name = {item.name: item for item in mine}
+        self.assertEqual(by_name["AV 2026 houden"].urgency, "late")
+        self.assertEqual(by_name["Keuring plannen: Brandblussers"].urgency, "late")
+        self.assertEqual(by_name["AI-voorstel: Vraag over afrekening of provisies (A8)"].item_type, "draft")
+        self.assertEqual(mine.filtered(lambda i: i.kind == "order").association_id.name, "Hof ter Beuken")
+        self.assertEqual(len(mine.filtered(lambda i: i.kind == "reminder")), 2)
+        self.assertEqual(by_name["Inlichtingen notaris: eerste vraag beantwoorden"].urgency, "week")
+        # The colleague of Kaaihuis has his own work; nothing of it is on the list of admin.
+        staff = items.user_id - admin
+        self.assertEqual(staff.login, "medewerker.voorbeeld@example.com")
+        self.assertEqual(set((items - mine).association_id.mapped("name")), {"Kaaihuis"})
+        # Building the list sent nothing: the drafts are still drafts.
+        self.assertEqual(set(self.env["vme.collection.reminder"].search([]).mapped("state")) - {"sent"}, {"draft"})
+        self.assertFalse(self.env["vme.request"].search([("association_id.name", "=", "Hof ter Beuken"),
+                                                         ("order_sent_date", "!=", False)]))

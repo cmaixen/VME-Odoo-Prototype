@@ -1,7 +1,7 @@
 {
     "name": "VME België",
     "summary": "Beheer van verenigingen van mede-eigenaars (VME) voor syndici",
-    "version": "19.0.1.13.0",
+    "version": "19.0.1.14.0",
     "category": "Accounting",
     "author": "VME-prototype",
     "license": "LGPL-3",
@@ -74,6 +74,7 @@
         "wizard/vme_fee_invoice_wizard_views.xml",
         "views/vme_syndic_views.xml",
         "views/vme_provision_call_run_views.xml",
+        "views/vme_work_item_views.xml",
     ],
     "installable": True,
     "application": True,

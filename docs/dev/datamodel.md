@@ -42,7 +42,7 @@ erDiagram
 
 | Model | Betekenis | Belangrijke velden en regels |
 | --- | --- | --- |
-| `vme.association` | VME | `company_id` (verplicht via SQL-check, uniek); naam, KBO, adres zijn `related` naar de company; `working_capital_bank_id` en `reserve_capital_bank_id` (moeten verschillen); `untrusted_fund_bank_ids` (berekend: rekeningen zonder `allow_out_payment`). KBO-controle modulo 97. |
+| `vme.association` | VME | `company_id` (verplicht via SQL-check, uniek); naam, KBO, adres zijn `related` naar de company; `working_capital_bank_id` en `reserve_capital_bank_id` (moeten verschillen); `untrusted_fund_bank_ids` (berekend: rekeningen zonder `allow_out_payment`); `manager_user_id` (dossierbeheerder, stap 29). KBO-controle modulo 97. |
 | `vme.lot` | Kavel | `name` uniek per VME, `lot_type` (appartement, garage, berging, handelsruimte, andere), `floor`, `current_owner_id` (berekend voor vandaag). `_get_owner_on(date)` geeft de eigenaar op een datum. |
 | `vme.ownership` | Eigendom | `lot_id`, `partner_id`, `date_start`, `date_end` (leeg = loopt nog). Geen overlap per kavel: één eigenaar tegelijk. |
 | `vme.key` | Verdeelsleutel | `key_type` (algemeen, lift, verwarming, op verbruik, andere), `total_shares` (standaard 1000), `line_ids`; `is_balanced` en `shares_difference` berekend. Opslaan faalt als de som niet het totaal is. Voor "op verbruik": `meter_type` en `fixed_percent` (zie [verbruik.md](verbruik.md)). |
@@ -79,6 +79,8 @@ erDiagram
 | `vme.capital.movement` | Verloop kapitalen (SQL-view) | Provisies en gebruik van werk- en reservekapitaal per datum, voor een gecumuleerde lijngrafiek. |
 | `vme.cycle.step` | Stap in de jaarcyclus | Uniek per VME, jaar, `code` en `sequence` (nummer van de provisieoproep); `date_ready`, `date_deadline`, `state` (gepland, klaargezet, afgerond, niet van toepassing), `user_id`, `res_model`/`res_id` van het concept; berekend `is_late`. Op `vme.association`: `cycle_start_date`, `cycle_user_id`, `cycle_current_step`, `cycle_late_count`. Zie [jaarcyclus.md](jaarcyclus.md). |
 | `vme.migration` | Overstap uit een ander pakket | `attachment_ids` (exportbestanden), `source_format`, `state` (nieuw, proefrun gedaan, geïmporteerd), `report_html`, `error_count`, `warning_count`, `transition_date`, `association_id`, `opening_move_id`. Zie [migratie.md](migratie.md). |
+
+`vme.work.item` (transient, stap 29): één lijn van **Mijn werk vandaag** per taak, signaal of concept, met `association_id`, `kind`, `item_type`, `date_deadline`, `urgency`, `user_id`, `res_model`/`res_id` en `activity_id`; elke opening bouwt de lijst van de gebruiker opnieuw (zie [werkbak.md](werkbak.md)).
 
 Wizards (transient): `vme.provision.call.wizard`, `vme.annual.statement.wizard` en `vme.financial.statements.wizard` (balans en resultatenrekening, stap 26), elk met een HTML-voorbeeld (`preview_html`).
 Wizards (transient): `vme.provision.call.wizard` en `vme.annual.statement.wizard`, elk met een HTML-voorbeeld (`preview_html`). Meer dan 20 VME's in de provisiewizard worden een `vme.provision.call.run` (budgetjaar, nummer, datums, VME's, verwerkte VME's, status, logboek), die een cron VME per VME afwerkt (zie [schaal.md](schaal.md)).

@@ -30,6 +30,12 @@ class VmeAssociation(models.Model):
         related="company_id.country_id", string="Land", readonly=False
     )
     partner_id = fields.Many2one(related="company_id.partner_id", string="Partner")
+    manager_user_id = fields.Many2one(
+        "res.users", string="Dossierbeheerder", domain="[('share', '=', False)]", tracking=True,
+        default=lambda self: self.env.user if not self.env.user._is_superuser() else False,
+        help="Volgt deze VME op. Krijgt de taken die Odoo zelf aanmaakt als er geen andere verantwoordelijke "
+             "is, en ziet het werk van de VME in Mijn werk vandaag.",
+    )
 
     # LEGAL-CHECK: art. 3.89 §5 BW - working and reserve capital on separate accounts.
     working_capital_bank_id = fields.Many2one(
@@ -109,6 +115,13 @@ class VmeAssociation(models.Model):
                 self._vme_all_companies_users().write({"company_ids": [fields.Command.link(company.id)]})
                 vals["company_id"] = company.id
         return super().create(vals_list)
+
+    def _vme_task_user(self):
+        """Who gets a task that Odoo makes for this VME without a responsible: the case manager, else the admin.
+
+        Also on an empty recordset (a request without a VME). Crons run as OdooBot, so self.env.user is no fallback.
+        """
+        return self[:1].sudo().manager_user_id.with_env(self.env) or self.env.ref("base.user_admin")
 
     def _vme_all_companies_users(self):
         users = self.env.ref("vme_belgie.group_vme_all_companies").sudo().all_user_ids | self.env.user.sudo()

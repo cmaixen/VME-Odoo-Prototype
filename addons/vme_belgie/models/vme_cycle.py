@@ -375,7 +375,7 @@ class VmeAssociation(models.Model):
     )
     cycle_user_id = fields.Many2one(
         "res.users", string="Verantwoordelijke jaarcyclus", domain="[('share', '=', False)]",
-        help="Krijgt de taken van de jaarcyclus. Leeg: de beheerder.",
+        help="Krijgt de taken van de jaarcyclus. Leeg: de dossierbeheerder van de VME.",
     )
     cycle_step_ids = fields.One2many("vme.cycle.step", "association_id", string="Jaarcyclus")
     cycle_current_step = fields.Char(string="Volgende stap", compute="_compute_cycle_status")
@@ -415,7 +415,7 @@ class VmeAssociation(models.Model):
 
     def _cycle_default_user(self):
         self.ensure_one()
-        return self.cycle_user_id or self.env.ref("base.user_admin")
+        return self.cycle_user_id or self._vme_task_user()
 
     # Hooks for other steps
 

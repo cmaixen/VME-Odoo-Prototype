@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="vme_work_item_view_list" model="ir.ui.view">
+        <field name="name">vme.work.item.list</field>
+        <field name="model">vme.work.item</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0" delete="0" expand="1" default_order="urgency_rank, association_id, date_deadline, id"
+                  decoration-danger="urgency == 'late'" decoration-warning="urgency == 'today'"
+                  decoration-info="item_type == 'draft'">
+                <header>
+                    <button name="action_refresh" type="object" string="Vernieuwen" display="always" icon="fa-refresh"/>
+                </header>
+                <field name="urgency" column_invisible="1"/>
+                <field name="date_deadline"/>
+                <field name="association_id"/>
+                <field name="name"/>
+                <field name="description" optional="show"/>
+                <field name="kind" optional="show"/>
+                <field name="item_type" optional="show" widget="badge"
+                       decoration-info="item_type == 'draft'" decoration-muted="item_type == 'signal'"/>
+                <field name="user_id" widget="many2one_avatar_user" optional="show"/>
+                <button name="action_open_record" type="object" string="Openen" icon="fa-external-link" class="btn-link"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_work_item_view_search" model="ir.ui.view">
+        <field name="name">vme.work.item.search</field>
+        <field name="model">vme.work.item</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="association_id"/>
+                <field name="user_id"/>
+                <filter name="mine" string="Mijn werk" domain="[('user_id', '=', uid)]"/>
+                <filter name="unassigned" string="Zonder verantwoordelijke" domain="[('user_id', '=', False)]"/>
+                <separator/>
+                <filter name="late" string="Te laat" domain="[('urgency', '=', 'late')]"/>
+                <filter name="today" string="Vandaag" domain="[('urgency', '=', 'today')]"/>
+                <filter name="week" string="Deze week" domain="[('urgency', '=', 'week')]"/>
+                <separator/>
+                <filter name="tasks" string="Taken" domain="[('item_type', '=', 'task')]"/>
+                <filter name="signals" string="Signalen" domain="[('item_type', '=', 'signal')]"/>
+                <filter name="drafts" string="Concepten die op een klik wachten" domain="[('item_type', '=', 'draft')]"/>
+                <group>
+                    <filter name="group_urgency" string="Urgentie" context="{'group_by': 'urgency'}"/>
+                    <filter name="group_vme" string="VME" context="{'group_by': 'association_id'}"/>
+                    <filter name="group_user" string="Verantwoordelijke" context="{'group_by': 'user_id'}"/>
+                    <filter name="group_kind" string="Onderwerp" context="{'group_by': 'kind'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="vme_work_item_action" model="ir.actions.act_window">
+        <field name="name">Mijn werk vandaag</field>
+        <field name="res_model">vme.work.item</field>
+        <field name="view_mode">list</field>
+        <field name="search_view_id" ref="vme_work_item_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Niets meer te doen vandaag</p>
+            <p>Hier staan de taken, signalen en concepten van uw VME's die te laat zijn, vandaag vervallen of deze
+               week vervallen. Haal de filter "Mijn werk" weg om het werk van collega's te zien.</p>
+        </field>
+    </record>
+
+    <record id="vme_work_item_server_action" model="ir.actions.server">
+        <field name="name">Mijn werk vandaag</field>
+        <field name="model_id" ref="model_vme_work_item"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_worklist()</field>
+    </record>
+
+    <menuitem id="menu_vme_work_item" name="Mijn werk vandaag" parent="menu_vme_root"
+              action="vme_work_item_server_action" sequence="3"/>
+</odoo>

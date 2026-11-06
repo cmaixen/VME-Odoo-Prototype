@@ -16,7 +16,7 @@ Code: `models/vme_cycle.py`, views en cron in `views/vme_cycle_views.xml`, demo 
 | `date_ready`, `date_deadline` | klaarzetten vanaf, uiterlijk |
 | `state` | `pending` → `ready` → `done`, of `skipped` |
 | `is_late` | berekend (niet opgeslagen) met zoekmethode; `vme_today` in de context zoals de AV-planner |
-| `user_id` | verantwoordelijke; leeg = `vme.association.cycle_user_id` of admin |
+| `user_id` | verantwoordelijke; leeg = `vme.association.cycle_user_id`, dan de dossierbeheerder `manager_user_id` (stap 29), dan admin |
 | `res_model`, `res_id` | het concept: `vme.assembly`, `vme.provision.call` of `vme.budget` |
 | `note`, `prepared_date`, `done_date` | wat klaarstaat of wat eerst opgelost moet worden |
 

@@ -65,6 +65,7 @@
                 <field name="currency_id" column_invisible="1"/>
                 <field name="name"/>
                 <field name="city" optional="show"/>
+                <field name="manager_user_id" widget="many2one_avatar_user" optional="show"/>
                 <field name="lot_count" optional="show"/>
                 <field name="working_capital_balance"/>
                 <field name="reserve_capital_balance"/>
@@ -91,6 +92,9 @@
             <search>
                 <field name="name"/>
                 <field name="city"/>
+                <field name="manager_user_id"/>
+                <filter name="my_vmes" string="Mijn VME's" domain="[('manager_user_id', '=', uid)]"/>
+                <separator/>
                 <filter name="with_signal" string="Met signalen" domain="[('signal_count', '>', 0)]"/>
                 <separator/>
                 <filter name="signal_reserve" string="Reservefonds onder 5%" domain="[('signal_reserve', '=', True)]"/>
@@ -101,6 +105,7 @@
                 <filter name="archived" string="Gearchiveerd" domain="[('active', '=', False)]"/>
                 <group>
                     <filter name="group_city" string="Gemeente" context="{'group_by': 'city'}"/>
+                    <filter name="group_manager" string="Dossierbeheerder" context="{'group_by': 'manager_user_id'}"/>
                 </group>
             </search>
         </field>

@@ -332,8 +332,8 @@ class VmeRequest(models.Model):
             "source_reference": reference or False,
             "requester_id": partner.id,
         }
-        if user_id:
-            vals["user_id"] = user_id
+        # Without a responsible from the caller: the case manager, not the user of the mail gateway or the AI.
+        vals["user_id"] = user_id or vme._vme_task_user().id
         if request_type == "key":
             vals["key_kind"] = next(
                 (kind for kind, words in KEY_KIND_WORDS if any(w in text for w in words)), "entrance_key")
