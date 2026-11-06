@@ -52,6 +52,34 @@ Bewust zo gelaten:
 - **Partners zijn gedeeld.** Een medewerker met een deel van de VME's ziet de contactkaarten van eigenaars uit andere VME's in de contactenlijst, maar niet hun eigendommen, provisies of documenten. Afscherming van partners per VME vraagt een eigen regel op `res.partner` en raakt Odoo's eigen schermen; dat is voor later.
 - **De bedrijvenkiezer filtert de VME-lijsten niet**, de boekhouding wel (Odoo-standaard).
 
+## Niets vertrekt vanzelf (review november 2026)
+
+Harde regel: een mail, bestelling, brief of betaling vertrekt nooit zonder een klik van een medewerker. Ik heb nagekeken waar iets naar buiten kan gaan:
+
+| Pad | Wat vertrekt | Wie start het |
+| --- | --- | --- |
+| `vme.communication.action_confirm` → `vme.communication.log._send` | e-mail (via de Odoo-wachtrij), sms, push, aangetekend | klik op **Bevestigen** |
+| Oproepingen en herinneringen (`mail.composer.mixin`) | e-mail | de medewerker verstuurt via de mailcomposer of markeert ze als verstuurd |
+| `vme.request.action_send_order` | bestelling bij de slotenmaker | klik; na de verificatie wordt de bestelling alleen klaargezet |
+| Betaalbatches (SEPA) | bestand | de medewerker laadt het zelf op in de bank |
+| Portaaltoegang en de login van de commissaris | uitnodiging | de wizard van Odoo, na een klik; logins worden aangemaakt met `no_reset_password` |
+| AI-assistent (`ai/`) | – | maakt alleen een taak met een concept |
+
+**Crons (geen enkele verstuurt iets):**
+- `ir_cron_rent_invoices`: maakt concepten van huurfacturen.
+- `ir_cron_rent_reminders` en de taken voor contracten en keuringen: alleen activiteiten en conceptindexeringen.
+- `ir_cron_collection_refresh`: herberekent de invorderingsdossiers.
+- `ir_cron_auditor_access`: past de companies van de commissaris aan en archiveert hem na zijn laatste mandaat.
+
+**Afspraken in de agenda** voor een AV worden aangemaakt met `no_mail_to_attendees`, en alleen de medewerker is deelnemer.
+
+**Berichten in de chatter** met `message_post(body=...)` zijn notities (subtype `mail.mt_note`): volgers krijgen geen mail.
+
+Om op te volgen:
+- **De koppeling `_auto_send_order` in `vme_request.py`** (gaf `False` terug) is op main verwijderd. Bij het samenvoegen van deze branch wint main.
+- **Odoo zelf** stuurt een bounce-mail als een inkomende mail op een factuuralias niet verwerkt kan worden. Wil de syndicus ook dat niet, dan moet de mailserver zulke mails tegenhouden. Het is een technisch antwoord aan de afzender, geen bericht van de syndicus.
+- **Wie een nieuwe cron of geautomatiseerde actie toevoegt**, maakt alleen concepten of taken, nooit een verzending.
+
 ## Een model toevoegen
 
 1. Een globale regel in `security/vme_company_security.xml` (of in het `security/`-bestand van je module): `company_id in user.company_ids.ids`, of via de ouder.
