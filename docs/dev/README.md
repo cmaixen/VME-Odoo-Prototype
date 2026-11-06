@@ -9,6 +9,7 @@ Interne documentatie voor wie aan de module `vme_belgie` werkt. De gebruikersdoc
 | [rekenregels.md](rekenregels.md) | Verdeling van kosten, afronding, provisies, jaarafrekening, 5%-regel |
 | [odoo-uitbreidingen.md](odoo-uitbreidingen.md) | Welke Odoo-methodes we overschrijven en waarom |
 | [valkuilen.md](valkuilen.md) | Wat misliep en hoe we het oplosten, plus bekende problemen |
+| [vertaling.md](vertaling.md) | Franse vertaling: `fr.po`, woordenlijst, rapporten in de taal van de ontvanger, nieuwe termen bijwerken |
 | [omgeving-tests-demo.md](omgeving-tests-demo.md) | Docker, tests, demodata, een tweede demo naast de eerste, schermafbeeldingen |
 | [keuringen.md](keuringen.md) | Installaties, keuringsverslagen, opmerkingen, cron en factuurkoppeling (stap 6b) |
 | [av-planner.md](av-planner.md) | AV-periodes, blokken en de planner (stap 6c) |

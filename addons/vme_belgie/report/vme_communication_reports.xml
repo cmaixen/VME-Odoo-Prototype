@@ -17,27 +17,32 @@
                 <t t-set="vme" t-value="o.association_id"/>
                 <t t-set="company" t-value="vme.company_id"/>
                 <t t-set="partner" t-value="o.partner_id"/>
-                <t t-call="web.external_layout">
-                    <div class="page">
-                        <div class="row mb-4">
-                            <div class="col-6">
-                                <div class="text-muted">VME <t t-out="vme.name"/><t t-if="vme.kbo_number"> · KBO <t t-out="vme.kbo_number"/></t></div>
-                                <div class="text-muted"><span t-out="o.sent_date or o.date" t-options="{'widget': 'date'}"/></div>
-                                <div class="text-muted" t-if="o.lot_names">Kavels: <t t-out="o.lot_names"/></div>
-                            </div>
-                            <div class="col-5 offset-1">
-                                <div t-if="o.channel == 'registered'"><strong>AANGETEKEND</strong></div>
-                                <strong t-out="partner.name"/>
-                                <div t-if="partner.street" t-out="partner.street"/>
-                                <div t-if="partner.street2" t-out="partner.street2"/>
-                                <div t-if="partner.city"><t t-out="partner.zip"/> <t t-out="partner.city"/></div>
-                            </div>
-                        </div>
-                        <h4 t-out="o.subject"/>
-                        <div t-out="o.body_html"/>
-                    </div>
-                </t>
+                <t t-call="vme_belgie.report_communication_letter_document" t-lang="o.partner_id.lang"/>
             </t>
+        </t>
+    </template>
+
+    <!-- In the language of the recipient: see docs/dev/vertaling.md -->
+    <template id="report_communication_letter_document">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <div class="row mb-4">
+                    <div class="col-6">
+                        <div class="text-muted">VME <t t-out="vme.name"/><t t-if="vme.kbo_number"> · KBO <t t-out="vme.kbo_number"/></t></div>
+                        <div class="text-muted"><span t-out="o.sent_date or o.date" t-options="{'widget': 'date'}"/></div>
+                        <div class="text-muted" t-if="o.lot_names">Kavels: <t t-out="o.lot_names"/></div>
+                    </div>
+                    <div class="col-5 offset-1">
+                        <div t-if="o.channel == 'registered'"><strong>AANGETEKEND</strong></div>
+                        <strong t-out="partner.name"/>
+                        <div t-if="partner.street" t-out="partner.street"/>
+                        <div t-if="partner.street2" t-out="partner.street2"/>
+                        <div t-if="partner.city"><t t-out="partner.zip"/> <t t-out="partner.city"/></div>
+                    </div>
+                </div>
+                <h4 t-out="o.subject"/>
+                <div t-out="o.body_html"/>
+            </div>
         </t>
     </template>
 </odoo>

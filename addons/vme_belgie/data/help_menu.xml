@@ -168,6 +168,13 @@
         <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/eigenaarsportaal.md"}</field>
     </record>
 
+    <record id="action_help_french" model="ir.actions.server">
+        <field name="name">Help: documenten in het Frans</field>
+        <field name="model_id" ref="model_vme_association"/>
+        <field name="state">code</field>
+        <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/documenten-in-het-frans.md"}</field>
+    </record>
+
     <record id="action_help_contracts" model="ir.actions.server">
         <field name="name">Help: contracten en personeel</field>
         <field name="model_id" ref="model_vme_association"/>
@@ -271,4 +278,5 @@
     <menuitem id="menu_vme_help_user_access" name="Toegang voor medewerkers" parent="menu_vme_help" action="action_help_user_access" sequence="160"/>
     <menuitem id="menu_vme_help_cycle" name="Het jaar van een VME opvolgen (jaarcyclus)" parent="menu_vme_help" action="action_help_cycle" sequence="16"/>
     <menuitem id="menu_vme_help_syndic" name="Ereloon, prestaties en mandaat van de syndicus" parent="menu_vme_help" action="action_help_syndic" sequence="145"/>
+    <menuitem id="menu_vme_help_french" name="Documenten in het Frans" parent="menu_vme_help" action="action_help_french" sequence="155"/>
 </odoo>

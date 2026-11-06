@@ -298,12 +298,14 @@ class VmeRentContract(models.Model):
         ratio = days / month_days
         rent = self._get_rent_on(start)
         currency = self.currency_id
-        period = format_date(self.env, first, date_format="MMMM y")
-        suffix = "" if days == month_days else self.env._(" (%(days)s van %(total)s dagen)", days=days, total=month_days)
+        # The invoice goes to the tenant: line texts in the tenant's language.
+        tenant_env = self.with_context(lang=self.tenant_id.lang).env
+        period = format_date(tenant_env, first, date_format="MMMM y")
+        suffix = "" if days == month_days else tenant_env._(" (%(days)s van %(total)s dagen)", days=days, total=month_days)
         account = self.company_id._rent_account()
         analytic = {str(self.analytic_account_id.id): 100} if self.analytic_account_id else False
         lines = [Command.create({
-            "name": self.env._("Huur %(period)s", period=period) + suffix,
+            "name": tenant_env._("Huur %(period)s", period=period) + suffix,
             "quantity": 1,
             "price_unit": currency.round(rent * ratio),
             "account_id": account.id,

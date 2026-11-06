@@ -125,6 +125,13 @@ Sinds er buitengewone AV's zijn, kan een VME meer dan één AV per jaar hebben. 
 - Een test die als superuser (`cls.env.user`) een company aanmaakt en daarna als `base.user_admin` leest, moet admin die company ook geven (zie `vme_rentmeester/tests/test_settlement.py`).
 - `vme.request` zonder kavel faalt bij het opslaan: `owner_id = request.lot_id and ...` geeft een lege `vme.lot`-recordset aan een veld op `res.partner`. Nog open.
 
+## Vertaling: rapporten in de taal van de ontvanger
+
+- **Een `t-lang` op `web.external_layout` vertaalt de inhoud niet.** De body van een `t-call` hoort bij het aanroepende template en wordt in de taal van dat template vertaald. De inhoud moet in een eigen `_document`-template dat met `t-lang` aangeroepen wordt; zie [vertaling.md](vertaling.md#rapporten-qweb).
+- **`--i18n-overwrite`.** Zonder die optie laat `-u` bestaande vertalingen in de database staan; een verbeterde vertaling in `fr.po` komt er dan niet door.
+- **`odoo i18n export` via `docker compose run`** faalt met "unrecognized arguments: --db_host": het entrypoint plakt de databaseverbinding achter elk commando. Gebruik een configbestand (`-c`), zie [vertaling.md](vertaling.md#nieuwe-termen-bijwerken).
+- **Tekst in een datumformaat of zinnen in stukken** (`'\'om\' HH:mm'`, "op de `<t t-if>`buitengewone`</t>` algemene vergadering") zijn niet te vertalen. Volledige zinnen per tak.
+
 ## Bekende problemen (nog open)
 
 - Geen op dit moment.

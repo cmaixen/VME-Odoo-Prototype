@@ -15,47 +15,52 @@
             <t t-foreach="docs" t-as="o">
                 <t t-set="vme" t-value="o.association_id"/>
                 <t t-set="company" t-value="vme.company_id"/>
-                <t t-call="web.external_layout">
-                    <div class="page">
-                        <div class="row mb-4">
-                            <div class="col-6">
-                                <h2 class="mb-0">Bestelbon</h2>
-                                <div class="text-muted">VME <t t-out="vme.name"/><t t-if="vme.kbo_number"> · KBO <t t-out="vme.kbo_number"/></t></div>
-                                <div class="text-muted">Referentie <t t-out="o.name"/></div>
-                            </div>
-                            <div class="col-5 offset-1">
-                                <strong t-out="o.locksmith_id.name"/>
-                                <div t-if="o.locksmith_id.street" t-out="o.locksmith_id.street"/>
-                                <div t-if="o.locksmith_id.city"><t t-out="o.locksmith_id.zip"/> <t t-out="o.locksmith_id.city"/></div>
-                            </div>
-                        </div>
-                        <table class="table table-sm">
-                            <thead>
-                                <tr><th>Omschrijving</th><th>Kavel</th><th class="text-end">Aantal</th></tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><span t-field="o.key_kind"/></td>
-                                    <td><t t-out="o.lot_id.name"/><t t-if="o.lot_id.floor"> (<t t-out="o.lot_id.floor"/>)</t></td>
-                                    <td class="text-end" t-out="o.quantity"/>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <p>
-                            <strong>Sleutelcertificaat:</strong>
-                            <t t-if="vme.key_certificate_ref" t-out="vme.key_certificate_ref"/>
-                            <t t-else="">kopie in bijlage</t>
-                        </p>
-                        <p>Gebouw: <t t-out="vme.street"/>, <t t-out="vme.zip"/> <t t-out="vme.city"/>.</p>
-                        <p>
-                            Deze bestelling gebeurt door de syndicus van de VME, de enige die op dit certificaat
-                            veiligheidssleutels mag bestellen. Lever de bestelling aan de syndicus en vermeld
-                            op de factuur de referentie <strong t-out="o.name"/> en de nummers van de sleutels of badges.
-                        </p>
-                        <p class="mt-4">Met vriendelijke groeten,<br/>de syndicus van VME <t t-out="vme.name"/></p>
-                    </div>
-                </t>
+                <t t-call="vme_belgie.report_request_order_document" t-lang="o.locksmith_id.lang or company.partner_id.lang"/>
             </t>
+        </t>
+    </template>
+
+    <!-- In the language of the recipient: see docs/dev/vertaling.md -->
+    <template id="report_request_order_document">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <div class="row mb-4">
+                    <div class="col-6">
+                        <h2 class="mb-0">Bestelbon</h2>
+                        <div class="text-muted">VME <t t-out="vme.name"/><t t-if="vme.kbo_number"> · KBO <t t-out="vme.kbo_number"/></t></div>
+                        <div class="text-muted">Referentie <t t-out="o.name"/></div>
+                    </div>
+                    <div class="col-5 offset-1">
+                        <strong t-out="o.locksmith_id.name"/>
+                        <div t-if="o.locksmith_id.street" t-out="o.locksmith_id.street"/>
+                        <div t-if="o.locksmith_id.city"><t t-out="o.locksmith_id.zip"/> <t t-out="o.locksmith_id.city"/></div>
+                    </div>
+                </div>
+                <table class="table table-sm">
+                    <thead>
+                        <tr><th>Omschrijving</th><th>Kavel</th><th class="text-end">Aantal</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span t-field="o.key_kind"/></td>
+                            <td><t t-out="o.lot_id.name"/><t t-if="o.lot_id.floor"> (<t t-out="o.lot_id.floor"/>)</t></td>
+                            <td class="text-end" t-out="o.quantity"/>
+                        </tr>
+                    </tbody>
+                </table>
+                <p>
+                    <strong>Sleutelcertificaat:</strong>
+                    <t t-if="vme.key_certificate_ref" t-out="vme.key_certificate_ref"/>
+                    <t t-else="">kopie in bijlage</t>
+                </p>
+                <p>Gebouw: <t t-out="vme.street"/>, <t t-out="vme.zip"/> <t t-out="vme.city"/>.</p>
+                <p>
+                    Deze bestelling gebeurt door de syndicus van de VME, de enige die op dit certificaat
+                    veiligheidssleutels mag bestellen. Lever de bestelling aan de syndicus en vermeld
+                    op de factuur de referentie <strong t-out="o.name"/> en de nummers van de sleutels of badges.
+                </p>
+                <p class="mt-4">Met vriendelijke groeten,<br/>de syndicus van VME <t t-out="vme.name"/></p>
+            </div>
         </t>
     </template>
 </odoo>

@@ -37,7 +37,7 @@
             <t t-set="breadcrumbs_searchbar" t-value="False"/>
             <h3 class="mt-3" t-out="assembly.name"/>
             <p class="text-muted">
-                <span t-field="assembly.datetime_start" t-options="{'tz': 'Europe/Brussels', 'format': 'EEEE d MMMM yyyy \'om\' HH:mm'}"/>
+                <span t-field="assembly.datetime_start" t-options="{'tz': 'Europe/Brussels', 'format': 'EEEE d MMMM yyyy'}"/> om <span t-field="assembly.datetime_start" t-options="{'tz': 'Europe/Brussels', 'format': 'HH:mm'}"/>
                 <t t-if="assembly.slot_id.location_type == 'room'"> · <t t-out="assembly.slot_id.room_id.name"/></t>
                 · <span t-field="assembly.meeting_mode"/>
                 <span t-if="assembly.state == 'held'" class="badge text-bg-secondary ms-2">Gehouden</span>

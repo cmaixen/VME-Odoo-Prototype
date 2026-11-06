@@ -29,3 +29,4 @@ from . import test_portal_requests
 from . import test_access_rules
 from . import test_cycle
 from . import test_syndic
+from . import test_translation

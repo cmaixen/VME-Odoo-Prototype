@@ -53,6 +53,7 @@
     <record id="mail_template_collection_reminder" model="mail.template">
         <field name="name">Invordering: vriendelijke herinnering</field>
         <field name="model_id" ref="model_vme_collection_reminder"/>
+        <field name="lang">{{ object.partner_id.lang }}</field>
         <field name="subject">Vriendelijke herinnering: openstaande bedragen {{ object.association_id.name }}</field>
         <field name="email_to">{{ object.partner_id.email }}</field>
         <field name="body_html" type="html">
@@ -77,6 +78,7 @@
     <record id="mail_template_collection_demand" model="mail.template">
         <field name="name">Invordering: aanmaning</field>
         <field name="model_id" ref="model_vme_collection_reminder"/>
+        <field name="lang">{{ object.partner_id.lang }}</field>
         <field name="subject">Aanmaning: openstaande bedragen {{ object.association_id.name }}</field>
         <field name="email_to">{{ object.partner_id.email }}</field>
         <field name="body_html" type="html">
@@ -105,6 +107,7 @@
     <record id="mail_template_collection_notice" model="mail.template">
         <field name="name">Invordering: ingebrekestelling</field>
         <field name="model_id" ref="model_vme_collection_reminder"/>
+        <field name="lang">{{ object.partner_id.lang }}</field>
         <field name="subject">Ingebrekestelling: openstaande bedragen {{ object.association_id.name }}</field>
         <field name="email_to">{{ object.partner_id.email }}</field>
         <field name="body_html" type="html">
