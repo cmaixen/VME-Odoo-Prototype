@@ -4,6 +4,7 @@ from odoo import api, fields, models, tools
 from odoo.tools import format_date
 
 from .account_chart_template import VME_FUND_ACCOUNTS
+from .vme_budget_tracking import budget_elapsed_ratio
 
 DEFAULT_ARREARS_THRESHOLD = 1000.0
 # Due states of installations and contracts shown on the building card.
@@ -150,26 +151,77 @@ class VmeAssociation(models.Model):
     def _get_signals(self, today=None):
         """Signals of the portfolio for this VME: a list of {code, label, message}."""
         self.ensure_one()
-        vme = self.sudo()
         today = today or self._card_today()
+        return self._get_portfolio_figures(today)[self.id]["signals"]
+
+    def _get_portfolio_figures(self, today):
+        """Capitals, arrears, budget and signals of these VMEs, with a fixed number of queries.
+
+        Returns {vme id: {"working", "reserve", "arrears", "budget_to_date", "actual", "usage", "signals"}}.
+        The portfolio shows 80 to 200 VMEs at once: everything is read per model for all of them
+        together (docs/dev/schaal.md). The figures are the same as _get_capital_history(),
+        _get_arrears_total() and _get_budget_tracking() of one VME; test_building_card checks that.
+        """
+        vmes = self.sudo()
+        ids = vmes.ids
+        capital = {
+            (vme.id, fund): amount for vme, fund, amount in self.env["vme.capital.movement"].sudo()._read_group(
+                [("association_id", "in", ids), ("date", "<=", today)], ["association_id", "fund"], ["amount:sum"])
+        }
+        arrears = {vme.id: amount for vme, amount in self.env["vme.arrears"].sudo()._read_group(
+            [("association_id", "in", ids)], ["association_id"], ["amount_residual:sum"])}
+        actual = {vme.id: amount for vme, amount in self.env["vme.budget.analysis"].sudo()._read_group(
+            [("association_id", "in", ids), ("kind", "=", "actual"), ("year", "=", today.year), ("date", "<=", today)],
+            ["association_id"], ["actual_amount:sum"])}
+        budgets = self.env["vme.budget"].sudo().search([("association_id", "in", ids), ("year", "=", today.year)])
+        budget_by_vme = {budget.association_id.id: budget for budget in budgets}
+        assemblies = self.env["vme.assembly"].sudo().search([
+            ("association_id", "in", ids), ("year", "=", today.year), ("state", "!=", "cancelled"),
+            ("assembly_type", "=", "ordinary")])  # an extraordinary assembly (step 24) has no period
+        ratio = budget_elapsed_ratio(today.year, today)
+
+        figures = {}
+        for vme in vmes:
+            currency = vme.company_id.currency_id
+            budget = budget_by_vme.get(vme.id, self.env["vme.budget"])
+            # Same total as _get_budget_tracking(): the budget lines plus the unassigned rest.
+            budget_total = sum(budget.line_ids.mapped("amount"))
+            if budget and not currency.is_zero(budget.unassigned_amount):
+                budget_total += budget.unassigned_amount
+            budget_to_date = currency.round(currency.round(budget_total) * ratio)
+            vme_actual = currency.round(actual.get(vme.id, 0.0))
+            vme_arrears = currency.round(arrears.get(vme.id, 0.0))
+            figures[vme.id] = {
+                "working": currency.round(capital.get((vme.id, "working"), 0.0)),
+                "reserve": currency.round(capital.get((vme.id, "reserve"), 0.0)),
+                "arrears": vme_arrears,
+                "budget_to_date": budget_to_date,
+                "actual": vme_actual,
+                "usage": vme_actual / budget_to_date if budget_to_date else 0.0,
+                "signals": vme._build_signals(
+                    today, budget, vme_arrears, assemblies.filtered(lambda a, v=vme: a.association_id == v)),
+            }
+        return figures
+
+    def _build_signals(self, today, budget, arrears, assemblies):
+        self.ensure_one()
+        vme = self.sudo()
         currency = vme.company_id.currency_id
         labels = dict(SIGNALS)
         signals = []
 
         # LEGAL-CHECK: art. 3.86 §3 BW - yearly reserve contribution of at least 5% of the ordinary
         # common charges of the previous year, unless the general assembly decided otherwise with 4/5.
-        budget = vme.budget_ids.filtered(lambda b: b.year == today.year)[:1]
         if budget.reserve_warning:
             signals.append({"code": "reserve", "message": budget.reserve_warning})
 
-        arrears = vme._get_arrears_total()
         if currency.compare_amounts(arrears, vme.arrears_signal_threshold) > 0:
             signals.append({"code": "arrears", "message": self.env._(
                 "Achterstallen van %(amount)s, boven de drempel van %(threshold)s.",
                 amount=tools.formatLang(self.env, arrears, currency_obj=currency),
                 threshold=tools.formatLang(self.env, vme.arrears_signal_threshold, currency_obj=currency))})
 
-        message = vme._get_assembly_signal(today)
+        message = vme._get_assembly_signal(today, assemblies)
         if message:
             signals.append({"code": "assembly", "message": message})
 
@@ -196,17 +248,17 @@ class VmeAssociation(models.Model):
         arrears = self.env["vme.arrears"].sudo().search([("association_id", "=", self.id)])
         return self.company_id.currency_id.round(sum(arrears.mapped("amount_residual")))
 
-    def _get_assembly_signal(self, today):
-        """Message when the ordinary assembly of this year is or was not held in its period."""
+    def _get_assembly_signal(self, today, assemblies):
+        """Message when the ordinary assembly of this year is or was not held in its period.
+
+        assemblies: the ordinary, not cancelled assemblies of this VME in the year of today.
+        """
         self.ensure_one()
         # LEGAL-CHECK: art. 3.87 §2 BW - the ordinary general assembly is held every year within
         # the fifteen-day period fixed in the rules of co-ownership.
         start, end = self._get_assembly_period(today.year)
         if not start:
             return False
-        assemblies = self.env["vme.assembly"].sudo().search([
-            ("association_id", "=", self.id), ("year", "=", today.year), ("state", "!=", "cancelled"),
-            ("assembly_type", "=", "ordinary")])  # an extraordinary assembly (step 24) has no period
         outside = assemblies.filtered(
             lambda a: a.date and not (a.period_start <= a.date <= a.period_end) and (a.state == "held" or a.date >= today))
         if outside:
@@ -224,40 +276,42 @@ class VmeAssociation(models.Model):
     @api.depends_context("vme_today")
     def _compute_portfolio(self):
         today = self._card_today()
+        saved = self.filtered(lambda vme: vme.id and vme.company_id)
+        figures = saved._get_portfolio_figures(today)
         for vme in self:
-            if not vme.id or not vme.company_id:
+            if vme not in saved:
                 vme.update({
                     "working_capital_balance": 0.0, "reserve_capital_balance": 0.0, "arrears_amount": 0.0,
                     "budget_to_date_amount": 0.0, "actual_to_date_amount": 0.0, "budget_usage": 0.0,
                     "signal_count": 0, "signal_summary": False, **{f"signal_{code}": False for code, _ in SIGNALS},
                 })
                 continue
-            vme_sudo = vme.sudo()
-            capital = vme_sudo._get_capital_history(today)
-            tracking = vme_sudo._get_budget_tracking(today.year, today)
-            signals = vme_sudo._get_signals(today)
-            codes = {signal["code"] for signal in signals}
+            data = figures[vme.id]
+            codes = {signal["code"] for signal in data["signals"]}
             vme.update({
-                "working_capital_balance": capital["working"],
-                "reserve_capital_balance": capital["reserve"],
-                "arrears_amount": vme_sudo._get_arrears_total(),
-                "budget_to_date_amount": tracking["total"]["budget_to_date"],
-                "actual_to_date_amount": tracking["total"]["actual"],
-                "budget_usage": tracking["total"]["usage"],
-                "signal_count": len(signals),
-                "signal_summary": ", ".join(signal["label"] for signal in signals) or False,
+                "working_capital_balance": data["working"],
+                "reserve_capital_balance": data["reserve"],
+                "arrears_amount": data["arrears"],
+                "budget_to_date_amount": data["budget_to_date"],
+                "actual_to_date_amount": data["actual"],
+                "budget_usage": data["usage"],
+                "signal_count": len(data["signals"]),
+                "signal_summary": ", ".join(signal["label"] for signal in data["signals"]) or False,
                 **{f"signal_{code}": code in codes for code, _ in SIGNALS},
             })
 
+    def _signal_codes_by_vme(self):
+        """Signal codes of all VMEs, computed fresh: the signals depend on many other models."""
+        vmes = self.search([])
+        figures = vmes._get_portfolio_figures(self._card_today())
+        return {vme: {signal["code"] for signal in figures[vme.id]["signals"]} for vme in vmes}
+
     def _search_signal(self, code, operator, value):
-        """Search on a signal; computed fresh, since the signals depend on many other models."""
         if operator not in ("=", "!=", "in", "not in"):
             return NotImplemented
         wanted = set(value) if operator in ("in", "not in") else {value}
-        today = self._card_today()
-        matching = self.search([]).filtered(
-            lambda vme: any(signal["code"] == code for signal in vme._get_signals(today)) in wanted)
-        return [("id", "not in" if operator in ("!=", "not in") else "in", matching.ids)]
+        matching = [vme.id for vme, codes in self._signal_codes_by_vme().items() if (code in codes) in wanted]
+        return [("id", "not in" if operator in ("!=", "not in") else "in", matching)]
 
     def _search_signal_reserve(self, operator, value):
         return self._search_signal("reserve", operator, value)
@@ -281,8 +335,7 @@ class VmeAssociation(models.Model):
         }.get(operator)
         if not compare:
             return NotImplemented
-        today = self._card_today()
-        return [("id", "in", self.search([]).filtered(lambda vme: compare(len(vme._get_signals(today)))).ids)]
+        return [("id", "in", [vme.id for vme, codes in self._signal_codes_by_vme().items() if compare(len(codes))])]
 
     # Building card
 

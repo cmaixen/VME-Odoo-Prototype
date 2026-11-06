@@ -127,6 +127,10 @@ Open een tweede demo in dezelfde browser niet op `localhost` of `127.0.0.1` maar
 
 Zet in die demo de systeemparameter `report.url` op `http://localhost:8069` en herstart, anders komen PDF's zonder opmaak (zie [valkuilen](valkuilen.md#pdfs-zonder-opmaak)).
 
+## Schaaldatabase met 200 VME's
+
+Om te meten of het prototype een portefeuille van 200 VME's aankan, is er een aparte database `vme_scale` met fictieve VME's "Residentie Test 001" tot "200". Opbouwen en meten staat in [schaal.md](schaal.md); gebruik er een eigen Docker-project voor (`-p vme-schaal`).
+
 ## Inloggen als eigenaar
 
 De demodata maakt twee portaallogins aan, zonder uitnodigingsmail (wachtwoord `portaal-demo`):

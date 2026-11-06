@@ -81,6 +81,7 @@ erDiagram
 | `vme.migration` | Overstap uit een ander pakket | `attachment_ids` (exportbestanden), `source_format`, `state` (nieuw, proefrun gedaan, geïmporteerd), `report_html`, `error_count`, `warning_count`, `transition_date`, `association_id`, `opening_move_id`. Zie [migratie.md](migratie.md). |
 
 Wizards (transient): `vme.provision.call.wizard`, `vme.annual.statement.wizard` en `vme.financial.statements.wizard` (balans en resultatenrekening, stap 26), elk met een HTML-voorbeeld (`preview_html`).
+Wizards (transient): `vme.provision.call.wizard` en `vme.annual.statement.wizard`, elk met een HTML-voorbeeld (`preview_html`). Meer dan 20 VME's in de provisiewizard worden een `vme.provision.call.run` (budgetjaar, nummer, datums, VME's, verwerkte VME's, status, logboek), die een cron VME per VME afwerkt (zie [schaal.md](schaal.md)).
 
 ### Documenten en portaal (stap 15)
 

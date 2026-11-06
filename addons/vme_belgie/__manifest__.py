@@ -73,6 +73,7 @@
         "report/vme_syndic_reports.xml",
         "wizard/vme_fee_invoice_wizard_views.xml",
         "views/vme_syndic_views.xml",
+        "views/vme_provision_call_run_views.xml",
     ],
     "installable": True,
     "application": True,

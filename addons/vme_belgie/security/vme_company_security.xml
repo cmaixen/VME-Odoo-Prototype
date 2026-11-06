@@ -555,4 +555,26 @@
         <field name="perm_create" eval="True"/>
         <field name="perm_unlink" eval="True"/>
     </record>
+
+    <!-- A background job spans several VMEs and has no company: everyone sees only his own jobs. -->
+    <record id="rule_user_provision_call_run" model="ir.rule">
+        <field name="name">VME: eigen achtergrondtaken voor provisieoproepen</field>
+        <field name="model_id" ref="model_vme_provision_call_run"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_auditor_no_write_provision_call_run" model="ir.rule">
+        <field name="name">Commissaris: geen achtergrondtaken voor provisieoproepen</field>
+        <field name="model_id" ref="model_vme_provision_call_run"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
 </odoo>

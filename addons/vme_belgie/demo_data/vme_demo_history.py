@@ -106,7 +106,9 @@ class VmeAssociation(models.Model):
             },
         }
 
-    def _demo_history_provisions(self, vmes, journals):
+    def _demo_history_provisions(self, vmes, journals, unpaid=None):
+        """Provision calls 1-4 of the history year, paid except the calls in unpaid (owner name -> numbers)."""
+        unpaid = UNPAID_CALLS if unpaid is None else unpaid
         for number, call_date in enumerate(CALL_DATES, start=1):
             self.env["vme.provision.call.wizard"].create({
                 "association_ids": [Command.set(vmes.ids)],
@@ -123,7 +125,7 @@ class VmeAssociation(models.Model):
                 for fund in ("working", "reserve"):
                     invoices = call.invoice_ids.filtered(
                         lambda m, f=fund, n=call.number: m.vme_fund == f
-                        and n not in UNPAID_CALLS.get(m.partner_id.name, set())
+                        and n not in unpaid.get(m.partner_id.name, set())
                     )
                     if not invoices:
                         continue

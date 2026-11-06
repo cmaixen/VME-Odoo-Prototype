@@ -30,3 +30,4 @@ from . import test_access_rules
 from . import test_cycle
 from . import test_syndic
 from . import test_translation
+from . import test_scale_data
