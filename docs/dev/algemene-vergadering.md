@@ -27,7 +27,7 @@ Stemmen worden in honderdsten van een quotiteit geteld (`_units`, integer), zoda
 - **Quorum** (`_is_quorum_reached`, art. 3.87 §5): `2·aanwezigen > eigenaars` en `2·quotiteiten aanwezig ≥ totaal`, of `4·quotiteiten aanwezig > 3·totaal`. Bij `second_session` altijd bereikt.
 - **Uitgebrachte stemmen**: voor + tegen; onthoudingen tellen niet mee.
 - **Meerderheden** (`MAJORITY_RULES`, art. 3.88): volstrekt = `voor·2 > uitgebracht` (strikt); twee derde = `voor·3 ≥ 2·uitgebracht`; vier vijfde = `voor·5 ≥ 4·uitgebracht`. Geen uitgebrachte stemmen → verworpen.
-- **Eenparigheid**: voor = alle quotiteiten van alle eigenaars op de lijst, dus ook afwezigen tellen.
+- **Eenparigheid**: elke eigenaar op de lijst (met quotiteiten) is aanwezig of vertegenwoordigd en stemt voor, dus ook afwezigen tellen. De beperking van art. 3.87 §6 speelt hier niet: wie meer dan de helft heeft, telt wel mee voor de eenparigheid.
 - **Plafond per eigenaar** (art. 3.87 §6): de stemmen van een eigenaar worden begrensd op de som van de andere aanwezige of vertegenwoordigde eigenaars.
 - **Volmachten** (art. 3.87 §7, `_check_proxy_limits`): meer dan `MAX_PROXIES` (3) per volmachthouder alleen als eigen stemmen (als hij aanwezig is) + volmachten ≤ 10% van alle stemmen. Constraint op de aanwezigheid, gecontroleerd over alle aanwezigen van de AV.
 - **Uitslag**: `info` (geen stemming), `pending` (nog geen stemlijnen), `no_quorum`, anders `adopted`/`rejected`.

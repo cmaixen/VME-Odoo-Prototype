@@ -124,7 +124,7 @@ class VmeProvisionCallWizard(models.TransientModel):
                 number=self.number, year=self.year, vme=vme.name,
             ))
         key = vme.key_ids.filtered(lambda k: k.key_type == "general")[:1]
-        if not key or not key.line_ids:
+        if not key or not any(key.line_ids.mapped("shares")):
             raise UserError(self.env._("%s heeft geen algemene verdeelsleutel.", vme.name))
 
         company = vme.company_id

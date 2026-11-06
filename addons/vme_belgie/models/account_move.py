@@ -254,6 +254,11 @@ class AccountMove(models.Model):
                 "De sleutel van lijn '%s' hoort niet bij %s.",
                 foreign[0].name, self.vme_association_id.name,
             ))
+        empty = lines.vme_key_id.filtered(lambda key: not any(key.line_ids.mapped("shares")))
+        if empty:
+            raise UserError(self.env._(
+                "De sleutel '%s' heeft geen kavels met een aandeel.", empty[0].display_name,
+            ))
 
     def _vme_ownership_segments(self, lot, start, end, period_days):
         """Owners of a lot within [start, end] as (partner, from, to, days); must cover every day."""

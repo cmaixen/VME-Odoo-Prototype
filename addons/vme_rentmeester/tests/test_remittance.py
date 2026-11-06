@@ -153,6 +153,8 @@ class TestRemittance(TransactionCase):
         self.assertEqual(march.balance, 416.12)  # 450 - 28 - 5.88
         march.action_confirm()
         self.assertEqual(self._rent_account_balance(), 0.0)
+        with self.assertRaises(UserError):
+            march.unlink()
 
     def test_negative_balance_is_carried_over(self):
         landlord = self.env["res.partner"].create({"name": "Verhuurder Vast Ereloon"})

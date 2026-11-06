@@ -179,6 +179,15 @@ class VmeArrears(models.Model):
     _description = "Achterstal"
     _auto = False
     _order = "date_maturity, id"
+    # Flush pending writes on these fields before the view is read.
+    _depends = {
+        "account.move.line": ["company_id", "company_currency_id", "partner_id", "account_id", "move_id",
+                              "parent_state", "reconciled", "amount_residual", "date_maturity"],
+        "account.move": ["name", "payment_reference", "vme_fund", "vme_collection_id"],
+        "account.account": ["account_type"],
+        "vme.association": ["company_id"],
+        "vme.collection": ["association_id", "partner_id", "state"],
+    }
 
     association_id = fields.Many2one("vme.association", string="VME", readonly=True)
     company_id = fields.Many2one("res.company", readonly=True)

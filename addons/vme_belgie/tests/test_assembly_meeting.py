@@ -130,6 +130,24 @@ class TestAssemblyMeeting(TransactionCase):
         self._attend(present=range(4))
         self.assertEqual(self._vote("unanimous", {}).outcome, "rejected")
 
+    def test_unanimity_with_a_majority_owner(self):
+        # The cap of art. 3.87 §6 (600 counts as 400) must not make a unanimous vote fail.
+        vme, owners = self._make_vme("AV Residentie Meerderheid", [600, 400])
+        slot = self.slot.copy({"date": date(2027, 3, 21)})
+        assembly = self.env["vme.assembly"].with_context(vme_today=TODAY).create({
+            "association_id": vme.id, "year": 2027, "slot_id": slot.id,
+        })
+        assembly.action_confirm()
+        assembly.action_create_attendance_list()
+        assembly.attendee_ids.write({"attendance": "present"})
+        item = self.env["vme.assembly.item"].create({
+            "assembly_id": assembly.id, "name": "Testpunt", "majority": "unanimous", "sequence": 99})
+        item._prepare_votes()
+        item.vote_ids.vote = "for"
+        self.assertEqual(item.outcome, "adopted")
+        item.vote_ids.filtered(lambda v: v.partner_id == owners[1]).vote = "against"
+        self.assertEqual(item.outcome, "rejected")
+
     def test_no_owner_outvotes_all_others(self):
         self.assembly.second_session = True
         self._attend(present=(0, 4))  # 300 against 100

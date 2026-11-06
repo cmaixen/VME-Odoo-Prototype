@@ -38,6 +38,7 @@ Interne documentatie voor wie aan de module `vme_belgie` werkt. De gebruikersdoc
 | [rentmeester.md](rentmeester.md) | Module `vme_rentmeester`: huurcontracten, huurfacturen, indexering met de indexstop per gewest, afrekening aan huurders (stap 25) |
 | [toegangsrechten.md](toegangsrechten.md) | Rollen, record rules per company, regels van de commissaris, sudo-knoppen, bevindingen van de review en wat een nieuw model nodig heeft |
 | [website.md](website.md) | Module `vme_website`: productwebsite, knop Inloggen met landing per type gebruiker, demo-aanvraag als lead zonder mail (stap 27) |
+| [code-review.md](code-review.md) | Code review van main (november 2026): bevindingen op ernst, wat hersteld is en wat als voorstel openstaat |
 | [schaal.md](schaal.md) | Schaaldatabase met 200 fictieve VME's, meetscript, metingen vóór en na, portefeuille in één keer lezen, provisieoproepen op de achtergrond (stap 27) |
 | [legal-checks.md](legal-checks.md) | Alle `LEGAL-CHECK`-punten uit de code (gegenereerd) |
 

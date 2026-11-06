@@ -17,7 +17,7 @@ Aantal punten: 124.
 - **KB 9 maart 2003 betreffende de beveiliging van liften**: [vme_installation.py:17](../../addons/vme_belgie/models/vme_installation.py#L17)
 - **NBN S21-050**: [vme_installation.py:20](../../addons/vme_belgie/models/vme_installation.py#L20)
 - **SEPA Core Direct Debit Rulebook (EPC)**: [vme_payment.py:22](../../addons/vme_belgie/models/vme_payment.py#L22)
-- **Verordening (EU) 910/2014 (eIDAS) art. 43-44 en art. XII.25 §3 WER**: [vme_communication.py:517](../../addons/vme_belgie/models/vme_communication.py#L517)
+- **Verordening (EU) 910/2014 (eIDAS) art. 43-44 en art. XII.25 §3 WER**: [vme_communication.py:518](../../addons/vme_belgie/models/vme_communication.py#L518)
 - **Vlaams decreet van 14 oktober 2022 (indexering volgens EPC)**: [rent_rules.py:39](../../addons/vme_rentmeester/models/rent_rules.py#L39)
 - **Vlaamse regelgeving verwarmingsaudit/onderhoud**: [vme_installation.py:25](../../addons/vme_belgie/models/vme_installation.py#L25)
 - **Waals decreet van 19 oktober 2022 (indexation selon le PEB)**: [rent_rules.py:55](../../addons/vme_rentmeester/models/rent_rules.py#L55)
@@ -34,7 +34,7 @@ Aantal punten: 124.
 - **art. 3.85 §1 BW**: [vme_key.py:34](../../addons/vme_belgie/models/vme_key.py#L34), [vme_key.py:92](../../addons/vme_belgie/models/vme_key.py#L92), [vme_migration.py:739](../../addons/vme_belgie/models/vme_migration.py#L739)
 - **art. 3.86 §3 BW**: [vme_annual_statement.py:35](../../addons/vme_belgie/models/vme_annual_statement.py#L35), [vme_budget.py:5](../../addons/vme_belgie/models/vme_budget.py#L5), [vme_building_card.py:213](../../addons/vme_belgie/models/vme_building_card.py#L213), [vme_cycle.py:232](../../addons/vme_belgie/models/vme_cycle.py#L232), [vme_migration.py:445](../../addons/vme_belgie/models/vme_migration.py#L445)
 - **art. 3.86 §3 BW en KB 12 juli 2012 (minimum chart of accounts)**: [vme_works.py:449](../../addons/vme_belgie/models/vme_works.py#L449)
-- **art. 3.87 §1 BW**: [vme_assembly_meeting.py:489](../../addons/vme_belgie/models/vme_assembly_meeting.py#L489), [vme_assembly_online.py:17](../../addons/vme_belgie/models/vme_assembly_online.py#L17), [vme_assembly_online.py:235](../../addons/vme_belgie/models/vme_assembly_online.py#L235), [vme_assembly_online.py:303](../../addons/vme_belgie/models/vme_assembly_online.py#L303)
+- **art. 3.87 §1 BW**: [vme_assembly_meeting.py:493](../../addons/vme_belgie/models/vme_assembly_meeting.py#L493), [vme_assembly_online.py:17](../../addons/vme_belgie/models/vme_assembly_online.py#L17), [vme_assembly_online.py:235](../../addons/vme_belgie/models/vme_assembly_online.py#L235), [vme_assembly_online.py:303](../../addons/vme_belgie/models/vme_assembly_online.py#L303)
 - **art. 3.87 §10 BW**: [vme_assembly_meeting.py:234](../../addons/vme_belgie/models/vme_assembly_meeting.py#L234), [vme_assembly_online.py:198](../../addons/vme_belgie/models/vme_assembly_online.py#L198)
 - **art. 3.87 §12 BW**: [vme_cycle.py:40](../../addons/vme_belgie/models/vme_cycle.py#L40)
 - **art. 3.87 §2 BW**: [vme_assembly.py:13](../../addons/vme_belgie/models/vme_assembly.py#L13), [vme_assembly.py:38](../../addons/vme_belgie/models/vme_assembly.py#L38), [vme_assembly.py:247](../../addons/vme_belgie/models/vme_assembly.py#L247), [vme_building_card.py:257](../../addons/vme_belgie/models/vme_building_card.py#L257), [vme_cycle.py:471](../../addons/vme_belgie/models/vme_cycle.py#L471)
@@ -42,7 +42,7 @@ Aantal punten: 124.
 - **art. 3.87 §5 BW**: [vme_assembly_meeting.py:54](../../addons/vme_belgie/models/vme_assembly_meeting.py#L54), [vme_assembly_meeting.py:111](../../addons/vme_belgie/models/vme_assembly_meeting.py#L111)
 - **art. 3.87 §6 BW**: [vme_assembly_meeting.py:124](../../addons/vme_belgie/models/vme_assembly_meeting.py#L124), [vme_assembly_meeting.py:287](../../addons/vme_belgie/models/vme_assembly_meeting.py#L287)
 - **art. 3.87 §6-7 BW**: [vme_assembly_online.py:298](../../addons/vme_belgie/models/vme_assembly_online.py#L298)
-- **art. 3.87 §7 BW**: [vme_assembly_meeting.py:25](../../addons/vme_belgie/models/vme_assembly_meeting.py#L25), [vme_assembly_meeting.py:385](../../addons/vme_belgie/models/vme_assembly_meeting.py#L385), [vme_assembly_online.py:146](../../addons/vme_belgie/models/vme_assembly_online.py#L146)
+- **art. 3.87 §7 BW**: [vme_assembly_meeting.py:25](../../addons/vme_belgie/models/vme_assembly_meeting.py#L25), [vme_assembly_meeting.py:389](../../addons/vme_belgie/models/vme_assembly_meeting.py#L389), [vme_assembly_online.py:146](../../addons/vme_belgie/models/vme_assembly_online.py#L146)
 - **art. 3.88 §1, 1°, b) BW**: [vme_request.py:73](../../addons/vme_belgie/models/vme_request.py#L73)
 - **art. 3.88 §1, 1°, c) BW**: [vme_works.py:11](../../addons/vme_belgie/models/vme_works.py#L11), [vme_works.py:195](../../addons/vme_belgie/models/vme_works.py#L195)
 - **art. 3.88 §1-3 BW**: [vme_assembly_meeting.py:8](../../addons/vme_belgie/models/vme_assembly_meeting.py#L8)
@@ -55,9 +55,9 @@ Aantal punten: 124.
 - **art. 3.90 §1 en art. 3.91 BW**: [vme_council.py:35](../../addons/vme_belgie/models/vme_council.py#L35)
 - **art. 3.90 §3 BW**: [vme_payment.py:69](../../addons/vme_belgie/models/vme_payment.py#L69)
 - **art. 3.91 BW**: [vme_council.py:270](../../addons/vme_belgie/models/vme_council.py#L270), [vme_cycle.py:542](../../addons/vme_belgie/models/vme_cycle.py#L542)
-- **art. 3.93 BW**: [vme_request.py:701](../../addons/vme_belgie/models/vme_request.py#L701)
+- **art. 3.93 BW**: [vme_request.py:702](../../addons/vme_belgie/models/vme_request.py#L702)
 - **art. 3.93 §4 BW**: [vme_assembly_meeting.py:214](../../addons/vme_belgie/models/vme_assembly_meeting.py#L214)
-- **art. 3.94 BW**: [account_move.py:156](../../addons/vme_belgie/models/account_move.py#L156), [account_move.py:260](../../addons/vme_belgie/models/account_move.py#L260)
+- **art. 3.94 BW**: [account_move.py:156](../../addons/vme_belgie/models/account_move.py#L156), [account_move.py:265](../../addons/vme_belgie/models/account_move.py#L265)
 - **art. 3.94 §1 BW**: [vme_sale_file.py:10](../../addons/vme_belgie/models/vme_sale_file.py#L10), [vme_sale_file.py:16](../../addons/vme_belgie/models/vme_sale_file.py#L16), [vme_syndic.py:952](../../addons/vme_belgie/models/vme_syndic.py#L952)
 - **art. 3.94 §1, 1° BW**: [vme_sale_file.py:264](../../addons/vme_belgie/models/vme_sale_file.py#L264)
 - **art. 3.94 §1, 2° en §2 BW**: [vme_sale_file.py:287](../../addons/vme_belgie/models/vme_sale_file.py#L287)
@@ -67,18 +67,18 @@ Aantal punten: 124.
 - **art. 37 Vlaams Woninghuurdecreet**: [rent_rules.py:80](../../addons/vme_rentmeester/models/rent_rules.py#L80)
 - **art. 37/2 Arbeidsovereenkomstenwet 3 juli 1978**: [vme_contract.py:32](../../addons/vme_belgie/models/vme_contract.py#L32)
 - **art. 45 §1 WBTW**: [account_chart_template.py:49](../../addons/vme_belgie/models/account_chart_template.py#L49)
-- **art. 5.231 BW**: [vme_communication.py:667](../../addons/vme_belgie/models/vme_communication.py#L667)
-- **art. 5.250 e.v. BW (schuldvergelijking)**: [rent_remittance.py:366](../../addons/vme_rentmeester/models/rent_remittance.py#L366)
+- **art. 5.231 BW**: [vme_communication.py:668](../../addons/vme_belgie/models/vme_communication.py#L668)
+- **art. 5.250 e.v. BW (schuldvergelijking)**: [rent_remittance.py:373](../../addons/vme_rentmeester/models/rent_remittance.py#L373)
 - **art. 62 Waals decreet van 15 maart 2018**: [rent_rules.py:86](../../addons/vme_rentmeester/models/rent_rules.py#L86)
 - **art. 74 §1 wet 4 april 2014 betreffende de verzekeringen**: [vme_damage.py:10](../../addons/vme_belgie/models/vme_damage.py#L10)
 - **art. 85 Wet van 4 april 2014 betreffende de verzekeringen**: [vme_contract.py:23](../../addons/vme_belgie/models/vme_contract.py#L23)
 - **art. 88 §1 wet 4 april 2014 betreffende de verzekeringen**: [vme_damage.py:14](../../addons/vme_belgie/models/vme_damage.py#L14)
 - **art. III.88 WER**: [vme_migration.py:476](../../addons/vme_belgie/models/vme_migration.py#L476)
-- **art. XIX.2 §1 WER**: [vme_collection.py:113](../../addons/vme_belgie/models/vme_collection.py#L113), [vme_collection.py:407](../../addons/vme_belgie/models/vme_collection.py#L407)
+- **art. XIX.2 §1 WER**: [vme_collection.py:113](../../addons/vme_belgie/models/vme_collection.py#L113), [vme_collection.py:416](../../addons/vme_belgie/models/vme_collection.py#L416)
 - **art. XIX.4 §1 WER**: [vme_collection.py:144](../../addons/vme_belgie/models/vme_collection.py#L144)
 - **art. XIX.4 §2 WER (wet 4 mei 2023)**: [vme_collection.py:47](../../addons/vme_belgie/models/vme_collection.py#L47)
 - **no general legal interval found; manufacturer and fire department advice**: [vme_installation.py:28](../../addons/vme_belgie/models/vme_installation.py#L28)
-- **reglement van mede-eigendom (art. 3.85 BW)**: [vme_collection.py:443](../../addons/vme_belgie/models/vme_collection.py#L443)
+- **reglement van mede-eigendom (art. 3.85 BW)**: [vme_collection.py:452](../../addons/vme_belgie/models/vme_collection.py#L452)
 - **wet 5 mei 1865 betreffende de lening tegen interest**: [vme_collection.py:29](../../addons/vme_belgie/models/vme_collection.py#L29)
 
 ## Alle punten
@@ -90,7 +90,7 @@ Aantal punten: 124.
 | [addons/vme_belgie/models/account_chart_template.py](../../addons/vme_belgie/models/account_chart_template.py#L49) | 49 | art. 45 §1 WBTW | a VME that is not liable for VAT cannot deduct it, so the VAT on its purchases is a cost. |
 | [addons/vme_belgie/models/account_move.py](../../addons/vme_belgie/models/account_move.py#L57) | 57 | art. 3.89 §5 BW | a provision is paid to the bank account of its fund. |
 | [addons/vme_belgie/models/account_move.py](../../addons/vme_belgie/models/account_move.py#L156) | 156 | art. 3.94 BW | between seller and buyer, the consumption of each one's ownership period; without a reading at the deed, pro rata per day between two readings. |
-| [addons/vme_belgie/models/account_move.py](../../addons/vme_belgie/models/account_move.py#L260) | 260 | art. 3.94 BW | costs are split between seller and buyer by the number of days each one owned the lot within the cost period. |
+| [addons/vme_belgie/models/account_move.py](../../addons/vme_belgie/models/account_move.py#L265) | 265 | art. 3.94 BW | costs are split between seller and buyer by the number of days each one owned the lot within the cost period. |
 | [addons/vme_belgie/models/vme_annual_statement.py](../../addons/vme_belgie/models/vme_annual_statement.py#L35) | 35 | art. 3.86 §3 BW | works paid from the reserve capital are not settled in the working capital; each owner sees his share in them apart. |
 | [addons/vme_belgie/models/vme_assembly.py](../../addons/vme_belgie/models/vme_assembly.py#L13) | 13 | art. 3.87 §2 BW | the ordinary general assembly takes place every year within the period of fifteen days fixed in the rules of co-ownership. |
 | [addons/vme_belgie/models/vme_assembly.py](../../addons/vme_belgie/models/vme_assembly.py#L17) | 17 | art. 3.87 §3 BW | the convocation is sent at least fifteen days before the meeting, unless the rules of co-ownership set another term. |
@@ -107,9 +107,9 @@ Aantal punten: 124.
 | [addons/vme_belgie/models/vme_assembly_meeting.py](../../addons/vme_belgie/models/vme_assembly_meeting.py#L214) | 214 | art. 3.93 §4 BW | the syndic keeps a register of the decisions of the general assembly. |
 | [addons/vme_belgie/models/vme_assembly_meeting.py](../../addons/vme_belgie/models/vme_assembly_meeting.py#L234) | 234 | art. 3.87 §10 BW | the syndic writes the minutes, signed at the end of the meeting by the chair, the secretary and the co-owners still present. |
 | [addons/vme_belgie/models/vme_assembly_meeting.py](../../addons/vme_belgie/models/vme_assembly_meeting.py#L287) | 287 | art. 3.87 §6 BW | nobody votes with more votes than all other present or represented co-owners together. |
-| [addons/vme_belgie/models/vme_assembly_meeting.py](../../addons/vme_belgie/models/vme_assembly_meeting.py#L304) | 304 | art. 3.88 §3 BW | unanimity of the votes of all co-owners. |
-| [addons/vme_belgie/models/vme_assembly_meeting.py](../../addons/vme_belgie/models/vme_assembly_meeting.py#L385) | 385 | art. 3.87 §7 BW | more than three proxies only up to 10% of all votes. |
-| [addons/vme_belgie/models/vme_assembly_meeting.py](../../addons/vme_belgie/models/vme_assembly_meeting.py#L489) | 489 | art. 3.87 §1 BW | the convocation states how to take part at a distance. |
+| [addons/vme_belgie/models/vme_assembly_meeting.py](../../addons/vme_belgie/models/vme_assembly_meeting.py#L304) | 304 | art. 3.88 §3 BW | unanimity of the votes of all co-owners. Every owner votes for, so the cap of art. 3.87 §6 on the counted votes plays no role here. |
+| [addons/vme_belgie/models/vme_assembly_meeting.py](../../addons/vme_belgie/models/vme_assembly_meeting.py#L389) | 389 | art. 3.87 §7 BW | more than three proxies only up to 10% of all votes. |
+| [addons/vme_belgie/models/vme_assembly_meeting.py](../../addons/vme_belgie/models/vme_assembly_meeting.py#L493) | 493 | art. 3.87 §1 BW | the convocation states how to take part at a distance. |
 | [addons/vme_belgie/models/vme_assembly_online.py](../../addons/vme_belgie/models/vme_assembly_online.py#L17) | 17 | art. 3.87 §1 BW | co-owners may take part in the general assembly at a distance (electronically) when the convocation provides for it; they count as present for quorum and votes. |
 | [addons/vme_belgie/models/vme_assembly_online.py](../../addons/vme_belgie/models/vme_assembly_online.py#L146) | 146 | art. 3.87 §7 BW | the proxy holder votes for the co-owners who gave a proxy. |
 | [addons/vme_belgie/models/vme_assembly_online.py](../../addons/vme_belgie/models/vme_assembly_online.py#L198) | 198 | art. 3.87 §10 BW | the minutes are signed at the end of the meeting by the chair, the secretary and the co-owners still present (in the room or online). Owners who only voted in writing beforehand were not at the meeting. |
@@ -128,11 +128,11 @@ Aantal punten: 124.
 | [addons/vme_belgie/models/vme_collection.py](../../addons/vme_belgie/models/vme_collection.py#L47) | 47 | art. XIX.4 §2 WER (wet 4 mei 2023) | scale for consumer debts: up to 150 euro: 20 euro; 150.01 to 500: 30 euro + 10% above 150; above 500: 65 euro + 5% above 500, with a maximum of 2000 euro. |
 | [addons/vme_belgie/models/vme_collection.py](../../addons/vme_belgie/models/vme_collection.py#L113) | 113 | art. XIX.2 §1 WER | costs only after a free first reminder and a term of at least 14 calendar days; we use the same term between every level. |
 | [addons/vme_belgie/models/vme_collection.py](../../addons/vme_belgie/models/vme_collection.py#L144) | 144 | art. XIX.4 §1 WER | at most the legal interest rate plus 8 percentage points. |
-| [addons/vme_belgie/models/vme_collection.py](../../addons/vme_belgie/models/vme_collection.py#L407) | 407 | art. XIX.2 §1 WER | the first reminder is free; interest and damages only run from the end of a term of at least 14 days after it was sent. Check whether interest may run from the due date instead when the reglement van mede-eigendom says so. |
-| [addons/vme_belgie/models/vme_collection.py](../../addons/vme_belgie/models/vme_collection.py#L443) | 443 | reglement van mede-eigendom (art. 3.85 BW) | simple interest per year of 365 days. |
+| [addons/vme_belgie/models/vme_collection.py](../../addons/vme_belgie/models/vme_collection.py#L416) | 416 | art. XIX.2 §1 WER | the first reminder is free; interest and damages only run from the end of a term of at least 14 days after it was sent. Check whether interest may run from the due date instead when the reglement van mede-eigendom says so. |
+| [addons/vme_belgie/models/vme_collection.py](../../addons/vme_belgie/models/vme_collection.py#L452) | 452 | reglement van mede-eigendom (art. 3.85 BW) | simple interest per year of 365 days. |
 | [addons/vme_belgie/models/vme_communication.py](../../addons/vme_belgie/models/vme_communication.py#L251) | 251 | art. 3.87 §3 BW | convocations go by registered letter unless the owner agreed individually and in writing to another means; registered and letter ignore the preference. |
-| [addons/vme_belgie/models/vme_communication.py](../../addons/vme_belgie/models/vme_communication.py#L517) | 517 | Verordening (EU) 910/2014 (eIDAS) art. 43-44 en art. XII.25 §3 WER | an electronic registered delivery by a qualified provider counts as a registered letter; whether that also holds for a formal notice (ingebrekestelling, art. 5.231 BW) and for a convocation to the general assembly (art. 3.87 §3 BW) still has to be confirmed by a lawyer. |
-| [addons/vme_belgie/models/vme_communication.py](../../addons/vme_belgie/models/vme_communication.py#L667) | 667 | art. 5.231 BW | the formal notice (level 3) is sent by registered letter. |
+| [addons/vme_belgie/models/vme_communication.py](../../addons/vme_belgie/models/vme_communication.py#L518) | 518 | Verordening (EU) 910/2014 (eIDAS) art. 43-44 en art. XII.25 §3 WER | an electronic registered delivery by a qualified provider counts as a registered letter; whether that also holds for a formal notice (ingebrekestelling, art. 5.231 BW) and for a convocation to the general assembly (art. 3.87 §3 BW) still has to be confirmed by a lawyer. |
+| [addons/vme_belgie/models/vme_communication.py](../../addons/vme_belgie/models/vme_communication.py#L668) | 668 | art. 5.231 BW | the formal notice (level 3) is sent by registered letter. |
 | [addons/vme_belgie/models/vme_contract.py](../../addons/vme_belgie/models/vme_contract.py#L23) | 23 | art. 85 Wet van 4 april 2014 betreffende de verzekeringen | an insurance contract runs for at most one year, is renewed tacitly and can be cancelled at least three months before its due date. |
 | [addons/vme_belgie/models/vme_contract.py](../../addons/vme_belgie/models/vme_contract.py#L27) | 27 | art. 18 §2/3 Elektriciteitswet 29 april 1999 | households and small businesses can cancel an energy contract at any time with one month notice (also in the regional energy decrees); whether that applies to a VME is to be confirmed. |
 | [addons/vme_belgie/models/vme_contract.py](../../addons/vme_belgie/models/vme_contract.py#L32) | 32 | art. 37/2 Arbeidsovereenkomstenwet 3 juli 1978 | the notice period of an employment contract depends on seniority and is not computed here; the default is for the contract with the social secretariat. |
@@ -171,7 +171,7 @@ Aantal punten: 124.
 | [addons/vme_belgie/models/vme_payment.py](../../addons/vme_belgie/models/vme_payment.py#L45) | 45 | Boek VII WER (omzetting art. 76 PSD2, richtlijn 2015/2366) | an owner can ask his bank to refund an authorised direct debit up to eight weeks after the collection; that comes back as MD06. |
 | [addons/vme_belgie/models/vme_payment.py](../../addons/vme_belgie/models/vme_payment.py#L69) | 69 | art. 3.90 §3 BW | the council of co-ownership supervises the syndic; a second approval by a council member is an agreement of the AV or the syndic contract, not a legal obligation. |
 | [addons/vme_belgie/models/vme_request.py](../../addons/vme_belgie/models/vme_request.py#L73) | 73 | art. 3.88 §1, 1°, b) BW | works on the common parts need a two-thirds majority of the assembly; some works (charging points, art. 3.82 §1 BW) follow their own procedure. To be confirmed. |
-| [addons/vme_belgie/models/vme_request.py](../../addons/vme_belgie/models/vme_request.py#L701) | 701 | art. 3.93 BW | the house rules (reglement van orde) bind tenants and occupants once they are made known to them; the checklist asks to send them to the new tenant. To be confirmed. |
+| [addons/vme_belgie/models/vme_request.py](../../addons/vme_belgie/models/vme_request.py#L702) | 702 | art. 3.93 BW | the house rules (reglement van orde) bind tenants and occupants once they are made known to them; the checklist asks to send them to the new tenant. To be confirmed. |
 | [addons/vme_belgie/models/vme_sale_file.py](../../addons/vme_belgie/models/vme_sale_file.py#L10) | 10 | art. 3.94 §1 BW | the syndic answers the notary's first request within 15 days. |
 | [addons/vme_belgie/models/vme_sale_file.py](../../addons/vme_belgie/models/vme_sale_file.py#L12) | 12 | art. 3.94 §2 BW | the syndic answers the second request (after the compromise) within 30 days. |
 | [addons/vme_belgie/models/vme_sale_file.py](../../addons/vme_belgie/models/vme_sale_file.py#L16) | 16 | art. 3.94 §1 BW | the notary receives the minutes of the assemblies of the last three years. |
@@ -193,7 +193,7 @@ Aantal punten: 124.
 | [addons/vme_belgie/wizard/vme_provision_call_wizard.py](../../addons/vme_belgie/wizard/vme_provision_call_wizard.py#L140) | 140 | art. 3.89 §5 BW | working and reserve capital on separate bank accounts, so each fund gets its own invoice paid to its own account. |
 | [addons/vme_rentmeester/models/remittance_rules.py](../../addons/vme_rentmeester/models/remittance_rules.py#L7) | 7 | art. 18 §1 en art. 37 WBTW, KB nr. 20 (tabel A en B) | het ereloon van de rentmeester is een dienst aan 21% btw. De huur die hij int en doorstort is geen omzet van het kantoor: de verhuur zelf is vrijgesteld (art. 44 §3, 2° WBTW) en hoort bij de verhuurder. |
 | [addons/vme_rentmeester/models/rent_contract.py](../../addons/vme_rentmeester/models/rent_contract.py#L253) | 253 | art. 1728bis oud BW, art. 34 VWHD, art. 224 BHC, art. 26 Waals decreet 15-03-2018 | alleen een schriftelijk contract dat indexering niet uitsluit, kan geïndexeerd worden. |
-| [addons/vme_rentmeester/models/rent_remittance.py](../../addons/vme_rentmeester/models/rent_remittance.py#L366) | 366 | art. 5.250 e.v. BW (schuldvergelijking) | het ereloon wordt verrekend met de huur die het kantoor aan de verhuurder verschuldigd is; nakijken of het beheermandaat dat uitdrukkelijk moet toelaten. |
+| [addons/vme_rentmeester/models/rent_remittance.py](../../addons/vme_rentmeester/models/rent_remittance.py#L373) | 373 | art. 5.250 e.v. BW (schuldvergelijking) | het ereloon wordt verrekend met de huur die het kantoor aan de verhuurder verschuldigd is; nakijken of het beheermandaat dat uitdrukkelijk moet toelaten. |
 | [addons/vme_rentmeester/models/rent_rules.py](../../addons/vme_rentmeester/models/rent_rules.py#L30) | 30 | art. 1728bis oud BW, art. 34 VWHD, art. 224 BHC, art. 26 Waals decreet 15-03-2018 | in alle drie de gewesten is de geïndexeerde huur = basishuur x nieuw indexcijfer / aanvangsindexcijfer, met de gezondheidsindex. |
 | [addons/vme_rentmeester/models/rent_rules.py](../../addons/vme_rentmeester/models/rent_rules.py#L39) | 39 | Vlaams decreet van 14 oktober 2022 (indexering volgens EPC) | verjaardagen van 1 oktober 2022 tot en met 30 september 2023: label A+ tot C volledig, D voor de helft, E, F of geen EPC niet. Vanaf 1 oktober 2023 een correctiefactor (decreet van 2023, nakijken). |
 | [addons/vme_rentmeester/models/rent_rules.py](../../addons/vme_rentmeester/models/rent_rules.py#L47) | 47 | Brusselse ordonnantie van 13 oktober 2022 (indexering volgens EPB) | verjaardagen van 14 oktober 2022 tot en met 13 oktober 2023: label A tot D volledig, E voor de helft, F, G of geen EPB niet. Daarna een correctiefactor (ordonnantie van 2023, nakijken). |
