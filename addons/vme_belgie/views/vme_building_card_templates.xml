@@ -501,6 +501,8 @@
     <!-- Portal: the owner sees the capitals and the budget against the costs up to today. -->
     <template id="portal_my_vme_detail_finances" name="Financiële toestand in het portaal" inherit_id="vme_belgie.portal_my_vme_detail">
         <xpath expr="//h4[text()='Provisies']" position="before">
+          <!-- Only for a current owner: a former owner keeps his own history, not today's figures. -->
+          <t t-if="ownerships.filtered(lambda o: not o.date_end or o.date_end &gt;= today)">
             <t t-set="finances" t-value="vme._get_portal_finances()"/>
             <t t-set="currency" t-value="finances['currency']"/>
             <h4>Financiële toestand van het gebouw</h4>
@@ -543,6 +545,7 @@
                     <p class="small text-muted mt-2 mb-0">Het budget tot vandaag is het jaarbudget verspreid over de dagen van het jaar. Uw eigen aandeel ziet u in de jaarafrekening.</p>
                 </div>
             </div>
+          </t>
         </xpath>
     </template>
 </odoo>

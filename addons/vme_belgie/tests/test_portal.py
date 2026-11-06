@@ -225,3 +225,7 @@ class TestPortalRoutes(PortalFixture, HttpCase):
         self.authenticate(self.seller.email, PASSWORD)
         self.assertEqual(self.url_open(f"/my/vme/document/{self.doc_a2_before.id}").status_code, 200)
         self.assertEqual(self.url_open(f"/my/vme/document/{self.doc_a2_after.id}").status_code, 404)
+        # Today's capitals and budget are for current owners only.
+        self.assertNotIn("Financiële toestand van het gebouw", self.url_open(f"/my/vme/{self.vme.id}").text)
+        self.authenticate(self.buyer.email, PASSWORD)
+        self.assertIn("Financiële toestand van het gebouw", self.url_open(f"/my/vme/{self.vme.id}").text)
