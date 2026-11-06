@@ -144,6 +144,14 @@ class TestRequests(TransactionCase):
         self.assertEqual(len(request.check_ids), 3)
         self.assertTrue(request.name.startswith("AANV/2026/"))
 
+    def test_request_without_lot(self):
+        request = self.Request.create({
+            "association_id": self.vme.id, "request_type_id": self.env.ref("vme_belgie.request_type_key").id,
+            "title": "Vraag zonder kavel", "requester_id": self.owner.id,
+        })
+        self.assertFalse(request.owner_id)
+        self.assertFalse(self._intake("onbekend.zonder.kavel@example.com").owner_id)
+
     def test_same_mail_makes_one_request(self):
         first = self._intake("eigenaar.a1@example.com", reference="badge-a1@example.com")
         second = self._intake("eigenaar.a1@example.com", reference="badge-a1@example.com")

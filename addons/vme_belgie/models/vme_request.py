@@ -212,7 +212,7 @@ class VmeRequest(models.Model):
     @api.depends("lot_id", "request_date")
     def _compute_owner(self):
         for request in self:
-            request.owner_id = request.lot_id and request.lot_id._get_owner_on(request.request_date)
+            request.owner_id = request.lot_id._get_owner_on(request.request_date) if request.lot_id else False
 
     @api.depends("check_ids.done")
     def _compute_checks_progress(self):
