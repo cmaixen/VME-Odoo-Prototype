@@ -69,6 +69,7 @@ class VmeRentSettlement(models.Model):
         owner = statement["statements"][0] if statement["statements"] else {"bills": [], "partner": contract.landlord_id}
         percents = {line.category_id: line.tenant_percent for line in contract.charge_line_ids}
         Category = self.env["vme.rent.charge.category"]
+        categories = Category.search([])
         lines = []
         for bill in owner["bills"]:
             move = bill["move"]
@@ -76,7 +77,7 @@ class VmeRentSettlement(models.Model):
                 lambda a: a.partner_id == contract.landlord_id and a.lot_id in contract.lot_ids)
             groups = {}
             for allocation in allocations:
-                category = Category._match(allocation)
+                category = Category._match(allocation, categories)
                 group = groups.setdefault(category, {"owner": 0.0, "share": 0.0, "days": 0, "period": 0,
                                                      "lots": set(), "keys": set()})
                 days = (allocation.date_to - allocation.date_from).days + 1
