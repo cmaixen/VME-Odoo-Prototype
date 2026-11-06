@@ -2,10 +2,11 @@ import base64
 import re
 
 from odoo import api, fields, models
-from odoo.exceptions import UserError
+from odoo.exceptions import AccessError, UserError
 from odoo.fields import Command
 
 from ..models.bank_formats import BankFileError, parse_statement_file
+from ..models.vme_access import check_not_auditor
 
 
 class VmeBankImportWizard(models.TransientModel):
@@ -17,6 +18,10 @@ class VmeBankImportWizard(models.TransientModel):
 
     def action_import(self):
         self.ensure_one()
+        # The statements are created as sudo, in whatever VME the account belongs to.
+        check_not_auditor(self.env)
+        if not self.env.user.has_group("account.group_account_invoice"):
+            raise AccessError(self.env._("Alleen wie facturen beheert, kan bankafschriften inlezen."))
         lines = self._import_file(base64.b64decode(self.data_file), self.filename or "")
         return self._action_open_lines(lines)
 

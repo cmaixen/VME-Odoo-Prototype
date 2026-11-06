@@ -1,0 +1,508 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Every VME is a company. A user only reaches the VME records of the companies he is allowed in
+         (user.company_ids), not only those selected in the company switcher: lists and computations
+         across VMEs keep working for staff with every VME, and staff with some VMEs see only those.
+         Global rules (no group) are combined with AND with every group rule, so the auditor's rules
+         (vme_council_security.xml) stay in force. Every new vme model with a company needs one here;
+         tests/test_access_rules.py fails otherwise. See docs/dev/toegangsrechten.md. -->
+    <record id="rule_company_association" model="ir.rule">
+        <field name="name">VME: vme.association van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_association"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_lot" model="ir.rule">
+        <field name="name">VME: vme.lot van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_lot"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_key" model="ir.rule">
+        <field name="name">VME: vme.key van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_key"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_key_line" model="ir.rule">
+        <field name="name">VME: vme.key.line van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_key_line"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_ownership" model="ir.rule">
+        <field name="name">VME: vme.ownership van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_ownership"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_cost_allocation" model="ir.rule">
+        <field name="name">VME: vme.cost.allocation van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_cost_allocation"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_distribution_rule" model="ir.rule">
+        <field name="name">VME: vme.distribution.rule van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_distribution_rule"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_budget" model="ir.rule">
+        <field name="name">VME: vme.budget van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_budget"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_budget_line" model="ir.rule">
+        <field name="name">VME: vme.budget.line van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_budget_line"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_budget_analysis" model="ir.rule">
+        <field name="name">VME: vme.budget.analysis van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_budget_analysis"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_capital_movement" model="ir.rule">
+        <field name="name">VME: vme.capital.movement van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_capital_movement"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_provision_call" model="ir.rule">
+        <field name="name">VME: vme.provision.call van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_provision_call"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_installation" model="ir.rule">
+        <field name="name">VME: vme.installation van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_installation"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_inspection" model="ir.rule">
+        <field name="name">VME: vme.inspection van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_inspection"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_inspection_remark" model="ir.rule">
+        <field name="name">VME: vme.inspection.remark van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_inspection_remark"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_assembly" model="ir.rule">
+        <field name="name">VME: vme.assembly van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_assembly"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_assembly_item" model="ir.rule">
+        <field name="name">VME: vme.assembly.item van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_assembly_item"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_assembly_convocation" model="ir.rule">
+        <field name="name">VME: vme.assembly.convocation van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_assembly_convocation"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_assembly_attendee" model="ir.rule">
+        <field name="name">VME: vme.assembly.attendee van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_assembly_attendee"/>
+        <field name="domain_force">[('assembly_id.company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_assembly_vote" model="ir.rule">
+        <field name="name">VME: vme.assembly.vote van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_assembly_vote"/>
+        <field name="domain_force">[('item_id.company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_assembly_signature" model="ir.rule">
+        <field name="name">VME: vme.assembly.signature van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_assembly_signature"/>
+        <field name="domain_force">[('assembly_id.company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_sale_file" model="ir.rule">
+        <field name="name">VME: vme.sale.file van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_sale_file"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_arrears" model="ir.rule">
+        <field name="name">VME: vme.arrears van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_arrears"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_collection" model="ir.rule">
+        <field name="name">VME: vme.collection van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_collection"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_collection_reminder" model="ir.rule">
+        <field name="name">VME: vme.collection.reminder van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_collection_reminder"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_collection_reminder_line" model="ir.rule">
+        <field name="name">VME: vme.collection.reminder.line van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_collection_reminder_line"/>
+        <field name="domain_force">[('reminder_id.company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_works" model="ir.rule">
+        <field name="name">VME: vme.works van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_works"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_works_quote" model="ir.rule">
+        <field name="name">VME: vme.works.quote van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_works_quote"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_insurance_policy" model="ir.rule">
+        <field name="name">VME: vme.insurance.policy van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_insurance_policy"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_damage_claim" model="ir.rule">
+        <field name="name">VME: vme.damage.claim van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_damage_claim"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_document" model="ir.rule">
+        <field name="name">VME: vme.document van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_document"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_address_request" model="ir.rule">
+        <field name="name">VME: vme.address.request van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_address_request"/>
+        <field name="domain_force">[('partner_id.vme_ownership_ids.company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_mandate" model="ir.rule">
+        <field name="name">VME: vme.mandate van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_mandate"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_council_dossier" model="ir.rule">
+        <field name="name">VME: vme.council.dossier van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_council_dossier"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_meter" model="ir.rule">
+        <field name="name">VME: vme.meter van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_meter"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_meter_reading" model="ir.rule">
+        <field name="name">VME: vme.meter.reading van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_meter_reading"/>
+        <field name="domain_force">[('meter_id.company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_contract" model="ir.rule">
+        <field name="name">VME: vme.contract van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_contract"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_contract_evaluation" model="ir.rule">
+        <field name="name">VME: vme.contract.evaluation van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_contract_evaluation"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_lot_contact" model="ir.rule">
+        <field name="name">VME: vme.lot.contact van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_lot_contact"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_lot_key" model="ir.rule">
+        <field name="name">VME: vme.lot.key van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_lot_key"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_request" model="ir.rule">
+        <field name="name">VME: vme.request van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_request"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_request_check" model="ir.rule">
+        <field name="name">VME: vme.request.check van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_request_check"/>
+        <field name="domain_force">[('request_id.company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_sepa_mandate" model="ir.rule">
+        <field name="name">VME: vme.sepa.mandate van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_sepa_mandate"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_payment_batch" model="ir.rule">
+        <field name="name">VME: vme.payment.batch van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_payment_batch"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_payment_batch_line" model="ir.rule">
+        <field name="name">VME: vme.payment.batch.line van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_payment_batch_line"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_bill_ai_check" model="ir.rule">
+        <field name="name">VME: vme.bill.ai.check van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_bill_ai_check"/>
+        <field name="domain_force">[('move_id.company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_communication" model="ir.rule">
+        <field name="name">VME: vme.communication van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_communication"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_communication_option" model="ir.rule">
+        <field name="name">VME: vme.communication.option van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_communication_option"/>
+        <field name="domain_force">[('communication_id.company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_communication_log" model="ir.rule">
+        <field name="name">VME: vme.communication.log van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_communication_log"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_registered_mail" model="ir.rule">
+        <field name="name">VME: vme.registered.mail van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_registered_mail"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+</odoo>

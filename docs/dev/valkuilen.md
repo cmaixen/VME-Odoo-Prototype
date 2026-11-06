@@ -104,6 +104,13 @@ De webclient leest records met `bin_size=True` in de context. Een binair veld (o
 
 Sinds er buitengewone AV's zijn, kan een VME meer dan één AV per jaar hebben. Code of tests die "de AV van VME X in jaar Y" zoeken, filteren op `assembly_type = 'ordinary'`, anders krijgen ze twee records (`ensure_one` faalt, of een vergelijking op een recordset van twee).
 
+## Record rules: OR tussen groepen, AND met globale regels (review toegangsrechten)
+
+- Regels van verschillende groepen waarin een gebruiker zit, worden met OR gecombineerd. Een regel "alleen eigen companies" voor `base.group_user` zou de commissaris (ook een interne gebruiker) weer laten schrijven, ondanks zijn regel `[(0, '=', 1)]`. Afscherming voor iedereen hoort daarom in een globale regel (zonder groep), die met AND geldt.
+- `company_ids` in een regel zijn de companies die in de bedrijvenkiezer geselecteerd zijn; `user.company_ids.ids` zijn alle toegestane. Onze VME-regels gebruiken de tweede, anders verdwijnen VME's uit de lijsten zodra een medewerker één company selecteert.
+- Een test die als superuser (`cls.env.user`) een company aanmaakt en daarna als `base.user_admin` leest, moet admin die company ook geven (zie `vme_rentmeester/tests/test_settlement.py`).
+- `vme.request` zonder kavel faalt bij het opslaan: `owner_id = request.lot_id and ...` geeft een lege `vme.lot`-recordset aan een veld op `res.partner`. Nog open.
+
 ## Bekende problemen (nog open)
 
 - Geen op dit moment.

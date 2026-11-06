@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Every VME is a company. A user only reaches the VME records of the companies he is allowed in
+         (user.company_ids), not only those selected in the company switcher: lists and computations
+         across VMEs keep working for staff with every VME, and staff with some VMEs see only those.
+         Global rules (no group) are combined with AND with every group rule, so the auditor's rules
+         (vme_belgie/security/vme_council_security.xml) stay in force. Every new vme model with a company needs one here;
+         vme_belgie/tests/test_access_rules.py fails otherwise. See docs/dev/toegangsrechten.md. -->
+    <record id="rule_company_rent_contract" model="ir.rule">
+        <field name="name">VME: vme.rent.contract van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_rent_contract"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_rent_contract_charge" model="ir.rule">
+        <field name="name">VME: vme.rent.contract.charge van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_rent_contract_charge"/>
+        <field name="domain_force">[('contract_id.company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_rent_indexation" model="ir.rule">
+        <field name="name">VME: vme.rent.indexation van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_rent_indexation"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_rent_settlement" model="ir.rule">
+        <field name="name">VME: vme.rent.settlement van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_rent_settlement"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_rent_settlement_line" model="ir.rule">
+        <field name="name">VME: vme.rent.settlement.line van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_rent_settlement_line"/>
+        <field name="domain_force">[('settlement_id.company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <!-- The auditor never writes rent records, even if he were given the office company by mistake. -->
+    <record id="rule_auditor_no_write_rent_contract" model="ir.rule">
+        <field name="name">Commissaris: geen wijzigingen aan vme.rent.contract</field>
+        <field name="model_id" ref="model_vme_rent_contract"/>
+        <field name="groups" eval="[Command.link(ref('vme_belgie.group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_auditor_no_write_rent_contract_charge" model="ir.rule">
+        <field name="name">Commissaris: geen wijzigingen aan vme.rent.contract.charge</field>
+        <field name="model_id" ref="model_vme_rent_contract_charge"/>
+        <field name="groups" eval="[Command.link(ref('vme_belgie.group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_auditor_no_write_rent_indexation" model="ir.rule">
+        <field name="name">Commissaris: geen wijzigingen aan vme.rent.indexation</field>
+        <field name="model_id" ref="model_vme_rent_indexation"/>
+        <field name="groups" eval="[Command.link(ref('vme_belgie.group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_auditor_no_write_rent_settlement" model="ir.rule">
+        <field name="name">Commissaris: geen wijzigingen aan vme.rent.settlement</field>
+        <field name="model_id" ref="model_vme_rent_settlement"/>
+        <field name="groups" eval="[Command.link(ref('vme_belgie.group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_auditor_no_write_rent_settlement_line" model="ir.rule">
+        <field name="name">Commissaris: geen wijzigingen aan vme.rent.settlement.line</field>
+        <field name="model_id" ref="model_vme_rent_settlement_line"/>
+        <field name="groups" eval="[Command.link(ref('vme_belgie.group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_auditor_no_write_rent_charge_category" model="ir.rule">
+        <field name="name">Commissaris: geen wijzigingen aan vme.rent.charge.category</field>
+        <field name="model_id" ref="model_vme_rent_charge_category"/>
+        <field name="groups" eval="[Command.link(ref('vme_belgie.group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+</odoo>

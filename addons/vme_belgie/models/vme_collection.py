@@ -741,6 +741,7 @@ class VmeCollectionReminder(models.Model):
             })
 
     def action_update(self):
+        check_not_auditor(self.env)
         if self.filtered(lambda r: r.state != "draft"):
             raise UserError(self.env._("Alleen concepten kunnen bijgewerkt worden."))
         self._update_content()

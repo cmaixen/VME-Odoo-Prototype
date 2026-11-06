@@ -104,9 +104,13 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 
 30. [Een verhuurd appartement beheren: huurcontract, huurfacturen, indexering en afrekening aan de huurder](rentmeester.md)
 
+### Gebruikers
+
+31. [Medewerkers toegang geven tot alle of enkele VME's](toegang-medewerkers.md)
+
 ## Zo is het platform opgebouwd
 
-- **Eén VME = één bedrijf in Odoo.** Elke VME heeft haar eigen boekhouding, eigen rekeningnummers en eigen facturen. Rechtsboven in Odoo kies je in welke VME je werkt wanneer je facturen ingeeft. De schermen in de app **VME** (kavels, sleutels, provisieoproepen, jaarafrekening) tonen altijd alle VME's samen.
+- **Eén VME = één bedrijf in Odoo.** Elke VME heeft haar eigen boekhouding, eigen rekeningnummers en eigen facturen. Rechtsboven in Odoo kies je in welke VME je werkt wanneer je facturen ingeeft. De schermen in de app **VME** (kavels, sleutels, provisieoproepen, jaarafrekening) tonen altijd alle VME's samen waartoe je toegang hebt.
 - **Werkkapitaal en reservekapitaal staan apart.** Elk fonds heeft een eigen bankrekening, en elke eigenaar krijgt per fonds een eigen provisiefactuur.
 - **Kosten volgen de eigenaar op de dag zelf.** Wordt een kavel verkocht, dan verdeelt het platform elke kost over verkoper en koper volgens het aantal dagen dat elk eigenaar was.
 

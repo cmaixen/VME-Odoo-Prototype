@@ -6,6 +6,7 @@ from odoo.exceptions import UserError
 from .allocation_tools import largest_remainder
 from .bank_formats import make_structured
 from .vme_meter import MissingReading
+from .vme_access import check_not_auditor
 
 AMOUNT_DIGITS = 2
 
@@ -275,6 +276,7 @@ class AccountMove(models.Model):
         return segments
 
     def action_vme_distribute(self):
+        check_not_auditor(self.env)  # the allocations are written as sudo
         self._vme_distribute()
         return self.action_vme_open_allocations()
 

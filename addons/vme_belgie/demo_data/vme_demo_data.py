@@ -609,8 +609,16 @@ class VmeAssociation(models.Model):
         rooms = self.env["vme.assembly.room"].create([
             {"name": name, "address": address, "capacity": capacity} for name, address, capacity in ASSEMBLY_ROOMS
         ])
+        # A staff member of the syndic who works on every VME (record rules follow his companies).
+        vme_companies = self.env["vme.association"].search([]).company_id
         staff = self.env["res.users"].search([("login", "=", STAFF_USER["login"])]) or \
-            self.env["res.users"].with_context(no_reset_password=True).create(STAFF_USER)
+            self.env["res.users"].with_context(no_reset_password=True).create({
+                **STAFF_USER,
+                "group_ids": [Command.link(self.env.ref("base.group_user").id),
+                              Command.link(self.env.ref("vme_belgie.group_vme_all_companies").id)],
+                "company_id": vme_companies[:1].id or self.env.company.id,
+                "company_ids": [Command.link(c.id) for c in vme_companies | self.env.company],
+            })
         users = {"admin": self.env.ref("base.user_admin"), "staff": staff}
         self.env["vme.assembly.slot"].create([{
             "date": day,

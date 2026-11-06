@@ -23,6 +23,7 @@ class TestRentSettlement(TransactionCase):
         })
         cls.env["account.chart.template"].try_loading("be_comp", cls.office, install_demo=False)
         cls.env.user.company_ids |= cls.office
+        cls.env.ref("base.user_admin").company_ids |= cls.office  # rent records follow the user's companies
 
         cls.vme = cls.env["vme.association"].create({"name": "Residentie Huur", "zip": "2000"})
         cls.env.cr.precommit.run()
