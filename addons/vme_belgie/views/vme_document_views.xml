@@ -10,6 +10,8 @@
                 <field name="folder_id"/>
                 <field name="lot_id" optional="show"/>
                 <field name="name"/>
+                <field name="certificate_type" optional="show"/>
+                <field name="valid_until" optional="show"/>
                 <field name="filename" optional="hide"/>
                 <field name="portal_visible" widget="boolean_toggle"/>
             </list>
@@ -33,6 +35,8 @@
                             <field name="scope" invisible="1"/>
                             <field name="lot_id" invisible="scope != 'lot'" required="scope == 'lot'"/>
                             <field name="date"/>
+                            <field name="certificate_type" invisible="scope == 'lot'"/>
+                            <field name="valid_until" invisible="not certificate_type"/>
                         </group>
                         <group>
                             <field name="datas" filename="filename"/>
@@ -61,6 +65,8 @@
                 <field name="folder_id"/>
                 <filter name="portal" string="Zichtbaar in het portaal" domain="[('portal_visible', '=', True)]"/>
                 <filter name="internal" string="Alleen intern" domain="[('portal_visible', '=', False)]"/>
+                <separator/>
+                <filter name="certificates" string="Attesten" domain="[('certificate_type', '!=', False)]"/>
                 <group>
                     <filter name="group_association" string="VME" context="{'group_by': 'association_id'}"/>
                     <filter name="group_folder" string="Map" context="{'group_by': 'folder_id'}"/>

@@ -190,6 +190,17 @@ class TestDemoData(TransactionCase):
         self.assertNotIn("assembly", signals["Residentie Linde"])
         self.assertIn("inspection", signals["Residentie Linde"])
         self.assertEqual(self.linde.arrears_signal_threshold, 250)
+        # Insurance and certificates: the fire insurance of Kaaihuis is due on 1 December 2026 and
+        # Hof ter Beuken (built 1978) has no asbestos certificate of the common parts.
+        self.assertIn("insurance", signals["Kaaihuis"])
+        self.assertNotIn("insurance", signals["Residentie Linde"] | signals["Hof ter Beuken"])
+        self.assertIn("certificate", signals["Hof ter Beuken"])
+        self.assertNotIn("certificate", signals["Residentie Linde"] | signals["Kaaihuis"])
+        beuken = self.vmes.filtered(lambda v: v.name == "Hof ter Beuken")
+        self.assertIn("Asbestattest gemene delen laten opmaken", beuken.activity_ids.mapped("summary"))
+        kaai = self.vmes.filtered(lambda v: v.name == "Kaaihuis")
+        self.assertEqual(kaai.insurance_policy_ids.date_end, date(2026, 12, 1))
+        self.assertTrue(kaai.insurance_policy_ids.activity_ids)
 
     def test_demo_portal_request_and_survey(self):
         # Step 27: A1 filed a request in the portal and answered the survey on charging points there.

@@ -26,6 +26,10 @@
             <field name="name">Postinterventiedossier</field>
             <field name="sequence">60</field>
         </record>
+        <record id="folder_certificates" model="vme.document.folder">
+            <field name="name">Attesten (asbest, EPC)</field>
+            <field name="sequence">65</field>
+        </record>
         <record id="folder_contracts" model="vme.document.folder">
             <field name="name">Contracten</field>
             <field name="sequence">70</field>

@@ -130,6 +130,43 @@
             De verkoper bezorgt deze sleutels en badges aan de koper bij de akte. Bijkomende exemplaren bestelt alleen de syndicus.
         </p>
         <p t-else="">Er zijn geen sleutels of badges geregistreerd voor deze kavels.</p>
+
+        <h5 class="mt-4">9. Verplichte attesten van de gemene delen</h5>
+        <table t-if="info['certificates']" class="table table-sm">
+            <thead><tr><th>Attest</th><th>Datum</th><th>Geldig tot</th><th>Toestand</th></tr></thead>
+            <tbody>
+                <tr t-foreach="info['certificates']" t-as="entry">
+                    <td t-out="entry['label']"/>
+                    <td>
+                        <t t-if="entry['document']" t-out="format_date(entry['document'].date, lang=doc_lang)"/>
+                        <t t-elif="entry['installation'].last_inspection_date" t-out="format_date(entry['installation'].last_inspection_date, lang=doc_lang)"/>
+                    </td>
+                    <td><t t-if="entry['valid_until']" t-out="format_date(entry['valid_until'], lang=doc_lang)"/></td>
+                    <td>
+                        <strong t-if="entry['state'] in ('missing', 'expired')" t-out="entry['state_label']"/>
+                        <t t-else="" t-out="entry['state_label']"/>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p t-if="[e for e in info['certificates'] if e['state'] in ('missing', 'expired')]" class="small">
+            Een ontbrekend of vervallen attest is nog niet beschikbaar bij de syndicus. De bestaande attesten zijn bijgevoegd of op aanvraag beschikbaar.
+        </p>
+        <p t-if="not info['certificates']">Voor dit gebouw zijn geen attesten van de gemene delen vereist.</p>
+
+        <h5 class="mt-4">10. Brandverzekering van het gebouw</h5>
+        <table t-if="info['insurance']" class="table table-sm">
+            <thead><tr><th>Verzekeraar</th><th>Polisnummer</th><th>Vervaldag</th><th class="text-end">Verzekerde waarde</th></tr></thead>
+            <tbody>
+                <tr t-foreach="info['insurance']" t-as="policy">
+                    <td t-out="policy.insurer_id.name"/>
+                    <td t-out="policy.policy_number"/>
+                    <td t-out="format_date(policy.date_end, lang=doc_lang)"/>
+                    <td class="text-end"><t t-if="policy.insured_value" t-out="policy.insured_value" t-options="money"/></td>
+                </tr>
+            </tbody>
+        </table>
+        <p t-else="">Er is geen brandverzekering van het gebouw geregistreerd bij de syndicus.</p>
     </template>
 
     <template id="report_notary_information">

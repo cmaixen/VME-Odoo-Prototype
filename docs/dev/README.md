@@ -39,6 +39,7 @@ Interne documentatie voor wie aan de module `vme_belgie` werkt. De gebruikersdoc
 | [toegangsrechten.md](toegangsrechten.md) | Rollen, record rules per company, regels van de commissaris, sudo-knoppen, bevindingen van de review en wat een nieuw model nodig heeft |
 | [website.md](website.md) | Module `vme_website`: productwebsite, knop Inloggen met landing per type gebruiker, demo-aanvraag als lead zonder mail (stap 27) |
 | [schaal.md](schaal.md) | Schaaldatabase met 200 fictieve VME's, meetscript, metingen vóór en na, portefeuille in één keer lezen, provisieoproepen op de achtergrond (stap 27) |
+| [verzekeringen-attesten.md](verzekeringen-attesten.md) | Brandverzekering (vervaldag, opzegtermijn, verzekerde waarde, schadegevallen) en verplichte attesten per gebouw op `vme.document` en `vme.installation`, signalen, taken en notaris |
 | [legal-checks.md](legal-checks.md) | Alle `LEGAL-CHECK`-punten uit de code (gegenereerd) |
 
 Documentatie hoort bij elke stap, in hetzelfde commit als de code (zie `CLAUDE.md`). Na een wijziging aan een `# LEGAL-CHECK:`-commentaar draai je:

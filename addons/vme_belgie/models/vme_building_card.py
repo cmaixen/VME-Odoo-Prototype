@@ -15,6 +15,8 @@ SIGNALS = [
     ("assembly", "AV buiten de periode"),
     ("inspection", "Vervallen keuring"),
     ("cycle", "Stap in de jaarcyclus te laat"),
+    ("insurance", "Brandverzekering vervalt of ontbreekt"),
+    ("certificate", "Verplicht attest ontbreekt"),
 ]
 
 
@@ -44,6 +46,10 @@ class VmeAssociation(models.Model):
                                        search="_search_signal_inspection")
     signal_cycle = fields.Boolean(string="Stap in de jaarcyclus te laat", compute="_compute_portfolio",
                                   search="_search_signal_cycle")
+    signal_insurance = fields.Boolean(string="Brandverzekering vervalt of ontbreekt", compute="_compute_portfolio",
+                                      search="_search_signal_insurance")
+    signal_certificate = fields.Boolean(string="Verplicht attest ontbreekt", compute="_compute_portfolio",
+                                        search="_search_signal_certificate")
     signal_count = fields.Integer(string="Aantal signalen", compute="_compute_portfolio", search="_search_signal_count")
     signal_summary = fields.Char(string="Signalen", compute="_compute_portfolio")
     building_card_html = fields.Html(string="Gebouwkaart", compute="_compute_building_card_html", sanitize=False)
@@ -179,6 +185,10 @@ class VmeAssociation(models.Model):
             ("association_id", "in", ids), ("year", "=", today.year), ("state", "!=", "cancelled"),
             ("assembly_type", "=", "ordinary")])  # an extraordinary assembly (step 24) has no period
         ratio = budget_elapsed_ratio(today.year, today)
+        # Insurance and certificates (vme_compliance.py), read once for all VMEs.
+        policies = self.env["vme.insurance.policy"].sudo().search([("association_id", "in", ids)])
+        documents = self.env["vme.document"].sudo().search(
+            [("association_id", "in", ids), ("certificate_type", "!=", False)])
 
         figures = {}
         for vme in vmes:
@@ -199,11 +209,12 @@ class VmeAssociation(models.Model):
                 "actual": vme_actual,
                 "usage": vme_actual / budget_to_date if budget_to_date else 0.0,
                 "signals": vme._build_signals(
-                    today, budget, vme_arrears, assemblies.filtered(lambda a, v=vme: a.association_id == v)),
+                    today, budget, vme_arrears, assemblies.filtered(lambda a, v=vme: a.association_id == v),
+                    policies=policies, documents=documents),
             }
         return figures
 
-    def _build_signals(self, today, budget, arrears, assemblies):
+    def _build_signals(self, today, budget, arrears, assemblies, policies=None, documents=None):
         self.ensure_one()
         vme = self.sudo()
         currency = vme.company_id.currency_id
@@ -238,6 +249,15 @@ class VmeAssociation(models.Model):
             signals.append({"code": "cycle", "message": self.env._(
                 "Te laat in de jaarcyclus: %s.", ", ".join(
                     f"{step.name} (uiterlijk {format_date(self.env, step.date_deadline)})" for step in late))})
+
+        message = vme._get_insurance_signal(today, policies)
+        if message:
+            signals.append({"code": "insurance", "message": message})
+
+        # The certificate rules carry their LEGAL-CHECK in vme_compliance.py.
+        message = vme._get_certificate_signal(today, documents)
+        if message:
+            signals.append({"code": "certificate", "message": message})
 
         for signal in signals:
             signal["label"] = labels[signal["code"]]
@@ -328,6 +348,12 @@ class VmeAssociation(models.Model):
     def _search_signal_cycle(self, operator, value):
         return self._search_signal("cycle", operator, value)
 
+    def _search_signal_insurance(self, operator, value):
+        return self._search_signal("insurance", operator, value)
+
+    def _search_signal_certificate(self, operator, value):
+        return self._search_signal("certificate", operator, value)
+
     def _search_signal_count(self, operator, value):
         compare = {
             ">": lambda n: n > value, ">=": lambda n: n >= value, "=": lambda n: n == value,
@@ -409,6 +435,7 @@ class VmeAssociation(models.Model):
             "collections": collections,
             "installations": installations,
             "contracts": contracts,
+            "compliance": vme._get_compliance_data(today),
             "requests": vme._get_open_requests(),
             "bills_to_pay": bills_to_pay,
             "payment_batches": vme._get_open_payment_batches(),

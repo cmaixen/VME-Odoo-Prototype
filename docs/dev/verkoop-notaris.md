@@ -32,6 +32,8 @@ Alles als `sudo`, zoals de jaarafrekening: de records van een VME zitten in haar
 | `arrears` | Geboekte provisiefacturen (`out_invoice` met `vme_provision_call_id`) van de verkoper met `amount_residual ≠ 0`. |
 | `works` | Agendapunten met `outcome = adopted`, `works_amount > 0` en niet `works_done`; aandeel via `works_key_id` of de algemene sleutel. |
 | `assemblies` | Gehouden AV's van de laatste drie jaar (`ASSEMBLY_YEARS`). |
+| `certificates` | `vme._get_certificate_status(on_date)` in de taal van de notaris: elk verplicht attest met toestand; een ontbrekend attest staat er uitdrukkelijk (deel 9), zie [verzekeringen-attesten.md](verzekeringen-attesten.md). |
+| `insurance` | `vme._building_policies()`: de actieve brandverzekeringen van het gebouw met verzekeraar, polisnummer, vervaldag en verzekerde waarde (deel 10). |
 | `keys_issued` | Registerlijnen (`vme.lot.key`) van de verkochte kavels met status `active` (stap 19). Ook als niet-opgeslagen veld `key_register_ids` op het dossier, voor het tabblad "Sleutels en badges". |
 
 Het rapportmodel `report.vme_belgie.report_notary_information` krijgt `data={"answer": "first"|"second"}`; zonder `data` (afdrukken vanuit het menu) kiest het de tweede vraag als die er is.

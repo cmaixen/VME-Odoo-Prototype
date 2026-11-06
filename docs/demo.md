@@ -180,6 +180,16 @@ Na stap 8 staan er ook drie aanvragen in **VME > Aanvragen**.
 3. **Schadedossiers**: *Waterschade badkamer A4*, uit de mail van A4 (zie stap 8), aangegeven bij de verzekeraar op 3 november, expertise op 12 november.
 
 > Boodschap: "Van AV-beslissing tot oplevering in één dossier, en geen aangiftetermijn die ontsnapt."
+### Extra: brandverzekering en verplichte attesten (1 minuut)
+
+1. **VME > Portefeuille**: Kaaihuis heeft het signaal **Brandverzekering vervalt of ontbreekt** (vervaldag 1 december 2026), Hof ter Beuken het signaal **Verplicht attest ontbreekt** (geen asbestattest, bouwjaar 1978).
+2. Open Hof ter Beuken, tabblad **Verzekering en attesten**: het asbestattest staat in het rood, het EPC en de elektrische keuring zijn in orde. De taak *Asbestattest gemene delen laten opmaken* staat klaar.
+3. Klik **Asbestattest toevoegen**, kies een PDF en sla op: het attest is tien jaar geldig, de taak is afgevinkt en het signaal is weg.
+4. Open de polis van Kaaihuis (**VME > Werken en schade > Verzekeringspolissen**): vervaldag, opzegdatum, verzekerde waarde en schadegevallen. **Verlengd** schuift de vervaldag een jaar op; er gaat niets naar de verzekeraar.
+5. In een verkoopdossier toont het voorbeeld van de inlichtingen aan de notaris nu ook de attesten (een ontbrekend attest staat er uitdrukkelijk) en de brandverzekering.
+
+> Boodschap: "Geen polis die stilzwijgend verloopt zonder dat iemand ze nakeek, en de notaris krijgt meteen de attesten van de gemene delen."
+
 ### Extra: de website en de knop Inloggen (1 minuut)
 
 Doe dit vóór u inlogt, of in een privévenster.

@@ -31,3 +31,4 @@ from . import test_cycle
 from . import test_syndic
 from . import test_translation
 from . import test_scale_data
+from . import test_compliance

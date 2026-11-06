@@ -64,7 +64,7 @@
                     <li t-foreach="signals" t-as="signal"><span class="fw-bold" t-out="signal['label']"/>: <t t-out="signal['message']"/></li>
                 </ul>
             </div>
-            <div t-else="" class="alert alert-success" role="status">Geen signalen: reservefonds, achterstallen, AV en keuringen zijn in orde.</div>
+            <div t-else="" class="alert alert-success" role="status">Geen signalen: reservefonds, achterstallen, AV, keuringen, verzekering en attesten zijn in orde.</div>
             <div class="row g-3">
                 <!-- Core data -->
                 <div class="col-lg-4">
@@ -295,6 +295,20 @@
                                     </tr>
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Insurance and certificates (vme_compliance_views.xml) -->
+                <div class="col-lg-12">
+                    <div class="card h-100">
+                        <div class="card-header fw-bold">Verzekering en attesten</div>
+                        <div class="card-body">
+                            <t t-call="vme_belgie.compliance_content">
+                                <t t-set="policies" t-value="compliance['policies']"/>
+                                <t t-set="insurance_signal" t-value="compliance['insurance_signal']"/>
+                                <t t-set="certificates" t-value="compliance['certificates']"/>
+                            </t>
                         </div>
                     </div>
                 </div>

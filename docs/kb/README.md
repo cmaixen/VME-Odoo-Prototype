@@ -33,6 +33,7 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 12. [Keuringen en liften opvolgen](keuringen.md)
 13. [Werken opvolgen, van offertes tot oplevering](werken.md)
 14. [Een schadegeval behandelen met de verzekering](schadegevallen.md)
+39. [De brandverzekering en de verplichte attesten van een gebouw opvolgen](verzekeringen-en-attesten.md)
 
 ### Algemene vergaderingen
 

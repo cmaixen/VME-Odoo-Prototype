@@ -38,3 +38,4 @@ from . import vme_portal_requests
 from . import vme_cycle
 from . import vme_syndic
 from . import vme_provision_call_run
+from . import vme_compliance

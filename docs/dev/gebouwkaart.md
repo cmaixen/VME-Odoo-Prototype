@@ -14,7 +14,7 @@ Geen Enterprise-dashboards: alleen standaardweergaven (form, list, kanban, pivot
 
 Op `vme.budget`: `line_ids`, `lines_total`, `unassigned_amount` (= `working_capital_budget` − som van de regels).
 
-Op `vme.association` (niet opgeslagen, berekend in één `_compute_portfolio`): `working_capital_balance`, `reserve_capital_balance`, `arrears_amount`, `budget_to_date_amount`, `actual_to_date_amount`, `budget_usage`, `signal_reserve`, `signal_arrears`, `signal_assembly`, `signal_inspection`, `signal_count`, `signal_summary`; opgeslagen `arrears_signal_threshold` (standaard 1.000). `building_card_html` is het gerenderde sjabloon.
+Op `vme.association` (niet opgeslagen, berekend in één `_compute_portfolio`): `working_capital_balance`, `reserve_capital_balance`, `arrears_amount`, `budget_to_date_amount`, `actual_to_date_amount`, `budget_usage`, `signal_reserve`, `signal_arrears`, `signal_assembly`, `signal_inspection`, `signal_cycle`, `signal_insurance`, `signal_certificate`, `signal_count`, `signal_summary`; opgeslagen `arrears_signal_threshold` (standaard 1.000). `building_card_html` is het gerenderde sjabloon.
 
 Op `res.partner`: `vme_supplier_contract_count`, `vme_supplier_open_amount`, `vme_supplier_vme_names`, `vme_supplier_card_html`, met `@api.depends_context("uid")` (zie valkuilen).
 
@@ -55,6 +55,8 @@ Vreemde munt: `price_total` staat in de munt van de factuur. Alle VME's werken i
 | `assembly` | `_get_assembly_signal`: een niet-geannuleerde AV van dit jaar met een datum buiten haar periode (gehouden, of nog te komen), of de periode van dit jaar is voorbij zonder gehouden AV in de periode | `# LEGAL-CHECK: art. 3.87 §2 BW` |
 | `inspection` | een installatie met `due_state` of `risk_analysis_due_state` = `overdue` (stap 6b) | de termijnen zelf staan in `vme_installation.py` |
 | `cycle` | een stap van de jaarcyclus met `_is_late(today)` (stap 28) | de termijnen staan in `vme_cycle.py`, zie [jaarcyclus.md](jaarcyclus.md) |
+| `insurance` | `_get_insurance_signal`: geen actieve brandverzekering van het gebouw, of ze vervalt binnen 30 dagen of is vervallen | `# LEGAL-CHECK` in `vme_compliance.py`, zie [verzekeringen-attesten.md](verzekeringen-attesten.md) |
+| `certificate` | `_get_certificate_signal`: een verplicht attest ontbreekt of is vervallen (een vervallen elektrische keuring blijft `inspection`) | de regels staan in `vme_compliance.py` |
 
 "Vandaag" komt uit `fields.Date.context_today`, of uit de context `vme_today` zoals bij de AV-planner. De portefeuille en de zoekmethodes (`_search_signal`, `_search_signal_count`) rekenen live, maar voor alle VME's samen in een vast aantal queries (`_get_portfolio_figures`, met `_read_group` op de SQL-views van kapitalen, achterstallen en budgetopvolging); `_get_signals()` van één VME gebruikt dezelfde functie. Bij 200 VME's is dat ruim snel genoeg om niets op te slaan; de metingen staan in [schaal.md](schaal.md).
 

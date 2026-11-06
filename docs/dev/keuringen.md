@@ -51,6 +51,10 @@ Alle wettelijke standaarden staan bovenaan het bestand, elk met `# LEGAL-CHECK:`
 - de opmerkingen en "over termijn"
 - de factuurkoppeling: een factuur van het keuringsorganisme, van een andere leverancier, en dezelfde factuur twee keer
 
+## Elektrische keuring als attest
+
+De installatie van soort `electrical` is ook het verplichte attest "Elektrische keuring gemene delen" in de opvolging van attesten (`vme_compliance.py`, zie [verzekeringen-attesten.md](verzekeringen-attesten.md)): geldig tot `next_inspection_date`, ontbrekend zonder installatie of verslag.
+
 ## Valkuilen
 
 - **Statussen die van vandaag afhangen** (`due_state`, `is_overdue`) kun je niet opslaan; filter op de opgeslagen datum.

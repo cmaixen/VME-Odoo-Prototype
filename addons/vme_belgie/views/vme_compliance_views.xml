@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Insurance and mandatory certificates of one VME: shown on the VME form and on the building card. -->
+    <template id="compliance_content">
+        <div class="o_vme_compliance">
+            <h6>Brandverzekering en andere polissen</h6>
+            <div t-if="insurance_signal" class="alert alert-warning py-2" role="alert" t-out="insurance_signal"/>
+            <p t-if="not policies" class="text-muted">Nog geen polis geregistreerd.</p>
+            <table t-else="" class="table table-sm o_vme_card_table">
+                <thead><tr><th>Polis</th><th>Verzekeraar</th><th>Vervaldag</th><th>Opzeggen uiterlijk</th><th class="text-end">Verzekerde waarde</th><th class="text-end">Schadegevallen</th></tr></thead>
+                <tbody>
+                    <tr t-foreach="policies" t-as="rec" t-att-class="'table-danger' if rec.due_state == 'overdue' else 'table-warning' if rec.due_state == 'due_30' else ''">
+                        <td><t t-call="vme_belgie.card_link"><t t-set="record" t-value="rec"/><t t-set="label" t-value="False"/></t></td>
+                        <td t-out="rec.insurer_id.name"/>
+                        <td><t t-out="rec.date_end" t-options="{'widget': 'date'}"/> <span class="small text-muted" t-out="selection_label(rec, 'due_state')"/></td>
+                        <td t-out="rec.notice_deadline" t-options="{'widget': 'date'}"/>
+                        <td class="text-end"><t t-if="rec.insured_value" t-out="rec.insured_value" t-options="{'widget': 'monetary', 'display_currency': currency}"/><t t-else="">-</t></td>
+                        <td class="text-end" t-out="rec.claim_count"/>
+                    </tr>
+                </tbody>
+            </table>
+            <h6>Verplichte attesten van het gebouw</h6>
+            <p t-if="not certificates" class="text-muted">Geen verplichte attesten voor dit gebouw.</p>
+            <table t-else="" class="table table-sm o_vme_card_table mb-0">
+                <thead><tr><th>Attest</th><th>Document of installatie</th><th>Geldig tot</th><th>Status</th></tr></thead>
+                <tbody>
+                    <tr t-foreach="certificates" t-as="entry" t-att-class="'table-danger' if entry['state'] in ('missing', 'expired') else 'table-warning' if entry['state'] in ('expiring', 'unknown') else ''">
+                        <td t-out="entry['label']"/>
+                        <td>
+                            <t t-if="entry['document']"><t t-call="vme_belgie.card_link"><t t-set="record" t-value="entry['document']"/><t t-set="label" t-value="False"/></t></t>
+                            <t t-elif="entry['installation']"><t t-call="vme_belgie.card_link"><t t-set="record" t-value="entry['installation']"/><t t-set="label" t-value="False"/></t></t>
+                            <t t-else="">-</t>
+                        </td>
+                        <td><t t-if="entry['valid_until']" t-out="entry['valid_until']" t-options="{'widget': 'date'}"/><t t-elif="entry['state'] == 'ok'">onbeperkt</t></td>
+                        <td>
+                            <t t-out="entry['state_label']"/>
+                            <div t-if="entry['message'] and entry['state'] != 'ok'" class="small" t-out="entry['message']"/>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </template>
+
+    <record id="vme_association_view_form_compliance" model="ir.ui.view">
+        <field name="name">vme.association.form.compliance</field>
+        <field name="model">vme.association</field>
+        <field name="inherit_id" ref="vme_association_view_form"/>
+        <field name="arch" type="xml">
+            <field name="country_id" position="after">
+                <field name="region"/>
+                <field name="construction_year" options="{'format': false}"/>
+            </field>
+            <xpath expr="//notebook" position="inside">
+                <page string="Verzekering en attesten" name="compliance" invisible="not id">
+                    <div class="mb-2">
+                        <button name="action_add_certificate" type="object" string="Asbestattest toevoegen"
+                                class="btn-secondary btn-sm me-1" context="{'certificate_type': 'asbestos'}"/>
+                        <button name="action_add_certificate" type="object" string="EPC gemene delen toevoegen"
+                                class="btn-secondary btn-sm me-1" context="{'certificate_type': 'epc_common'}"/>
+                        <button name="action_add_certificate" type="object" string="Postinterventiedossier toevoegen"
+                                class="btn-secondary btn-sm" context="{'certificate_type': 'pid'}"/>
+                    </div>
+                    <field name="compliance_html" readonly="1" nolabel="1"/>
+                    <div class="text-muted small mt-2">
+                        Een attest is een document met een soort attest. De elektrische keuring komt uit de installatie
+                        "Elektrische installatie gemene delen" (tab Installaties). Een taak of signaal verstuurt niets.
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="ir_cron_vme_policy_activities" model="ir.cron">
+        <field name="name">VME: taken voor verzekeringspolissen die binnenkort vervallen</field>
+        <field name="model_id" ref="model_vme_insurance_policy"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_schedule_policy_activities()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+    </record>
+
+    <record id="ir_cron_vme_certificate_activities" model="ir.cron">
+        <field name="name">VME: taken voor ontbrekende of vervallen attesten</field>
+        <field name="model_id" ref="model_vme_association"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_schedule_certificate_activities()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+    </record>
+</odoo>

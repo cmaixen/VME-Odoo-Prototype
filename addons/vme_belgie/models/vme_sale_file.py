@@ -295,9 +295,17 @@ class VmeSaleFile(models.Model):
             ("date", ">=", on_date.replace(year=on_date.year - ASSEMBLY_YEARS)), ("date", "<=", on_date),
         ], order="date desc")
 
+        # LEGAL-CHECK: art. 3.94 §1 BW en Vlaamse verkoopplicht (Materialendecreet, Energiebesluit) -
+        # the notary needs the asbestos certificate and EPC of the common parts and the
+        # post-intervention file; a missing certificate is stated explicitly.
+        lang = sale.notary_id.lang or company.partner_id.lang
+        certificates = vme.with_context(lang=lang)._get_certificate_status(on_date)
+
         return {
             "sale": sale,
             "vme": vme,
+            "certificates": certificates,
+            "insurance": vme._building_policies(),
             "currency": currency,
             "date": on_date,
             "lots": lots,
