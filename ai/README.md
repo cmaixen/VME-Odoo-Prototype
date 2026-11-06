@@ -105,4 +105,17 @@ Klikt een medewerker in een werkdossier op **Offertes vergelijken** (twee tot vi
 ```
 
 De testmodus leest alleen de drie demo-offertes (gevelrenovatie Residentie Linde); een echte offerte of scan heeft Claude nodig. Uitleg voor medewerkers: `docs/kb/offertes-vergelijken.md`; architectuur: `docs/dev/offertes-vergelijken.md`.
+## Basisakte en notulen lezen bij een overname
+
+`overname.py` leest de basisakte (ook een scan) en de notulen van de laatste AV's van een gebouw dat de syndicus overneemt, en zet het resultaat als voorstel in de overstap in Odoo (**VME > Configuratie > Overstap uit ander pakket**). Een medewerker kijkt elke regel na naast het fragment; er wordt niets aangemaakt tot de import.
+
+```bash
+.venv/bin/python overname.py --mock --dry-run   # offline, toont wat er gelezen wordt
+.venv/bin/python overname.py --mock             # offline, zet het voorstel in Odoo
+.venv/bin/python overname.py                    # met Claude (claude-opus-5-5)
+.venv/bin/python overname.py --mock --json --bestand ../addons/vme_belgie/demo_data/migratie/residentie-wilg-documenten/basisakte-scan.pdf
+.venv/bin/python tools/maak_demo_overname.py    # demodocumenten opnieuw maken (de scan vraagt Pillow)
+```
+
+De demodocumenten van de verzonnen Residentie Wilg staan in `addons/vme_belgie/demo_data/migratie/residentie-wilg-documenten/`: een leesbare basisakte, dezelfde akte als slechte scan (aandeel A2 onleesbaar, B3 gelezen als "1O5"), en de notulen van de AV's van 2025 en 2026. Uitleg voor medewerkers: `docs/kb/overname-basisakte-ai.md`; architectuur: `docs/dev/overname-ai.md`.
 

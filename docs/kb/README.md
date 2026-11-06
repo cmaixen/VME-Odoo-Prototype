@@ -62,6 +62,13 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 
 27. [De gebouwkaart, de budgetopvolging en de portefeuille](gebouwkaart.md)
 28. [Het jaar van een VME opvolgen: de jaarcyclus](jaarcyclus.md)
+29. [Een gebouw overnemen met de basisakte en de notulen (AI)](overname-basisakte-ai.md)
+
+### Documenten en eigenaars
+
+
+### Overzichten
+
 
 ### Post en mails
 
@@ -77,7 +84,7 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 
 ### Overstappen
 
-29. [Contracten en personeel opvolgen](contracten.md)
+30. [Contracten en personeel opvolgen](contracten.md)
 
 ### Algemene vergaderingen
 
@@ -87,48 +94,69 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 
 ### Bewoners
 
-30. [Aanvragen van bewoners: sleutels, badges en andere vaste procedures](aanvragen-sleutels-badges.md)
-31. [Aanvragen en bevragingen in het eigenaarsportaal](portaal-aanvragen-bevragingen.md)
+31. [Aanvragen van bewoners: sleutels, badges en andere vaste procedures](aanvragen-sleutels-badges.md)
+32. [Aanvragen en bevragingen in het eigenaarsportaal](portaal-aanvragen-bevragingen.md)
 
 ### Overstappen
 
-32. [Leveranciers betalen en provisies domiciliëren](betalingen.md)
+33. [Leveranciers betalen en provisies domiciliëren](betalingen.md)
 
 ### Overstappen
 
-33. [PDF-facturen en documenten laten lezen door de AI-assistent](pdf-facturen-ai.md)
+34. [PDF-facturen en documenten laten lezen door de AI-assistent](pdf-facturen-ai.md)
 
 ### Overstappen
 
-34. [Communicatie met eigenaars: mededelingen, bevragingen en aangetekende brieven](communicatie.md)
+35. [Communicatie met eigenaars: mededelingen, bevragingen en aangetekende brieven](communicatie.md)
+
+### Overstappen
+
+
+### Overstappen
+
+
+### Overstappen
+
 
 ### Overstappen
 
 
 ### Rentmeester
 
-35. [Een verhuurd appartement beheren: huurcontract, huurfacturen, indexering en afrekening aan de huurder](rentmeester.md)
-36. [De huur doorstorten aan de verhuurder: ereloon, kosten, afrekening en betaalbatch](doorstorting-verhuurder.md)
+36. [Een verhuurd appartement beheren: huurcontract, huurfacturen, indexering en afrekening aan de huurder](rentmeester.md)
+37. [De huur doorstorten aan de verhuurder: ereloon, kosten, afrekening en betaalbatch](doorstorting-verhuurder.md)
 
 ### Gebruikers
 
-37. [Medewerkers toegang geven tot alle of enkele VME's](toegang-medewerkers.md)
+38. [Medewerkers toegang geven tot alle of enkele VME's](toegang-medewerkers.md)
 
 ### De website
 
-38. [De website en inloggen voor medewerkers en eigenaars](website-en-inloggen.md)
+39. [De website en inloggen voor medewerkers en eigenaars](website-en-inloggen.md)
 
 ### Het kantoor van de syndicus
 
-39. [Uw ereloon, extra prestaties en uw mandaat als syndicus](ereloon-en-mandaat.md)
+40. [Uw ereloon, extra prestaties en uw mandaat als syndicus](ereloon-en-mandaat.md)
 
 ### Taal
 
-40. [Documenten in het Frans sturen](documenten-in-het-frans.md)
+41. [Documenten in het Frans sturen](documenten-in-het-frans.md)
 
 ### De dag van de medewerker
 
-41. [Mijn werk vandaag: alles wat vandaag moet, over al uw VME's](mijn-werk-vandaag.md)
+42. [Mijn werk vandaag: alles wat vandaag moet, over al uw VME's](mijn-werk-vandaag.md)
+
+### Gebruikers
+
+
+### De website
+
+
+### Het kantoor van de syndicus
+
+
+### Taal
+
 
 ## Zo is het platform opgebouwd
 

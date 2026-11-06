@@ -20,7 +20,7 @@ SHARED_MODELS = {
     "vme.communication.template", "vme.rent.index", "vme.rent.charge.category", "vme.consumer.price.index",
 }
 # Only through a wizard or for administrators; no company of its own.
-NOT_FOR_USERS = {"vme.migration"}
+NOT_FOR_USERS = {"vme.migration", "vme.migration.proposal"}
 
 
 @freeze_time(TODAY)

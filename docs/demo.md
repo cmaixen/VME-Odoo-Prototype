@@ -244,6 +244,22 @@ Zijn er te weinig aanwezigen voor het quorum, zet dan enkele eigenaars op "Aanwe
 4. In **Mijn mandaten en verslag** drukt hij het sjabloon voor zijn verslag aan de AV af, met de cijfers van 2026 al ingevuld.
 
 > Boodschap: "De commissaris kijkt zelf na, wanneer het hem past, zonder dat u mappen moet kopiëren."
+### Extra: een gebouw overnemen met de basisakte en de notulen (2 minuten)
+
+Het verkoopargument: een overname kost een syndicus dagen overtypen. Het gebouw is de verzonnen **Residentie Wilg**; alles staat in `addons/vme_belgie/demo_data/migratie/`. Voor een vlotte demo kunt u stap 1 en 2 vooraf doen.
+
+1. **VME > Configuratie > Overstap uit ander pakket > Nieuw.** Bij **Exportbestanden** de vier CSV-bestanden uit `addons/vme_belgie/demo_data/migratie/residentie-wilg/`; bij **Basisakte en notulen** `basisakte-scan.pdf`, `notulen-av-2025.pdf` en `notulen-av-2026.pdf` uit `residentie-wilg-documenten/`. Opslaan.
+2. In de terminal: `cd ai && .venv/bin/python overname.py --mock` (zonder sleutel, altijd hetzelfde resultaat) of `.venv/bin/python overname.py` (Claude leest de scan zelf).
+3. Herlaad de overstap. Toon het berichtenoverzicht: 61 regels, 2 onzeker. Tabblad **Aandelen en sleutels**: elke regel met bladzijde en de tabelrij uit de akte. A2 en B3 zijn rood.
+4. Klik op A2: het fragment toont "1?0", de AI zegt "Onleesbaar". **Document openen** toont de vlek op blz. 2. Typ 110 en klik **Aanvaarden**.
+5. **Zekere regels aanvaarden** (bevestigen). B3 blijft staan: aanvaard die met het vinkje.
+6. Tabblad **Uit de notulen**: de dakwerken van 2025 (48.500 euro, nog niet gegund), de garagepoort met haar eigen sleutel (4/5), twee procedures en drie mandaten.
+7. **Proefrun**: geen fouten, één waarschuwing voor B3 ("onzeker gelezen en aanvaard zonder verbetering"). **Importeren**: de VME met haar sleutels, twee werkdossiers in voorbereiding, de raad en de commissaris, en een taak per procedure.
+
+Wil je de controle tonen: aanvaard A2 zonder waarde. De proefrun zegt dat de algemene delen optellen tot 890 in plaats van 1000.
+
+> Boodschap: "De AI leest de akte en de notulen; uw medewerker kijkt elke regel na naast de bron, en het systeem telt alles na."
+
 ### Extra: een waterafsluiting in blok A (1 minuut)
 
 1. **VME > Communicatie > Verzendingen > Nieuw**: VME Residentie Linde, sjabloon **Waterafsluiting**, ontvangers "Eigenaars van een blok", blok `A`.

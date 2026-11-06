@@ -76,7 +76,7 @@ Odoo beschrijft op zijn sectorpagina "Vereniging van eigenaren" (november 2026) 
 
 | Functie volgens Odoo | Status | Waar |
 | --- | --- | --- |
-| Vastgoed snel instellen, elk type kavel | ✅ | stap 2, overstap uit een ander pakket |
+| Vastgoed snel instellen, elk type kavel | ✅ | stap 2, overstap uit een ander pakket, basisakte en notulen lezen met AI bij een overname |
 | Eigenaars, huurders en leveranciers op één plek | ✅ | stap 2, 19, 22, 25 |
 | Taken automatisch aangemaakt voor beheer, onderhoud en financiën | ✅ | stap 6b, 10, 18, 19 |
 | Facturen voor werk- en reservefonds, kosten verdeeld op aandelen | ✅ | stap 4, 5 |
