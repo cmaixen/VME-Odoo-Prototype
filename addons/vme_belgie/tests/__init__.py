@@ -26,3 +26,4 @@ from . import test_building_card
 from . import test_assembly_online
 from . import test_financial_statements
 from . import test_portal_requests
+from . import test_access_rules

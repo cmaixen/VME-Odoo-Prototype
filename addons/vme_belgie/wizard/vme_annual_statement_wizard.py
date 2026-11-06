@@ -20,6 +20,8 @@ class VmeAnnualStatementWizard(models.TransientModel):
     def _get_statement(self):
         self.ensure_one()
         vme = self.association_id._origin or self.association_id
+        # The statement is read as sudo: first make sure the user may read this VME at all.
+        vme.check_access("read")
         return vme._get_annual_statement(self.year, self.partner_ids._origin or None)
 
     @api.depends("association_id", "year", "partner_ids")

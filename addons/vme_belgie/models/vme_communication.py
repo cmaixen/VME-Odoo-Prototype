@@ -9,6 +9,7 @@ from odoo.fields import Command
 from odoo.tools import format_date
 
 from .communication_providers import get_provider
+from .vme_access import check_not_auditor
 
 # Channels a mailing can ask for; "preference" follows the paper or e-mail choice of each person.
 REQUESTED_CHANNELS = [
@@ -267,6 +268,7 @@ class VmeCommunication(models.Model):
 
     def action_prepare_recipients(self):
         """(Re)build the draft recipients; nothing is sent."""
+        check_not_auditor(self.env)  # the recipients are written as sudo
         self._check_editable()
         for communication in self:
             if communication.audience == "block" and not communication.building_block:

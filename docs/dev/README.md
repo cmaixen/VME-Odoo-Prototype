@@ -32,6 +32,8 @@ Interne documentatie voor wie aan de module `vme_belgie` werkt. De gebruikersdoc
 | [financiele-rapporten.md](financiele-rapporten.md) | Balans en resultatenrekening per VME volgens het minimumrekeningstelsel (KB 12 juli 2012), koppeling van de rekeningen, niet-aftrekbare btw (stap 26) |
 | [migratie.md](migratie.md) | Overstap uit een ander pakket: importformaat, proefrun, openingsboeking, omzetters (stap 13) |
 | [rentmeester.md](rentmeester.md) | Module `vme_rentmeester`: huurcontracten, huurfacturen, indexering met de indexstop per gewest, afrekening aan huurders (stap 25), doorstorting aan verhuurders en ereloon (stap 25b) |
+| [rentmeester.md](rentmeester.md) | Module `vme_rentmeester`: huurcontracten, huurfacturen, indexering met de indexstop per gewest, afrekening aan huurders (stap 25) |
+| [toegangsrechten.md](toegangsrechten.md) | Rollen, record rules per company, regels van de commissaris, sudo-knoppen, bevindingen van de review en wat een nieuw model nodig heeft |
 | [legal-checks.md](legal-checks.md) | Alle `LEGAL-CHECK`-punten uit de code (gegenereerd) |
 
 Documentatie hoort bij elke stap, in hetzelfde commit als de code (zie `CLAUDE.md`). Na een wijziging aan een `# LEGAL-CHECK:`-commentaar draai je:

@@ -10,6 +10,7 @@
     "depends": ["vme_belgie"],
     "data": [
         "security/ir.model.access.csv",
+        "security/rent_security.xml",
         "data/vme_rent_index_data.xml",
         "views/rent_contract_views.xml",
         "views/rent_remittance_views.xml",

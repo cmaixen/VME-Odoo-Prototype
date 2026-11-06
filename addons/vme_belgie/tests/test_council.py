@@ -46,7 +46,8 @@ class TestCouncil(TransactionCase):
         cls.auditor = cls.mandate.user_id
         cls.staff = cls.env["res.users"].with_context(no_reset_password=True).create({
             "name": "Medewerker Test", "login": "medewerker.raad@example.com",
-            "group_ids": [Command.set([cls.env.ref("account.group_account_invoice").id])],
+            "group_ids": [Command.set([cls.env.ref("account.group_account_invoice").id,
+                                       cls.env.ref("vme_belgie.group_vme_all_companies").id])],
             "company_id": cls.vme.company_id.id,
             "company_ids": [Command.set((cls.vme | cls.other_vme).company_id.ids)],
         })

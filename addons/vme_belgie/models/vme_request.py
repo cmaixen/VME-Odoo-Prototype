@@ -16,6 +16,7 @@ from odoo.fields import Command
 from odoo.tools import email_normalize, format_date
 
 from .vme_lot_contact import KEY_KINDS
+from .vme_access import check_not_auditor
 
 REQUEST_TYPE_CODES = [
     ("key", "Extra sleutel of badge"),
@@ -565,6 +566,7 @@ class VmeRequest(models.Model):
 
     def action_send_order(self):
         """Send the prepared order to the locksmith of the VME: the one click of the staff member."""
+        check_not_auditor(self.env)  # the invoice for the owner is created as sudo
         today = fields.Date.context_today(self)
         for request in self:
             if not request.order_ready:

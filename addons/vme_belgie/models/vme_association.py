@@ -103,12 +103,17 @@ class VmeAssociation(models.Model):
                 # create loads the accounts but leaves partners without a default payable and
                 # receivable account in this company, so entering a bill by hand fails.
                 self.env.cr.precommit.add(functools.partial(self._load_vme_chart, company.id))
-                # Syndic staff work on every VME, so every internal user gets access to it,
-                # not only the user who created it (which may be the system user in a script).
-                internal_users = self.env["res.users"].sudo().search([("share", "=", False)]) | self.env.user
-                internal_users.sudo().write({"company_ids": [fields.Command.link(company.id)]})
+                # Staff with access to every VME get the new one too, not only the user who created
+                # it (which may be the system user in a script). Others only get the VMEs an
+                # administrator assigns them: the record rules follow the companies of the user.
+                self._vme_all_companies_users().write({"company_ids": [fields.Command.link(company.id)]})
                 vals["company_id"] = company.id
         return super().create(vals_list)
+
+    def _vme_all_companies_users(self):
+        users = self.env.ref("vme_belgie.group_vme_all_companies").sudo().all_user_ids | self.env.user.sudo()
+        # The auditor only sees the VMEs of his mandates (vme_council.py).
+        return users.filtered(lambda u: not u.share and not u.has_group("vme_belgie.group_vme_auditor"))
 
     def _purchase_journal(self):
         self.ensure_one()
