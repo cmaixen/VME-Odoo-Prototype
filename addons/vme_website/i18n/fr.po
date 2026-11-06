@@ -1,0 +1,1039 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* vme_website
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0-20261102\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-06 11:22+0000\n"
+"PO-Revision-Date: 2026-11-06 11:18+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "<i class=\"fa fa-bank me-2 text-o-color-1\"/>Kapitalen en provisies"
+msgstr "<i class=\"fa fa-bank me-2 text-o-color-1\"/>Fonds et provisions"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.user_sign_in
+msgid ""
+"<i class=\"fa fa-briefcase fa-fw me-1\"/> Medewerker van de syndicus\n"
+"                        <small>Naar de beheeromgeving</small>"
+msgstr ""
+"<i class=\"fa fa-briefcase fa-fw me-1\"/> Collaborateur du syndic\n"
+"                        <small>Vers l'espace de gestion</small>"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid ""
+"<i class=\"fa fa-check text-o-color-1 me-2\"/>Betalingen aan leveranciers worden goedgekeurd, boven een drempel door een tweede persoon."
+msgstr ""
+"<i class=\"fa fa-check text-o-color-1 me-2\"/>Les paiements aux fournisseurs sont approuvés, au-delà d'un seuil par une deuxième personne."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_owners
+msgid ""
+"<i class=\"fa fa-check text-o-color-1 me-2\"/>De volgende algemene vergadering, online deelnemen en stemmen"
+msgstr ""
+"<i class=\"fa fa-check text-o-color-1 me-2\"/>La prochaine assemblée générale, participer et voter en ligne"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_owners
+msgid ""
+"<i class=\"fa fa-check text-o-color-1 me-2\"/>Documenten van het gebouw en van uw kavel"
+msgstr ""
+"<i class=\"fa fa-check text-o-color-1 me-2\"/>Les documents de l'immeuble et de votre lot"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_owners
+msgid ""
+"<i class=\"fa fa-check text-o-color-1 me-2\"/>Een adreswijziging aanvragen; uw syndicus keurt ze goed"
+msgstr ""
+"<i class=\"fa fa-check text-o-color-1 me-2\"/>Demander un changement d'adresse ; votre syndic l'approuve"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid ""
+"<i class=\"fa fa-check text-o-color-1 me-2\"/>Een bestelling bij de slotenmaker of een antwoord van de AI is een voorstel, geen verzending."
+msgstr ""
+"<i class=\"fa fa-check text-o-color-1 me-2\"/>Une commande au serrurier ou une réponse de l'IA est une proposition, pas un envoi."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid ""
+"<i class=\"fa fa-check text-o-color-1 me-2\"/>Elke VME heeft een eigen boekhouding, met werk- en reservekapitaal op aparte rekeningen."
+msgstr ""
+"<i class=\"fa fa-check text-o-color-1 me-2\"/>Chaque ACP a sa propre comptabilité, avec le fonds de roulement et le fonds de réserve sur des comptes séparés."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid ""
+"<i class=\"fa fa-check text-o-color-1 me-2\"/>Gebouwd op Odoo Community: geen licentie per gebruiker."
+msgstr ""
+"<i class=\"fa fa-check text-o-color-1 me-2\"/>Construit sur Odoo Community : pas de licence par utilisateur."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid ""
+"<i class=\"fa fa-check text-o-color-1 me-2\"/>Provisieoproepen, brieven en rappels staan als concept klaar tot een medewerker ze verstuurt."
+msgstr ""
+"<i class=\"fa fa-check text-o-color-1 me-2\"/>Les appels de fonds, lettres et rappels sont préparés en brouillon jusqu'à ce qu'un collaborateur les envoie."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_owners
+msgid "<i class=\"fa fa-check text-o-color-1 me-2\"/>Uw jaarafrekening per jaar"
+msgstr ""
+"<i class=\"fa fa-check text-o-color-1 me-2\"/>Votre décompte annuel, année par année"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_owners
+msgid ""
+"<i class=\"fa fa-check text-o-color-1 me-2\"/>Uw provisies en of ze betaald zijn, met de PDF"
+msgstr ""
+"<i class=\"fa fa-check text-o-color-1 me-2\"/>Vos provisions et leur statut de paiement, avec le PDF"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "<i class=\"fa fa-envelope-o me-2 text-o-color-1\"/>Communicatie"
+msgstr "<i class=\"fa fa-envelope-o me-2 text-o-color-1\"/>Communication"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_contact
+msgid "<i class=\"fa fa-fw me-2\"/>2000 Antwerpen"
+msgstr "<i class=\"fa fa-fw me-2\"/>2000 Anvers"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "<i class=\"fa fa-gavel me-2 text-o-color-1\"/>Verkoop van een kavel"
+msgstr "<i class=\"fa fa-gavel me-2 text-o-color-1\"/>Vente d'un lot"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.user_sign_in
+msgid ""
+"<i class=\"fa fa-home fa-fw me-1\"/> Eigenaar of huurder\n"
+"                        <small>Naar het eigenaarsportaal</small>"
+msgstr ""
+"<i class=\"fa fa-home fa-fw me-1\"/> Propriétaire ou locataire\n"
+"                        <small>Vers le portail des propriétaires</small>"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "<i class=\"fa fa-key me-2 text-o-color-1\"/>Rentmeesterij"
+msgstr "<i class=\"fa fa-key me-2 text-o-color-1\"/>Gestion locative"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_contact
+msgid "<i class=\"fa fa-map-marker fa-fw me-2\"/>Voorbeeldstraat 1"
+msgstr "<i class=\"fa fa-map-marker fa-fw me-2\"/>Voorbeeldstraat 1"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.footer
+msgid "<i class=\"fa fa-map-marker fa-fw me-2\"/>Voorbeeldstraat 1, 2000 Antwerpen"
+msgstr "<i class=\"fa fa-map-marker fa-fw me-2\"/>Voorbeeldstraat 1, 2000 Anvers"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "<i class=\"fa fa-users me-2 text-o-color-1\"/>Algemene vergadering"
+msgstr "<i class=\"fa fa-users me-2 text-o-color-1\"/>Assemblée générale"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "<i class=\"fa fa-wrench me-2 text-o-color-1\"/>Technisch beheer"
+msgstr "<i class=\"fa fa-wrench me-2 text-o-color-1\"/>Gestion technique"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.footer_copyright
+msgid ""
+"<span class=\"o_footer_copyright_name me-2 small\">Copyright &amp;copy; Quotis (werktitel, prototype)</span>"
+msgstr ""
+"<span class=\"o_footer_copyright_name me-2 small\">Copyright &amp;copy; Quotis (nom provisoire, prototype)</span>"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.demo_request_form
+msgid "<span class=\"s_website_form_label_content\">Aantal VME's in beheer</span>"
+msgstr "<span class=\"s_website_form_label_content\">Nombre d'ACP en gestion</span>"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.demo_request_form
+msgid ""
+"<span class=\"s_website_form_label_content\">E-mail</span>\n"
+"                                <span class=\"s_website_form_mark\"> *</span>"
+msgstr ""
+"<span class=\"s_website_form_label_content\">E-mail</span>\n"
+"                                <span class=\"s_website_form_mark\"> *</span>"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.demo_request_form
+msgid "<span class=\"s_website_form_label_content\">Syndicuskantoor</span>"
+msgstr "<span class=\"s_website_form_label_content\">Bureau de syndic</span>"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.demo_request_form
+msgid "<span class=\"s_website_form_label_content\">Telefoon</span>"
+msgstr "<span class=\"s_website_form_label_content\">Téléphone</span>"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.demo_request_form
+msgid ""
+"<span class=\"s_website_form_label_content\">Uw naam</span>\n"
+"                                <span class=\"s_website_form_mark\"> *</span>"
+msgstr ""
+"<span class=\"s_website_form_label_content\">Votre nom</span>\n"
+"                                <span class=\"s_website_form_mark\"> *</span>"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.demo_request_form
+msgid ""
+"<span class=\"s_website_form_label_content\">Wat wilt u zien in de demo?</span>"
+msgstr ""
+"<span class=\"s_website_form_label_content\">Que souhaitez-vous voir dans la démo ?</span>"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.login_route_hint
+msgid ""
+"<strong>Eigenaar of huurder.</strong> U komt na het inloggen in uw eigenaarsportaal.\n"
+"                Nog geen login? Die krijgt u van uw syndicus."
+msgstr ""
+"<strong>Propriétaire ou locataire.</strong> Après la connexion, vous arrivez dans votre portail des propriétaires.\n"
+"                Pas encore d'identifiant ? Votre syndic vous le fournit."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.login_route_hint
+msgid ""
+"<strong>Medewerker van de syndicus.</strong> U komt na het inloggen in de app VME."
+msgstr ""
+"<strong>Collaborateur du syndic.</strong> Après la connexion, vous arrivez dans l'application ACP."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid "AI-assistent"
+msgstr "Assistant IA"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid "AI-assistent voor mails"
+msgstr "Assistant IA pour les e-mails"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_pricing
+msgid "AI-assistent voor mails en PDF-facturen"
+msgstr "Assistant IA pour les e-mails et les factures PDF"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "Aanvragen als vaste procedure"
+msgstr "Les demandes comme procédure fixe"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+#: model_terms:ir.ui.view,arch_db:vme_website.page_pricing
+msgid "Afrekening van lasten aan huurders"
+msgstr "Décompte des charges aux locataires"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "Agenda, oproeping, volmachten en stemming"
+msgstr "Ordre du jour, convocation, procurations et vote"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_contact
+msgid "Al klant?"
+msgstr "Déjà client ?"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_pricing
+msgid "Alles van Kantoor"
+msgstr "Tout le contenu de Bureau"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_pricing
+msgid "Alles van Start"
+msgstr "Tout le contenu de Start"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "Alles voor het beheer van een VME"
+msgstr "Tout pour la gestion d'une ACP"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "Bankafschriften (CODA en CAMT) inlezen en koppelen aan provisies."
+msgstr "Importer les extraits bancaires (CODA et CAMT) et les lier aux provisions."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_demo_thanks
+msgid "Bedankt"
+msgstr "Merci"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_demo_thanks
+msgid "Bedankt voor uw aanvraag"
+msgstr "Merci pour votre demande"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid "Bekijk de functies"
+msgstr "Voir les fonctionnalités"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "Benieuwd naar een functie in het bijzonder?"
+msgstr "Une fonctionnalité vous intéresse en particulier ?"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "Boekhouding en verdeling"
+msgstr "Comptabilité et répartition"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_pricing
+msgid "Boekhouding, verdeling en provisies"
+msgstr "Comptabilité, répartition et provisions"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "Brieven, e-mail en aangetekend per VME, blok of kavel"
+msgstr "Lettres, e-mail et recommandé par ACP, bloc ou lot"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "Budget per VME, verdeeld per rekening en sleutel"
+msgstr "Budget par ACP, réparti par compte et par clé"
+
+#. module: vme_website
+#. odoo-python
+#: code:addons/vme_website/models/website.py:0
+#: model_terms:ir.ui.view,arch_db:vme_website.footer
+#: model_terms:ir.ui.view,arch_db:vme_website.page_contact
+msgid "Contact"
+msgstr "Contact"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "Contracten met opzegtermijnen"
+msgstr "Contrats avec délais de préavis"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "Controle op de jaarlijkse opbouw van het reservefonds"
+msgstr "Contrôle de la constitution annuelle du fonds de réserve"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid "De AI stelt voor. Uw medewerker beslist."
+msgstr "L'IA propose. Votre collaborateur décide."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_pricing
+msgid ""
+"De formules zijn een werkvoorstel voor het prototype. We bespreken prijs en begeleiding persoonlijk."
+msgstr ""
+"Les formules sont une proposition de travail pour le prototype. Nous discutons du prix et de l'accompagnement personnellement."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid ""
+"De gebouwkaart toont per VME de kapitalen, het budget tegenover de werkelijke kosten, achterstallen, keuringen en de volgende AV."
+msgstr ""
+"La fiche de l'immeuble montre par ACP les fonds, le budget face aux coûts réels, les arriérés, les contrôles et la prochaine AG."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid ""
+"De portefeuille zet signalen over alle gebouwen naast elkaar: een reservefonds onder de opbouw, een vervallen keuring, een AV buiten de periode."
+msgstr ""
+"Le portefeuille met côte à côte les signaux de tous les immeubles : un fonds de réserve sous la constitution, un contrôle expiré, une AG hors période."
+
+#. module: vme_website
+#: model:ir.ui.menu,name:vme_website.menu_vme_help_website
+msgid "De website en inloggen"
+msgstr "Le site web et la connexion"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.demo_request_form
+#: model_terms:ir.ui.view,arch_db:vme_website.footer
+#: model_terms:ir.ui.view,arch_db:vme_website.header_call_to_action
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+#: model_terms:ir.ui.view,arch_db:vme_website.page_pricing
+msgid "Demo aanvragen"
+msgstr "Demander une démo"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_pricing
+msgid "Digitale AV, communicatie en aanvragen"
+msgstr "AG numérique, communication et demandes"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid "Digitale en hybride AV"
+msgstr "AG numérique et hybride"
+
+#. module: vme_website
+#: model:ir.model.fields,field_description:vme_website.field_website__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "Domiciliëringen en betaalbatches (SEPA)"
+msgstr "Domiciliations et lots de paiement (SEPA)"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "Een aparte module: installeer ze alleen als u ze nodig hebt"
+msgstr "Un module séparé : installez-le uniquement si vous en avez besoin"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid ""
+"Een eigenaar mailt over een lek, een badge of een factuur. Quotis herkent de VME en de kavel, vat de vraag samen en schrijft een voorstel van antwoord."
+msgstr ""
+"Un propriétaire écrit à propos d'une fuite, d'un badge ou d'une facture. Quotis reconnaît l'ACP et le lot, résume la question et rédige une proposition de réponse."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid ""
+"Een factuur wordt bij het bevestigen verdeeld over de eigenaars op de kostdatum."
+msgstr ""
+"Une facture est répartie entre les propriétaires à la date de la dépense, lors de la confirmation."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid ""
+"Een leveranciersfactuur wordt verdeeld over de juiste eigenaars, volgens quotiteit of sleutel. Bij een verkoop per dag tussen verkoper en koper."
+msgstr ""
+"Une facture fournisseur est répartie entre les bons propriétaires, selon la quote-part ou la clé. En cas de vente, au jour près entre vendeur et acquéreur."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid ""
+"Een mail van een eigenaar wordt gekoppeld aan de juiste VME en kavel, met een voorstel van antwoord. Uw medewerker beslist."
+msgstr ""
+"Un e-mail d'un propriétaire est lié à la bonne ACP et au bon lot, avec une proposition de réponse. Votre collaborateur décide."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.footer
+msgid ""
+"Een mens beslist altijd: brieven, rappels, betalingen en antwoorden staan klaar als concept, en uw medewerker verstuurt ze."
+msgstr ""
+"Un humain décide toujours : lettres, rappels, paiements et réponses sont préparés en brouillon, et votre collaborateur les envoie."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_pricing
+msgid "Een prijs per VME, geen licentie per gebruiker"
+msgstr "Un prix par ACP, pas de licence par utilisateur"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_contact
+msgid "Een vraag over Quotis? Laat een bericht na; we antwoorden persoonlijk."
+msgstr ""
+"Une question sur Quotis ? Laissez un message ; nous répondons personnellement."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_login_choice
+msgid "Eigenaar of huurder"
+msgstr "Propriétaire ou locataire"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid ""
+"Eigenaars loggen in op hun portaal en zien wat over hun kavels gaat: provisies en betaalstatus, jaarafrekeningen, documenten van het gebouw en de volgende AV."
+msgstr ""
+"Les propriétaires se connectent à leur portail et voient ce qui concerne leurs lots : provisions et statut de paiement, décomptes annuels, documents de l'immeuble et la prochaine AG."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid ""
+"Eigenaars zien hun provisies, afrekeningen en documenten, en vragen een adreswijziging aan die u goedkeurt."
+msgstr ""
+"Les propriétaires voient leurs provisions, décomptes et documents, et demandent un changement d'adresse que vous approuvez."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid "Eigenaarsportaal"
+msgstr "Portail des propriétaires"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+#: model_terms:ir.ui.view,arch_db:vme_website.page_owners
+msgid "Eigenaarsportaal van een fictieve eigenaar"
+msgstr "Portail des propriétaires d'un propriétaire fictif"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "Elke VME is een eigen bedrijf met Belgisch rekeningstelsel en KBO-nummer."
+msgstr ""
+"Chaque ACP est une société distincte avec le plan comptable belge et un numéro BCE."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid ""
+"Facturen in UBL komen binnen via Peppol of per mail. Verdeelregels vullen sleutel en rekening in; PDF-facturen leest de AI."
+msgstr ""
+"Les factures UBL arrivent via Peppol ou par e-mail. Les règles de répartition remplissent la clé et le compte ; l'IA lit les factures PDF."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid "Facturen verdelen"
+msgstr "Répartir les factures"
+
+#. module: vme_website
+#. odoo-python
+#: code:addons/vme_website/models/website.py:0
+#: model_terms:ir.ui.view,arch_db:vme_website.footer
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "Functies"
+msgstr "Fonctionnalités"
+
+#. module: vme_website
+#: model:ir.ui.view,website_meta_description:vme_website.page_features
+msgid ""
+"Functies van Quotis: boekhouding en verdeling, provisies, AV, technisch beheer, communicatie en rentmeesterij."
+msgstr ""
+"Fonctionnalités de Quotis : comptabilité et répartition, provisions, AG, gestion technique, communication et gestion locative."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid "Gebouwkaart van de fictieve Residentie Linde"
+msgstr "Fiche de l'immeuble de la Residentie Linde fictive"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "Gebouwkaart van een fictieve VME"
+msgstr "Fiche de l'immeuble d'une ACP fictive"
+
+#. module: vme_website
+#: model:ir.actions.server,name:vme_website.action_help_website
+msgid "Help: website en inloggen"
+msgstr "Aide : site web et connexion"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "Het AV-seizoen plannen in blokken"
+msgstr "Planifier la saison des AG par blocs"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid ""
+"Het verkoopdossier met termijnen en de stand van de eigenaar. Bij de akte wisselt de kavel van eigenaar op de juiste datum."
+msgstr ""
+"Le dossier de vente avec les délais et la situation du propriétaire. À l'acte, le lot change de propriétaire à la bonne date."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid ""
+"Het voorstel staat als taak op de VME. Uw medewerker past het aan en verstuurt het, of niet."
+msgstr ""
+"La proposition est enregistrée comme tâche sur l'ACP. Votre collaborateur l'adapte et l'envoie, ou non."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid "Het werk van een syndicus, van factuur tot afrekening"
+msgstr "Le travail d'un syndic, de la facture au décompte"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_owners
+msgid "Hoe krijg ik een login?"
+msgstr "Comment obtenir un identifiant ?"
+
+#. module: vme_website
+#. odoo-python
+#: code:addons/vme_website/models/website.py:0
+msgid "Home"
+msgstr "Accueil"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_pricing
+msgid "Huurcontracten en indexering"
+msgstr "Baux et indexation"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid ""
+"Huurcontracten, indexering per gewest en de afrekening van lasten aan huurders, apart van de boekhouding van de VME."
+msgstr ""
+"Baux, indexation par région et décompte des charges aux locataires, séparés de la comptabilité de l'ACP."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "Huurcontracten, waarborg en maandelijkse huur"
+msgstr "Baux, garantie locative et loyer mensuel"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "Hybride en online, met elektronisch stemmen"
+msgstr "Hybride et en ligne, avec vote électronique"
+
+#. module: vme_website
+#: model:ir.model.fields,field_description:vme_website.field_website__id
+msgid "ID"
+msgstr "ID"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_owners
+msgid "Ik ben huurder."
+msgstr "Je suis locataire."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_owners
+msgid "Ik heb mijn appartement verkocht."
+msgstr "J'ai vendu mon appartement."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_pricing
+msgid ""
+"In de demo tonen we een factuur die binnenkomt en verdeeld wordt, de jaarafrekening, de provisieoproepen en het eigenaarsportaal, op fictieve gebouwen."
+msgstr ""
+"Dans la démo, nous montrons une facture qui arrive et est répartie, le décompte annuel, les appels de fonds et le portail des propriétaires, sur des immeubles fictifs."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "Indexering met de regels per gewest"
+msgstr "Indexation selon les règles de chaque région"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid "Inlichtingen voor de notaris"
+msgstr "Informations au notaire"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "Inlichtingen voor de notaris met termijnen"
+msgstr "Informations au notaire avec délais"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.footer
+#: model_terms:ir.ui.view,arch_db:vme_website.page_contact
+#: model_terms:ir.ui.view,arch_db:vme_website.page_login_choice
+#: model_terms:ir.ui.view,arch_db:vme_website.user_sign_in
+msgid "Inloggen"
+msgstr "Se connecter"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_pricing
+msgid "Jaarafrekening en eigenaarsportaal"
+msgstr "Décompte annuel et portail des propriétaires"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid "Jaarafrekening per eigenaar"
+msgstr "Décompte annuel par propriétaire"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_pricing
+msgid "Kantoor"
+msgstr "Bureau"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_pricing
+msgid "Kantoor + rentmeester"
+msgstr "Bureau + gestion locative"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid ""
+"Kavels, quotiteiten en verdeelsleutels: algemeen, lift, verwarming of op verbruik."
+msgstr ""
+"Lots, quotes-parts et clés de répartition : générale, ascenseur, chauffage ou selon la consommation."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "Kavelwissel op de datum van de akte"
+msgstr "Changement de propriétaire du lot à la date de l'acte"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "Keuringen en liften met vervaldata"
+msgstr "Contrôles et ascenseurs avec échéances"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_login_choice
+msgid "Kies hoe u inlogt."
+msgstr "Choisissez comment vous connecter."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_login_choice
+msgid ""
+"Kiest u de verkeerde knop, dan brengt Quotis u na het inloggen toch naar de juiste plaats."
+msgstr ""
+"Si vous choisissez le mauvais bouton, Quotis vous mène quand même au bon endroit après la connexion."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "Kosten per dag tussen verkoper en koper"
+msgstr "Coûts au jour près entre vendeur et acquéreur"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_pricing
+msgid ""
+"Laat uw gegevens na. Een medewerker neemt contact op om een moment af te spreken."
+msgstr ""
+"Laissez vos coordonnées. Un collaborateur vous contacte pour fixer un rendez-vous."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_contact
+msgid "Log in via de knop"
+msgstr "Connectez-vous via le bouton"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "Mails van eigenaars gekoppeld, met een voorstel van antwoord"
+msgstr "E-mails des propriétaires liés, avec une proposition de réponse"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_login_choice
+msgid "Medewerker van de syndicus"
+msgstr "Collaborateur du syndic"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid "Meer over het portaal"
+msgstr "En savoir plus sur le portail"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "Meterstanden en verbruik"
+msgstr "Relevés de compteurs et consommation"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid "Minder telefoontjes, meer overzicht"
+msgstr "Moins d'appels, plus de vue d'ensemble"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_login_choice
+msgid "Naar de beheeromgeving: VME's, facturen, provisies, AV's en taken."
+msgstr "Vers l'espace de gestion : ACP, factures, provisions, AG et tâches."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_owners
+msgid "Naar het eigenaarsportaal"
+msgstr "Vers le portail des propriétaires"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_login_choice
+msgid "Naar uw portaal: provisies, afrekeningen, documenten en de AV."
+msgstr "Vers votre portail : provisions, décomptes, documents et l'AG."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid "Niets vertrekt vanzelf"
+msgstr "Rien ne part tout seul"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "Notulen ondertekenen in het portaal"
+msgstr "Signer le procès-verbal dans le portail"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_pricing
+msgid "Overstap uit uw huidige pakket"
+msgstr "Passer depuis votre logiciel actuel"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "Overzicht over al uw VME's"
+msgstr "Une vue d'ensemble de toutes vos ACP"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid "Peppol en e-facturen"
+msgstr "Peppol et factures électroniques"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_pricing
+msgid "Peppol-facturen"
+msgstr "Factures Peppol"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid ""
+"Plannen, oproepen, online deelnemen en stemmen met dezelfde rekenregels als in de zaal, en notulen ondertekenen in het portaal."
+msgstr ""
+"Planifier, convoquer, participer et voter en ligne avec les mêmes règles de calcul qu'en salle, et signer le procès-verbal dans le portail."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_pricing
+msgid "Prijs op aanvraag"
+msgstr "Prix sur demande"
+
+#. module: vme_website
+#. odoo-python
+#: code:addons/vme_website/models/website.py:0
+#: model_terms:ir.ui.view,arch_db:vme_website.footer
+#: model_terms:ir.ui.view,arch_db:vme_website.page_pricing
+msgid "Prijzen"
+msgstr "Tarifs"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.footer
+msgid "Product"
+msgstr "Produit"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.footer
+msgid ""
+"Prototype met fictieve gegevens. De Belgische regels in het prototype zijn nog niet juridisch nagekeken."
+msgstr ""
+"Prototype avec des données fictives. Les règles belges du prototype n'ont pas encore été vérifiées juridiquement."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid "Provisieoproepen"
+msgstr "Appels de fonds"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "Provisieoproepen voor werk- en reservekapitaal"
+msgstr "Appels de fonds pour le fonds de roulement et le fonds de réserve"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.footer
+#: model_terms:ir.ui.view,arch_db:vme_website.page_contact
+msgid "Quotis"
+msgstr "Quotis"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid ""
+"Quotis bereidt voor, uw kantoor beslist. Dat geldt voor elke stap die een eigenaar, leverancier of bank bereikt."
+msgstr ""
+"Quotis prépare, votre bureau décide. C'est vrai pour chaque étape qui atteint un propriétaire, un fournisseur ou une banque."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_pricing
+msgid ""
+"Quotis draait op Odoo Community. U betaalt voor de gebouwen die u beheert, niet voor het aantal medewerkers."
+msgstr ""
+"Quotis fonctionne sur Odoo Community. Vous payez pour les immeubles que vous gérez, pas pour le nombre de collaborateurs."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid ""
+"Quotis verdeelt facturen over de eigenaars, maakt provisieoproepen en jaarafrekeningen, en zet klaar wat naar buiten moet. Uw medewerker kijkt na en verstuurt."
+msgstr ""
+"Quotis répartit les factures entre les propriétaires, prépare les appels de fonds et les décomptes annuels, et met en attente ce qui doit sortir. Votre collaborateur vérifie et envoie."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "Raad van mede-eigendom en commissaris"
+msgstr "Conseil de copropriété et commissaire aux comptes"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "Rappels in niveaus, met interest"
+msgstr "Rappels par niveaux, avec intérêts"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid "Rentmeesterij"
+msgstr "Gestion locative"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "Sleutels, badges en codes per kavel"
+msgstr "Clés, badges et codes par lot"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid "Software voor syndici"
+msgstr "Logiciel pour syndics"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.footer
+msgid "Software voor syndici van Belgische VME's, op Odoo Community."
+msgstr "Logiciel pour syndics d'ACP belges, sur Odoo Community."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_pricing
+msgid "Start"
+msgstr "Start"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_demo_thanks
+msgid "Terug naar de startpagina"
+msgstr "Retour à la page d'accueil"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_owners
+msgid ""
+"U ziet nog alles van de periode dat u eigenaar was, maar geen nieuwe documenten van de kavel."
+msgstr ""
+"Vous voyez encore tout ce qui concerne la période où vous étiez propriétaire, mais plus les nouveaux documents du lot."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_owners
+msgid "Uw appartement, uw cijfers, altijd bij de hand"
+msgstr "Votre appartement, vos chiffres, toujours à portée de main"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid "Uw gebouwen in één systeem. Elke beslissing bij uw medewerker."
+msgstr ""
+"Vos immeubles dans un seul système. Chaque décision chez votre collaborateur."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_owners
+msgid ""
+"Uw syndicus geeft u toegang. U krijgt dan een uitnodiging om een wachtwoord te kiezen."
+msgstr ""
+"Votre syndic vous donne accès. Vous recevez alors une invitation pour choisir un mot de passe."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "Van de basisakte tot de jaarafrekening, met één boekhouding per VME."
+msgstr "De l'acte de base au décompte annuel, avec une comptabilité par ACP."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_owners
+msgid "Veelgestelde vragen"
+msgstr "Questions fréquentes"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "Verdeelregels per leverancier vullen sleutel en rekening vanzelf in."
+msgstr ""
+"Les règles de répartition par fournisseur remplissent d'elles-mêmes la clé et le compte."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "Verdeling van een fictieve factuur over de eigenaars"
+msgstr "Répartition d'une facture fictive entre les propriétaires"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_pricing
+msgid "Voor een kantoor dat begint, tot 25 VME's"
+msgstr "Pour un bureau qui démarre, jusqu'à 25 ACP"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_pricing
+msgid "Voor een kantoor met een vaste portefeuille"
+msgstr "Pour un bureau avec un portefeuille établi"
+
+#. module: vme_website
+#. odoo-python
+#: code:addons/vme_website/models/website.py:0
+#: model_terms:ir.ui.view,arch_db:vme_website.footer
+#: model_terms:ir.ui.view,arch_db:vme_website.page_owners
+msgid "Voor eigenaars"
+msgstr "Pour les propriétaires"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+#: model_terms:ir.ui.view,arch_db:vme_website.page_owners
+msgid "Voor eigenaars en huurders"
+msgstr "Pour les propriétaires et les locataires"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_pricing
+msgid "Voor wie ook huurbeheer doet"
+msgstr "Pour ceux qui font aussi de la gestion locative"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid "Voorgesteld antwoord op een mail van een fictieve eigenaar"
+msgstr "Réponse proposée à un e-mail d'un propriétaire fictif"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "Voorkeur papier of e-mail per eigenaar"
+msgstr "Préférence papier ou e-mail par propriétaire"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid "Wat Quotis voor u doet"
+msgstr "Ce que Quotis fait pour vous"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_owners
+msgid "Wat u ziet in het portaal"
+msgstr "Ce que vous voyez dans le portail"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.demo_request_form
+msgid ""
+"We bewaren uw aanvraag en een medewerker neemt persoonlijk contact op. U krijgt geen automatische mails."
+msgstr ""
+"Nous conservons votre demande et un collaborateur vous contacte personnellement. Vous ne recevez aucun e-mail automatique."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_demo_thanks
+msgid ""
+"We hebben uw gegevens goed ontvangen. Een medewerker neemt persoonlijk contact met u op."
+msgstr ""
+"Nous avons bien reçu vos coordonnées. Un collaborateur vous contactera personnellement."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid "We tonen het in tien minuten, op een demo met fictieve VME's."
+msgstr "Nous vous le montrons en dix minutes, sur une démo avec des ACP fictives."
+
+#. module: vme_website
+#: model:ir.model,name:vme_website.model_website
+msgid "Website"
+msgstr "Site web"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "Welkomstbrief voor de nieuwe eigenaar, als concept"
+msgstr "Lettre de bienvenue pour le nouveau propriétaire, en brouillon"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid ""
+"Werk- en reservekapitaal apart, berekend uit het budget. De oproepen staan klaar voor alle VME's tegelijk."
+msgstr ""
+"Fonds de roulement et fonds de réserve séparés, calculés à partir du budget. Les appels sont préparés pour toutes les ACP en une fois."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid ""
+"Werkelijke kosten per sleutel min de betaalde provisies, ook op verbruik. Na te rekenen tot op de factuur."
+msgstr ""
+"Coûts réels par clé moins les provisions payées, aussi selon la consommation. Vérifiables jusqu'à la facture."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_features
+msgid "Werken met offertes, schadegevallen met de verzekeraar"
+msgstr "Travaux avec devis, sinistres avec l'assureur"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_owners
+msgid "Werkt uw syndicus met Quotis? Dan hebt u een eigen portaal."
+msgstr "Votre syndic travaille avec Quotis ? Vous avez alors votre propre portail."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_owners
+msgid ""
+"Werkt uw verhuurder met een rentmeester op Quotis, dan logt u op dezelfde manier in."
+msgstr ""
+"Si votre bailleur travaille avec un gestionnaire locatif sur Quotis, vous vous connectez de la même manière."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid "Zien hoe het werkt met uw gebouwen?"
+msgstr "Envie de voir comment cela fonctionne avec vos immeubles ?"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.homepage
+msgid "Zo werken we"
+msgstr "Notre façon de travailler"
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.page_contact
+msgid "bovenaan."
+msgstr "en haut de la page."
+
+#. module: vme_website
+#: model_terms:ir.ui.view,arch_db:vme_website.footer
+#: model_terms:ir.ui.view,arch_db:vme_website.page_contact
+msgid "info@quotis.example"
+msgstr "info@quotis.example"

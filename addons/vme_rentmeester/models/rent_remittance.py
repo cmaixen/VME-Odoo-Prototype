@@ -166,6 +166,7 @@ class VmeRentRemittance(models.Model):
                 rent, charges = rules.split_received(new, by_type.get("rent", 0.0), by_type.get("charges", 0.0))
                 parts = {"rent": rent, "charges": charges}
             period = invoice.rent_period and format_date(self.env, invoice.rent_period, date_format="MMMM y")
+            labels = dict(self.env["vme.rent.remittance.line"]._fields["line_type"]._description_selection(self.env))
             for line_type, amount in parts.items():
                 if self.currency_id.is_zero(amount):
                     continue
@@ -175,7 +176,7 @@ class VmeRentRemittance(models.Model):
                     "move_id": invoice.id,
                     "move_name": invoice.name,
                     "date": invoice.invoice_date,
-                    "description": "%s %s" % (dict(LINE_TYPES)[line_type], period or invoice.ref or ""),
+                    "description": "%s %s" % (labels[line_type], period or invoice.ref or ""),
                     "amount": amount,
                 })
         return vals
@@ -243,9 +244,11 @@ class VmeRentRemittance(models.Model):
                 raise UserError(self.env._("Alleen een concept wordt herberekend."))
             contracts = remittance._contracts()
             done = remittance._done_lines()
-            received = remittance._received_line_vals(contracts, done)
-            costs = remittance._cost_line_vals(contracts, done)
-            fees = remittance._fee_line_vals(received, done)
+            # The lines are printed on the landlord's statement: in the landlord's language.
+            landlord = remittance.with_context(lang=remittance.landlord_id.lang or self.env.lang)
+            received = landlord._received_line_vals(contracts, done)
+            costs = landlord._cost_line_vals(contracts, done)
+            fees = landlord._fee_line_vals(received, done)
             notes = []
             without = contracts.filtered(lambda c: not c.mandate_id and c.id in [v["contract_id"] for v in received])
             if without:
@@ -281,11 +284,12 @@ class VmeRentRemittance(models.Model):
             office = remittance.company_id
             Move = self.env["account.move"].with_company(office)
             fee_invoice = payout = offset = Move
+            landlord = remittance.with_context(lang=remittance.landlord_id.lang or self.env.lang)
             if not currency.is_zero(remittance.fee_untaxed):
-                fee_invoice = Move.create(remittance._fee_invoice_vals())
+                fee_invoice = Move.create(landlord._fee_invoice_vals())
                 fee_invoice.action_post()
             if not currency.is_zero(remittance.received - remittance.costs):
-                payout = Move.create(remittance._payout_vals())
+                payout = Move.create(landlord._payout_vals())
                 payout.action_post()
             if fee_invoice and payout:
                 offset = remittance._offset(fee_invoice, payout)

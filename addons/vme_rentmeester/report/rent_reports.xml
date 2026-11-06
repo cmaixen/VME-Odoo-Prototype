@@ -107,71 +107,77 @@
             <t t-foreach="docs" t-as="o">
                 <t t-set="company" t-value="o.company_id"/>
                 <t t-set="money" t-value="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
-                <t t-call="web.external_layout">
-                    <div class="page">
-                        <div t-if="o.state == 'draft'" class="text-danger fw-bold mb-3">CONCEPT - nog niet bevestigd</div>
-                        <div class="row mb-4">
-                            <div class="col-6">
-                                <h3 class="mb-0">Afrekening huur <t t-out="format_date(o.month, date_format='MMMM y')"/></h3>
-                                <div class="text-muted">Opgemaakt op <t t-out="format_date(o.fee_invoice_id.invoice_date or o.write_date.date())"/></div>
-                            </div>
-                            <div class="col-5 offset-1">
-                                <strong t-out="o.landlord_id.name"/>
-                                <div class="text-muted">Verhuurder</div>
-                            </div>
-                        </div>
-                        <t t-set="received" t-value="o.line_ids.filtered(lambda l: l.line_type in ('rent', 'charges', 'settlement'))"/>
-                        <t t-set="costs" t-value="o.line_ids.filtered(lambda l: l.line_type == 'cost')"/>
-                        <t t-set="fees" t-value="o.line_ids.filtered(lambda l: l.line_type == 'fee')"/>
-                        <h5>Ontvangen van de huurders</h5>
-                        <table class="table table-sm small">
-                            <thead><tr><th>Huurcontract</th><th>Factuur</th><th>Omschrijving</th><th class="text-end">Bedrag</th></tr></thead>
-                            <tbody>
-                                <tr t-foreach="received" t-as="line">
-                                    <td t-out="line.contract_id.name"/>
-                                    <td t-out="line.move_name"/>
-                                    <td t-out="line.description"/>
-                                    <td class="text-end"><t t-out="line.amount" t-options="money"/></td>
-                                </tr>
-                                <tr class="fw-bold"><td colspan="3">Totaal ontvangen</td><td class="text-end"><t t-out="o.received" t-options="money"/></td></tr>
-                            </tbody>
-                        </table>
-                        <t t-if="costs">
-                            <h5>Kosten die wij voor u betaalden</h5>
-                            <table class="table table-sm small">
-                                <thead><tr><th>Datum</th><th>Stuk</th><th>Omschrijving</th><th class="text-end">Bedrag</th></tr></thead>
-                                <tbody>
-                                    <tr t-foreach="costs" t-as="line">
-                                        <td t-out="format_date(line.date)"/>
-                                        <td t-out="line.move_name"/>
-                                        <td t-out="line.description"/>
-                                        <td class="text-end"><t t-out="-line.amount" t-options="money"/></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </t>
-                        <h5>Overzicht</h5>
-                        <table class="table table-sm mb-3">
-                            <tbody>
-                                <tr><td>Ontvangen huur en lasten</td><td class="text-end"><t t-out="o.received" t-options="money"/></td></tr>
-                                <tr t-if="costs"><td>Kosten voor uw rekening</td><td class="text-end"><t t-out="-o.costs" t-options="money"/></td></tr>
-                                <tr t-foreach="fees" t-as="line">
-                                    <td>Ereloon rentmeester (<t t-out="line.description"/>)</td>
-                                    <td class="text-end"><t t-out="-line.amount" t-options="money"/></td>
-                                </tr>
-                                <tr t-if="fees"><td>Btw op het ereloon</td><td class="text-end"><t t-out="-o.fee_tax" t-options="money"/></td></tr>
-                                <tr class="fw-bold">
-                                    <td><t t-if="o.balance &gt;= 0">Door te storten</t><t t-else="">Saldo ten laste van de verhuurder, overgedragen</t></td>
-                                    <td class="text-end"><t t-out="o.balance" t-options="money"/></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <p t-if="o.partner_bank_id and o.balance &gt; 0">Het saldo wordt overgeschreven naar rekening <strong t-out="o.partner_bank_id.acc_number"/>.</p>
-                        <p t-if="o.fee_invoice_id" class="small">Het ereloon staat op factuur <t t-out="o.fee_invoice_id.name"/> en is verrekend met deze doorstorting.</p>
-                        <p class="small text-muted">De huur en lasten worden geïnd op de derdenrekening van <t t-out="company.name"/> en enkel voor u bewaard. De stukken liggen ter inzage.</p>
-                    </div>
-                </t>
+                <t t-set="doc_lang" t-value="o.landlord_id.lang"/>
+                <t t-call="vme_rentmeester.report_rent_remittance_document" t-lang="o.landlord_id.lang"/>
             </t>
+        </t>
+    </template>
+
+    <!-- In the language of the recipient: see docs/dev/vertaling.md -->
+    <template id="report_rent_remittance_document">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <div t-if="o.state == 'draft'" class="text-danger fw-bold mb-3">CONCEPT - nog niet bevestigd</div>
+                <div class="row mb-4">
+                    <div class="col-6">
+                        <h3 class="mb-0">Afrekening huur <t t-out="format_date(o.month, date_format='MMMM y', lang=doc_lang)"/></h3>
+                        <div class="text-muted">Opgemaakt op <t t-out="format_date(o.fee_invoice_id.invoice_date or o.write_date.date(), lang=doc_lang)"/></div>
+                    </div>
+                    <div class="col-5 offset-1">
+                        <strong t-out="o.landlord_id.name"/>
+                        <div class="text-muted">Verhuurder</div>
+                    </div>
+                </div>
+                <t t-set="received" t-value="o.line_ids.filtered(lambda l: l.line_type in ('rent', 'charges', 'settlement'))"/>
+                <t t-set="costs" t-value="o.line_ids.filtered(lambda l: l.line_type == 'cost')"/>
+                <t t-set="fees" t-value="o.line_ids.filtered(lambda l: l.line_type == 'fee')"/>
+                <h5>Ontvangen van de huurders</h5>
+                <table class="table table-sm small">
+                    <thead><tr><th>Huurcontract</th><th>Factuur</th><th>Omschrijving</th><th class="text-end">Bedrag</th></tr></thead>
+                    <tbody>
+                        <tr t-foreach="received" t-as="line">
+                            <td t-out="line.contract_id.name"/>
+                            <td t-out="line.move_name"/>
+                            <td t-out="line.description"/>
+                            <td class="text-end"><t t-out="line.amount" t-options="money"/></td>
+                        </tr>
+                        <tr class="fw-bold"><td colspan="3">Totaal ontvangen</td><td class="text-end"><t t-out="o.received" t-options="money"/></td></tr>
+                    </tbody>
+                </table>
+                <t t-if="costs">
+                    <h5>Kosten die wij voor u betaalden</h5>
+                    <table class="table table-sm small">
+                        <thead><tr><th>Datum</th><th>Stuk</th><th>Omschrijving</th><th class="text-end">Bedrag</th></tr></thead>
+                        <tbody>
+                            <tr t-foreach="costs" t-as="line">
+                                <td t-out="format_date(line.date, lang=doc_lang)"/>
+                                <td t-out="line.move_name"/>
+                                <td t-out="line.description"/>
+                                <td class="text-end"><t t-out="-line.amount" t-options="money"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+                <h5>Overzicht</h5>
+                <table class="table table-sm mb-3">
+                    <tbody>
+                        <tr><td>Ontvangen huur en lasten</td><td class="text-end"><t t-out="o.received" t-options="money"/></td></tr>
+                        <tr t-if="costs"><td>Kosten voor uw rekening</td><td class="text-end"><t t-out="-o.costs" t-options="money"/></td></tr>
+                        <tr t-foreach="fees" t-as="line">
+                            <td>Ereloon rentmeester (<t t-out="line.description"/>)</td>
+                            <td class="text-end"><t t-out="-line.amount" t-options="money"/></td>
+                        </tr>
+                        <tr t-if="fees"><td>Btw op het ereloon</td><td class="text-end"><t t-out="-o.fee_tax" t-options="money"/></td></tr>
+                        <tr class="fw-bold">
+                            <td><t t-if="o.balance &gt;= 0">Door te storten</t><t t-else="">Saldo ten laste van de verhuurder, overgedragen</t></td>
+                            <td class="text-end"><t t-out="o.balance" t-options="money"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p t-if="o.partner_bank_id and o.balance &gt; 0">Het saldo wordt overgeschreven naar rekening <strong t-out="o.partner_bank_id.acc_number"/>.</p>
+                <p t-if="o.fee_invoice_id" class="small">Het ereloon staat op factuur <t t-out="o.fee_invoice_id.name"/> en is verrekend met deze doorstorting.</p>
+                <p class="small text-muted">De huur en lasten worden geïnd op de derdenrekening van <t t-out="company.name"/> en enkel voor u bewaard. De stukken liggen ter inzage.</p>
+            </div>
         </t>
     </template>
 

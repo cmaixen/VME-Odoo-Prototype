@@ -9,7 +9,10 @@ class ReportFinancialStatements(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
         wizards = self.env["vme.financial.statements.wizard"].browse(docids)
         # _get_financial_statements checks that the user may read the VME.
-        values = wizards[:1]._render_values([wizard._get_statements() for wizard in wizards])
+        # In the language of the VME, like the template (headings and account names come from Python).
+        values = wizards[:1]._render_values([
+            wizard.with_context(lang=wizard.association_id.company_id.partner_id.lang or self.env.lang)._get_statements()
+            for wizard in wizards])
         return {
             "doc_ids": docids,
             "doc_model": "vme.financial.statements.wizard",

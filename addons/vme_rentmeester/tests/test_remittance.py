@@ -242,3 +242,24 @@ class TestRemittance(TransactionCase):
             "vme_rentmeester.action_report_rent_remittance", remittance.ids)[0].decode()
         self.assertIn("Door te storten", html)
         self.assertIn("Herstelling boiler", html)
+
+    def test_statement_and_invoices_in_the_landlords_language(self):
+        """A French-speaking landlord gets the statement, its lines and the fee invoice in French."""
+        self.env["res.lang"]._activate_lang("fr_BE")
+        self.env["ir.module.module"].search([("name", "in", ["base", "account", "vme_rentmeester"])]) \
+            ._update_translations(["fr_BE"])
+        self.landlord.lang = "fr_BE"
+        remittance = self._remit(date(2026, 2, 1))
+        rent = remittance.line_ids.filtered(lambda l: l.line_type == "rent")[:1]
+        fee = remittance.line_ids.filtered(lambda l: l.line_type == "fee")
+        self.assertTrue(rent.description.startswith("Loyer "), rent.description)
+        self.assertIn(" sur ", fee.description)
+        remittance.action_confirm()
+        self.assertNotIn("Ereloon", remittance.fee_invoice_id.invoice_line_ids.name)
+        self.assertIn("février 2026", remittance.fee_invoice_id.ref)
+        html = self.env["ir.actions.report"]._render_qweb_html(
+            "vme_rentmeester.action_report_rent_remittance", remittance.ids)[0].decode()
+        for dutch in ("Door te storten", "Ontvangen van de huurders", "Afrekening huur", "februari"):
+            self.assertNotIn(dutch, html)
+        self.assertIn("À reverser", html)
+        self.assertIn("février 2026", html)

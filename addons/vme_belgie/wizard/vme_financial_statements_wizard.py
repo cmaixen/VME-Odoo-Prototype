@@ -17,7 +17,9 @@ class VmeFinancialStatementsWizard(models.TransientModel):
         return vme._get_financial_statements(self.year)
 
     def _render_values(self, statements):
-        return {"statements": statements, "format_date": lambda value: format_date(self.env, value)}
+        # lang: the language of the VME in the PDF (doc_lang); empty in the preview on the screen
+        return {"statements": statements, "format_date": lambda value, lang=False: format_date(
+            self.env, value, lang_code=lang)}
 
     @api.depends("association_id", "year")
     def _compute_preview_html(self):
