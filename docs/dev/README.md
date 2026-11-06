@@ -32,6 +32,7 @@ Interne documentatie voor wie aan de module `vme_belgie` werkt. De gebruikersdoc
 | [gebouwkaart.md](gebouwkaart.md) | Gebouwkaart, budget per rekening en sleutel, budgetopvolging, kapitalen, signalen, portefeuille, leverancierskaart (stap 22) |
 | [financiele-rapporten.md](financiele-rapporten.md) | Balans en resultatenrekening per VME volgens het minimumrekeningstelsel (KB 12 juli 2012), koppeling van de rekeningen, niet-aftrekbare btw (stap 26) |
 | [jaarcyclus.md](jaarcyclus.md) | Jaarkalender per VME met vaste stappen en termijnen, cron die concepten en taken klaarzet, signaal in de portefeuille, haken voor afsluiting en mandaat van de syndicus (stap 28) |
+| [werkbak.md](werkbak.md) | Mijn werk vandaag: dossierbeheerder per VME, transient lijst per medewerker uit taken, signalen en concepten, urgentie, ontdubbeling en bronnen (stap 29) |
 | [migratie.md](migratie.md) | Overstap uit een ander pakket: importformaat, proefrun, openingsboeking, omzetters (stap 13) |
 | [rentmeester.md](rentmeester.md) | Module `vme_rentmeester`: huurcontracten, huurfacturen, indexering met de indexstop per gewest, afrekening aan huurders (stap 25), doorstorting aan verhuurders en ereloon (stap 25b) |
 | [syndicus.md](syndicus.md) | Het kantoor van de syndicus: beheerovereenkomst, indexering, prestaties uit de bronnen, ereloonfactuur en leveranciersfactuur in de VME, mandaat, herbenoeming en aanplakking |

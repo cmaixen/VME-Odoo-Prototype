@@ -124,6 +124,10 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 
 38. [Documenten in het Frans sturen](documenten-in-het-frans.md)
 
+### De dag van de medewerker
+
+39. [Mijn werk vandaag: alles wat vandaag moet, over al uw VME's](mijn-werk-vandaag.md)
+
 ## Zo is het platform opgebouwd
 
 - **Eén VME = één bedrijf in Odoo.** Elke VME heeft haar eigen boekhouding, eigen rekeningnummers en eigen facturen. Rechtsboven in Odoo kies je in welke VME je werkt wanneer je facturen ingeeft. De schermen in de app **VME** (kavels, sleutels, provisieoproepen, jaarafrekening) tonen altijd alle VME's samen waartoe je toegang hebt.

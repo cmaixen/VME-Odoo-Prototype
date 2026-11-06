@@ -191,6 +191,17 @@ class TestDemoData(TransactionCase):
         self.assertIn("inspection", signals["Residentie Linde"])
         self.assertEqual(self.linde.arrears_signal_threshold, 250)
 
+    def test_demo_case_managers(self):
+        # Step 29: the demo login manages Linde and Hof ter Beuken, his colleague Kaaihuis; open tasks follow.
+        admin = self.env.ref("base.user_admin")
+        staff = self.env["res.users"].search([("login", "=", "medewerker.voorbeeld@example.com")])
+        managers = {vme.name: vme.manager_user_id for vme in self.vmes}
+        self.assertEqual(managers, {"Residentie Linde": admin, "Hof ter Beuken": admin, "Kaaihuis": staff})
+        kaai = self.vmes.filtered(lambda v: v.name == "Kaaihuis")
+        tasks = self.env["mail.activity"].search([("res_model", "=", "vme.contract"), ("res_id", "in", self.env[
+            "vme.contract"].search([("association_id", "=", kaai.id)]).ids)])
+        self.assertEqual(tasks.user_id, staff if tasks else self.env["res.users"])
+
     def test_demo_portal_request_and_survey(self):
         # Step 27: A1 filed a request in the portal and answered the survey on charging points there.
         request = self.env["vme.request"].search([("association_id", "=", self.linde.id), ("channel", "=", "portal")])

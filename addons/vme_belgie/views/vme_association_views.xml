@@ -8,6 +8,7 @@
                 <field name="name"/>
                 <field name="kbo_number"/>
                 <field name="city"/>
+                <field name="manager_user_id" widget="many2one_avatar_user" optional="show"/>
                 <field name="lot_count"/>
                 <field name="owner_count"/>
             </list>
@@ -43,6 +44,7 @@
                     <group>
                         <group string="Gegevens">
                             <field name="kbo_number" placeholder="0123.456.749"/>
+                            <field name="manager_user_id" widget="many2one_avatar_user"/>
                             <field name="bill_alias_email" widget="CopyClipboardChar" invisible="not bill_alias_email"/>
                             <field name="company_id" readonly="id" groups="base.group_no_one"/>
                             <field name="partner_id" invisible="1"/>
@@ -142,7 +144,12 @@
                 <field name="name"/>
                 <field name="kbo_number"/>
                 <field name="city"/>
+                <field name="manager_user_id"/>
+                <filter name="my_vmes" string="Mijn VME's" domain="[('manager_user_id', '=', uid)]"/>
                 <filter name="archived" string="Gearchiveerd" domain="[('active', '=', False)]"/>
+                <group>
+                    <filter name="group_manager" string="Dossierbeheerder" context="{'group_by': 'manager_user_id'}"/>
+                </group>
             </search>
         </field>
     </record>

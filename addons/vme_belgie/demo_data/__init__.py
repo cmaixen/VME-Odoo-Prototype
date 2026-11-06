@@ -10,4 +10,5 @@ from . import vme_demo_payments
 from . import vme_demo_online
 from . import vme_demo_cycle
 from . import vme_demo_syndic
+from . import vme_demo_worklist
 from . import vme_scale_data

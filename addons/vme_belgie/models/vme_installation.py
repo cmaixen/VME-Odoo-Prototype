@@ -198,7 +198,7 @@ class VmeInstallation(models.Model):
                         installation=installation.name, vme=installation.association_id.name,
                         date=format_date(self.env, installation.next_inspection_date),
                     ),
-                    user_id=installation.responsible_user_id.id or self.env.user.id,
+                    user_id=(installation.responsible_user_id or installation.association_id._vme_task_user()).id,
                 )
                 installation.activity_inspection_due_date = installation.next_inspection_date
         for installation in self.search([("next_risk_analysis_date", "<=", limit)]):
@@ -207,7 +207,7 @@ class VmeInstallation(models.Model):
                     activity_type_id=todo.id,
                     date_deadline=installation.next_risk_analysis_date,
                     summary=self.env._("Risicoanalyse lift laten uitvoeren: %s", installation.name),
-                    user_id=installation.responsible_user_id.id or self.env.user.id,
+                    user_id=(installation.responsible_user_id or installation.association_id._vme_task_user()).id,
                 )
                 installation.activity_risk_analysis_due_date = installation.next_risk_analysis_date
 

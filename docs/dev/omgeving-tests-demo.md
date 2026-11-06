@@ -106,6 +106,7 @@ Wat er dan in de demo zit:
 | Historiek 2026 | Vier provisieoproepen, betalingen behalve A3 (oproep 4) en B7 (oproepen 3 en 4), leveranciersfacturen, drie Peppol-facturen elektriciteit |
 | Betalingsverkeer | Na stap 5: goedkeuringen door "Medewerker Syndicus (demo)", de ingelogde gebruiker als tweede goedkeurder, bevestigde rekeningen van leveranciers, vijf SEPA-mandaten |
 | Bankafschriften | Afschriften van 5 november 2026 (drie CODA-bestanden, één CAMT.053) met bewuste uitzonderingen, in `demo_data/bankafschriften/` |
+| Dossierbeheerders en werkbak | admin beheert Linde en Hof ter Beuken, Medewerker Voorbeeld beheert Kaaihuis; na de historiek een AI-antwoord per medewerker en een klaarstaande sleutelbestelling voor Beuken B3 (zie [werkbak.md](werkbak.md)) |
 
 De Peppol-voorbeeldfacturen staan in `addons/vme_belgie/demo_data/facturen/`; importeer ze in de company van de juiste VME via **Facturatie > Leveranciers > Facturen > Upload**. Na de demohistoriek zijn ze al ingelezen.
 

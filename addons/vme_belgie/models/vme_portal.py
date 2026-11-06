@@ -198,7 +198,7 @@ class VmeAddressRequest(models.Model):
         request.activity_schedule(
             "mail.mail_activity_data_todo",
             summary=self.env._("Adreswijziging nakijken: %s", partner.name),
-            user_id=self.env.ref("base.user_admin").id,
+            user_id=partner.sudo().vme_ownership_ids.lot_id.association_id[:1]._vme_task_user().id,
         )
         return request
 

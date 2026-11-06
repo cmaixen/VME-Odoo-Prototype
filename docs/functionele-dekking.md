@@ -36,6 +36,7 @@ Legende: ✅ gebouwd · 🔨 wordt nu gebouwd · 📋 gepland · ➖ bewust late
 | | Meterstanden en verbruik | ✅ | stap 17 |
 | Taakbeheer | Taken en activiteiten met termijnen | ✅ | Odoo |
 | | Jaarcyclus per VME: kalender met vaste stappen, provisies, AV en afrekening op tijd klaargezet als concept of taak | ✅ | stap 28 |
+| | Mijn werk vandaag: één werkbak per medewerker met taken, signalen en concepten van alle VME's, per urgentie en VME, met een dossierbeheerder per VME | ✅ | stap 29 |
 | | Meldingen en workflows per aanvraagtype, met verificatie van de aanvrager | ✅ | stap 19 |
 | | Werken met offertes en schadegevallen met de verzekeraar | ✅ | stap 14 |
 | Algemene vergadering | Planning in blokken | ✅ | stap 6c |

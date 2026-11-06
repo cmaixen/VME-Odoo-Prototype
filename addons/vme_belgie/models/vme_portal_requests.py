@@ -86,7 +86,7 @@ class ResPartner(models.Model):
             lot.association_id.id, type_code, partner.email, name=partner.name, lot_id=lot.id,
             subject=subject.strip(), body=(body or "").strip(), channel="portal",
             attachments=_portal_attachments(self.env, files),
-            requester_id=partner.id, user_id=self.env.ref("base.user_admin").id,
+            requester_id=partner.id, user_id=lot.association_id.sudo()._vme_task_user().id,
         )
         request = self.env["vme.request"].sudo().browse(request_id)
         if not request.activity_ids:

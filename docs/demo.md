@@ -142,7 +142,7 @@ Draai dit ongeveer 15 minuten voor de demo, in de map van het project. Docker (O
 
 ### Extra: een badge aanvragen, eigenaar of huurder (1,5 minuut)
 
-Na stap 8 staan er ook drie aanvragen in **VME > Aanvragen**.
+Na stap 8 staan er ook drie aanvragen in **VME > Aanvragen**, naast de sleutel voor Beuken B3 die de demohistoriek al klaarzette.
 
 1. **Eigenaar Linde A4** vraagt een extra badge: meteen geverifieerd. Toon het tabblad **Berichten** (de bestelling aan Slotenmaker Voorbeeld BV, met het sleutelcertificaat) en de bestelbon in bijlage. Klik op **Bestelling versturen**, vul een nummer in (bv. BA-L-101) en klik op **Levering registreren**: de badge staat in het register van A4 en de eigenaar krijgt een factuur van 25 euro.
 2. **Huurder Linde A6** vraagt een sleutel zonder bewijs: de aanvraag wacht op de toestemming van de eigenaar en het huurcontract. **Bewijs goedkeuren** weigert; **Bewijs opvragen** stuurt de vraag en plant een herinnering na 7 dagen.
@@ -264,6 +264,17 @@ Kies rechtsboven ook het bedrijf **Rentmeester Voorbeeld BV**, anders blijven de
 > Boodschap: "Uw jaar per gebouw loopt vanzelf: elke stap staat op tijd klaar als concept, u kijkt na en klikt. En u ziet in één lijst welk gebouw achterloopt."
 
 Doe deze extra **na** stap 5 (de provisieoproep 1 van 2027 met de hand) of sla stap 5 over: een oproep die al bestaat, wordt door de jaarcyclus hergebruikt en niet een tweede keer gemaakt. Wie de AV-planner (stap 7) na deze extra draait met **Voorstellen opnieuw indelen**, krijgt hetzelfde voorstel voor Linde.
+
+### Extra: mijn werk vandaag, over alle gebouwen (1 minuut)
+
+1. **VME > Mijn werk vandaag**: één lijst met wat te laat is, vandaag of deze week vervalt, gegroepeerd per urgentie en per VME. De filter **Mijn werk** staat aan: `admin` is dossierbeheerder van Residentie Linde en Hof ter Beuken.
+   - **Te laat**: de AV 2026 van Hof ter Beuken, de agenda en oproeping ervan, en de keuring van de brandblussers van Linde.
+   - **Vandaag**: het AI-antwoord voor Linde A8, de bestelling van een sleutel voor Beuken B3 en de herinneringen voor Linde A3 en Beuken B7, allemaal concepten die op een klik wachten.
+   - **Deze week**: het antwoord aan de notaris voor Linde A3 (uiterlijk 12 november) en de keuring van de lift van blok A.
+2. Klik op **Openen** bij de bestelling: de aanvraag van B3 opent met de bestelbon in bijlage. Niets is verstuurd; **Bestelling versturen** is de klik van de medewerker.
+3. Haal de filter **Mijn werk** weg en groepeer per **Verantwoordelijke**: collega **Medewerker Voorbeeld** beheert Kaaihuis, met een AI-antwoord voor K3.
+
+> Boodschap: "Uw dag begint met één lijst over al uw gebouwen: wat te laat is, wat vandaag moet, en wat klaarstaat voor uw klik."
 
 ## Na de demo
 

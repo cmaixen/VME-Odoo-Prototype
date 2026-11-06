@@ -10,7 +10,7 @@ Elk jaar komen bij elke VME dezelfde stappen terug: het boekjaar afsluiten, de j
 
 1. Open de VME in **VME > VME's** en ga naar het tabblad **Jaarcyclus**.
 2. Vul **Jaarcyclus vanaf** in, bijvoorbeeld de dag waarop u het gebouw overnam. Stappen met een uiterste datum vóór die dag maakt Odoo niet aan.
-3. Kies eventueel een **Verantwoordelijke jaarcyclus**. Die krijgt de taken. Laat u het leeg, dan krijgt de beheerder ze.
+3. Kies eventueel een **Verantwoordelijke jaarcyclus**. Die krijgt de taken. Laat u het leeg, dan krijgt de dossierbeheerder van de VME ze (zie [Mijn werk vandaag](mijn-werk-vandaag.md)).
 4. Klik op **Kalender bijwerken en klaarzetten**. Daarna doet Odoo dat zelf, elke nacht.
 
 De periode van de gewone AV (tabblad met de AV-gegevens) moet ingevuld zijn: de meeste termijnen rekenen vanaf die periode.

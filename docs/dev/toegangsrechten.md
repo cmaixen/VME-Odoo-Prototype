@@ -33,7 +33,7 @@ Rollenmodel van `vme_belgie` en `vme_rentmeester`, de bevindingen van de review 
    - Een globale regel geldt (met AND) ook voor de commissaris. Regels van verschillende groepen worden met OR gecombineerd. Daarom is een groepsregel voor `base.group_user` geen optie: die zou de regels van de commissaris, die het schrijven verbieden, opheffen.
 2. **Regels van de commissaris.** In `security/vme_council_security.xml` krijgt elk model twee regels: lezen alleen binnen `company_ids`, en schrijven, aanmaken of verwijderen nooit. Gedeelde configuratie (zalen, blokken, mappen, rubrieken) krijgt alleen de regel die schrijven verbiedt.
 3. **Knoppen die met sudo schrijven.** Record rules gelden niet voor wat een methode met `sudo()` doet. Zo'n knop roept bovenaan `check_not_auditor(self.env)` aan (`models/vme_access.py`).
-4. **Lezen met sudo begint bij een leesbaar record.** Rapporten en berekeningen die met sudo lezen (gebouwkaart, notarisinformatie, verslag van de commissaris, leverancierskaart) starten bij een record dat de gebruiker zelf mag lezen, of roepen eerst `check_access("read")` aan. Een wizard is een transient model zonder regels. Wie er een vreemd record in kan zetten, moet dus eerst gecontroleerd worden, zoals in `vme.annual.statement.wizard._get_statement`.
+4. **Lezen met sudo begint bij een leesbaar record.** Rapporten en berekeningen die met sudo lezen (gebouwkaart, notarisinformatie, verslag van de commissaris, leverancierskaart) starten bij een record dat de gebruiker zelf mag lezen, of roepen eerst `check_access("read")` aan. Een wizard is een transient model zonder regels. Wie er een vreemd record in kan zetten, moet dus eerst gecontroleerd worden, zoals in `vme.annual.statement.wizard._get_statement`. Ook **Mijn werk vandaag** (`vme.work.item`, transient) zoekt eerst de VME's met de regels van de gebruiker en leest pas daarna met sudo binnen die VME's; de regel `rule_user_work_item` toont elke gebruiker alleen zijn eigen lijst.
 5. **Portaal.** Portaalgebruikers hebben geen ACL op de VME-modellen. Elke route start bij `request.env.user.partner_id` en gaat via de helpers in `models/vme_portal.py`, `vme_document._portal_domain_for` en `vme_assembly_online`. Wat niet van de eigenaar is, geeft 404.
 6. **Nieuwe companies.** `vme.association.create()` (en de demo van het rentmeesterkantoor) koppelt de nieuwe company aan `_vme_all_companies_users()`: de leden van `group_vme_all_companies` en de huidige gebruiker, nooit de commissaris.
 
@@ -64,6 +64,7 @@ Harde regel: een mail, bestelling, brief of betaling vertrekt nooit zonder een k
 | Betaalbatches (SEPA) | bestand | de medewerker laadt het zelf op in de bank |
 | Portaaltoegang en de login van de commissaris | uitnodiging | de wizard van Odoo, na een klik; logins worden aangemaakt met `no_reset_password` |
 | AI-assistent (`ai/`) | – | maakt alleen een taak met een concept |
+| Mijn werk vandaag (`vme.work.item`) | – | verzamelt en opent alleen; de knop Openen toont het record |
 
 **Crons (geen enkele verstuurt iets):**
 - `ir_cron_rent_invoices`: maakt concepten van huurfacturen.

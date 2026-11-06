@@ -303,7 +303,7 @@ class VmeContract(models.Model):
                     after=self.env._("Anders loopt het door tot %s.", format_date(self.env, next_end)) if next_end
                     else self.env._("Anders eindigt het op %s.", format_date(self.env, contract.date_end)),
                 ),
-                user_id=contract.responsible_user_id.id or self.env.user.id,
+                user_id=(contract.responsible_user_id or contract.association_id._vme_task_user()).id,
             )
             contract.activity_notice_deadline = contract.notice_deadline
 
@@ -319,7 +319,7 @@ class VmeContract(models.Model):
                     "Evalueer het contract %(contract)s (%(vme)s) en leg de evaluatie voor op de volgende "
                     "algemene vergadering.", contract=contract.name, vme=contract.association_id.name,
                 ),
-                user_id=contract.responsible_user_id.id or self.env.user.id,
+                user_id=(contract.responsible_user_id or contract.association_id._vme_task_user()).id,
             )
             contract.activity_evaluation_date = contract.next_evaluation_date
 

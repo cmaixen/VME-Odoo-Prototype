@@ -883,12 +883,13 @@ class VmeSyndicMandate(models.Model):
                 mandate.activity_schedule(
                     activity_type_id=todo.id, summary=summary, note=mandate.renewal_text,
                     date_deadline=mandate.renewal_period_start - relativedelta(months=RENEWAL_URGENT_MONTHS),
-                    user_id=self.env.user.id)
+                    user_id=mandate.association_id._vme_task_user().id)
         for mandate in self.search([("posting_state", "in", ["todo", "late"]), ("is_current", "=", True)]):
             summary = mandate._posting_summary()
             if not mandate.activity_ids.filtered(lambda a, s=summary: a.summary == s):
                 mandate.activity_schedule(activity_type_id=todo.id, summary=summary,
-                                          date_deadline=mandate.posting_deadline, user_id=self.env.user.id)
+                                          date_deadline=mandate.posting_deadline,
+                                          user_id=mandate.association_id._vme_task_user().id)
 
     def _posting_values(self):
         """What the posting notice states, for the report."""

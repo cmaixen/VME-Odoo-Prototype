@@ -75,3 +75,4 @@ access_vme_consumer_price_index_user,vme.consumer.price.index user,model_vme_con
 access_vme_consumer_price_index_system,vme.consumer.price.index system,model_vme_consumer_price_index,base.group_system,1,1,1,1
 access_vme_fee_invoice_wizard_user,vme.fee.invoice.wizard user,model_vme_fee_invoice_wizard,base.group_user,1,1,1,1
 access_vme_provision_call_run_user,vme.provision.call.run user,model_vme_provision_call_run,base.group_user,1,1,1,0
+access_vme_work_item_user,vme.work.item user,model_vme_work_item,base.group_user,1,1,1,1
