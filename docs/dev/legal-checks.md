@@ -42,7 +42,7 @@ Aantal punten: 110.
 - **art. 3.87 §6 BW**: [vme_assembly_meeting.py:124](../../addons/vme_belgie/models/vme_assembly_meeting.py#L124), [vme_assembly_meeting.py:287](../../addons/vme_belgie/models/vme_assembly_meeting.py#L287)
 - **art. 3.87 §6-7 BW**: [vme_assembly_online.py:298](../../addons/vme_belgie/models/vme_assembly_online.py#L298)
 - **art. 3.87 §7 BW**: [vme_assembly_meeting.py:25](../../addons/vme_belgie/models/vme_assembly_meeting.py#L25), [vme_assembly_meeting.py:385](../../addons/vme_belgie/models/vme_assembly_meeting.py#L385), [vme_assembly_online.py:146](../../addons/vme_belgie/models/vme_assembly_online.py#L146)
-- **art. 3.88 §1, 1°, b) BW**: [vme_request.py:71](../../addons/vme_belgie/models/vme_request.py#L71)
+- **art. 3.88 §1, 1°, b) BW**: [vme_request.py:72](../../addons/vme_belgie/models/vme_request.py#L72)
 - **art. 3.88 §1, 1°, c) BW**: [vme_works.py:11](../../addons/vme_belgie/models/vme_works.py#L11), [vme_works.py:195](../../addons/vme_belgie/models/vme_works.py#L195)
 - **art. 3.88 §1-3 BW**: [vme_assembly_meeting.py:8](../../addons/vme_belgie/models/vme_assembly_meeting.py#L8)
 - **art. 3.88 §3 BW**: [vme_assembly_meeting.py:304](../../addons/vme_belgie/models/vme_assembly_meeting.py#L304)
@@ -52,7 +52,7 @@ Aantal punten: 110.
 - **art. 3.90 §1 en art. 3.91 BW**: [vme_council.py:35](../../addons/vme_belgie/models/vme_council.py#L35)
 - **art. 3.90 §3 BW**: [vme_payment.py:69](../../addons/vme_belgie/models/vme_payment.py#L69)
 - **art. 3.91 BW**: [vme_council.py:270](../../addons/vme_belgie/models/vme_council.py#L270)
-- **art. 3.93 BW**: [vme_request.py:694](../../addons/vme_belgie/models/vme_request.py#L694)
+- **art. 3.93 BW**: [vme_request.py:699](../../addons/vme_belgie/models/vme_request.py#L699)
 - **art. 3.93 §4 BW**: [vme_assembly_meeting.py:214](../../addons/vme_belgie/models/vme_assembly_meeting.py#L214)
 - **art. 3.94 BW**: [account_move.py:155](../../addons/vme_belgie/models/account_move.py#L155), [account_move.py:259](../../addons/vme_belgie/models/account_move.py#L259)
 - **art. 3.94 §1 BW**: [vme_sale_file.py:10](../../addons/vme_belgie/models/vme_sale_file.py#L10), [vme_sale_file.py:16](../../addons/vme_belgie/models/vme_sale_file.py#L16)
@@ -161,8 +161,8 @@ Aantal punten: 110.
 | [addons/vme_belgie/models/vme_payment.py](../../addons/vme_belgie/models/vme_payment.py#L22) | 22 | SEPA Core Direct Debit Rulebook (EPC) | the debtor is told the amount and date at least 14 calendar days before the collection, unless the mandate agrees on a shorter term. |
 | [addons/vme_belgie/models/vme_payment.py](../../addons/vme_belgie/models/vme_payment.py#L45) | 45 | Boek VII WER (omzetting art. 76 PSD2, richtlijn 2015/2366) | an owner can ask his bank to refund an authorised direct debit up to eight weeks after the collection; that comes back as MD06. |
 | [addons/vme_belgie/models/vme_payment.py](../../addons/vme_belgie/models/vme_payment.py#L69) | 69 | art. 3.90 §3 BW | the council of co-ownership supervises the syndic; a second approval by a council member is an agreement of the AV or the syndic contract, not a legal obligation. |
-| [addons/vme_belgie/models/vme_request.py](../../addons/vme_belgie/models/vme_request.py#L71) | 71 | art. 3.88 §1, 1°, b) BW | works on the common parts need a two-thirds majority of the assembly; some works (charging points, art. 3.82 §1 BW) follow their own procedure. To be confirmed. |
-| [addons/vme_belgie/models/vme_request.py](../../addons/vme_belgie/models/vme_request.py#L694) | 694 | art. 3.93 BW | the house rules (reglement van orde) bind tenants and occupants once they are made known to them; the checklist asks to send them to the new tenant. To be confirmed. |
+| [addons/vme_belgie/models/vme_request.py](../../addons/vme_belgie/models/vme_request.py#L72) | 72 | art. 3.88 §1, 1°, b) BW | works on the common parts need a two-thirds majority of the assembly; some works (charging points, art. 3.82 §1 BW) follow their own procedure. To be confirmed. |
+| [addons/vme_belgie/models/vme_request.py](../../addons/vme_belgie/models/vme_request.py#L699) | 699 | art. 3.93 BW | the house rules (reglement van orde) bind tenants and occupants once they are made known to them; the checklist asks to send them to the new tenant. To be confirmed. |
 | [addons/vme_belgie/models/vme_sale_file.py](../../addons/vme_belgie/models/vme_sale_file.py#L10) | 10 | art. 3.94 §1 BW | the syndic answers the notary's first request within 15 days. |
 | [addons/vme_belgie/models/vme_sale_file.py](../../addons/vme_belgie/models/vme_sale_file.py#L12) | 12 | art. 3.94 §2 BW | the syndic answers the second request (after the compromise) within 30 days. |
 | [addons/vme_belgie/models/vme_sale_file.py](../../addons/vme_belgie/models/vme_sale_file.py#L16) | 16 | art. 3.94 §1 BW | the notary receives the minutes of the assemblies of the last three years. |

@@ -9,3 +9,4 @@ from . import rent_remittance
 from . import account_move
 from . import vme_payment
 from . import vme_lot
+from . import res_partner

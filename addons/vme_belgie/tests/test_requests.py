@@ -192,12 +192,14 @@ class TestRequests(TransactionCase):
         with self.assertRaises(UserError):
             request.action_send_order()
 
-    def test_order_waits_for_a_click(self):
-        # After verification the order is ready, but only a staff member sends it.
+    def test_order_never_leaves_by_itself(self):
+        # A verified owner: the order is ready as a draft, with a task, but only a click sends it.
         request = self._intake("eigenaar.a1@example.com")
         self.assertTrue(request.order_ready)
         self.assertEqual(request.state, "in_progress")
+        self.assertFalse(request.order_sent_date)
         self.assertFalse(self._sent_messages(request))
+        self.assertTrue(request.activity_ids.filtered(lambda a: a.summary.startswith("Bestelling slotenmaker")))
 
     def test_no_locksmith_gives_a_task(self):
         self.vme.locksmith_partner_id = False

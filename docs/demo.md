@@ -177,6 +177,7 @@ Na stap 8 staan er ook drie aanvragen in **VME > Aanvragen**.
 2. **Mijn mede-eigendom > Residentie Linde**: zijn kavels A1 en G1, de provisies van 2026 met de betaalstatus en een PDF per oproep, de voorlopige jaarafrekening 2026, en de documenten van het gebouw en van A1.
 3. Vertel erbij: de verkoper van A5 (`eigenaar.linde.a5@example.com`) ziet niets meer van na de verkoop, en een eigenaar ziet nooit een ander gebouw of een andere kavel.
 4. **Adres wijzigen**: de aanvraag van A1 wacht al op goedkeuring. Terug als syndicus: **VME > Eigenaars > Adreswijzigingen > Goedkeuren**.
+5. **Mijn aanvragen**: A1 vroeg in het portaal een attest van de betaalde provisies ("In behandeling"). Bij **Bevragingen** heeft hij al geantwoord op de laadpalen. Log in als `huurder.linde.a6@example.com` (eigen hostnaam, bv. `http://huurder.localhost:8069`), klik **Nieuwe aanvraag**, kies een badge voor A6: de aanvraag wacht op bewijs; laad een PDF op bij **Bewijs bezorgen**. Als syndicus: **VME > Aanvragen**, kanaal Portaal, met de taak "Bewijs uit het portaal nakijken". De verzending *Interesse in een laadpaal in Residentie Linde?* toont per eigenaar het antwoord en of het via het portaal kwam.
 
 > Boodschap: "Eigenaars vinden hun documenten en hun saldo zelf, en het register van eigenaars blijft juist."
 ### Extra: een hybride AV met online stemmen en ondertekenen (2 minuten)

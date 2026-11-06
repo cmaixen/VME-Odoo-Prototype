@@ -34,3 +34,4 @@ from . import vme_building_card
 from . import res_partner_supplier_card
 from . import vme_assembly_online
 from . import vme_financial_statements
+from . import vme_portal_requests

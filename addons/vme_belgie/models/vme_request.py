@@ -1,7 +1,8 @@
 """Requests of owners and tenants (keys, badges, moves, ...): one intake, a fixed procedure per type.
 
 Nothing is sent by itself: the proof request, the reminder and the order to the locksmith are
-prepared as drafts on the request, and a staff member sends each one with a button.
+prepared as drafts on the request, and a staff member sends each one with a button. There is
+deliberately no hook or setting to send them automatically.
 """
 import base64
 import re
@@ -294,11 +295,13 @@ class VmeRequest(models.Model):
 
     @api.model
     def create_from_intake(self, association_id, request_type, email, name="", lot_id=False, subject="", body="",
-                           channel="mail", reference="", summary="", proposed_reply="", attachments=None):
+                           channel="mail", reference="", summary="", proposed_reply="", attachments=None,
+                           requester_id=False, user_id=False):
         """Create a request from an incoming mail or a portal form and start its procedure.
 
-        Called over JSON-RPC by the AI assistant (ai/) and later by the owner portal. The requester
-        is recognised by the e-mail address; an unknown address becomes a new contact.
+        Called over JSON-RPC by the AI assistant (ai/) and by the owner portal. The requester
+        is recognised by the e-mail address; an unknown address becomes a new contact. The portal
+        passes the logged-in partner as ``requester_id`` and an internal ``user_id`` as responsible.
         ``attachments`` is a list of {"name", "datas" (base64), "mimetype"}; ``proposed_reply`` is the
         reply the AI assistant suggests, kept as an internal note. Returns the request id;
         a second call with the same ``reference`` returns the existing request.
@@ -315,7 +318,8 @@ class VmeRequest(models.Model):
         if lot and lot.association_id != vme:
             lot = self.env["vme.lot"]
         role, lot = self._identify_in(vme, email, lot)
-        partner = self._find_or_create_requester(vme, email, name, lot, role)
+        partner = self.env["res.partner"].browse(requester_id).exists() if requester_id else None
+        partner = partner or self._find_or_create_requester(vme, email, name, lot, role)
         text = f"{subject}\n{body}".lower()
         vals = {
             "association_id": vme.id,
@@ -327,6 +331,8 @@ class VmeRequest(models.Model):
             "source_reference": reference or False,
             "requester_id": partner.id,
         }
+        if user_id:
+            vals["user_id"] = user_id
         if request_type == "key":
             vals["key_kind"] = next(
                 (kind for kind, words in KEY_KIND_WORDS if any(w in text for w in words)), "entrance_key")
@@ -513,10 +519,9 @@ class VmeRequest(models.Model):
         self._close_todos(self.env._("Geverifieerd."))
         self.write({"state": "in_progress", "verified_date": fields.Date.context_today(self)})
         self.message_post(body=self.env._("Geverifieerd: %s", reason))
+        # The order is only prepared: a staff member always sends it (CLAUDE.md, a human decides).
         if self.type_code == "key":
-            # Never sent by itself: a staff member checks the order and sends it (docs/beslissingen.md).
             self._prepare_order()
-
 
     def _prepare_order(self):
         """Order form for the locksmith as PDF plus a draft mail, ready to send with one click."""

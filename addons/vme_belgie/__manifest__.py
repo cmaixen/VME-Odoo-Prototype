@@ -60,6 +60,7 @@
         "data/communication_data.xml",
         "report/vme_communication_reports.xml",
         "views/vme_communication_views.xml",
+        "views/portal_request_templates.xml",
         "security/vme_building_card_security.xml",
         "views/vme_building_card_templates.xml",
         "views/vme_building_card_views.xml",

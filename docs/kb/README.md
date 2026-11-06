@@ -85,26 +85,27 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 ### Bewoners
 
 27. [Aanvragen van bewoners: sleutels, badges en andere vaste procedures](aanvragen-sleutels-badges.md)
+28. [Aanvragen en bevragingen in het eigenaarsportaal](portaal-aanvragen-bevragingen.md)
 
 ### Overstappen
 
-28. [Leveranciers betalen en provisies domiciliëren](betalingen.md)
+29. [Leveranciers betalen en provisies domiciliëren](betalingen.md)
 
 ### Overstappen
 
-29. [PDF-facturen en documenten laten lezen door de AI-assistent](pdf-facturen-ai.md)
+30. [PDF-facturen en documenten laten lezen door de AI-assistent](pdf-facturen-ai.md)
 
 ### Overstappen
 
-30. [Communicatie met eigenaars: mededelingen, bevragingen en aangetekende brieven](communicatie.md)
+31. [Communicatie met eigenaars: mededelingen, bevragingen en aangetekende brieven](communicatie.md)
 
 ### Overstappen
 
 
 ### Rentmeester
 
-31. [Een verhuurd appartement beheren: huurcontract, huurfacturen, indexering en afrekening aan de huurder](rentmeester.md)
-32. [De huur doorstorten aan de verhuurder: ereloon, kosten, afrekening en betaalbatch](doorstorting-verhuurder.md)
+32. [Een verhuurd appartement beheren: huurcontract, huurfacturen, indexering en afrekening aan de huurder](rentmeester.md)
+33. [De huur doorstorten aan de verhuurder: ereloon, kosten, afrekening en betaalbatch](doorstorting-verhuurder.md)
 
 ## Zo is het platform opgebouwd
 

@@ -71,7 +71,7 @@ erDiagram
 | `vme.lot.key` | Sleutelregister | `lot_id`, `kind`, `number`, `issue_date`, `partner_id` (in handen van), `state` (in gebruik, geblokkeerd, ingeleverd), `request_id`. |
 | `vme.bill.ai.check` | Controle van een door AI gelezen factuurveld | Per factuur één rij per gelezen veld: `field_code`, `name`, `value`, `confidence` (hoog/gemiddeld/laag), `status` (in orde/nakijken/gevaar), `message`. Wordt bij elke controle vervangen. Zie [pdf-ai-lezen.md](pdf-ai-lezen.md). |
 | `vme.communication` | Verzending | Mededeling of bevraging per VME: selectie (`audience`), `reference_date`, gevraagd kanaal, tekst met plaatshouders, antwoorden (`option_ids`). Concept → verstuurd. Zie [communicatie.md](communicatie.md). |
-| `vme.communication.log` | Communicatielog | Eén lijn per ontvanger en verzending, ook voor oproepingen en herinneringen (`source_model`, `source_id`); echt kanaal, status, antwoord op een bevraging. |
+| `vme.communication.log` | Communicatielog | Eén lijn per ontvanger en verzending, ook voor oproepingen en herinneringen (`source_model`, `source_id`); echt kanaal, status, antwoord op een bevraging met `answer_channel` (portaal of ingegeven door de syndicus, stap 27). |
 | `vme.registered.mail` | Aangetekende zending | Volgnummer `AT/jaar/nnnn`, bestemmeling, adres als tekst, PDF, papier of elektronisch, zendingsnummer, status tot ontvangen of niet afgehaald. |
 | `vme.communication.template` | Sjabloon | Onderwerp, tekst, korte tekst, kanaal, vraag en antwoorden. |
 | `vme.budget.line` | Budget per rekening en sleutel | `budget_id`, `account_id`, `key_id` (optioneel), `name`, `amount`; op `vme.budget` berekend `lines_total` en `unassigned_amount`. Zie [gebouwkaart.md](gebouwkaart.md). |
@@ -103,7 +103,7 @@ De modellen van de rentmeester (`vme.rent.*`, ook beheermandaten en doorstorting
 | `account.move` | `vme_ai_state`, `vme_ai_reading`, `vme_ai_model`, `vme_ai_iban`, `vme_ai_check_ids`, `vme_ai_danger_count`, `vme_ai_warning_count`, `vme_ai_reviewed_by_id`, `vme_ai_reviewed_date` | PDF-factuur zonder UBL, gelezen door AI (stap 21, zie [pdf-ai-lezen.md](pdf-ai-lezen.md)). `vme_ai_iban` is het IBAN zoals gelezen; het wordt nooit een `res.partner.bank`. |
 | `vme.association` | `vme_receive_document()`, `_vme_document_folder()` | Door AI geklasseerd document als bijlage op de VME; het tweede is het uitbreidingspunt voor de mappen van stap 15. |
 | `account.bank.statement.line` | `vme_bank_fund`, `vme_match_state`, `vme_exception`, `vme_days_late`, `vme_match_note`, `vme_structured_reference`, `vme_candidate_move_ids`, `vme_matched_move_ids`, `vme_follow_up` | Koppeling van bankbewegingen met provisies en leveranciersfacturen (stap 12, zie [bankafschriften.md](bankafschriften.md)). |
-| `res.partner` | `vme_ownership_ids`, `vme_address_request_ids` | Eigendommen en adreswijzigingen; helpers `_vme_portal_*` voor het portaal. |
+| `res.partner` | `vme_ownership_ids`, `vme_address_request_ids` | Eigendommen en adreswijzigingen; helpers `_vme_portal_*` voor het portaal, ook voor huurders, aanvragen en bevragingen (stap 27). |
 | `vme.ownership` | `is_current`, `email`, `phone`, `contact_address`, `has_portal` | Register van eigenaars (`is_current` is zoekbaar). |
 | `vme.association` / `vme.lot` | `document_ids`, `document_count` | Documenten van de VME en van de kavel. |
 | `res.partner` | `vme_ownership_ids`, `vme_mandate_ids` | Omgekeerde relaties, gebruikt in de leesregel van de commissaris. |

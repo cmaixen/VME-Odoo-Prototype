@@ -71,7 +71,7 @@ Meer is niet nodig: de selectie "Huurders", het log en de kanalen werken dan met
 
 Plaatshouders (`{eigenaar}`, `{kavels}`, `{vme}`, `{adres_vme}`, `{datum}`) worden met `str.replace` ingevuld, met `markupsafe.escape` op de waarden. We gebruiken bewust geen `mail.template`: een medewerker zonder de groep "Mail Template Editor" mag geen dynamische inline templates renderen, en eenvoudige plaatshouders zijn voor een syndicus duidelijker dan `{{ object.partner_id.name }}`.
 
-Een bevraging voegt onderaan de tekst de vraag, de antwoorden als lijst en de uiterste datum toe (`_survey_html`). Antwoorden worden in de lijst **Ontvangers en antwoorden** per eigenaar gekozen; `write` vult `answer_date` als die leeg is. Antwoorden via het portaal (stap 15) kunnen hetzelfde veld schrijven.
+Een bevraging voegt onderaan de tekst de vraag, de antwoorden als lijst en de uiterste datum toe (`_survey_html`). Antwoorden worden in de lijst **Ontvangers en antwoorden** per eigenaar gekozen; `write` vult `answer_date` als die leeg is. Antwoorden via het portaal (stap 27) schrijven hetzelfde veld via `vme.communication.log._portal_answer`, met `answer_channel = portal`; een antwoord dat een medewerker ingeeft, krijgt `manual` (in `write`). `_render_logs` voegt voor ontvangers met een portaallogin een link `/my/vme/survey/<log_id>` toe aan de tekst.
 
 ## Provider-interface
 
@@ -104,7 +104,7 @@ Zo zou een koppeling werken (niet gebouwd):
 | 9, verkoop | `vme.sale.file.action_deed_done` roept na `super()` `_create_welcome_letter` op: een conceptverzending (`audience = partners`, de koper, `reference_date` = aktedatum) uit het sjabloon `communication_template_welcome`, met de ontvangers al opgehaald. Bericht met link in de chatter van het dossier, knop **Welkomstbrief**. | De overdracht van de eigendom. |
 | 10, invordering | `vme.collection.reminder.action_mark_sent` roept eerst `super()` op en maakt dan een loglijn. Niveau 3 (ingebrekestelling) krijgt kanaal `registered`, een PDF van het bestaande rapport `action_report_collection_reminder` en een registerlijn (`registered_mail_id`). Knop **Aangetekend versturen** (`action_send_registered`) in het formulier. | Niveaus, termijnen, kosten, het versturen per e-mail of per post. |
 | 11, AV | `vme.assembly.convocation.create` maakt per oproeping een conceptlijn in het log (kanaal volgens voorkeur); `action_mark_sent` zet ze op verstuurd, met kanaal `email` als de context `mark_convocation_as_sent` (de composer) gezet is en anders `letter`. | De oproeping, de PDF's en de composer. |
-| 15, portaal | Push via `PushProvider`; antwoorden op bevragingen kunnen in `answer_option_id`. | |
+| 15 en 27, portaal | Push via `PushProvider`; antwoorden op bevragingen via `_portal_answer` (stap 27, zie [portaal.md](portaal.md#aanvragen-en-bevragingen-stap-27)). | |
 | 19 en 25, huurders | `vme.lot._get_tenants_on(date)` overschrijven. | |
 
 ## LEGAL-CHECK-punten
@@ -127,7 +127,6 @@ Zo zou een koppeling werken (niet gebouwd):
 ## Uitbreidingen voor later
 
 - Akkoord van de eigenaar voor oproepingen per e-mail (datum en bewijs) en de oproepingen van stap 11 als verzending laten lopen.
-- Antwoorden op een bevraging via een link in de e-mail of het portaal, in plaats van met de hand.
 - Een echte sms-dienst en elektronisch aangetekend verzenden, met de bewijzen als bijlage.
 - Huurders en eigenaars samen per blok.
 - Bijlagen (plannen, offertes) bij een verzending en documenten delen via het portaal (stap 15).

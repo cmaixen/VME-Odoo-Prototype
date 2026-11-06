@@ -40,6 +40,8 @@ Een nieuwe eigenaar ziet dus de oudere documenten van het gebouw (basisakte, not
 | `/my/vme/<id>/statement/<jaar>` en `/pdf` | Afrekening van die eigenaar; de PDF gebruikt het bestaande rapport via een tijdelijke `vme.annual.statement.wizard` met alleen die eigenaar |
 | `/my/vme/document/<id>` | Bestand via `ir.binary._get_stream_from`; `?download=1` als bijlage |
 | `/my/vme/address` | Formulier; maakt `vme.address.request` en een taak voor de beheerder |
+| `/my/vme/requests`, `/my/vme/requests/new`, `/my/vme/request/<id>` (+ `/proof`) | Aanvragen indienen en opvolgen, bewijs opladen (stap 27) |
+| `/my/vme/survey/<log_id>` | Een bevraging beantwoorden (stap 27) |
 | `/av/<code>`, `/my/vme/assembly/<id>` | Online deelnemen, stemmen en notulen ondertekenen (stap 24, zie [digitale-av.md](digitale-av.md)) |
 
 De PDF van een provisie is Odoo's eigen factuurroute (`move.get_portal_url(report_type="pdf")`), met het toegangstoken van de factuur: de portaalgebruiker heeft geen toegang tot de company van de VME, het token volstaat.
@@ -64,8 +66,32 @@ De knop **Portaaltoegang** in het register opent Odoo's `portal.wizard`. Die stu
 
 Testlogins in de demo (wachtwoord `portaal-demo`): `eigenaar.linde.a1@example.com` (A1 en G1), `eigenaar.linde.a5@example.com` (verkocht A5 en G5 op 1 juli 2026) en `eigenaar.linde.a6@example.com` (A6 en G6, secretaris van de hybride AV van stap 24). Gebruik voor een tweede demo een eigen hostnaam, zoals `http://portaal.localhost:8570`: zie [valkuilen](valkuilen.md#sessiecookies-per-hostnaam).
 
+## Aanvragen en bevragingen (stap 27)
+
+Controller `controllers/portal_requests.py`, helpers in `models/vme_portal_requests.py`, templates in `views/portal_request_templates.xml`. Dezelfde lagen als hierboven: geen toegangsrechten op `vme.request` of `vme.communication.*` voor portaalgebruikers (getest), sudo alleen via de helpers, 404 voor alles wat niet van de partner is.
+
+| Helper | Regel |
+| --- | --- |
+| `_vme_portal_tenant_lots()` | Kavels met een `vme.lot.contact` (rol `tenant`) van de partner op vandaag; `vme_rentmeester` voegt de kavels van zijn huurcontracten toe. |
+| `_vme_portal_current_tenant_lots()` | Dezelfde kavels, nagekeken met `vme.lot._get_tenants_on(today)`: de ene regel voor huurders. |
+| `_vme_portal_request_lots()` | Kavels die de partner vandaag bezit (`is_current`) of huurt. Alleen die staan in het formulier; een ander `lot_id` in de POST geeft 404 en geen aanvraag. |
+| `_vme_portal_requests()` | Aanvragen met `requester_id` = de commerciële partner. Een eigenaar ziet de aanvragen van zijn huurder niet. |
+| `_vme_portal_create_request()` | `create_from_intake(channel="portal", requester_id=…, user_id=admin)`: zelfde herkenning en procedure als per mail. Heeft de aanvraag daarna geen taak (attest, overlast), dan krijgt de medewerker "Aanvraag uit het portaal behandelen". Bijlagen: max. 5 bestanden van 10 MB. |
+| `vme.request._portal_messages()` | Alleen berichten met subtype `mt_comment` van of aan de aanvrager; notities, de bewijsvraag als concept en de bestelling blijven intern. |
+| `vme.request._portal_add_proof()` | Alleen de aanvrager, alleen in `waiting_proof`: bijlagen bij `proof_attachment_ids`, een notitie en een To-do. Er wordt niets goedgekeurd. |
+| `_vme_portal_surveys()` | Loglijnen van de partner, van verzendingen met `kind = survey` en `state = sent`. |
+| `vme.communication.log._portal_answer()` | Eigen lijn, verzending verstuurd, vóór `answer_deadline`; wijzigen kan tot dan. |
+
+**Huurders in het portaal.** Een huurder met een login krijgt de tegel en `/my/vme` (kaart "Gehuurde kavels"), aanvragen en bevragingen, maar `/my/vme/<id>` blijft eigenaar-only (`_vme_portal_check_association` kijkt naar eigendommen), dus geen documenten, provisies of afrekeningen. `_vme_portal_has_access()` = eigenaar (nu of vroeger) of huurder vandaag.
+
+**Verantwoordelijke.** Onder `sudo()` blijft `env.user` de portaalgebruiker. Zonder `user_id` zou de aanvraag (en elke taak) bij de eigenaar zelf staan; daarom geeft het portaal `base.user_admin` mee, zoals de adreswijzigingen. Een verantwoordelijke per VME bestaat nog niet.
+
+**Controllers samenvoegen.** `VmeAssemblyPortal` en `VmeRequestPortal` erven allebei van `VmeOwnerPortal` en overschrijven `portal_my_vme_detail`; Odoo maakt uit alle subklassen één controller, dus beide `super()`-ketens lopen. Feedback na een POST gaat via de sessie, zoals bij de AV.
+
+Tests: `tests/test_portal_requests.py` (`TestPortalRequests` op de helpers, `TestPortalRequestRoutes` als portaalgebruiker over HTTP, met CSRF-token via `http.Request.csrf_token(self)`).
+
 ## Nog niet gebouwd
 
 - Notulen, keuringsverslagen en jaarafrekeningen komen nog niet automatisch in de mappen.
-- Eigenaars kunnen zelf geen documenten opladen.
+- Eigenaars kunnen zelf geen documenten opladen in de mappen (wel bewijsstukken bij een eigen aanvraag, stap 27).
 - De commissaris van de rekeningen (stap 16) bouwt verder op deze routes en helpers.
