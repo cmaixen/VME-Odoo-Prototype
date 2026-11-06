@@ -17,7 +17,7 @@ from .test_council import TODAY, TestCouncil
 # Shared configuration without a VME: every internal user reads it, the auditor writes none of it.
 SHARED_MODELS = {
     "vme.assembly.room", "vme.assembly.slot", "vme.document.folder", "vme.request.type",
-    "vme.communication.template", "vme.rent.index", "vme.rent.charge.category",
+    "vme.communication.template", "vme.rent.index", "vme.rent.charge.category", "vme.consumer.price.index",
 }
 # Only through a wizard or for administrators; no company of its own.
 NOT_FOR_USERS = {"vme.migration"}

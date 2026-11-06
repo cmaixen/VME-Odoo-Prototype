@@ -505,4 +505,54 @@
         <field name="perm_create" eval="True"/>
         <field name="perm_unlink" eval="True"/>
     </record>
+
+    <record id="rule_company_cycle_step" model="ir.rule">
+        <field name="name">VME: vme.cycle.step van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_cycle_step"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_management_agreement" model="ir.rule">
+        <field name="name">VME: vme.management.agreement van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_management_agreement"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_service_line" model="ir.rule">
+        <field name="name">VME: vme.service.line van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_service_line"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_syndic_mandate" model="ir.rule">
+        <field name="name">VME: vme.syndic.mandate van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_syndic_mandate"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_company_service_rate" model="ir.rule">
+        <field name="name">VME: vme.service.rate van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_service_rate"/>
+        <field name="domain_force">[('agreement_id.company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
 </odoo>
