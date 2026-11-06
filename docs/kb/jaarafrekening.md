@@ -36,7 +36,7 @@ Na het laden van de demohistoriek heeft **Residentie Linde** een volledig jaar 2
 - **Eigenaar Linde A3** betaalde de vierde oproep niet. Die staat in de kolom **Nog open** en wordt in het saldo **niet** verrekend: ze blijft gewoon verschuldigd. De PDF vermeldt welke factuur nog open staat.
 - **A5** is op 1 juli verkocht. De verkoper en de koper krijgen elk een eigen afrekening. Een kost over het hele jaar, zoals de brandverzekering, betaalt de verkoper voor 181 dagen en de koper voor 184 dagen.
 
-In **Hof ter Beuken** waren de werkelijke kosten (vooral gas en de loonkost van de conciërge) iets hoger dan het budget. Het gas is verdeeld op verbruik: wie veel verbruikte, betaalt bij, wie weinig verbruikte, krijgt geld terug. In de demo betalen 11 eigenaars bij en krijgen er 12 terug.
+In **Hof ter Beuken** is het gas van de centrale verwarming verdeeld op verbruik: wie veel verbruikte, betaalt bij, wie weinig verbruikte, krijgt geld terug. In de demo betalen 11 eigenaars bij en krijgen er 12 terug.
 
 ## Veelgestelde vragen
 

@@ -514,17 +514,9 @@ class VmeRequest(models.Model):
         self.write({"state": "in_progress", "verified_date": fields.Date.context_today(self)})
         self.message_post(body=self.env._("Geverifieerd: %s", reason))
         if self.type_code == "key":
+            # Never sent by itself: a staff member checks the order and sends it (docs/beslissingen.md).
             self._prepare_order()
-            if self.order_ready and self._auto_send_order():
-                self.action_send_order()
 
-    def _auto_send_order(self):
-        """Whether the order may leave without a click after verification.
-
-        Hook for a later per-VME setting ("bestelling automatisch versturen na verificatie");
-        until that decision is taken, nothing is sent by itself (see docs/beslissingen.md).
-        """
-        return False
 
     def _prepare_order(self):
         """Order form for the locksmith as PDF plus a draft mail, ready to send with one click."""

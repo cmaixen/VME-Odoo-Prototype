@@ -60,11 +60,11 @@ FILES = {
         ]),
     ]),
     "hof_ter_beuken_2026-11-05.cod": ("VME HOF TER BEUKEN", [
-        ("BE27999000000373", "044", "47160.00", [
+        ("BE27999000000373", "044", "94320.00", [
             # Typo in the communication of call 3 (F/2026/00099, +++120/2600/09916+++).
-            tx(2, "420.00", "+++120/2600/09917+++", "Eigenaar Beuken B7", B7, "BEU-WK-0441"),
+            tx(2, "840.00", "+++120/2600/09917+++", "Eigenaar Beuken B7", B7, "BEU-WK-0441"),
             tx(3, "-14520.00", "GAS-20260930", "Gasleverancier Voorbeeld NV", GAS, "BEU-WK-0442"),
-            # Too little for call 4 (420.00 due).
+            # Too little for call 4 (840.00 due).
             tx(4, "200.00", ref(145), "Eigenaar Beuken B7", B7, "BEU-WK-0443"),
             # Reserve capital of call 3 paid on the working capital account.
             tx(4, "15.75", ref(122), "Eigenaar Beuken B7", B7, "BEU-WK-0444"),

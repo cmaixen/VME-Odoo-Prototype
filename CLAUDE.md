@@ -17,6 +17,7 @@ Een werkend prototype van een syndicusplatform op Odoo 19, om te tonen aan een p
 - **Eigen modules:** `vme_belgie` in `addons/` voor alles van de VME. De rentmeesterij (huur, indexering, afrekening aan huurders) staat apart in `vme_rentmeester`, omdat de huur bij de verhuurder hoort en niet bij de VME (zie `docs/beslissingen.md`). Splits verder pas op als dat nodig is.
 - **Code en technische namen in het Engels**, labels en gebruikersteksten in het Nederlands. Vertalingen naar het Frans komen later via `.po`-bestanden.
 - **Elke stap werkt voor je verder gaat.** Na elke wijziging: module upgraden, Odoo-log nakijken op fouten, en de functie in de browser testen.
+- **Een mens beslist altijd.** Niets naar buiten vertrekt vanzelf: bestellingen (bv. bij de slotenmaker), brieven, rappels, betalingen en antwoorden van de AI staan als concept klaar en een medewerker verstuurt ze. Bouw ook geen haak of instelling om dat later automatisch te maken.
 - **Belgische regels zijn nog niet juridisch gevalideerd.** Markeer elke wettelijke regel in de code met een commentaar `# LEGAL-CHECK:` en de bron (artikel Burgerlijk Wetboek of KB).
 
 ## Omgeving

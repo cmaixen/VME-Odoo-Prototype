@@ -46,17 +46,11 @@ Er vertrekt nooit iets vanzelf. Elke uitgaande mail loopt via `_post_to()`, dat 
 
 De concepten staan als bewerkbare velden op de aanvraag (`proof_mail_body`, `order_mail_subject`, `order_mail_body`), in het tabblad Berichten.
 
-## Bestelling bij de slotenmaker en de open beslissing
+## Bestelling bij de slotenmaker
 
 `_mark_verified()` roept bij `key` `_prepare_order()` aan: de PDF `vme_belgie.action_report_request_order` wordt een bijlage op de aanvraag (`order_attachment_id`) en de conceptmail wordt ingevuld. Zonder slotenmaker op de VME komt er een To-do "Slotenmaker instellen" en de knop **Bestelling opnieuw opmaken**.
 
-Daarna: `if self.order_ready and self._auto_send_order(): self.action_send_order()`. `_auto_send_order()` geeft nu altijd `False`. Beslist de gebruiker dat de bestelling per VME automatisch mag vertrekken (zie `docs/beslissingen.md`), dan volstaat:
-
-1. een Boolean op `vme.association`, bv. `auto_send_key_orders`, met een LEGAL-CHECK of een verwijzing naar die beslissing;
-2. `_auto_send_order()` geeft `self.association_id.auto_send_key_orders` terug;
-3. het veld in het tabblad "Sleutels en aanvragen" van de VME.
-
-`test_auto_send_hook` toont dat de rest van de flow dan al werkt.
+Daarna stopt de flow: de bestelling vertrekt nooit vanzelf. Een medewerker kijkt ze na en klikt **Bestelling versturen** (`action_send_order`). Dat is een vaste regel, geen open beslissing: een mens beslist altijd over acties naar buiten (zie `docs/beslissingen.md`). `test_order_waits_for_a_click` bewaakt dat.
 
 ## Levering en privé-aanrekening
 
@@ -107,7 +101,7 @@ De medewerker moet de regel van die factuur zelf op 416100 zetten; een verdeelre
 
 ## Tests
 
-`tests/test_requests.py` (19 tests, freezegun op 5 november 2026): verificatie van eigenaar, eigenaar van een andere kavel, huurder zonder en met toestemming, onbekende; manuele aanvraag; dezelfde mail één keer; bewijsvraag en herinnering na 7 dagen; bestelling met één klik en de haak voor automatisch versturen; geen slotenmaker; levering met register en privé-factuur (bedrag, rekening, partner, fonds, geen btw); leveranciersfactuur niet verdeeld en niet in de jaarafrekening; badge blokkeren; huurder registreren; agendapunt op de AV; schade; register in het verkoopdossier en overdracht bij de akte. In `ai/tests`: de drie nieuwe mails, bijlagen lezen, de soorten van de mock, `validate()`, `run()` met aanvragen, en `VmeDirectory` met huurders en `create_request`.
+`tests/test_requests.py` (19 tests, freezegun op 5 november 2026): verificatie van eigenaar, eigenaar van een andere kavel, huurder zonder en met toestemming, onbekende; manuele aanvraag; dezelfde mail één keer; bewijsvraag en herinnering na 7 dagen; bestelling met één klik en nooit vanzelf; geen slotenmaker; levering met register en privé-factuur (bedrag, rekening, partner, fonds, geen btw); leveranciersfactuur niet verdeeld en niet in de jaarafrekening; badge blokkeren; huurder registreren; agendapunt op de AV; schade; register in het verkoopdossier en overdracht bij de akte. In `ai/tests`: de drie nieuwe mails, bijlagen lezen, de soorten van de mock, `validate()`, `run()` met aanvragen, en `VmeDirectory` met huurders en `create_request`.
 
 ## Valkuilen
 

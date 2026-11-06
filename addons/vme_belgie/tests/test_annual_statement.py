@@ -165,11 +165,14 @@ class TestAnnualStatementDemo(TransactionCase):
         self.assertEqual(a3["working"]["open"], a3["working"]["invoiced"] / 4)
         self.assertEqual(a3["balance"], round(a3["cost_total"] - a3["working"]["paid"], 2))
 
-    def test_hof_ter_beuken_pays_extra(self):
+    def test_hof_ter_beuken_settles_on_consumption(self):
+        # Gas is split on consumption: large consumers pay extra, small consumers get money back.
         beuken = self.env["vme.association"].search([("name", "=", "Hof ter Beuken")])
         data = beuken._get_annual_statement(2026)
         self.assertTrue(data["is_complete"])
-        self.assertTrue(all(st["balance"] > 0 for st in data["statements"] if st["working"]["open"] == 0))
+        paid_all = [st for st in data["statements"] if st["working"]["open"] == 0]
+        self.assertTrue(any(st["balance"] > 0 for st in paid_all))
+        self.assertTrue(any(st["balance"] < 0 for st in paid_all))
 
     def test_demo_bank_statements(self):
         """The fictitious CODA/CAMT files (stap 12) still match the invoice numbers of the demo history."""
@@ -182,7 +185,7 @@ class TestAnnualStatementDemo(TransactionCase):
             ("Residentie Linde", "working", -1815.0, "auto", "", 0),
             ("Residentie Linde", "working", 432.0, "auto", "", 1),
             ("Residentie Linde", "reserve", 43.2, "suggested", "no_reference", 0),
-            ("Hof ter Beuken", "working", 420.0, "suggested", "wrong_reference", 0),
+            ("Hof ter Beuken", "working", 840.0, "suggested", "wrong_reference", 0),
             ("Hof ter Beuken", "working", -14520.0, "auto", "", 0),
             ("Hof ter Beuken", "working", 200.0, "auto", "underpaid", 0),
             ("Hof ter Beuken", "working", 15.75, "suggested", "wrong_fund", 0),

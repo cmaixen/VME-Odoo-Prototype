@@ -60,8 +60,8 @@ Na **VME > Configuratie > Demobankafschriften inlezen** (na de demodata en de de
 | Residentie Linde | Liftonderhoud en schoonmaak betaald (ELEVATOR-20260915, CLEANING-20260930) | Automatisch gekoppeld aan de leveranciersfacturen |
 | Residentie Linde | A3 betaalt oproep 4 werkkapitaal op 5 november | Automatisch gekoppeld, **1 dag te laat** |
 | Residentie Linde | "Familie Voorbeeld" stort 43,20 € op de reserverekening met "reservefonds A3 oproep 4" | **Voorstel**: provisie reservekapitaal van A3 (kavel A3 in de mededeling, zelfde bedrag) |
-| Hof ter Beuken | B7 betaalt 420,00 € met een tikfout in de mededeling | **Voorstel**: de oudste open provisie van 420,00 € (oproep 3) |
-| Hof ter Beuken | B7 betaalt 200,00 € voor oproep 4 (420,00 € gevraagd) | Gekoppeld, **te weinig betaald**: 220,00 € blijft open |
+| Hof ter Beuken | B7 betaalt 840,00 € met een tikfout in de mededeling | **Voorstel**: de oudste open provisie van 840,00 € (oproep 3) |
+| Hof ter Beuken | B7 betaalt 200,00 € voor oproep 4 (840,00 € gevraagd) | Gekoppeld, **te weinig betaald**: 640,00 € blijft open |
 | Hof ter Beuken | B7 betaalt de provisie reservekapitaal van oproep 3 op de rekening werkkapitaal | **Voorstel**, rekening van het andere fonds |
 | Hof ter Beuken | B7 betaalt oproep 4 reservekapitaal op tijd | Automatisch gekoppeld |
 | Hof ter Beuken | Gasfactuur derde kwartaal betaald | Automatisch gekoppeld |
