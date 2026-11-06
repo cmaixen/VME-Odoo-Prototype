@@ -30,6 +30,14 @@ Elke VME is een company, en een medewerker heeft meestal maar een deel van de co
 - **Rekeningcodes zijn per company.** In Odoo 19 is `account.account.code` afhankelijk van de company in de context. Lees de code van een rekening uit een VME met `account.with_company(vme_company).code`, anders is ze leeg (zo vielen verzekering en energie eerst in geen enkele rubriek).
 - **`format_date` in een QWeb-rapport** bestaat niet vanzelf: geef het mee via een `report.<module>.<template>`-model met `_get_report_values`, zoals de rapporten van de rentmeester en het verkoopdossier.
 
+## Doorstorting en betaalbatch van het kantoor (stap 25b)
+
+- **Een `related` veld overschrijven met een compute.** `company_id` van `vme.payment.batch` was `related="association_id.company_id"`. In `vme_rentmeester` wordt het `fields.Many2one("res.company", related=None, compute=..., store=True)`; zonder de comodel faalt het laden met "unknown comodel_name '???'", want een related veld haalt die anders van zijn bron.
+- **Een niet-opgeslagen statusveld zonder `@api.depends` blijft in de cache hangen.** De betaalstatus van een doorstorting bleef "klaar voor betaalbatch" nadat de batch gevuld was; met depends op de status van het doorstortingsstuk wordt ze opnieuw berekend.
+- **Knoppen met een andere company geselecteerd.** Bevestigen, goedkeuren en het SEPA-bestand lazen btw, facturen en het doorstortingsstuk van het kantoor en gaven "Toegangsfout" zodra de gebruiker alleen een andere company had aangevinkt. Doorstorting en betaalbatch van het kantoor draaien hun knoppen daarom met `with_company(kantoor)` (`_in_own_company` op de batch); de test `test_confirm_with_other_company_selected` doet het als admin met alleen de hoofdcompany.
+- **De ereloonfactuur vraagt een bevestigde rekening van het kantoor.** Odoo weigert een klantfactuur te boeken met een niet-bevestigde eigen rekening ("The company bank account ... is not trusted"), behalve voor de superuser. Tests die als gewone gebruiker bevestigen, laten de rekening eerst door admin bevestigen; de demo laadt als admin.
+- **Het rekeningstelsel van het kantoor bestaat pas bij de commit.** De btw van de demomandaten wordt daarom in een precommit ingevuld, en `_get_fee_tax()` valt terug op 21 % diensten van het kantoor als het mandaat geen btw heeft.
+
 ## Tijdelijke records in formulieren (`_origin`)
 
 In een open formulier of wizard zijn Many2one- en Many2many-waarden tijdelijke `NewId`-records. Een `search` met `vme.id` vindt dan niets. Gebruik `record._origin` (of `record._origin.id`) om het echte record te krijgen, zoals in `vme.provision.call.wizard._get_budget()` en `vme.annual.statement.wizard._get_statement()`. Het voorbeeld (`preview_html`) wordt berekend terwijl het formulier nog open is, dus elke compute die zoekt, moet dit doen.

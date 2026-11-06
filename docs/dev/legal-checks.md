@@ -3,7 +3,7 @@
 Automatisch gemaakt door `python3 tools/legal_checks.py`; niet met de hand bewerken.
 Elke rij is een wettelijke regel in de code die nog juridisch gevalideerd moet worden.
 
-Aantal punten: 101.
+Aantal punten: 104.
 
 ## Per bron
 
@@ -11,6 +11,7 @@ Aantal punten: 101.
 - **Boek VII WER (omzetting art. 76 PSD2, richtlijn 2015/2366)**: [vme_payment.py:45](../../addons/vme_belgie/models/vme_payment.py#L45)
 - **Brusselse ordonnantie van 13 oktober 2022 (indexering volgens EPB)**: [rent_rules.py:47](../../addons/vme_rentmeester/models/rent_rules.py#L47)
 - **KB 12 juli 2012 (minimum chart of accounts for VMEs)**: [account_chart_template.py:6](../../addons/vme_belgie/models/account_chart_template.py#L6), [vme_association.py:87](../../addons/vme_belgie/models/vme_association.py#L87)
+- **KB 29 juni 2018 (Code van plichtenleer van de vastgoedmakelaars), nakijken welk artikel -**: [res_company.py:15](../../addons/vme_rentmeester/models/res_company.py#L15)
 - **KB 9 maart 2003**: [vme_installation.py:33](../../addons/vme_belgie/models/vme_installation.py#L33)
 - **KB 9 maart 2003 betreffende de beveiliging van liften**: [vme_installation.py:17](../../addons/vme_belgie/models/vme_installation.py#L17)
 - **NBN S21-050**: [vme_installation.py:20](../../addons/vme_belgie/models/vme_installation.py#L20)
@@ -23,6 +24,7 @@ Aantal punten: 101.
 - **art. 1728bis oud BW, art. 34 VWHD, art. 224 BHC, art. 26 Waals decreet 15-03-2018**: [rent_contract.py:253](../../addons/vme_rentmeester/models/rent_contract.py#L253), [rent_rules.py:30](../../addons/vme_rentmeester/models/rent_rules.py#L30)
 - **art. 1728ter oud BW, art. 35 VWHD, art. 221 BHC, art. 32 Waals decreet 15-03-2018**: [rent_settlement.py:56](../../addons/vme_rentmeester/models/rent_settlement.py#L56)
 - **art. 1792 en 2270 oud BW**: [vme_works.py:18](../../addons/vme_belgie/models/vme_works.py#L18)
+- **art. 18 §1 en art. 37 WBTW, KB nr. 20 (tabel A en B)**: [remittance_rules.py:7](../../addons/vme_rentmeester/models/remittance_rules.py#L7)
 - **art. 18 §2/3 Elektriciteitswet 29 april 1999**: [vme_contract.py:27](../../addons/vme_belgie/models/vme_contract.py#L27)
 - **art. 224 Brusselse Huisvestingscode**: [rent_rules.py:70](../../addons/vme_rentmeester/models/rent_rules.py#L70)
 - **art. 248 Brusselse Huisvestingscode**: [rent_rules.py:83](../../addons/vme_rentmeester/models/rent_rules.py#L83)
@@ -61,6 +63,7 @@ Aantal punten: 101.
 - **art. 37 Vlaams Woninghuurdecreet**: [rent_rules.py:80](../../addons/vme_rentmeester/models/rent_rules.py#L80)
 - **art. 37/2 Arbeidsovereenkomstenwet 3 juli 1978**: [vme_contract.py:32](../../addons/vme_belgie/models/vme_contract.py#L32)
 - **art. 5.231 BW**: [vme_communication.py:665](../../addons/vme_belgie/models/vme_communication.py#L665)
+- **art. 5.250 e.v. BW (schuldvergelijking)**: [rent_remittance.py:366](../../addons/vme_rentmeester/models/rent_remittance.py#L366)
 - **art. 62 Waals decreet van 15 maart 2018**: [rent_rules.py:86](../../addons/vme_rentmeester/models/rent_rules.py#L86)
 - **art. 74 §1 wet 4 april 2014 betreffende de verzekeringen**: [vme_damage.py:10](../../addons/vme_belgie/models/vme_damage.py#L10)
 - **art. 85 Wet van 4 april 2014 betreffende de verzekeringen**: [vme_contract.py:23](../../addons/vme_belgie/models/vme_contract.py#L23)
@@ -163,7 +166,9 @@ Aantal punten: 101.
 | [addons/vme_belgie/models/vme_works.py](../../addons/vme_belgie/models/vme_works.py#L195) | 195 | art. 3.88 §1, 1°, c) BW | competition above the amount fixed by the assembly. |
 | [addons/vme_belgie/models/vme_works.py](../../addons/vme_belgie/models/vme_works.py#L449) | 449 | art. 3.86 §3 BW en KB 12 juli 2012 (minimum chart of accounts) | the reserve capital pays for works; align the accounts and the treatment of non-deductible VAT. |
 | [addons/vme_belgie/wizard/vme_provision_call_wizard.py](../../addons/vme_belgie/wizard/vme_provision_call_wizard.py#L115) | 115 | art. 3.89 §5 BW | working and reserve capital on separate bank accounts, so each fund gets its own invoice paid to its own account. |
+| [addons/vme_rentmeester/models/remittance_rules.py](../../addons/vme_rentmeester/models/remittance_rules.py#L7) | 7 | art. 18 §1 en art. 37 WBTW, KB nr. 20 (tabel A en B) | het ereloon van de rentmeester is een dienst aan 21% btw. De huur die hij int en doorstort is geen omzet van het kantoor: de verhuur zelf is vrijgesteld (art. 44 §3, 2° WBTW) en hoort bij de verhuurder. |
 | [addons/vme_rentmeester/models/rent_contract.py](../../addons/vme_rentmeester/models/rent_contract.py#L253) | 253 | art. 1728bis oud BW, art. 34 VWHD, art. 224 BHC, art. 26 Waals decreet 15-03-2018 | alleen een schriftelijk contract dat indexering niet uitsluit, kan geïndexeerd worden. |
+| [addons/vme_rentmeester/models/rent_remittance.py](../../addons/vme_rentmeester/models/rent_remittance.py#L366) | 366 | art. 5.250 e.v. BW (schuldvergelijking) | het ereloon wordt verrekend met de huur die het kantoor aan de verhuurder verschuldigd is; nakijken of het beheermandaat dat uitdrukkelijk moet toelaten. |
 | [addons/vme_rentmeester/models/rent_rules.py](../../addons/vme_rentmeester/models/rent_rules.py#L30) | 30 | art. 1728bis oud BW, art. 34 VWHD, art. 224 BHC, art. 26 Waals decreet 15-03-2018 | in alle drie de gewesten is de geïndexeerde huur = basishuur x nieuw indexcijfer / aanvangsindexcijfer, met de gezondheidsindex. |
 | [addons/vme_rentmeester/models/rent_rules.py](../../addons/vme_rentmeester/models/rent_rules.py#L39) | 39 | Vlaams decreet van 14 oktober 2022 (indexering volgens EPC) | verjaardagen van 1 oktober 2022 tot en met 30 september 2023: label A+ tot C volledig, D voor de helft, E, F of geen EPC niet. Vanaf 1 oktober 2023 een correctiefactor (decreet van 2023, nakijken). |
 | [addons/vme_rentmeester/models/rent_rules.py](../../addons/vme_rentmeester/models/rent_rules.py#L47) | 47 | Brusselse ordonnantie van 13 oktober 2022 (indexering volgens EPB) | verjaardagen van 14 oktober 2022 tot en met 13 oktober 2023: label A tot D volledig, E voor de helft, F, G of geen EPB niet. Daarna een correctiefactor (ordonnantie van 2023, nakijken). |
@@ -178,3 +183,4 @@ Aantal punten: 101.
 | [addons/vme_rentmeester/models/rent_rules.py](../../addons/vme_rentmeester/models/rent_rules.py#L94) | 94 | art. 16 VWHD, art. 237 BHC, art. 55 Waals decreet 15-03-2018 | een contract van negen jaar eindigt met een opzeg van de verhuurder zes maanden of van de huurder drie maanden vóór het einde; anders loopt het telkens drie jaar door. |
 | [addons/vme_rentmeester/models/rent_rules.py](../../addons/vme_rentmeester/models/rent_rules.py#L195) | 195 | art. 16 VWHD, art. 237 BHC, art. 55 Waals decreet 15-03-2018 | de opzegtermijn begint de eerste dag van de maand na de opzeg. |
 | [addons/vme_rentmeester/models/rent_settlement.py](../../addons/vme_rentmeester/models/rent_settlement.py#L56) | 56 | art. 1728ter oud BW, art. 35 VWHD, art. 221 BHC, art. 32 Waals decreet 15-03-2018 | alleen werkelijke kosten worden afgerekend, met de stukken; forfaitaire lasten worden nooit afgerekend. |
+| [addons/vme_rentmeester/models/res_company.py](../../addons/vme_rentmeester/models/res_company.py#L15) | 15 | KB 29 juni 2018 (Code van plichtenleer van de vastgoedmakelaars), nakijken welk artikel - | gelden van derden staan op een aparte derdenrekening (rubriekrekening), niet op de eigen rekening van het kantoor. |

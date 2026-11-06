@@ -11,6 +11,8 @@ from dateutil.relativedelta import relativedelta
 from odoo import api, models
 from odoo.fields import Command
 
+from odoo.addons.vme_belgie.demo_data.vme_demo_data import fake_iban
+
 from ..models import rent_rules
 
 OFFICE = {"name": "Rentmeester Voorbeeld BV", "company_registry": "0000.000.394", "street": "Huurlaan 8",
@@ -36,6 +38,19 @@ DEMO_TODAY = date(2026, 11, 5)
 HISTORY_YEAR = 2026
 HISTORY_MONTHS = range(1, 11)  # January to October 2026 are invoiced and paid
 UNPAID_RENT = {("Huurder Linde A7", 10)}  # one open month, to show an arrear
+
+# Management mandates per lease (by tenant): the fee of the rental agent and the landlord's account.
+OFFICE_ACCOUNT = 3001
+DEMO_MANDATES = {
+    "Huurder Linde A2": {"fee_type": "percent", "fee_percent": 7.0, "account": 3011},
+    "Huurder Linde A7": {"fee_type": "percent", "fee_percent": 6.0, "fee_on_charges": True, "account": 3012},
+    "Huurder Beuken B23": {"fee_type": "fixed", "fee_amount": 65.0, "account": 3013},
+}
+MANDATE_START = date(2026, 1, 1)
+# A boiler repair the office paid for the landlord of Linde A2, deducted in September.
+DEMO_COST = {"tenant": "Huurder Linde A2", "supplier": "Sanitair Voorbeeld BV", "date": date(2026, 9, 14),
+             "amount": 242.0, "ref": "Herstelling boiler appartement A2"}
+REMITTED_MONTHS = range(1, 10)  # January to September transferred; October is a draft for the demo
 
 
 class VmeAssociation(models.Model):
@@ -108,7 +123,33 @@ class VmeAssociation(models.Model):
             contracts |= contract
 
         self.env["vme.rent.contract"]._demo_reminders(contracts)
+        self._load_demo_rent_mandates(office, contracts)
         return contracts
+
+    @api.model
+    def _load_demo_rent_mandates(self, office, contracts):
+        """Third-party account of the office, the landlords' accounts and a mandate per landlord."""
+        Bank = self.env["res.partner.bank"]
+        banks = Bank.create({"acc_number": fake_iban(OFFICE_ACCOUNT), "partner_id": office.partner_id.id})
+        office.rent_bank_id = banks
+        for contract in contracts:
+            spec = dict(DEMO_MANDATES.get(contract.tenant_id.name, {}))
+            if not spec or contract.mandate_id:
+                continue
+            bank = Bank.create({"acc_number": fake_iban(spec.pop("account")), "partner_id": contract.landlord_id.id})
+            banks |= bank
+            mandate = self.env["vme.rent.mandate"].create({
+                **spec, "landlord_id": contract.landlord_id.id, "company_id": office.id,
+                "date_start": MANDATE_START, "partner_bank_id": bank.id,
+            })
+            contract.mandate_id = mandate
+        # The office gets its chart of accounts (and VAT) at the commit: fill in the VAT of the fee then.
+        mandates = contracts.mandate_id
+        self.env.cr.precommit.add(lambda: mandates.filtered(lambda m: not m.fee_tax_id).write(
+            {"fee_tax_id": office._rent_fee_tax().id}))
+        # Odoo only lets a person with the right permissions trust bank accounts, never the system user.
+        if all(bank._user_can_trust() for bank in banks):
+            banks.allow_out_payment = True
 
     @api.model
     def _load_demo_rent_history(self):
@@ -132,6 +173,39 @@ class VmeAssociation(models.Model):
                     active_model="account.move", active_ids=paid.ids,
                 ).create({"journal_id": journal.id, "payment_date": first + timedelta(days=3),
                           "group_payment": False}).action_create_payments()
+        self._load_demo_remittances(contracts, journal)
+
+    @api.model
+    def _load_demo_remittances(self, contracts, journal):
+        """A cost paid for a landlord, January to September transferred, October ready to confirm."""
+        office = contracts.company_id
+        contract = contracts.filtered(lambda c: c.tenant_id.name == DEMO_COST["tenant"])
+        supplier = self.env["res.partner"].create({"name": DEMO_COST["supplier"], "is_company": True,
+                                                   "country_id": self.env.ref("base.be").id})
+        bill = self.env["account.move"].with_company(office).create({
+            "move_type": "in_invoice", "partner_id": supplier.id, "invoice_date": DEMO_COST["date"],
+            "ref": DEMO_COST["ref"], "rent_contract_id": contract.id,
+            "invoice_line_ids": [Command.create({
+                "name": DEMO_COST["ref"], "price_unit": DEMO_COST["amount"], "tax_ids": [Command.clear()],
+                "account_id": office._rent_account().id, "rent_line_type": "cost",
+                "analytic_distribution": {str(contract.analytic_account_id.id): 100},
+            })],
+        })
+        bill.action_post()
+        Remittance = self.env["vme.rent.remittance"]
+        for month in REMITTED_MONTHS:
+            first = date(HISTORY_YEAR, month, 1)
+            day = first + relativedelta(months=1, days=4)  # transferred on the 5th of the next month
+            remittances = Remittance._create_for_month(first, office)
+            remittances.with_context(rent_remittance_date=day).action_confirm()
+            remittances.action_approve_payout()
+            payouts = remittances.payout_move_id.filtered(lambda m: m.payment_state != "paid")
+            if payouts:
+                self.env["account.payment.register"].with_company(office).with_context(
+                    active_model="account.move", active_ids=payouts.ids,
+                ).create({"journal_id": journal.id, "payment_date": day,
+                          "group_payment": False}).action_create_payments()
+        Remittance._create_for_month(date(HISTORY_YEAR, 10, 1), office)
 
 
 class VmeRentContract(models.Model):
