@@ -250,6 +250,29 @@
                     </div>
                 </div>
 
+                <!-- Yearly cycle (step 28) -->
+                <div class="col-lg-6" t-if="cycle_steps is not None">
+                    <div class="card h-100">
+                        <div class="card-header fw-bold">Jaarcyclus</div>
+                        <div class="card-body">
+                            <p t-if="not cycle_steps" class="text-muted mb-0">Geen open stappen in de jaarcyclus.</p>
+                            <table t-else="" class="table table-sm o_vme_card_table mb-0">
+                                <thead><tr><th>Stap</th><th>Uiterlijk</th><th>Status</th></tr></thead>
+                                <tbody>
+                                    <tr t-foreach="cycle_steps" t-as="rec" t-att-class="'table-danger' if rec._is_late(today) else ''">
+                                        <td><t t-call="vme_belgie.card_link"><t t-set="record" t-value="rec"/><t t-set="label" t-value="False"/></t></td>
+                                        <td><t t-out="rec.date_deadline" t-options="{'widget': 'date'}"/></td>
+                                        <td>
+                                            <t t-if="rec._is_late(today)">Te laat</t>
+                                            <t t-else="" t-out="selection_label(rec, 'state')"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Inspections -->
                 <div class="col-lg-6">
                     <div class="card h-100">

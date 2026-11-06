@@ -30,6 +30,7 @@ Interne documentatie voor wie aan de module `vme_belgie` werkt. De gebruikersdoc
 | [aanvragen.md](aanvragen.md) | Aanvragen van bewoners: intake, verificatie, bestelling, sleutelregister, privé-aanrekening en koppelplaatsen (stap 19) |
 | [gebouwkaart.md](gebouwkaart.md) | Gebouwkaart, budget per rekening en sleutel, budgetopvolging, kapitalen, signalen, portefeuille, leverancierskaart (stap 22) |
 | [financiele-rapporten.md](financiele-rapporten.md) | Balans en resultatenrekening per VME volgens het minimumrekeningstelsel (KB 12 juli 2012), koppeling van de rekeningen, niet-aftrekbare btw (stap 26) |
+| [jaarcyclus.md](jaarcyclus.md) | Jaarkalender per VME met vaste stappen en termijnen, cron die concepten en taken klaarzet, signaal in de portefeuille, haken voor afsluiting en mandaat van de syndicus (stap 28) |
 | [migratie.md](migratie.md) | Overstap uit een ander pakket: importformaat, proefrun, openingsboeking, omzetters (stap 13) |
 | [rentmeester.md](rentmeester.md) | Module `vme_rentmeester`: huurcontracten, huurfacturen, indexering met de indexstop per gewest, afrekening aan huurders (stap 25), doorstorting aan verhuurders en ereloon (stap 25b) |
 | [rentmeester.md](rentmeester.md) | Module `vme_rentmeester`: huurcontracten, huurfacturen, indexering met de indexstop per gewest, afrekening aan huurders (stap 25) |

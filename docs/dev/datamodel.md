@@ -77,6 +77,7 @@ erDiagram
 | `vme.budget.line` | Budget per rekening en sleutel | `budget_id`, `account_id`, `key_id` (optioneel), `name`, `amount`; op `vme.budget` berekend `lines_total` en `unassigned_amount`. Zie [gebouwkaart.md](gebouwkaart.md). |
 | `vme.budget.analysis` | Budgetopvolging (SQL-view) | Budgetregels, niet-ingedeeld budget en werkelijke kosten per VME, jaar, rekening en sleutel; `budget_to_date` gespreid per dag tot vandaag. |
 | `vme.capital.movement` | Verloop kapitalen (SQL-view) | Provisies en gebruik van werk- en reservekapitaal per datum, voor een gecumuleerde lijngrafiek. |
+| `vme.cycle.step` | Stap in de jaarcyclus | Uniek per VME, jaar, `code` en `sequence` (nummer van de provisieoproep); `date_ready`, `date_deadline`, `state` (gepland, klaargezet, afgerond, niet van toepassing), `user_id`, `res_model`/`res_id` van het concept; berekend `is_late`. Op `vme.association`: `cycle_start_date`, `cycle_user_id`, `cycle_current_step`, `cycle_late_count`. Zie [jaarcyclus.md](jaarcyclus.md). |
 | `vme.migration` | Overstap uit een ander pakket | `attachment_ids` (exportbestanden), `source_format`, `state` (nieuw, proefrun gedaan, geïmporteerd), `report_html`, `error_count`, `warning_count`, `transition_date`, `association_id`, `opening_move_id`. Zie [migratie.md](migratie.md). |
 
 Wizards (transient): `vme.provision.call.wizard`, `vme.annual.statement.wizard` en `vme.financial.statements.wizard` (balans en resultatenrekening, stap 26), elk met een HTML-voorbeeld (`preview_html`).

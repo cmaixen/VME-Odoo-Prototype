@@ -8,3 +8,4 @@ from . import vme_demo_contracts
 from . import vme_demo_requests
 from . import vme_demo_payments
 from . import vme_demo_online
+from . import vme_demo_cycle

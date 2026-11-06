@@ -3,7 +3,7 @@
 Automatisch gemaakt door `python3 tools/legal_checks.py`; niet met de hand bewerken.
 Elke rij is een wettelijke regel in de code die nog juridisch gevalideerd moet worden.
 
-Aantal punten: 110.
+Aantal punten: 116.
 
 ## Per bron
 
@@ -32,12 +32,13 @@ Aantal punten: 110.
 - **art. 26 Waals decreet van 15 maart 2018**: [rent_rules.py:73](../../addons/vme_rentmeester/models/rent_rules.py#L73)
 - **art. 3 en 21 VWHD, art. 238 BHC, art. 55 Waals decreet 15-03-2018**: [rent_rules.py:91](../../addons/vme_rentmeester/models/rent_rules.py#L91)
 - **art. 3.85 §1 BW**: [vme_key.py:34](../../addons/vme_belgie/models/vme_key.py#L34), [vme_key.py:92](../../addons/vme_belgie/models/vme_key.py#L92), [vme_migration.py:739](../../addons/vme_belgie/models/vme_migration.py#L739)
-- **art. 3.86 §3 BW**: [vme_annual_statement.py:35](../../addons/vme_belgie/models/vme_annual_statement.py#L35), [vme_budget.py:5](../../addons/vme_belgie/models/vme_budget.py#L5), [vme_building_card.py:156](../../addons/vme_belgie/models/vme_building_card.py#L156), [vme_migration.py:445](../../addons/vme_belgie/models/vme_migration.py#L445)
+- **art. 3.86 §3 BW**: [vme_annual_statement.py:35](../../addons/vme_belgie/models/vme_annual_statement.py#L35), [vme_budget.py:5](../../addons/vme_belgie/models/vme_budget.py#L5), [vme_building_card.py:159](../../addons/vme_belgie/models/vme_building_card.py#L159), [vme_cycle.py:232](../../addons/vme_belgie/models/vme_cycle.py#L232), [vme_migration.py:445](../../addons/vme_belgie/models/vme_migration.py#L445)
 - **art. 3.86 §3 BW en KB 12 juli 2012 (minimum chart of accounts)**: [vme_works.py:449](../../addons/vme_belgie/models/vme_works.py#L449)
 - **art. 3.87 §1 BW**: [vme_assembly_meeting.py:489](../../addons/vme_belgie/models/vme_assembly_meeting.py#L489), [vme_assembly_online.py:17](../../addons/vme_belgie/models/vme_assembly_online.py#L17), [vme_assembly_online.py:235](../../addons/vme_belgie/models/vme_assembly_online.py#L235), [vme_assembly_online.py:303](../../addons/vme_belgie/models/vme_assembly_online.py#L303)
 - **art. 3.87 §10 BW**: [vme_assembly_meeting.py:234](../../addons/vme_belgie/models/vme_assembly_meeting.py#L234), [vme_assembly_online.py:198](../../addons/vme_belgie/models/vme_assembly_online.py#L198)
-- **art. 3.87 §2 BW**: [vme_assembly.py:13](../../addons/vme_belgie/models/vme_assembly.py#L13), [vme_assembly.py:38](../../addons/vme_belgie/models/vme_assembly.py#L38), [vme_assembly.py:247](../../addons/vme_belgie/models/vme_assembly.py#L247), [vme_building_card.py:192](../../addons/vme_belgie/models/vme_building_card.py#L192)
-- **art. 3.87 §3 BW**: [vme_assembly.py:17](../../addons/vme_belgie/models/vme_assembly.py#L17), [vme_assembly.py:42](../../addons/vme_belgie/models/vme_assembly.py#L42), [vme_assembly.py:234](../../addons/vme_belgie/models/vme_assembly.py#L234), [vme_assembly_meeting.py:170](../../addons/vme_belgie/models/vme_assembly_meeting.py#L170), [vme_communication.py:251](../../addons/vme_belgie/models/vme_communication.py#L251)
+- **art. 3.87 §12 BW**: [vme_cycle.py:40](../../addons/vme_belgie/models/vme_cycle.py#L40)
+- **art. 3.87 §2 BW**: [vme_assembly.py:13](../../addons/vme_belgie/models/vme_assembly.py#L13), [vme_assembly.py:38](../../addons/vme_belgie/models/vme_assembly.py#L38), [vme_assembly.py:247](../../addons/vme_belgie/models/vme_assembly.py#L247), [vme_building_card.py:202](../../addons/vme_belgie/models/vme_building_card.py#L202), [vme_cycle.py:471](../../addons/vme_belgie/models/vme_cycle.py#L471)
+- **art. 3.87 §3 BW**: [vme_assembly.py:17](../../addons/vme_belgie/models/vme_assembly.py#L17), [vme_assembly.py:42](../../addons/vme_belgie/models/vme_assembly.py#L42), [vme_assembly.py:234](../../addons/vme_belgie/models/vme_assembly.py#L234), [vme_assembly_meeting.py:170](../../addons/vme_belgie/models/vme_assembly_meeting.py#L170), [vme_communication.py:251](../../addons/vme_belgie/models/vme_communication.py#L251), [vme_cycle.py:457](../../addons/vme_belgie/models/vme_cycle.py#L457)
 - **art. 3.87 §5 BW**: [vme_assembly_meeting.py:54](../../addons/vme_belgie/models/vme_assembly_meeting.py#L54), [vme_assembly_meeting.py:111](../../addons/vme_belgie/models/vme_assembly_meeting.py#L111)
 - **art. 3.87 §6 BW**: [vme_assembly_meeting.py:124](../../addons/vme_belgie/models/vme_assembly_meeting.py#L124), [vme_assembly_meeting.py:287](../../addons/vme_belgie/models/vme_assembly_meeting.py#L287)
 - **art. 3.87 §6-7 BW**: [vme_assembly_online.py:298](../../addons/vme_belgie/models/vme_assembly_online.py#L298)
@@ -46,12 +47,13 @@ Aantal punten: 110.
 - **art. 3.88 §1, 1°, c) BW**: [vme_works.py:11](../../addons/vme_belgie/models/vme_works.py#L11), [vme_works.py:195](../../addons/vme_belgie/models/vme_works.py#L195)
 - **art. 3.88 §1-3 BW**: [vme_assembly_meeting.py:8](../../addons/vme_belgie/models/vme_assembly_meeting.py#L8)
 - **art. 3.88 §3 BW**: [vme_assembly_meeting.py:304](../../addons/vme_belgie/models/vme_assembly_meeting.py#L304)
+- **art. 3.89 §1 BW**: [vme_cycle.py:545](../../addons/vme_belgie/models/vme_cycle.py#L545)
 - **art. 3.89 §5 BW**: [account_bank_statement_line.py:165](../../addons/vme_belgie/models/account_bank_statement_line.py#L165), [account_move.py:57](../../addons/vme_belgie/models/account_move.py#L57), [vme_association.py:15](../../addons/vme_belgie/models/vme_association.py#L15), [vme_association.py:34](../../addons/vme_belgie/models/vme_association.py#L34), [vme_association.py:175](../../addons/vme_belgie/models/vme_association.py#L175), [vme_association.py:198](../../addons/vme_belgie/models/vme_association.py#L198), [vme_contract.py:39](../../addons/vme_belgie/models/vme_contract.py#L39), [vme_financial_statements.py:262](../../addons/vme_belgie/models/vme_financial_statements.py#L262), [vme_migration.py:621](../../addons/vme_belgie/models/vme_migration.py#L621), [vme_provision_call_wizard.py:115](../../addons/vme_belgie/wizard/vme_provision_call_wizard.py#L115)
 - **art. 3.89 §5, 12° BW**: [vme_document.py:17](../../addons/vme_belgie/models/vme_document.py#L17)
 - **art. 3.90 §1 BW**: [vme_council.py:16](../../addons/vme_belgie/models/vme_council.py#L16), [vme_council.py:104](../../addons/vme_belgie/models/vme_council.py#L104)
 - **art. 3.90 §1 en art. 3.91 BW**: [vme_council.py:35](../../addons/vme_belgie/models/vme_council.py#L35)
 - **art. 3.90 §3 BW**: [vme_payment.py:69](../../addons/vme_belgie/models/vme_payment.py#L69)
-- **art. 3.91 BW**: [vme_council.py:270](../../addons/vme_belgie/models/vme_council.py#L270)
+- **art. 3.91 BW**: [vme_council.py:270](../../addons/vme_belgie/models/vme_council.py#L270), [vme_cycle.py:542](../../addons/vme_belgie/models/vme_cycle.py#L542)
 - **art. 3.93 BW**: [vme_request.py:701](../../addons/vme_belgie/models/vme_request.py#L701)
 - **art. 3.93 §4 BW**: [vme_assembly_meeting.py:214](../../addons/vme_belgie/models/vme_assembly_meeting.py#L214)
 - **art. 3.94 BW**: [account_move.py:156](../../addons/vme_belgie/models/account_move.py#L156), [account_move.py:260](../../addons/vme_belgie/models/account_move.py#L260)
@@ -119,8 +121,8 @@ Aantal punten: 110.
 | [addons/vme_belgie/models/vme_association.py](../../addons/vme_belgie/models/vme_association.py#L175) | 175 | art. 3.89 §5 BW | working and reserve capital must not share an account. |
 | [addons/vme_belgie/models/vme_association.py](../../addons/vme_belgie/models/vme_association.py#L198) | 198 | art. 3.89 §5 BW | working and reserve capital on separate bank accounts. |
 | [addons/vme_belgie/models/vme_budget.py](../../addons/vme_belgie/models/vme_budget.py#L5) | 5 | art. 3.86 §3 BW | yearly reserve fund contribution of at least 5% of the ordinary common charges of the previous year, unless the general assembly decides otherwise with a 4/5 majority. |
-| [addons/vme_belgie/models/vme_building_card.py](../../addons/vme_belgie/models/vme_building_card.py#L156) | 156 | art. 3.86 §3 BW | yearly reserve contribution of at least 5% of the ordinary common charges of the previous year, unless the general assembly decided otherwise with 4/5. |
-| [addons/vme_belgie/models/vme_building_card.py](../../addons/vme_belgie/models/vme_building_card.py#L192) | 192 | art. 3.87 §2 BW | the ordinary general assembly is held every year within the fifteen-day period fixed in the rules of co-ownership. |
+| [addons/vme_belgie/models/vme_building_card.py](../../addons/vme_belgie/models/vme_building_card.py#L159) | 159 | art. 3.86 §3 BW | yearly reserve contribution of at least 5% of the ordinary common charges of the previous year, unless the general assembly decided otherwise with 4/5. |
+| [addons/vme_belgie/models/vme_building_card.py](../../addons/vme_belgie/models/vme_building_card.py#L202) | 202 | art. 3.87 §2 BW | the ordinary general assembly is held every year within the fifteen-day period fixed in the rules of co-ownership. |
 | [addons/vme_belgie/models/vme_collection.py](../../addons/vme_belgie/models/vme_collection.py#L30) | 30 | wet 5 mei 1865 betreffende de lening tegen interest | the legal interest rate in civil matters is published every year in the Belgisch Staatsblad; update the parameter each January. |
 | [addons/vme_belgie/models/vme_collection.py](../../addons/vme_belgie/models/vme_collection.py#L48) | 48 | art. XIX.4 §2 WER (wet 4 mei 2023) | scale for consumer debts: up to 150 euro: 20 euro; 150.01 to 500: 30 euro + 10% above 150; above 500: 65 euro + 5% above 500, with a maximum of 2000 euro. |
 | [addons/vme_belgie/models/vme_collection.py](../../addons/vme_belgie/models/vme_collection.py#L109) | 109 | art. XIX.2 §1 WER | costs only after a free first reminder and a term of at least 14 calendar days; we use the same term between every level. |
@@ -138,6 +140,12 @@ Aantal punten: 110.
 | [addons/vme_belgie/models/vme_council.py](../../addons/vme_belgie/models/vme_council.py#L35) | 35 | art. 3.90 §1 en art. 3.91 BW | council members and the auditor are appointed by the general assembly for one year, renewable; the default end date follows that rule. |
 | [addons/vme_belgie/models/vme_council.py](../../addons/vme_belgie/models/vme_council.py#L104) | 104 | art. 3.90 §1 BW | the council consists only of co-owners. The auditor may be a co-owner or someone from outside (art. 3.91 BW), so no check there. |
 | [addons/vme_belgie/models/vme_council.py](../../addons/vme_belgie/models/vme_council.py#L270) | 270 | art. 3.91 BW | every year the general assembly appoints an auditor. |
+| [addons/vme_belgie/models/vme_cycle.py](../../addons/vme_belgie/models/vme_cycle.py#L40) | 40 | art. 3.87 §12 BW | the syndic sends the minutes to the co-owners within thirty days after the general assembly. |
+| [addons/vme_belgie/models/vme_cycle.py](../../addons/vme_belgie/models/vme_cycle.py#L232) | 232 | art. 3.86 §3 BW | yearly reserve contribution of at least 5% of the ordinary common charges of the previous year, unless the general assembly decides otherwise with 4/5. |
+| [addons/vme_belgie/models/vme_cycle.py](../../addons/vme_belgie/models/vme_cycle.py#L457) | 457 | art. 3.87 §3 BW | convocation at least fifteen days before the meeting. |
+| [addons/vme_belgie/models/vme_cycle.py](../../addons/vme_belgie/models/vme_cycle.py#L471) | 471 | art. 3.87 §2 BW | the ordinary assembly is held within its fifteen-day period. |
+| [addons/vme_belgie/models/vme_cycle.py](../../addons/vme_belgie/models/vme_cycle.py#L542) | 542 | art. 3.91 BW | every year the general assembly appoints an auditor. |
+| [addons/vme_belgie/models/vme_cycle.py](../../addons/vme_belgie/models/vme_cycle.py#L545) | 545 | art. 3.89 §1 BW | the syndic is appointed for at most three years, renewable by the general assembly. |
 | [addons/vme_belgie/models/vme_damage.py](../../addons/vme_belgie/models/vme_damage.py#L10) | 10 | art. 74 §1 wet 4 april 2014 betreffende de verzekeringen | the insured reports a claim as soon as reasonably possible, and in any case within the term set in the policy. |
 | [addons/vme_belgie/models/vme_damage.py](../../addons/vme_belgie/models/vme_damage.py#L14) | 14 | art. 88 §1 wet 4 april 2014 betreffende de verzekeringen | a claim against the insurer lapses three years after the event that gives rise to it. |
 | [addons/vme_belgie/models/vme_document.py](../../addons/vme_belgie/models/vme_document.py#L17) | 17 | art. 3.89 §5, 12° BW | the syndic gives every co-owner access to the documents of the co-ownership, also via a website. Which documents exactly is not yet validated; minutes go to every co-owner within 30 days (art. 3.87 §10 BW). |

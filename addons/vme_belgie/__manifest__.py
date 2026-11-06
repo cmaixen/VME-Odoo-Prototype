@@ -67,6 +67,7 @@
         "views/vme_building_card_views.xml",
         "wizard/vme_financial_statements_wizard_views.xml",
         "report/vme_financial_statements_report.xml",
+        "views/vme_cycle_views.xml",
     ],
     "installable": True,
     "application": True,
