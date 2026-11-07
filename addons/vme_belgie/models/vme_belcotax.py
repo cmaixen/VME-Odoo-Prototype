@@ -2,7 +2,8 @@
 
 The staff member marks a supplier as "281.50-plichtig" with a category. Per VME and year the overview
 adds up what the VME paid on the posted bills of those suppliers, warns about missing data and, once a
-staff member has checked it, gives an XML file to upload in Belcotax-on-web. Nothing is filed by Odoo.
+staff member has checked it, gives a file to upload in Belcotax-on-web: XML up to income year 2025, JSON
+Lines from 2026 (the new Belcotax-on-web). Nothing is filed by Odoo.
 """
 import base64
 from datetime import date
@@ -10,7 +11,10 @@ from datetime import date
 from odoo import api, fields, models
 from odoo.exceptions import UserError
 
-from .belcotax_xml import Debtor, Fiche, build_belcotax_xml, digits, kbo_is_valid, national_number_is_valid
+from . import belcotax_jsonl, belcotax_xml
+from .belcotax_jsonl import Contact, build_belcotax_jsonl, uses_jsonl
+from .belcotax_xml import (Debtor, Fiche, build_belcotax_xml, digits, kbo_is_valid, national_number_is_valid,
+                           rsz_country)
 from .vme_access import check_not_auditor
 
 # LEGAL-CHECK: art. 57, 1° WIB 92 - commissions, brokerage, fees, attendance fees, benefits in kind and
@@ -28,9 +32,9 @@ BELCOTAX_THRESHOLD = 250.0
 
 def belcotax_deadline(year):
     """Last day to upload the forms of an income year."""
-    # LEGAL-CHECK: art. 57 WIB 92 and art. 30 KB/WIB 92 - the FOD Financiën sets the deadline each year
-    # (for 281.50 recently around 30 June of the following year); check it in Belcotax-on-web.
-    return date(year + 1, 6, 30)
+    # LEGAL-CHECK: brochure Belcotax-on-web inkomsten 2025, 1 (indieningstermijnen) - the fiches 281.50 must
+    # arrive "ten laatste op 29 juni" of the following year; the FOD Financiën confirms it every year.
+    return date(year + 1, 6, 29)
 
 
 class ResPartner(models.Model):
@@ -45,7 +49,8 @@ class ResPartner(models.Model):
     vme_belcotax_profession = fields.Char(string="Beroep (281.50)", help="Het beroep dat op de fiche komt.")
     vme_national_number = fields.Char(
         string="Rijksregisternummer", groups="account.group_account_invoice",
-        help="Alleen voor een natuurlijke persoon die een fiche 281.50 krijgt.")
+        help="Alleen voor een natuurlijke persoon die een fiche 281.50 krijgt. Een zelfstandige met een vrij "
+             "beroep heeft daarnaast een ondernemingsnummer: vul het in bij btw-nummer of KBO.")
 
 
 class VmeBelcotaxStatement(models.Model):
@@ -64,7 +69,7 @@ class VmeBelcotaxStatement(models.Model):
         [("draft", "Na te kijken"), ("checked", "Nagekeken"), ("filed", "Opgeladen in Belcotax")],
         string="Status", default="draft", required=True, tracking=True, copy=False)
     line_ids = fields.One2many("vme.belcotax.line", "statement_id", string="Verkrijgers", copy=False)
-    deadline = fields.Date(string="Indienen uiterlijk", compute="_compute_deadline", store=True)
+    deadline = fields.Date(string="Indienen uiterlijk", compute="_compute_deadline")
     threshold = fields.Monetary(string="Drempel per verkrijger", compute="_compute_threshold",
                                 currency_field="currency_id")
     fiche_count = fields.Integer(string="Fiches", compute="_compute_totals")
@@ -75,6 +80,8 @@ class VmeBelcotaxStatement(models.Model):
     filed_date = fields.Date(string="Opgeladen op", copy=False, tracking=True)
     xml_file = fields.Binary(string="Belcotax-bestand", attachment=True, readonly=True, copy=False)
     xml_filename = fields.Char(readonly=True, copy=False)
+    file_format = fields.Char(string="Formaat", compute="_compute_file_format")
+    file_warning = fields.Text(string="Waarschuwing bestand", compute="_compute_file_warning")
 
     _unique_year = models.Constraint(
         "UNIQUE (association_id, year)", "Deze VME heeft al een overzicht 281.50 voor dat jaar.")
@@ -91,6 +98,32 @@ class VmeBelcotaxStatement(models.Model):
 
     def _compute_threshold(self):
         self.threshold = BELCOTAX_THRESHOLD
+
+    @api.depends("year")
+    def _compute_file_format(self):
+        for statement in self:
+            statement.file_format = (
+                self.env._("JSON Lines (nieuwe Belcotax-on-web)") if uses_jsonl(statement.year)
+                else self.env._("XML (Belcotax-on-web tot inkomsten 2025)"))
+
+    def _compute_file_warning(self):
+        """Missing data of the VME, the sender or the contact person: a warning, the file can still be made."""
+        for statement in self:
+            problems = []
+            debtor = statement._belcotax_debtor()
+            if not kbo_is_valid(debtor.kbo):
+                problems.append(self.env._("Het ondernemingsnummer van de VME ontbreekt of klopt niet."))
+            if not (debtor.street and debtor.zip and debtor.city):
+                problems.append(self.env._("Het adres van de VME is onvolledig."))
+            if uses_jsonl(statement.year):
+                if not statement._belcotax_contact().email:
+                    problems.append(self.env._("Geen e-mailadres voor de contactpersoon (uw gebruiker of het kantoor)."))
+            else:
+                sender = statement._belcotax_sender()
+                if not (sender.phone and sender.email and kbo_is_valid(sender.kbo)):
+                    problems.append(self.env._(
+                        "Telefoon, e-mailadres of ondernemingsnummer van de afzender (%s) ontbreekt.", sender.name))
+            statement.file_warning = "\n".join(problems) or False
 
     @api.depends("line_ids.amount_total", "line_ids.below_threshold", "line_ids.warning")
     def _compute_totals(self):
@@ -145,7 +178,9 @@ class VmeBelcotaxStatement(models.Model):
             "country_id": partner.country_id.id,
             "is_company": partner.is_company,
             "national_number": partner.sudo().vme_national_number if not partner.is_company else False,
-            "kbo": (partner.company_registry or digits(partner.vat)) if partner.is_company else False,
+            "kbo": partner.company_registry or (digits(partner.vat) if (partner.vat or "")[:2] in ("BE", "")
+                                                else False),
+            "vat": partner.vat,
             "profession": partner.vme_belcotax_profession,
             "bill_ids": [fields.Command.set(bills.ids)],
         }
@@ -194,35 +229,72 @@ class VmeBelcotaxStatement(models.Model):
         self.ensure_one()
         fiches = []
         for sequence, line in enumerate(self.line_ids.filtered(lambda l: not l.below_threshold), start=1):
-            country = line.country_id
+            beneficiary = f"partner-{line.partner_id.id}" if line.partner_id else f"line-{line.id}"
             fiches.append(Fiche(
                 sequence=sequence, name=line.name, street=line.street or "", zip=line.zip or "",
-                city=line.city or "", is_company=line.is_company, national_number=line.national_number or "",
-                kbo=line.kbo or "", profession=line.profession or "",
-                country_code="00000" if not country or country.code == "BE" else country.code,
+                city=line.city or "", is_company=line.is_company, national_number=line.sudo().national_number or "",
+                kbo=line.kbo or "", vat=line.vat or "", profession=line.profession or "",
+                country=line.country_id.code or "BE",
                 amounts={category: line[f"amount_{category}"] for category, _label in BELCOTAX_CATEGORIES},
+                # Same VME, year and beneficiary give the same key, so a corrected upload replaces the fiche.
+                key=f"vme-28150-{self.year}-{self.company_id.id}-{beneficiary}",
+                beneficiary_key=f"vme-{beneficiary}",
             ))
         return fiches
 
-    def _belcotax_xml(self):
-        self.ensure_one()
-        company = self.company_id
-        debtor = Debtor(
-            name=company.name, street=", ".join(filter(None, [company.street, company.street2])),
-            zip=company.zip or "", city=company.city or "", kbo=company.company_registry or digits(company.vat),
-            contact=self.env.user.name, email=company.email or "", phone=company.phone or "",
+    @api.model
+    def _belcotax_party(self, company, key=""):
+        return Debtor(
+            name=company.name or "", street=", ".join(filter(None, [company.street, company.street2])),
+            zip=company.zip or "", city=company.city or "",
+            kbo=company.company_registry or digits(company.vat), country=company.country_id.code or "BE",
+            contact=self.env.user.name, email=self.env.user.email or company.email or "",
+            phone=company.phone or "", key=key,
         )
-        return build_belcotax_xml(self.year, debtor, self._belcotax_fiches(), fields.Date.context_today(self))
 
-    def action_download_xml(self):
+    def _belcotax_debtor(self):
+        self.ensure_one()
+        return self._belcotax_party(self.company_id, key=f"vme-debtor-{self.company_id.id}")
+
+    def _belcotax_sender(self):
+        """Who uploads the XML: the office of the syndic of the VME, or the VME itself without one."""
+        self.ensure_one()
+        office = self.association_id.current_agreement_id.syndic_company_id or self.env["res.company"].sudo().search(
+            [("is_syndic_office", "=", True)], limit=1)
+        return self._belcotax_party(office.sudo() or self.company_id)
+
+    def _belcotax_contact(self):
+        self.ensure_one()
+        sender = self._belcotax_sender()
+        return Contact(key=f"vme-contact-{self.env.user.id}", name=self.env.user.name,
+                       email=self.env.user.email or sender.email, phone=sender.phone)
+
+    def _belcotax_file(self):
+        """The file content and name; it is checked against the official schemas first."""
+        self.ensure_one()
+        debtor, fiches = self._belcotax_debtor(), self._belcotax_fiches()
+        number = digits(debtor.kbo) or self.id
+        if uses_jsonl(self.year):
+            data = build_belcotax_jsonl(self.year, debtor, self._belcotax_contact(), fiches)
+            errors, filename = belcotax_jsonl.validate(data), f"belcotax_28150_{self.year}_{number}.jsonl"
+        else:
+            data = build_belcotax_xml(self.year, debtor, fiches, fields.Date.context_today(self),
+                                      sender=self._belcotax_sender())
+            errors, filename = belcotax_xml.validate(data), f"belcotax_28150_{self.year}_{number}.xml"
+        if errors:
+            raise UserError(self.env._("Het bestand voldoet niet aan het schema van Belcotax-on-web: %s",
+                                       "; ".join(errors)))
+        return data, filename
+
+    def action_download_file(self):
         self.ensure_one()
         check_not_auditor(self.env)
         if self.state == "draft":
             raise UserError(self.env._("Kijk het overzicht eerst na: pas daarna is het bestand beschikbaar."))
         if not self.fiche_count:
             raise UserError(self.env._("Geen enkele verkrijger komt boven de drempel: er zijn geen fiches nodig."))
-        filename = f"belcotax_28150_{self.year}_{digits(self.company_id.company_registry) or self.id}.xml"
-        self.write({"xml_file": base64.b64encode(self._belcotax_xml()), "xml_filename": filename})
+        data, filename = self._belcotax_file()
+        self.write({"xml_file": base64.b64encode(data), "xml_filename": filename})
         return {
             "type": "ir.actions.act_url",
             "url": f"/web/content/vme.belcotax.statement/{self.id}/xml_file/{filename}?download=true",
@@ -248,6 +320,7 @@ class VmeBelcotaxLine(models.Model):
     is_company = fields.Boolean(string="Rechtspersoon")
     national_number = fields.Char(string="Rijksregisternummer", groups="account.group_account_invoice")
     kbo = fields.Char(string="Ondernemingsnummer")
+    vat = fields.Char(string="Btw-nummer", help="Voor een buitenlands bedrijf zonder Belgisch ondernemingsnummer.")
     profession = fields.Char(string="Beroep")
     amount_commission = fields.Monetary(string="Commissies", currency_field="currency_id")
     amount_fees = fields.Monetary(string="Erelonen", currency_field="currency_id")
@@ -267,22 +340,35 @@ class VmeBelcotaxLine(models.Model):
             line.amount_total = line.amount_commission + line.amount_fees + line.amount_benefits + line.amount_expenses
             line.below_threshold = line.amount_total <= BELCOTAX_THRESHOLD
 
-    @api.depends("street", "zip", "city", "country_id", "is_company", "national_number", "kbo", "profession")
+    @api.depends("street", "zip", "city", "country_id", "is_company", "national_number", "kbo", "vat", "profession")
     def _compute_warning(self):
         """Missing or doubtful data: a warning for the staff member, never a blocking error."""
         for line in self.sudo():
             problems = []
             if not (line.street and line.zip and line.city):
                 problems.append(self.env._("Adres onvolledig."))
+            if not rsz_country(line.country_id.code):
+                problems.append(self.env._("Geen Belcotax-landcode voor %s: vul het land zelf aan in Belcotax-on-web.",
+                                           line.country_id.name))
+            # LEGAL-CHECK: brochure Belcotax-on-web inkomsten 2025 (2.011, 2.110) and Pre-opening (03.11.2026),
+            # 3.5 and 3.6 - the company number is required for a legal person; a natural person is identified
+            # by his national number (required for all fiches from 1 January 2028, law of 12 May 2024) and,
+            # with a liberal profession, his company number. A wrong number blocks the whole file.
             if line.is_company:
-                if not line.kbo:
-                    problems.append(self.env._("Ondernemingsnummer ontbreekt."))
-                elif line.country_id.code in (False, "BE") and not kbo_is_valid(line.kbo):
+                if line.country_id.code in (False, "BE"):
+                    if not line.kbo:
+                        problems.append(self.env._("Ondernemingsnummer ontbreekt."))
+                    elif not kbo_is_valid(line.kbo):
+                        problems.append(self.env._("Ondernemingsnummer klopt niet (controlegetal)."))
+                elif not (line.kbo or line.vat):
+                    problems.append(self.env._("Ondernemingsnummer of btw-nummer ontbreekt."))
+            else:
+                if not line.national_number:
+                    problems.append(self.env._("Rijksregisternummer ontbreekt."))
+                elif not national_number_is_valid(line.national_number):
+                    problems.append(self.env._("Rijksregisternummer klopt niet (controlegetal)."))
+                if line.kbo and not kbo_is_valid(line.kbo):
                     problems.append(self.env._("Ondernemingsnummer klopt niet (controlegetal)."))
-            elif not line.national_number:
-                problems.append(self.env._("Rijksregisternummer ontbreekt."))
-            elif not national_number_is_valid(line.national_number):
-                problems.append(self.env._("Rijksregisternummer klopt niet (controlegetal)."))
             if not line.profession:
                 problems.append(self.env._("Beroep ontbreekt."))
             line.warning = "\n".join(problems) or False

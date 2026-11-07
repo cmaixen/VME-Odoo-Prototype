@@ -3,7 +3,7 @@
 Automatisch gemaakt door `python3 tools/legal_checks.py`; niet met de hand bewerken.
 Elke rij is een wettelijke regel in de code die nog juridisch gevalideerd moet worden.
 
-Aantal punten: 146.
+Aantal punten: 154.
 
 ## Per bron
 
@@ -74,15 +74,14 @@ Aantal punten: 146.
 - **art. 3.94 §1, 2° en §2 BW**: [vme_sale_file.py:287](../../addons/vme_belgie/models/vme_sale_file.py#L287)
 - **art. 3.94 §1, 3° BW**: [vme_sale_file.py:279](../../addons/vme_belgie/models/vme_sale_file.py#L279)
 - **art. 3.94 §2 BW**: [vme_sale_file.py:12](../../addons/vme_belgie/models/vme_sale_file.py#L12)
-- **art. 30 KB/WIB 92 as amended by the KB of April 2022 (circular 2022/C/96)**: [vme_belcotax.py:24](../../addons/vme_belgie/models/vme_belcotax.py#L24)
+- **art. 30 KB/WIB 92 as amended by the KB of April 2022 (circular 2022/C/96)**: [vme_belcotax.py:28](../../addons/vme_belgie/models/vme_belcotax.py#L28)
 - **art. 34 Vlaams Woninghuurdecreet**: [rent_rules.py:67](../../addons/vme_rentmeester/models/rent_rules.py#L67)
 - **art. 37 Vlaams Woninghuurdecreet**: [rent_rules.py:80](../../addons/vme_rentmeester/models/rent_rules.py#L80)
 - **art. 37/2 Arbeidsovereenkomstenwet 3 juli 1978**: [vme_contract.py:32](../../addons/vme_belgie/models/vme_contract.py#L32)
 - **art. 45 §1 WBTW**: [account_chart_template.py:57](../../addons/vme_belgie/models/account_chart_template.py#L57)
 - **art. 5.231 BW**: [vme_communication.py:668](../../addons/vme_belgie/models/vme_communication.py#L668)
 - **art. 5.250 e.v. BW (schuldvergelijking)**: [rent_remittance.py:377](../../addons/vme_rentmeester/models/rent_remittance.py#L377)
-- **art. 57 WIB 92 and art. 30 KB/WIB 92**: [vme_belcotax.py:31](../../addons/vme_belgie/models/vme_belcotax.py#L31)
-- **art. 57, 1° WIB 92**: [vme_belcotax.py:16](../../addons/vme_belgie/models/vme_belcotax.py#L16), [vme_belcotax.py:116](../../addons/vme_belgie/models/vme_belcotax.py#L116)
+- **art. 57, 1° WIB 92**: [vme_belcotax.py:20](../../addons/vme_belgie/models/vme_belcotax.py#L20), [vme_belcotax.py:149](../../addons/vme_belgie/models/vme_belcotax.py#L149)
 - **art. 62 Waals decreet van 15 maart 2018**: [rent_rules.py:86](../../addons/vme_rentmeester/models/rent_rules.py#L86)
 - **art. 74 §1 wet 4 april 2014 betreffende de verzekeringen**: [vme_damage.py:12](../../addons/vme_belgie/models/vme_damage.py#L12)
 - **art. 85 Wet van 4 april 2014 betreffende de verzekeringen**: [vme_contract.py:23](../../addons/vme_belgie/models/vme_contract.py#L23)
@@ -92,6 +91,15 @@ Aantal punten: 146.
 - **art. XIX.2 §1 WER**: [vme_collection.py:114](../../addons/vme_belgie/models/vme_collection.py#L114), [vme_collection.py:435](../../addons/vme_belgie/models/vme_collection.py#L435)
 - **art. XIX.4 §1 WER**: [vme_collection.py:145](../../addons/vme_belgie/models/vme_collection.py#L145)
 - **art. XIX.4 §2 WER (wet 4 mei 2023)**: [vme_collection.py:48](../../addons/vme_belgie/models/vme_collection.py#L48)
+- **brochure Belcotax-on-web inkomsten 2025 (2.011, 2.110) and Pre-opening (03.11.2026),**: [vme_belcotax.py:353](../../addons/vme_belgie/models/vme_belcotax.py#L353)
+- **brochure Belcotax-on-web inkomsten 2025, 1 (indieningstermijnen)**: [vme_belcotax.py:35](../../addons/vme_belgie/models/vme_belcotax.py#L35)
+- **brochure Belcotax-on-web inkomsten 2025, fiche 281.50 note (1) and (2)**: [belcotax_xml.py:203](../../addons/vme_belgie/models/belcotax_xml.py#L203)
+- **brochure Belcotax-on-web inkomsten 2025, validation 281.50**: [belcotax_xml.py:220](../../addons/vme_belgie/models/belcotax_xml.py#L220)
+- **brochure Belcotax-on-web inkomsten 2025, zone 0.024**: [belcotax_xml.py:161](../../addons/vme_belgie/models/belcotax_xml.py#L161)
+- **brochure Belcotax-on-web inkomsten 2025, zones 1.016 and 2.018**: [belcotax_xml.py:148](../../addons/vme_belgie/models/belcotax_xml.py#L148)
+- **brochure Belcotax-on-web inkomsten 2025, zones 2.030, 1.020 and 0.025**: [belcotax_xml.py:21](../../addons/vme_belgie/models/belcotax_xml.py#L21)
+- **brochure Pre-opening Belcotax-on-web (03.11.2026), 2.2**: [belcotax_jsonl.py:38](../../addons/vme_belgie/models/belcotax_jsonl.py#L38)
+- **brochure Pre-opening Belcotax-on-web (03.11.2026), 6.1**: [belcotax_jsonl.py:236](../../addons/vme_belgie/models/belcotax_jsonl.py#L236)
 - **no general legal interval found; manufacturer and fire department advice**: [vme_installation.py:28](../../addons/vme_belgie/models/vme_installation.py#L28)
 - **reglement van mede-eigendom (art. 3.85 BW)**: [vme_collection.py:473](../../addons/vme_belgie/models/vme_collection.py#L473)
 - **wet 5 mei 1865 betreffende de lening tegen interest**: [vme_collection.py:30](../../addons/vme_belgie/models/vme_collection.py#L30)
@@ -106,6 +114,13 @@ Aantal punten: 146.
 | [addons/vme_belgie/models/account_move.py](../../addons/vme_belgie/models/account_move.py#L57) | 57 | art. 3.89 §5 BW | a provision is paid to the bank account of its fund. |
 | [addons/vme_belgie/models/account_move.py](../../addons/vme_belgie/models/account_move.py#L157) | 157 | art. 3.94 BW | between seller and buyer, the consumption of each one's ownership period; without a reading at the deed, pro rata per day between two readings. |
 | [addons/vme_belgie/models/account_move.py](../../addons/vme_belgie/models/account_move.py#L266) | 266 | art. 3.94 BW | costs are split between seller and buyer by the number of days each one owned the lot within the cost period. |
+| [addons/vme_belgie/models/belcotax_jsonl.py](../../addons/vme_belgie/models/belcotax_jsonl.py#L38) | 38 | brochure Pre-opening Belcotax-on-web (03.11.2026), 2.2 | for income year 2026 the old structure with tags v, a, f and r is not allowed for sendings per file; only JSON Lines. |
+| [addons/vme_belgie/models/belcotax_jsonl.py](../../addons/vme_belgie/models/belcotax_jsonl.py#L236) | 236 | brochure Pre-opening Belcotax-on-web (03.11.2026), 6.1 | a key is unique per sender and may appear only once in a sending; a new sending with the same key replaces the fiche. |
+| [addons/vme_belgie/models/belcotax_xml.py](../../addons/vme_belgie/models/belcotax_xml.py#L21) | 21 | brochure Belcotax-on-web inkomsten 2025, zones 2.030, 1.020 and 0.025 | 1 natural person, 2 legal person; language 1 Dutch; 0 original sending (1 grouped corrections). |
+| [addons/vme_belgie/models/belcotax_xml.py](../../addons/vme_belgie/models/belcotax_xml.py#L148) | 148 | brochure Belcotax-on-web inkomsten 2025, zones 1.016 and 2.018 | "nul indien België", otherwise the RSZ country code of annex 1. |
+| [addons/vme_belgie/models/belcotax_xml.py](../../addons/vme_belgie/models/belcotax_xml.py#L161) | 161 | brochure Belcotax-on-web inkomsten 2025, zone 0.024 | the company number of the sender must be the one used to log in to Belcotax-on-web. |
+| [addons/vme_belgie/models/belcotax_xml.py](../../addons/vme_belgie/models/belcotax_xml.py#L203) | 203 | brochure Belcotax-on-web inkomsten 2025, fiche 281.50 note (1) and (2) | a legal person has its company number in 2.011 and 2.110 stays empty; a natural person has his national number in 2.011 (optional) and, for a liberal profession, his company number in 2.110. |
+| [addons/vme_belgie/models/belcotax_xml.py](../../addons/vme_belgie/models/belcotax_xml.py#L220) | 220 | brochure Belcotax-on-web inkomsten 2025, validation 281.50 | 2.031 (nihil) is 1 if and only if 2.065 is 0; we only report payments, so nihil is 0 and 2.065 stays empty: 2.064 already holds what was paid in the year. |
 | [addons/vme_belgie/models/vme_annual_statement.py](../../addons/vme_belgie/models/vme_annual_statement.py#L46) | 46 | art. 3.86 §3 BW | works paid from the reserve capital are not settled in the working capital; each owner sees his share in them apart. |
 | [addons/vme_belgie/models/vme_assembly.py](../../addons/vme_belgie/models/vme_assembly.py#L13) | 13 | art. 3.87 §2 BW | the ordinary general assembly takes place every year within the period of fifteen days fixed in the rules of co-ownership. |
 | [addons/vme_belgie/models/vme_assembly.py](../../addons/vme_belgie/models/vme_assembly.py#L17) | 17 | art. 3.87 §3 BW | the convocation is sent at least fifteen days before the meeting, unless the rules of co-ownership set another term. |
@@ -136,10 +151,11 @@ Aantal punten: 146.
 | [addons/vme_belgie/models/vme_association.py](../../addons/vme_belgie/models/vme_association.py#L93) | 93 | KB 12 juli 2012 (minimum chart of accounts for VMEs) | The full Belgian PCMN is the closest standard Odoo chart for now. |
 | [addons/vme_belgie/models/vme_association.py](../../addons/vme_belgie/models/vme_association.py#L188) | 188 | art. 3.89 §5 BW | working and reserve capital must not share an account. |
 | [addons/vme_belgie/models/vme_association.py](../../addons/vme_belgie/models/vme_association.py#L219) | 219 | art. 3.89 §5 BW | working and reserve capital on separate bank accounts. |
-| [addons/vme_belgie/models/vme_belcotax.py](../../addons/vme_belgie/models/vme_belcotax.py#L16) | 16 | art. 57, 1° WIB 92 | commissions, brokerage, fees, attendance fees, benefits in kind and expenses borne for the beneficiary, paid to persons for whom they are professional income. |
-| [addons/vme_belgie/models/vme_belcotax.py](../../addons/vme_belgie/models/vme_belcotax.py#L24) | 24 | art. 30 KB/WIB 92 as amended by the KB of April 2022 (circular 2022/C/96) | no form needed when the total paid to one beneficiary in the year is at most 250 euro (before: 125 euro). |
-| [addons/vme_belgie/models/vme_belcotax.py](../../addons/vme_belgie/models/vme_belcotax.py#L31) | 31 | art. 57 WIB 92 and art. 30 KB/WIB 92 | the FOD Financiën sets the deadline each year (for 281.50 recently around 30 June of the following year); check it in Belcotax-on-web. |
-| [addons/vme_belgie/models/vme_belcotax.py](../../addons/vme_belgie/models/vme_belcotax.py#L116) | 116 | art. 57, 1° WIB 92 | amounts "betaald of toegekend" in the year; the prototype takes what was paid (reconciled) in the year, VAT included because most VMEs cannot deduct it. |
+| [addons/vme_belgie/models/vme_belcotax.py](../../addons/vme_belgie/models/vme_belcotax.py#L20) | 20 | art. 57, 1° WIB 92 | commissions, brokerage, fees, attendance fees, benefits in kind and expenses borne for the beneficiary, paid to persons for whom they are professional income. |
+| [addons/vme_belgie/models/vme_belcotax.py](../../addons/vme_belgie/models/vme_belcotax.py#L28) | 28 | art. 30 KB/WIB 92 as amended by the KB of April 2022 (circular 2022/C/96) | no form needed when the total paid to one beneficiary in the year is at most 250 euro (before: 125 euro). |
+| [addons/vme_belgie/models/vme_belcotax.py](../../addons/vme_belgie/models/vme_belcotax.py#L35) | 35 | brochure Belcotax-on-web inkomsten 2025, 1 (indieningstermijnen) | the fiches 281.50 must arrive "ten laatste op 29 juni" of the following year; the FOD Financiën confirms it every year. |
+| [addons/vme_belgie/models/vme_belcotax.py](../../addons/vme_belgie/models/vme_belcotax.py#L149) | 149 | art. 57, 1° WIB 92 | amounts "betaald of toegekend" in the year; the prototype takes what was paid (reconciled) in the year, VAT included because most VMEs cannot deduct it. |
+| [addons/vme_belgie/models/vme_belcotax.py](../../addons/vme_belgie/models/vme_belcotax.py#L353) | 353 | brochure Belcotax-on-web inkomsten 2025 (2.011, 2.110) and Pre-opening (03.11.2026), | 3.5 and 3.6 - the company number is required for a legal person; a natural person is identified by his national number (required for all fiches from 1 January 2028, law of 12 May 2024) and, with a liberal profession, his company number. A wrong number blocks the whole file. |
 | [addons/vme_belgie/models/vme_budget.py](../../addons/vme_belgie/models/vme_budget.py#L5) | 5 | art. 3.86 §3 BW | yearly reserve fund contribution of at least 5% of the ordinary common charges of the previous year, unless the general assembly decides otherwise with a 4/5 majority. |
 | [addons/vme_belgie/models/vme_budget.py](../../addons/vme_belgie/models/vme_budget.py#L93) | 93 | art. 3.86 §3 BW | only the ordinary common charges: not the works paid from the reserve capital, not the private costs charged to one owner. |
 | [addons/vme_belgie/models/vme_building_card.py](../../addons/vme_belgie/models/vme_building_card.py#L224) | 224 | art. 3.86 §3 BW | yearly reserve contribution of at least 5% of the ordinary common charges of the previous year, unless the general assembly decided otherwise with 4/5. |
