@@ -12,3 +12,4 @@ from . import vme_demo_cycle
 from . import vme_demo_syndic
 from . import vme_demo_worklist
 from . import vme_scale_data
+from . import vme_demo_belcotax

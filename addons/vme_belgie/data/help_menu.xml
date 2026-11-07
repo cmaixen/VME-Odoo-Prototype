@@ -272,6 +272,12 @@
         <field name="state">code</field>
         <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/ereloon-en-mandaat.md"}</field>
     </record>
+    <record id="action_help_belcotax" model="ir.actions.server">
+        <field name="name">Help: fiches 281.50</field>
+        <field name="model_id" ref="model_vme_association"/>
+        <field name="state">code</field>
+        <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/fiches-281-50.md"}</field>
+    </record>
     <menuitem id="menu_vme_help_vme" name="VME aanmaken en bankrekeningen" parent="menu_vme_help" action="action_help_vme" sequence="10"/>
     <menuitem id="menu_vme_help_lots" name="Kavels en eigendom" parent="menu_vme_help" action="action_help_lots" sequence="20"/>
     <menuitem id="menu_vme_help_sale" name="Verkoop: inlichtingen aan de notaris" parent="menu_vme_help" action="action_help_sale" sequence="35"/>
@@ -312,4 +318,5 @@
     <menuitem id="menu_vme_help_cycle" name="Het jaar van een VME opvolgen (jaarcyclus)" parent="menu_vme_help" action="action_help_cycle" sequence="16"/>
     <menuitem id="menu_vme_help_syndic" name="Ereloon, prestaties en mandaat van de syndicus" parent="menu_vme_help" action="action_help_syndic" sequence="145"/>
     <menuitem id="menu_vme_help_french" name="Documenten in het Frans" parent="menu_vme_help" action="action_help_french" sequence="155"/>
+    <menuitem id="menu_vme_help_belcotax" name="Fiches 281.50 (Belcotax)" parent="menu_vme_help" action="action_help_belcotax" sequence="66"/>
 </odoo>

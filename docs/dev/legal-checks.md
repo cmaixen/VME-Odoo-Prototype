@@ -3,7 +3,7 @@
 Automatisch gemaakt door `python3 tools/legal_checks.py`; niet met de hand bewerken.
 Elke rij is een wettelijke regel in de code die nog juridisch gevalideerd moet worden.
 
-Aantal punten: 136.
+Aantal punten: 140.
 
 ## Per bron
 
@@ -73,12 +73,15 @@ Aantal punten: 136.
 - **art. 3.94 §1, 2° en §2 BW**: [vme_sale_file.py:287](../../addons/vme_belgie/models/vme_sale_file.py#L287)
 - **art. 3.94 §1, 3° BW**: [vme_sale_file.py:279](../../addons/vme_belgie/models/vme_sale_file.py#L279)
 - **art. 3.94 §2 BW**: [vme_sale_file.py:12](../../addons/vme_belgie/models/vme_sale_file.py#L12)
+- **art. 30 KB/WIB 92 as amended by the KB of April 2022 (circular 2022/C/96)**: [vme_belcotax.py:24](../../addons/vme_belgie/models/vme_belcotax.py#L24)
 - **art. 34 Vlaams Woninghuurdecreet**: [rent_rules.py:67](../../addons/vme_rentmeester/models/rent_rules.py#L67)
 - **art. 37 Vlaams Woninghuurdecreet**: [rent_rules.py:80](../../addons/vme_rentmeester/models/rent_rules.py#L80)
 - **art. 37/2 Arbeidsovereenkomstenwet 3 juli 1978**: [vme_contract.py:32](../../addons/vme_belgie/models/vme_contract.py#L32)
 - **art. 45 §1 WBTW**: [account_chart_template.py:57](../../addons/vme_belgie/models/account_chart_template.py#L57)
 - **art. 5.231 BW**: [vme_communication.py:668](../../addons/vme_belgie/models/vme_communication.py#L668)
 - **art. 5.250 e.v. BW (schuldvergelijking)**: [rent_remittance.py:377](../../addons/vme_rentmeester/models/rent_remittance.py#L377)
+- **art. 57 WIB 92 and art. 30 KB/WIB 92**: [vme_belcotax.py:31](../../addons/vme_belgie/models/vme_belcotax.py#L31)
+- **art. 57, 1° WIB 92**: [vme_belcotax.py:16](../../addons/vme_belgie/models/vme_belcotax.py#L16), [vme_belcotax.py:116](../../addons/vme_belgie/models/vme_belcotax.py#L116)
 - **art. 62 Waals decreet van 15 maart 2018**: [rent_rules.py:86](../../addons/vme_rentmeester/models/rent_rules.py#L86)
 - **art. 74 §1 wet 4 april 2014 betreffende de verzekeringen**: [vme_damage.py:12](../../addons/vme_belgie/models/vme_damage.py#L12)
 - **art. 85 Wet van 4 april 2014 betreffende de verzekeringen**: [vme_contract.py:23](../../addons/vme_belgie/models/vme_contract.py#L23)
@@ -132,6 +135,10 @@ Aantal punten: 136.
 | [addons/vme_belgie/models/vme_association.py](../../addons/vme_belgie/models/vme_association.py#L93) | 93 | KB 12 juli 2012 (minimum chart of accounts for VMEs) | The full Belgian PCMN is the closest standard Odoo chart for now. |
 | [addons/vme_belgie/models/vme_association.py](../../addons/vme_belgie/models/vme_association.py#L188) | 188 | art. 3.89 §5 BW | working and reserve capital must not share an account. |
 | [addons/vme_belgie/models/vme_association.py](../../addons/vme_belgie/models/vme_association.py#L211) | 211 | art. 3.89 §5 BW | working and reserve capital on separate bank accounts. |
+| [addons/vme_belgie/models/vme_belcotax.py](../../addons/vme_belgie/models/vme_belcotax.py#L16) | 16 | art. 57, 1° WIB 92 | commissions, brokerage, fees, attendance fees, benefits in kind and expenses borne for the beneficiary, paid to persons for whom they are professional income. |
+| [addons/vme_belgie/models/vme_belcotax.py](../../addons/vme_belgie/models/vme_belcotax.py#L24) | 24 | art. 30 KB/WIB 92 as amended by the KB of April 2022 (circular 2022/C/96) | no form needed when the total paid to one beneficiary in the year is at most 250 euro (before: 125 euro). |
+| [addons/vme_belgie/models/vme_belcotax.py](../../addons/vme_belgie/models/vme_belcotax.py#L31) | 31 | art. 57 WIB 92 and art. 30 KB/WIB 92 | the FOD Financiën sets the deadline each year (for 281.50 recently around 30 June of the following year); check it in Belcotax-on-web. |
+| [addons/vme_belgie/models/vme_belcotax.py](../../addons/vme_belgie/models/vme_belcotax.py#L116) | 116 | art. 57, 1° WIB 92 | amounts "betaald of toegekend" in the year; the prototype takes what was paid (reconciled) in the year, VAT included because most VMEs cannot deduct it. |
 | [addons/vme_belgie/models/vme_budget.py](../../addons/vme_belgie/models/vme_budget.py#L5) | 5 | art. 3.86 §3 BW | yearly reserve fund contribution of at least 5% of the ordinary common charges of the previous year, unless the general assembly decides otherwise with a 4/5 majority. |
 | [addons/vme_belgie/models/vme_building_card.py](../../addons/vme_belgie/models/vme_building_card.py#L224) | 224 | art. 3.86 §3 BW | yearly reserve contribution of at least 5% of the ordinary common charges of the previous year, unless the general assembly decided otherwise with 4/5. |
 | [addons/vme_belgie/models/vme_building_card.py](../../addons/vme_belgie/models/vme_building_card.py#L277) | 277 | art. 3.87 §2 BW | the ordinary general assembly is held every year within the fifteen-day period fixed in the rules of co-ownership. |

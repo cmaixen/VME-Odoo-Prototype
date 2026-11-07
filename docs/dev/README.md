@@ -45,6 +45,7 @@ Interne documentatie voor wie aan de module `vme_belgie` werkt. De gebruikersdoc
 | [code-review.md](code-review.md) | Code review van main (november 2026): bevindingen op ernst, wat hersteld is en wat als voorstel openstaat |
 | [schaal.md](schaal.md) | Schaaldatabase met 200 fictieve VME's, meetscript, metingen vóór en na, portefeuille in één keer lezen, provisieoproepen op de achtergrond (stap 27) |
 | [verzekeringen-attesten.md](verzekeringen-attesten.md) | Brandverzekering (vervaldag, opzegtermijn, verzekerde waarde, schadegevallen) en verplichte attesten per gebouw op `vme.document` en `vme.installation`, signalen, taken en notaris |
+| [belcotax.md](belcotax.md) | Fiches 281.50 per VME en jaar: 281.50-plichtige leveranciers, betaald bedrag uit de afpunting, drempel 250 euro, waarschuwingen, Belcotax-XML (te valideren) |
 | [legal-checks.md](legal-checks.md) | Alle `LEGAL-CHECK`-punten uit de code (gegenereerd) |
 
 Documentatie hoort bij elke stap, in hetzelfde commit als de code (zie `CLAUDE.md`). Na een wijziging aan een `# LEGAL-CHECK:`-commentaar draai je:

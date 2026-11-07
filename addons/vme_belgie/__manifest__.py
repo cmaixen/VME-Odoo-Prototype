@@ -79,6 +79,8 @@
         "views/vme_syndic_views.xml",
         "views/vme_provision_call_run_views.xml",
         "views/vme_work_item_views.xml",
+        "security/vme_belcotax_security.xml",
+        "views/vme_belcotax_views.xml",
     ],
     "installable": True,
     "application": True,
