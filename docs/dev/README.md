@@ -39,6 +39,7 @@ Interne documentatie voor wie aan de module `vme_belgie` werkt. De gebruikersdoc
 | [werkbak.md](werkbak.md) | Mijn werk vandaag: dossierbeheerder per VME, transient lijst per medewerker uit taken, signalen en concepten, urgentie, ontdubbeling en bronnen (stap 29) |
 | [migratie.md](migratie.md) | Overstap uit een ander pakket: importformaat, proefrun, openingsboeking, omzetters (stap 13) |
 | [overname-ai.md](overname-ai.md) | Overname van een gebouw: basisakte (ook gescand) en notulen lezen met AI, voorstel regel per regel met fragment, offline-modus, nieuwe tabellen werken, procedures en mandaten |
+| [overdracht.md](overdracht.md) | Overdracht aan een nieuwe syndicus: zip met de tabellen in het importformaat van de overstap (roundtrip), openingsbalans op de overdrachtsdatum, rapporten en archief |
 | [rentmeester.md](rentmeester.md) | Module `vme_rentmeester`: huurcontracten, huurfacturen, indexering met de indexstop per gewest, afrekening aan huurders (stap 25), doorstorting aan verhuurders en ereloon (stap 25b) |
 | [syndicus.md](syndicus.md) | Het kantoor van de syndicus: beheerovereenkomst, indexering, prestaties uit de bronnen, ereloonfactuur en leveranciersfactuur in de VME, mandaat, herbenoeming en aanplakking |
 | [rentmeester.md](rentmeester.md) | Module `vme_rentmeester`: huurcontracten, huurfacturen, indexering met de indexstop per gewest, afrekening aan huurders (stap 25) |

@@ -52,6 +52,7 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 ### Overstappen
 
 23. [Een VME overnemen uit een ander syndicuspakket](migratie.md)
+23b. [Een VME overdragen aan een nieuwe syndicus](overdracht-syndicus.md)
 
 ### Documenten en eigenaars
 

@@ -81,6 +81,8 @@
         "views/vme_syndic_views.xml",
         "views/vme_provision_call_run_views.xml",
         "views/vme_work_item_views.xml",
+        "wizard/vme_handover_wizard_views.xml",
+        "report/vme_handover_reports.xml",
     ],
     "installable": True,
     "application": True,

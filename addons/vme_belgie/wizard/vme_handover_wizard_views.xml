@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="vme_handover_wizard_view_form" model="ir.ui.view">
+        <field name="name">vme.handover.wizard.form</field>
+        <field name="model">vme.handover.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Overdracht aan nieuwe syndicus">
+                <div class="alert alert-info" role="alert">
+                    Dit maakt een zip met de gegevens, rapporten en documenten van de VME. Er wordt niets verstuurd:
+                    u downloadt het pakket en bezorgt het zelf aan de nieuwe syndicus.
+                </div>
+                <group>
+                    <group>
+                        <field name="association_id" options="{'no_create': True, 'no_open': True}"/>
+                        <field name="recipient_id" options="{'no_quick_create': True}"/>
+                    </group>
+                    <group>
+                        <field name="handover_date"/>
+                        <field name="deadline"/>
+                        <field name="statement_year" options="{'enable_formatting': false}"/>
+                    </group>
+                </group>
+                <field name="note" placeholder="Bijvoorbeeld: sleutels van het technisch lokaal overhandigd op ..."/>
+                <field name="summary_html" nolabel="1" invisible="not association_id"/>
+                <footer>
+                    <button name="action_build_package" type="object" string="Pakket maken (zip)" class="btn-primary"/>
+                    <button string="Sluiten" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="vme_handover_wizard_action" model="ir.actions.act_window">
+        <field name="name">Overdracht aan nieuwe syndicus</field>
+        <field name="res_model">vme.handover.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'dialog_size': 'large'}</field>
+    </record>
+</odoo>
