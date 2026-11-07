@@ -150,6 +150,10 @@ Gevonden bij het doorlopen van `docs/demo.md` op een verse database:
 - **`t-options="{'tz': ...}"` wordt genegeerd.** Odoo's datetime-veld in QWeb kent alleen `tz_name`. In het portaal (zonder tijdzone in de context) toonde een AV van 19:00 als 18:00; in de oproeping hing het uur af van de tijdzone van wie afdrukte. Alle templates gebruiken nu `tz_name`.
 - **Parallelle testservers op `localhost` loggen elkaar uit.** Een cookie geldt voor de hostnaam, niet voor de poort. Gebruik per server een eigen naam, bv. `http://demo.localhost:8679`.
 
+## Demovideo (november 2026)
+
+- **Twee fictieve leveranciers met hetzelfde btw-nummer.** De demodata van de fiches 281.50 gaf Advies Voorbeeld BV het btw-nummer BE0000000889 van Keuringsdienst Voorbeeld vzw. Odoo koppelt een Peppol-factuur op btw-nummer, dus de liftfactuur van stap 3 kwam bij Advies terecht, zonder liftsleutel en zonder verdeling. Advies heeft nu BE0000003067. Geef elke fictieve leverancier een eigen nummer (`grep -rhoE "BE0[0-9]{9}" addons ai docs` toont de gebruikte).
+
 ## Bekende problemen (nog open)
 
 - **De `.pot` van `vme_belgie` loopt achter.** Een export na de merges van november 2026 voegt ruim 2.000 regels toe (offertes, overname, verzekering, werkbak); die termen staan dus ook niet in `fr.po`. Bijwerken volgens [vertaling.md](vertaling.md#nieuwe-termen-bijwerken), samen met de nieuwe teksten van de demorepetitie.

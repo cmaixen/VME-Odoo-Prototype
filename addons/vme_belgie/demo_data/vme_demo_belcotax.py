@@ -16,7 +16,7 @@ BELCOTAX_DEMO = {
         "vme_national_number": "00.00.00-002.95",
     }, date(2026, 3, 20), date(2026, 4, 10), "Nazicht van de rekeningen 2025 door de commissaris", 650.0),
     "Residentie Linde": ({
-        "name": "Advies Voorbeeld BV", "is_company": True, "vat": "BE0000000889", "street": "Raadgeverstraat 4",
+        "name": "Advies Voorbeeld BV", "is_company": True, "vat": "BE0000003067", "street": "Raadgeverstraat 4",
         "zip": "9000", "city": "Voorbeeldgem", "email": "facturen@advies.example.com",
         "vme_belcotax_category": "fees", "vme_belcotax_profession": "Ingenieur-adviseur",
     }, date(2026, 5, 12), date(2026, 6, 1), "Technisch advies gevelrenovatie", 1800.0),

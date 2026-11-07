@@ -3,3 +3,4 @@ ai/.env
 __pycache__/
 ai/.venv/
 .pytest_cache/
+/build/
