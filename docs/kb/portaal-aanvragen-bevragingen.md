@@ -25,7 +25,7 @@ De eigenaar ziet ook de berichten die u hem vanuit de aanvraag stuurde (bijvoorb
 ## Hoe behandel ik een aanvraag uit het portaal?
 
 1. Ga naar **VME > Aanvragen**. Een aanvraag uit het portaal heeft als kanaal **Portaal**; u krijgt er ook een taak voor.
-2. Odoo herkent de aanvrager zoals bij een mail: is hij eigenaar van de kavel, dan is de aanvraag meteen geverifieerd. Een huurder bezorgt de toestemming van de eigenaar en het huurcontract.
+2. Odoo herkent de aanvrager zoals bij een mail: is hij eigenaar van de kavel, dan is de aanvraag meteen geverifieerd (hij is aangemeld; een mail moet de eigenaar eerst bevestigen). Een huurder bezorgt de toestemming van de eigenaar en het huurcontract.
 3. Wacht de aanvraag op bewijs, klik dan op **Bewijs opvragen** zoals altijd. De huurder kan de documenten in het portaal opladen bij **Bewijs bezorgen**; u krijgt dan de taak **Bewijs uit het portaal nakijken**. Vink na het nakijken de bewijsstukken aan en klik op **Bewijs goedkeuren**.
 4. Daarna loopt de procedure verder zoals in [Aanvragen van bewoners](aanvragen-sleutels-badges.md): de bestelling staat klaar als concept en vertrekt pas als u op **Bestelling versturen** klikt.
 

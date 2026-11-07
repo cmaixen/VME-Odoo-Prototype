@@ -99,10 +99,10 @@ Elke fix staat in een eigen commit, met een test waar dat kan.
 - **Probleem:** via RPC kan een medewerker een handtekening op `signed` zetten met een willekeurige naam en IP-adres, of een stem aanmaken met `source="online"`. Het auditspoor van de digitale AV is dan geen bewijs meer.
 - **Herstel (uitgevoerd):** `create` en `write` weigeren zonder superuser de auditvelden van de handtekening en een stem met bron online of schriftelijk. `_portal_sign` en `_portal_cast_votes` schrijven als superuser. Geen contextvlag, want die kan een RPC-aanroep zelf meegeven. Tests: `test_staff_cannot_forge_an_online_vote`, `test_staff_cannot_sign_for_an_owner`.
 
-**B-S4. Bij de mail-intake wordt de eigenaar alleen herkend aan het afzenderadres** ⏳
+**B-S4. Bij de mail-intake wordt de eigenaar alleen herkend aan het afzenderadres** ✅
 - **Waar:** `models/vme_request.py:279-292`, `:412-413`
 - **Probleem:** een vervalste `From:` geeft een sleutelaanvraag die meteen geverifieerd is.
-- **Herstel:** zet sleutel- en badgeaanvragen met `channel == "mail"` op "na te kijken", met een taak. Later kan het SPF/DKIM-resultaat van de mailgateway meetellen.
+- **Herstel (uitgevoerd):** een sleutel- of badgeaanvraag van een eigenaar via `channel == "mail"` wacht op het bewijs "Eigenaar bevestigde de aanvraag" (`proof_sender_confirmed`, `_owner_by_mail()`), met de gewone bewijsvraag en taak. De bewijsvraag gaat naar het gekende adres, dus naar de echte eigenaar. Portaal en manueel blijven meteen geverifieerd. Later kan het SPF/DKIM-resultaat van de mailgateway meetellen. Test: `test_owner_by_mail_confirms_first`.
 
 ### Geld en boekhouding
 

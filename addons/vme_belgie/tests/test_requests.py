@@ -61,19 +61,33 @@ class TestRequests(TransactionCase):
         return self.Request.browse(self.Request.create_from_intake(
             self.vme.id, kwargs.pop("request_type", "key"), email, subject=subject, body=body, **kwargs))
 
+    def _confirmed(self, request):
+        """An owner who asked by mail confirmed the request (B-S4)."""
+        request.proof_sender_confirmed = True
+        request.action_verify()
+        return request
+
     def _sent_messages(self, request):
         """Messages that went or go out by mail to someone (not internal notes)."""
         return request.message_ids.filtered(lambda m: m.message_type == "comment" and m.partner_ids)
 
     # Verification
 
-    def test_owner_is_verified_at_once(self):
+    def test_owner_by_mail_confirms_first(self):
+        # The sender of a mail can be forged: a key or badge is only ordered once the owner confirmed.
         request = self._intake("Eigenaar.A1@example.com")
         self.assertEqual(request.requester_id, self.owner)
         self.assertEqual(request.requester_role, "owner")
         self.assertEqual(request.lot_id, self.a1)
         self.assertEqual(request.key_kind, "badge")
-        self.assertFalse(request.needs_verification)
+        self.assertTrue(request.needs_verification)
+        self.assertEqual(request.state, "waiting_proof")
+        self.assertFalse(request.order_attachment_id)
+        self.assertIn("zelf stuurde", request.missing_proofs)
+        self.assertIn("zelf stuurde", request.proof_mail_body)
+        with self.assertRaises(UserError):
+            request.action_verify()
+        self._confirmed(request)
         self.assertEqual(request.state, "in_progress")
         self.assertEqual(request.verified_date, TODAY)
         self.assertTrue(request.order_ready)
@@ -185,7 +199,7 @@ class TestRequests(TransactionCase):
     def _ordered(self, email="eigenaar.a1@example.com"):
         request = self._intake(email)
         if request.state == "waiting_proof":
-            request.write({"proof_owner_consent": True, "proof_lease": True})
+            request.write({"proof_owner_consent": True, "proof_lease": True, "proof_sender_confirmed": True})
             request.action_verify()
         request.action_send_order()
         return request
@@ -202,7 +216,7 @@ class TestRequests(TransactionCase):
 
     def test_order_never_leaves_by_itself(self):
         # A verified owner: the order is ready as a draft, with a task, but only a click sends it.
-        request = self._intake("eigenaar.a1@example.com")
+        request = self._confirmed(self._intake("eigenaar.a1@example.com"))
         self.assertTrue(request.order_ready)
         self.assertEqual(request.state, "in_progress")
         self.assertFalse(request.order_sent_date)
@@ -211,7 +225,7 @@ class TestRequests(TransactionCase):
 
     def test_no_locksmith_gives_a_task(self):
         self.vme.locksmith_partner_id = False
-        request = self._intake("eigenaar.a1@example.com")
+        request = self._confirmed(self._intake("eigenaar.a1@example.com"))
         self.assertEqual(request.state, "in_progress")
         self.assertFalse(request.order_ready)
         self.assertTrue(request.activity_ids.filtered(lambda a: a.summary.startswith("Slotenmaker instellen")))
