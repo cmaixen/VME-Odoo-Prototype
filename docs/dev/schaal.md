@@ -96,6 +96,10 @@ Drie lijsten rekenden per rij met eigen zoekopdrachten. Ze lezen nu per model é
 
 De tests `test_list_does_not_query_per_dossier`, `test_supplier_list_does_not_query_per_supplier` en `test_reserve_in_the_list_does_not_query_per_works` controleren dat het aantal queries niet groeit met het aantal rijen.
 
+### Oproepingen: één pdf-run per rapport
+
+`vme.assembly.convocation._generate_documents()` maakte per eigenaar twee pdf's, elk met een eigen wkhtmltopdf-proces, en rekende per eigenaar de volledige jaarafrekening uit om te controleren of er een was (dat was altijd zo). Nu rendert `_render_pdf_per_record()` alle oproepingen in één run en alle jaarafrekeningen in een tweede; Odoo splitst de pdf per record (`_render_qweb_pdf_prepare_streams`, op pagina's of outlines). Lukt dat niet, of in een test (Odoo rendert daar HTML), dan rendert het per record zoals voorheen. Test: `test_convocation_pdfs_in_one_run`.
+
 ### Provisieoproepen voor alle VME's: op de achtergrond
 
 Odoo heeft twee à drie seconden per VME nodig om de facturen van een oproep te maken en te boeken (vooral de eigen logica van `account.move`: nummering, regels, analytische modellen, chatter). Dat is geen N+1 van onze code: het profiel toont dat de tijd in `account.move.create()` en `_post()` zit, en zonder chatterbericht (`mail_create_nolog`) wint het maar 13%. Voor 200 VME's duurt één klik dus minuten, langer dan een webverzoek mag duren (`limit_time_real` is standaard 120 seconden op een productieserver met workers).

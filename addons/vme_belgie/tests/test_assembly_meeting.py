@@ -1,4 +1,6 @@
+import io
 from datetime import date
+from unittest.mock import patch
 
 from odoo.exceptions import UserError, ValidationError
 from odoo.fields import Command
@@ -193,6 +195,29 @@ class TestAssemblyMeeting(TransactionCase):
             attendee[owners[3]].proxy_holder_id = owners[7]
 
     # Convocations
+
+    def test_convocation_pdfs_in_one_run(self):
+        """All convocations and statements of an assembly come from one wkhtmltopdf run per report."""
+        Report = self.env.registry["ir.actions.report"]
+        runs = []
+
+        def pre_render(report, report_ref, res_ids=None, data=None):
+            runs.append((report_ref, list(res_ids)))
+            return {rid: {"stream": io.BytesIO(b"%PDF-" + str(rid).encode()), "attachment": None}
+                    for rid in res_ids}, "pdf"
+
+        def one_by_one(*args, **kwargs):
+            raise AssertionError("rendered one record at a time")
+
+        with patch.object(Report, "_pre_render_qweb_pdf", pre_render), patch.object(Report, "_render_qweb_pdf", one_by_one):
+            self.assembly.action_create_convocations()
+        convocations = self.assembly.convocation_ids
+        self.assertEqual([ref for ref, _ids in runs], [
+            "vme_belgie.action_report_assembly_convocation", "vme_belgie.action_report_annual_statement"])
+        self.assertEqual(runs[0][1], convocations.ids)
+        for convocation in convocations:
+            self.assertEqual(len(convocation.attachment_ids), 2)
+            self.assertIn(b"%%PDF-%d" % convocation.id, [a.raw for a in convocation.attachment_ids])
 
     def test_convocations_are_drafts_with_documents(self):
         mails_before = self.env["mail.mail"].search_count([])

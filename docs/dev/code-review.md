@@ -19,7 +19,7 @@ Review van `addons/vme_belgie`, `addons/vme_rentmeester`, `addons/vme_website`, 
   - Geen `t-raw` of `|safe`; elke `Markup` escapet zijn argumenten.
   - De AI-uitvoer wordt volledig ge-escapet, en `ai/.env` staat in `.gitignore`.
   - Wel een paar zwakke plekken in de **verificatie** (huurder of vervalste afzender als eigenaar) en in de **schrijfrechten** (handtekeningen, consumptieprijsindex).
-- **Rekenlogica: goed getest.** Er waren twee fouten met geldgevolgen: een tegengeboekte provisie telde als betaald, en de 5%-basis was te breed. De eerste is hersteld; de tweede, en een paar controles bij SEPA en de bankimport, staan als voorstel in het rapport.
+- **Rekenlogica: goed getest.** Er waren twee fouten met geldgevolgen: een tegengeboekte provisie telde als betaald, en de 5%-basis was te breed. Beide zijn hersteld, net als de controles bij SEPA en de bankimport (tweede ronde).
 - **Performance bij 200 VME's.** De portefeuille is al geoptimaliseerd (`docs/dev/schaal.md`). Ernaast staan nog lijsten met N+1-queries: invorderingsdossiers, leverancierskaart en werken, en de invorderingscron. Geen enkele cron behalve de provisieoproepen gebruikt `_commit_progress`.
 - **Odoo-idioom.**
   - Nergens `check_company=True` of `_check_company_auto`.
@@ -46,6 +46,21 @@ Elke fix staat in een eigen commit, met een test waar dat kan.
 | K-D3 | `check_not_auditor` toegevoegd aan twee knoppen die als sudo schrijven (`action_register_delivery`, communicatie `action_confirm`) | `models/vme_request.py`, `models/vme_communication.py` |
 | B-R6 | De afrekening aan huurders las alle rubrieken opnieuw voor elke kostenverdeling | `vme_rentmeester/models/rent_charge_category.py`, `rent_settlement.py` |
 | K-R9 | De footer van de website toonde letterlijk `&copy;` | `vme_website/views/layout_templates.xml` |
+
+**Tweede ronde** (op vraag van de hoofdsessie, na de merge van de eerste):
+
+| # | Wat | Bestanden |
+| --- | --- | --- |
+| B-S1 | De rol van een aanvrager komt uit de partner, niet uit een e-mailadres dat de huurder zelf kiest | `models/vme_request.py`, test `test_tenant_with_owner_email_stays_tenant` |
+| B-S2 | Handtekeningen en online of schriftelijke stemmen kunnen alleen uit het portaal komen, niet via RPC | `models/vme_assembly_online.py`, tests in `test_assembly_online.py` |
+| K-F1 | Een gedeeltelijke creditnota op een provisie telt niet als betaald | `models/vme_annual_statement.py`, test `test_partial_credit_note_is_not_paid` |
+| B-F4 | De 5%-basis telt werken uit het reservekapitaal en privékosten niet meer mee | `models/vme_budget.py`, test `test_reserve_minimum_counts_only_ordinary_charges` |
+| B-F2 | Een bankbestand wordt herkend aan een sleutel, niet aan de vertaalde naam van het afschrift | `models/account_bank_statement_line.py`, `wizard/vme_bank_import_wizard.py` |
+| B-F3 | SEPA-bestanden weigeren een bedrag dat niet meer openstaat | `models/vme_payment.py`, tests in `test_payments.py` |
+| B-F5, B-D5, B-D7 | Invordering, leverancierskaart en werken: geen queries meer per rij | `vme_collection.py`, `res_partner_supplier_card.py`, `vme_works.py` |
+| B-F7 | `check_company` op rekeningen, sleutels en werkdossiers; constraint op de bankrekeningen van VME en mandaat | `test_check_company.py` |
+| K-P1 | `partner_autocomplete` stuurt niets meer naar Odoo of VIES | `models/partner_autocomplete.py` |
+| K-D7 | Oproepingen: één pdf-run per rapport in plaats van twee per eigenaar | `models/vme_assembly_meeting.py` |
 
 ## Kritiek
 
@@ -106,7 +121,7 @@ Elke fix staat in een eigen commit, met een test waar dat kan.
 - **Probleem:** de basis bevat werken die uit het reservekapitaal betaald zijn (`vme_reserve_move_id`) en privékosten van aanvragen (`vme_request_id`). Een jaar met grote werken verhoogt zo het wettelijke minimum van het jaar erna, en blokkeert de cyclusstap "budget".
 - **Herstel (uitgevoerd):** het domein van `_get_previous_year_charges_by_budget` sluit `vme_reserve_move_id` en `vme_request_id` uit, met `# LEGAL-CHECK: art. 3.86 §3 BW`. `docs/dev/rekenregels.md` en `legal-checks.md` zijn bijgewerkt. Test: `test_reserve_minimum_counts_only_ordinary_charges`. Het minimum daalt in een jaar na grote werken; dat is de bedoeling.
 
-**B-F7. Nergens `check_company`** ⏳
+**B-F7. Nergens `check_company`** ✅ (deels)
 - **Voorbeelden:**
   - `vme_distribution_rule.py:22` (`account_id`);
   - `vme_budget_tracking.py:54-61`;
@@ -115,7 +130,9 @@ Elke fix staat in een eigen commit, met een test waar dat kan.
   - `vme_works.py:415`, `vme_damage.py:339`;
   - de koppelingen in rentmeester.
 - **Probleem:** alleen de domeinen in de views beschermen. Een import, RPC (het AI-script) of code met sudo kan een record uit de company van een andere VME koppelen.
-- **Herstel:** `_check_company_auto = True` en `check_company=True` per model. Het gedrag verandert alleen voor ongeldige data.
+- **Herstel:**
+  - Uitgevoerd: `_check_company_auto` en `check_company=True` op de rekening van de verdeelregel, rekening en sleutel van een budgetregel, en `vme_works_id` en `vme_reserve_move_id` op facturen. Bankrekeningen hebben geen eigen company, dus daar zou `check_company` alles doorlaten. Een constraint eist nu dat de rekeningen van de VME van haar eigen partner zijn, en dat de rekening van een SEPA-mandaat van de eigenaar is. Tests: `test_check_company.py`.
+  - Nog open ⏳: de koppelingen in rentmeester, `vme_damage.py`, en de andere Many2one's naar records met een company (installaties, contracten).
 
 **B-R3. Waalse indexstop voor EPB-label D staat op 50%** ⏳ (juridisch na te kijken)
 - **Waar:** `vme_rentmeester/models/rent_rules.py:57-64`
@@ -158,7 +175,7 @@ Elke fix staat in een eigen commit, met een test waar dat kan.
 | B-D7 ✅ | `models/vme_works.py:58-70`, `:200-216` | Werkenlijst: per rij een search plus een optelling in Python over alle lijnen van het reservekapitaal | Uitgevoerd: saldo en vastgelegde werken één keer per VME, `_get_fund_balance` met `_read_group`; test `test_reserve_in_the_list_does_not_query_per_works` |
 | B-F8 | `wizard/vme_provision_call_wizard.py:37-61` | Voorbeeld in de provisiewizard: ongeveer 400 queries per wijziging bij 200 VME's | Eén `vme.budget`-search en de waarschuwing voor de hele recordset |
 | K-D18 | crons `ir_cron_vme_cycle`, `ir_cron_vme_contract_activities`, `ir_cron_vme_inspection_activities` | Geen `_commit_progress`. De cycluscron maakt oproepingen met pdf's voor alle VME's in één transactie, dus één fout rolt alles terug. | `_commit_progress` per VME, zoals `vme_provision_call_run` |
-| K-D7 | `models/vme_assembly_meeting.py:439-466` | Twee pdf's per eigenaar, één voor één gerenderd | Rapport in één keer renderen of naar de achtergrond verplaatsen |
+| K-D7 ✅ | `models/vme_assembly_meeting.py:439-466` | Twee pdf's per eigenaar, één voor één gerenderd | Uitgevoerd: één wkhtmltopdf-run voor alle oproepingen en één voor alle jaarafrekeningen (`_render_pdf_per_record`), met terugval per record; de overbodige afrekening per eigenaar ter controle is weg. Test `test_convocation_pdfs_in_one_run`. Nog niet gemeten op de schaaldatabase |
 
 ### Odoo-idioom
 
@@ -188,6 +205,12 @@ Elke fix staat in een eigen commit, met een test waar dat kan.
 - **Herstel:**
   - Draai beide scripts (ze kunnen veilig opnieuw) één keer op langlevende databases, of maak `vme_demo` opnieuw aan.
   - Spreek af dat alleen de merge-commit de versie verhoogt.
+
+### Privacy
+
+**K-P1. `partner_autocomplete` stuurt partnergegevens naar Odoo** ✅
+- **Probleem:** de module installeert zichzelf en stuurt getypte namen, btw-nummers (ook naar VIES) en het maildomein van elke nieuwe company naar buiten. Elke VME is een company.
+- **Herstel (uitgevoerd):** `models/partner_autocomplete.py` blokkeert de oproepen; `vme_belgie` hangt van de module af, zodat de overrides na haar komen. Test: `test_partner_autocomplete.py`.
 
 ## Klein
 
