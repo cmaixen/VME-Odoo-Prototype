@@ -99,8 +99,8 @@ Draai dit ongeveer 15 minuten voor de demo, in de map van het project. Docker (O
 
 ### Extra: het boekjaar afsluiten (1 minuut)
 
-1. Open **Residentie Linde** en klik op **Boekjaar afsluiten**. Kies het boekjaar *2026*. De controles staan in het groen; alleen "het boekjaar loopt nog" is oranje.
-2. **Afrekening voorbereiden**: 13 concept-creditnota's, samen 5.401,00 €. A1 krijgt 555,67 € terug. Bij A3 blijft de onbetaalde oproep een eigen factuur, en de verkoper en de koper van A5 krijgen elk hun deel.
+1. Open **Residentie Linde** en klik op **Boekjaar afsluiten**. Kies het boekjaar *2026*. Eén controle staat in het rood: de ereloonfactuur van de syndicus voor september staat nog in concept. Klik op de link eronder, **Bevestig** de factuur (ze wordt meteen verdeeld) en ga terug. Nu is alles groen; alleen "het boekjaar loopt nog" is oranje.
+2. **Afrekening voorbereiden**: 13 concept-creditnota's, samen 4.334,51 €. A1 krijgt 474,62 € terug. Bij A3 blijft de onbetaalde oproep een eigen factuur, en de verkoper en de koper van A5 krijgen elk hun deel.
 3. **Resultaat en overdracht**: werkkapitaal 0,00 € na de afrekening, reservekapitaal 2.400,00 € naar 2027, niets terugbetaald.
 4. Benadruk: alles is een concept. **Alles bevestigen** boekt, maar verstuurt niets. **Boekjaar afsluiten** (alleen voor een beheerder) vergrendelt 2026. Doe dat in de demo niet, of heropen meteen: anders komen de facturen van de andere stappen in 2027 terecht.
 

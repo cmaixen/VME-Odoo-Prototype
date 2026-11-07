@@ -87,7 +87,9 @@ class VmeFiscalClosing(models.Model):
             currency = closing.currency_id
             closing.settlement_count = len(moves)
             closing.settlement_draft_count = len(moves.filtered(lambda m: m.state == "draft"))
-            closing.settlement_total = currency.round(sum(_signed(m) for m in moves))
+            total = sum(_signed(m) for m in moves)
+            # A new form has no VME yet, and so no currency.
+            closing.settlement_total = currency.round(total) if currency else total
             closing.company_selected = closing.company_id in self.env.companies
             states = dict(all_moves._fields["state"]._description_selection(self.env)) if all_moves else {}
             rows = Markup("").join(
@@ -184,6 +186,16 @@ class VmeFiscalClosing(models.Model):
         steps = ("prepare",) if step == "prepare" else ("prepare", "close")
         return [check for check in self._get_checks() if not check["ok"] and check["blocking"] in steps]
 
+    def _record_links(self, records, limit=10):
+        """Links to the records behind a failed check, so the employee can open and fix them."""
+        if not records:
+            return ""
+        links = Markup(", ").join(
+            Markup("<a href='/odoo/%s/%s' target='_blank'>%s</a>") % (record._name, record.id, record.display_name)
+            for record in records[:limit])
+        more = Markup(" …") if len(records) > limit else ""
+        return Markup("<div class='ms-4 small'>%s%s</div>") % (links, more)
+
     @api.depends("association_id", "year", "state", "settlement_move_ids.state")
     def _compute_check_html(self):
         for closing in self:
@@ -193,10 +205,10 @@ class VmeFiscalClosing(models.Model):
                 continue
             checks = closing._get_checks()
             rows = Markup("").join(
-                Markup("<li class='%s'><i class='fa %s me-2'/>%s</li>") % (
+                Markup("<li class='%s'><i class='fa %s me-2'/>%s%s</li>") % (
                     "text-success" if check["ok"] else "text-danger" if check["blocking"] else "text-warning",
                     "fa-check" if check["ok"] else "fa-times" if check["blocking"] else "fa-exclamation-triangle",
-                    check["message"])
+                    check["message"], closing._record_links(check["records"]) if not check["ok"] else "")
                 for check in checks)
             closing.check_html = Markup("<ul class='list-unstyled mb-0'>%s</ul>") % rows
             failed = {check["blocking"] for check in checks if not check["ok"]}

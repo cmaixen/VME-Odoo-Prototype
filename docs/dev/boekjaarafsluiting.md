@@ -15,7 +15,7 @@ Eén dossier per VME en boekjaar (SQL-uniek op `association_id`, `year`), met `m
 | `summary_html` | Berekend uit `_get_carry_forward()`. |
 | `working_result`, `reserve_result`, `working_capital`, `reserve_capital`, `owner_receivable`, `supplier_payable`, `bank_working`, `bank_reserve` | Snapshot van de overdracht, geschreven door `action_close()`. |
 
-Toegang: `base.group_user` mag lezen, schrijven en aanmaken, maar niet verwijderen. Er is geen company-regel, want een medewerker opent het dossier vanuit de VME terwijl bovenaan nog een ander bedrijf geselecteerd kan zijn. De commissaris volgt het patroon van `vme_council_security.xml`: hij leest alleen de dossiers van zijn VME's en kan niets wijzigen (`security/vme_fiscal_closing_security.xml`). Afsluiten en heropenen controleren zelf op `account.group_account_manager` (`_check_manager`) en schrijven de vergrendeling als `sudo()`.
+Toegang: `base.group_user` mag lezen, schrijven en aanmaken, maar niet verwijderen. Zoals elk VME-model heeft het een globale company-regel op `user.company_ids` (de toegestane bedrijven, niet de geselecteerde), zodat een medewerker het dossier ook opent terwijl bovenaan een ander bedrijf staat. De commissaris volgt het patroon van `vme_council_security.xml`: hij leest alleen de dossiers van zijn VME's en kan niets wijzigen (`security/vme_fiscal_closing_security.xml`). Afsluiten en heropenen controleren zelf op `account.group_account_manager` (`_check_manager`) en schrijven de vergrendeling als `sudo()`.
 
 ### Meerdere bedrijven
 
@@ -32,6 +32,10 @@ De record-regels van `account.move` verbergen de documenten van een bedrijf dat 
 - `vme.fiscal.closing._get_checks()`: lijst van dicts `{code, ok, blocking, message, records}`. Codes: `complete`, `draft_bills`, `draft_provisions`, `bank`, `settlement`, `year_over`, `previous`. `blocking` is `"prepare"` (blokkeert voorbereiden en afsluiten), `"close"` (blokkeert alleen afsluiten) of `False` (waarschuwing).
 - Acties: `action_prepare()`, `action_post_settlements()`, `action_close()`, `action_reopen()`.
 
+## Jaarcyclus
+
+De stap "Boekjaar afsluiten" van de jaarcyclus (`vme.cycle.step`, code `closing`) koppelt bij het klaarzetten het dossier van het vorige jaar (`_prepare_closing` maakt het als concept aan als het nog niet bestaat), zodat **Open** naar het dossier gaat. De stap is afgerond zodra `fiscalyear_lock_date` op 31/12 staat (`_cycle_fiscal_year_closed`), wat `action_close` doet.
+
 ## Controles
 
 | Code | Wat | Blokkeert |
@@ -43,6 +47,8 @@ De record-regels van `account.move` verbergen de documenten van een bedrijf dat 
 | `settlement` | nog niet voorbereid, of afrekeningsdocumenten in concept | afsluiten |
 | `year_over` | vandaag na 31/12 van het jaar | waarschuwing |
 | `previous` | vorig jaar afgesloten, of geen boekingen vóór dit jaar | waarschuwing |
+
+`check_html` toont onder een mislukte controle links naar de records (`records`, maximaal tien, via `_record_links`), zodat de medewerker de factuur in concept of de bankregel meteen opent. De demohistoriek laat de ereloonfacturen van de syndicus als concept in de VME staan; die houden het voorbereiden tegen tot een medewerker ze bevestigt (in de `vme_slow`-test gebeurt dat in `setUpClass`).
 
 De controle `bank` vangt op wat Odoo zelf weigert bij het zetten van een vergrendeldatum (`_validate_locks`, met een Engelse melding).
 

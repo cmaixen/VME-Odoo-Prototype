@@ -38,11 +38,12 @@ Daaronder staan de open vorderingen op eigenaars, de schulden aan leveranciers e
 
 Na het laden van de demohistoriek opent u **Residentie Linde**, klikt u op **Boekjaar afsluiten** en kiest u het boekjaar **2026**.
 
-- De controles zijn groen. Alleen "Het boekjaar 2026 loopt nog" is een oranje waarschuwing, want de demo speelt in november 2026.
-- **Afrekening voorbereiden** maakt 13 concept-creditnota's, samen 5.401,00 €. Alle eigenaars krijgen geld terug: de vier provisieoproepen van 2026 zijn gevraagd, maar de kosten lopen pas tot november.
-- **Eigenaar Linde A1** krijgt 555,67 € terug.
-- **Eigenaar Linde A3** betaalde de vierde oproep (432 €) niet. Die blijft een open factuur. Zijn creditnota (526,81 €) gaat alleen over het verschil tussen zijn kosten en de gevraagde provisies.
-- Kavel **A5** is op 1 juli verkocht. Verkoper en koper krijgen elk een eigen creditnota voor hun deel van het jaar.
+- Eén controle staat in het rood: "Leveranciersfacturen van 2026 in concept: 1". Het is de ereloonfactuur van de syndicus voor september (1.066,49 €). Klik op de link onder de controle, kijk de factuur na en klik op **Bevestigen**: ze wordt meteen over de eigenaars verdeeld. Ga terug naar de afsluiting.
+- Nu zijn de controles groen. Alleen "Het boekjaar 2026 loopt nog" is een oranje waarschuwing, want de demo speelt in november 2026.
+- **Afrekening voorbereiden** maakt 13 concept-creditnota's, samen 4.334,51 €. Alle eigenaars krijgen geld terug: de vier provisieoproepen van 2026 zijn gevraagd, maar de kosten lopen pas tot november.
+- **Eigenaar Linde A1** krijgt 474,62 € terug.
+- **Eigenaar Linde A3** betaalde de vierde oproep (432 €) niet. Die blijft een open factuur. Zijn creditnota (450,02 €) gaat alleen over het verschil tussen zijn kosten en de gevraagde provisies.
+- Kavel **A5** is op 1 juli verkocht. Verkoper en koper krijgen elk een eigen creditnota voor hun deel van het jaar: 104,25 € en 351,67 €.
 - Op **Resultaat en overdracht** is het resultaat van het werkkapitaal na de afrekening 0,00 €. Het reservekapitaal van 2.400,00 € gaat volledig over naar 2027.
 
 Staat bovenaan rechts een ander bedrijf dan Residentie Linde, dan toont het tabblad de documenten als tabel. Zet het bedrijf op Residentie Linde om ze te openen.
@@ -65,6 +66,9 @@ Je kunt ze gewoon boeken. Odoo zet de boekingsdatum dan automatisch in de eerste
 
 **Ik zie de documenten niet in de lijst, alleen in een tabel.**
 Bovenaan rechts staat een ander bedrijf. Zet het bedrijf van de VME aan; dan kun je elk document openen.
+
+**Onder een rode controle staan links. Wat doe ik ermee?**
+Elke link opent het document dat de afsluiting tegenhoudt, bijvoorbeeld een factuur in concept. Bevestig of verwijder het, en ga terug naar de afsluiting: de controles worden opnieuw berekend.
 
 **De knop "Boekjaar afsluiten" staat er niet.**
 De knop verschijnt pas als alle rode controles opgelost zijn en alle afrekeningsdocumenten bevestigd zijn. Je moet ook beheerder van de boekhouding zijn. Kijk het tabblad **Controles** na.

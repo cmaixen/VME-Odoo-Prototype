@@ -33,7 +33,7 @@
                             confirm="Alle concepten van de afrekening worden geboekt. Er wordt niets verstuurd. Verder?"/>
                     <button name="action_close" type="object" string="Boekjaar afsluiten" class="btn-primary"
                             invisible="state != 'prepared' or not can_close" groups="account.group_account_manager"
-                            confirm="Het boekjaar wordt vergrendeld: niemand kan er nog iets in boeken tot een beheerder het heropent. Verder?"/>
+                            confirm="Het boekjaar wordt vergrendeld: wat geboekt is, kan niet meer veranderen, en een nieuwe boeking met een datum in dit jaar komt in het volgende jaar terecht, tot een beheerder het heropent. Verder?"/>
                     <button name="action_reopen" type="object" string="Heropenen"
                             invisible="state != 'closed'" groups="account.group_account_manager"
                             confirm="De vergrendeling van dit boekjaar wordt opgeheven. Verder?"/>

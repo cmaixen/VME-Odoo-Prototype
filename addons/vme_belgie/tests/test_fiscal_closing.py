@@ -2,7 +2,7 @@ from datetime import date
 
 from odoo.exceptions import AccessError, UserError
 from odoo.fields import Command
-from odoo.tests import TransactionCase, tagged
+from odoo.tests import Form, TransactionCase, tagged
 
 YEAR = 2025
 
@@ -260,6 +260,14 @@ class TestFiscalClosing(TransactionCase):
         self.assertIn("Resultaat van 2025", self.closing.summary_html)
         self.assertIn("Over te dragen naar 1/1/2026", self.closing.summary_html)
 
+    def test_new_form_from_the_menu(self):
+        # "Nieuw" in VME > Afsluiting boekjaar: no VME yet, so no company and no currency.
+        form = Form(self.env["vme.fiscal.closing"])
+        self.assertEqual(form.settlement_total, 0)
+        form.association_id = self.vme
+        form.year = YEAR - 1  # YEAR already has a closing in setUp
+        self.assertEqual(form.save().company_id, self.company)
+
 
 # The full demo year takes minutes: only with --test-tags vme_slow.
 @tagged("post_install", "-at_install", "-standard", "vme_slow")
@@ -281,6 +289,13 @@ class TestFiscalClosingDemo(TransactionCase):
         cls.env.cr.execute("ANALYZE account_move, account_move_line, account_partial_reconcile, account_payment, "
                            "account_account, res_partner")
         cls.vmes = cls.env["vme.association"].search([("name", "in", ("Residentie Linde", "Hof ter Beuken", "Kaaihuis"))])
+        # The demo leaves the fee bills of the syndic as drafts in the VMEs; they block the closing
+        # until an employee confirms them, as here.
+        drafts = cls.env["account.move"].search([
+            ("company_id", "in", cls.vmes.company_id.ids), ("move_type", "in", ("in_invoice", "in_refund")),
+            ("state", "=", "draft"), ("invoice_date", "<=", date(2026, 12, 31))])
+        for bill in drafts:
+            bill.with_user(admin).with_company(bill.company_id).action_post()
 
     def test_settle_demo_year(self):
         self.assertEqual(len(self.vmes), 3)
