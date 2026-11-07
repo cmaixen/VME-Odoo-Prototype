@@ -9,6 +9,8 @@ Je werkt altijd in twee stappen:
 
 Eén overstap is één VME. Voor een kantoor met veel gebouwen doe je dit per gebouw.
 
+Krijg je een overdrachtspakket van een syndicus die ook dit platform gebruikt? Laad de zip zoals ze is op: ze bevat de bestanden in het juiste formaat (zie [Een VME overdragen aan een nieuwe syndicus](overdracht-syndicus.md)).
+
 Neem je een gebouw over van een andere syndicus en heb je geen export, maar wel de basisakte en de notulen? Dan leest de AI die voor je: zie [Een gebouw overnemen met de basisakte en de notulen](overname-basisakte-ai.md).
 
 ## Wat heb ik nodig?

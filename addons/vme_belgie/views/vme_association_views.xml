@@ -23,6 +23,8 @@
                 <header>
                     <button name="action_open_annual_statement" type="object" string="Jaarafrekening" invisible="not id"/>
                     <button name="action_open_financial_statements" type="object" string="Balans en resultatenrekening" invisible="not id"/>
+                    <button name="action_open_handover" type="object" string="Overdracht aan nieuwe syndicus" invisible="not id"
+                            groups="!vme_belgie.group_vme_auditor"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">

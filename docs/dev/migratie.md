@@ -4,6 +4,8 @@ Een syndicus die overstapt, brengt een hele portefeuille mee. We kennen het expo
 
 Code: `addons/vme_belgie/models/vme_migration.py`, scherm `views/vme_migration_views.xml`, tests `tests/test_migration.py`, voorbeeldbestanden `demo_data/migratie/`.
 
+De omgekeerde weg, een VME overdragen aan een nieuwe syndicus, schrijft exact dit formaat: [overdracht.md](overdracht.md). Een overdrachtspakket leest dus zonder omzetting terug in.
+
 Een overname met de basisakte en de notulen in plaats van (of naast) een export: [overname-ai.md](overname-ai.md). Die levert de tabellen `vme`, `kavels`, `sleutels`, `werken`, `procedures` en `mandaten` als voorstel, via het haakje `_apply_proposal`.
 
 ## Werking
