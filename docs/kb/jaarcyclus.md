@@ -21,7 +21,7 @@ De stappen hangen vast aan de **laatste dag om de oproeping te versturen**: de d
 
 | Stap | Klaargezet vanaf | Uiterlijk | Wat staat er klaar |
 | --- | --- | --- | --- |
-| Boekjaar vorig jaar afsluiten | 1 januari | 21 dagen vóór de laatste oproepingsdag | Een taak. De stap is afgerond als de afsluitdatum van het boekjaar gezet is, of als u de taak afvinkt |
+| Boekjaar vorig jaar afsluiten | 1 januari | 21 dagen vóór de laatste oproepingsdag | Een taak. **Open** gaat naar de afsluiting van het boekjaar (zie [Het boekjaar afsluiten](boekjaar-afsluiten.md)). De stap is afgerond als het boekjaar afgesloten is, of als u de taak afvinkt |
 | Jaarafrekening vorig jaar | 1 januari | 7 dagen vóór de laatste oproepingsdag | Een taak om de afrekening na te kijken; ze gaat mee met de oproeping |
 | Budget en reservefonds | 60 dagen vóór de laatste oproepingsdag | 7 dagen vóór de laatste oproepingsdag | Een taak met het minimum voor het reservefonds (5% van de gewone lasten van vorig jaar). Afgerond als het budget bestaat en het minimum haalt |
 | AV plannen | 120 dagen vóór de AV-periode | 30 dagen vóór de laatste oproepingsdag | De AV-planner stelt een datum voor in een vrij blok. U bevestigt |

@@ -132,6 +132,12 @@ Sinds er buitengewone AV's zijn, kan een VME meer dan één AV per jaar hebben. 
 - **`odoo i18n export` via `docker compose run`** faalt met "unrecognized arguments: --db_host": het entrypoint plakt de databaseverbinding achter elk commando. Gebruik een configbestand (`-c`), zie [vertaling.md](vertaling.md#nieuwe-termen-bijwerken).
 - **Tekst in een datumformaat of zinnen in stukken** (`'\'om\' HH:mm'`, "op de `<t t-if>`buitengewone`</t>` algemene vergadering") zijn niet te vertalen. Volledige zinnen per tak.
 
+## Afsluiting van het boekjaar
+
+- **De vergrendeldatum weigert niets.** In Odoo 19 weigert `fiscalyear_lock_date` een nieuwe boeking in het afgesloten jaar niet. `_post` verschuift de boekingsdatum naar de eerste open periode. Daarom telt de jaarafrekening een factuur nu ook op de boekingsdatum (zie [boekjaarafsluiting.md](boekjaarafsluiting.md)). Een test op "boeken faalt" moet controleren dat de datum verschoven is.
+- **Documenten van een ander bedrijf zijn onzichtbaar, ook in een One2many.** Zonder `sudo()` telde het dossier 0 afrekeningsdocumenten als bovenaan een ander bedrijf stond. "Opnieuw voorbereiden" had dan alles dubbel geboekt.
+- **Rekeningcodes hangen van het bedrijf af.** `account.code` is `False` buiten het bedrijf van de rekening. In tests lees je de code daarom `with_company`.
+
 ## Bekende problemen (nog open)
 
 - Geen op dit moment.

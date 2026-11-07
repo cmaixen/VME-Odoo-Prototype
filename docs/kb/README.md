@@ -27,6 +27,7 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 9. [De jaarafrekening lezen en afdrukken](jaarafrekening.md)
 10. [De balans en resultatenrekening van een VME maken](balans-en-resultatenrekening.md)
 11. [Invordering van achterstallen: herinneringen, interest en doorsturen](invordering.md)
+11b. [Het boekjaar afsluiten: afrekening boeken, overdracht en vergrendeling](boekjaar-afsluiten.md)
 
 ### Gebouw en installaties
 

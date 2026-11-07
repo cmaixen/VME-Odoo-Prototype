@@ -62,7 +62,8 @@ Op `vme.association`: `cycle_start_date` (leeg = geen cyclus; bestaande VME's ve
 | `provision` | `vme.provision.call.wizard._create_call()` met `post_invoices=False` (stap 5) | `account.move` in `draft`; een oproep die al met de hand gemaakt is, wordt hergebruikt |
 | `budget` | `vme.budget.reserve_warning`, `_get_previous_year_charges`, `RESERVE_MINIMUM_RATE` (stap 5) | taak met het minimum |
 | `statement` | `vme.association.action_open_annual_statement` (stap 6) | taak |
-| `closing`, `minutes`, `approved_budget` | — | taak |
+| `closing` | het dossier `vme.fiscal.closing` van `year - 1` (draft, `_prepare_closing` in `vme_fiscal_closing.py`) | taak |
+| `minutes`, `approved_budget` | — | taak |
 | `assembly` | — | mijlpaal, geen taak |
 
 Elke stap krijgt hoogstens één activiteit (`mail.mail_activity_data_todo`). Een `UserError` of `ValidationError` (geen budget, onbevestigde rekening, AV niet bevestigd) wordt per stap in een savepoint opgevangen: de stap gaat naar `ready` met de melding in `note` en een taak "Los eerst op". Eén VME blokkeert de andere niet.
@@ -85,7 +86,7 @@ Stappen in `MANUAL_CODES` (`closing`, `statement`, `agenda`, `minutes`, `approve
 
 ## Haken voor andere stappen
 
-- `vme.association._cycle_fiscal_year_closed(year)`: de afsluiting van het boekjaar (eigen stap) kan dit overschrijven als ze iets anders dan de afsluitdatum gebruikt.
+- `vme.association._cycle_fiscal_year_closed(year)`: blijft de afsluitdatum. De afsluiting van het boekjaar (`vme.fiscal.closing.action_close`) zet die, en heropenen zet ze terug, dus een override is niet nodig.
 - `vme.association._cycle_syndic_renewal_due(year)`: standaard `False`. Het mandaat van de syndicus (eigen stap) overschrijft het; dan zet de stap `agenda` "Herbenoeming van de syndicus" op de agenda.
 - `vme.association._get_building_card_data()` wordt uitgebreid met `cycle_steps` (`None` als de cyclus uit staat; de gebouwkaart verbergt dan het blok).
 

@@ -41,13 +41,16 @@ In **Hof ter Beuken** is het gas van de centrale verwarming verdeeld op verbruik
 ## Veelgestelde vragen
 
 **Welke facturen tellen mee in een jaar?**
-Alle geboekte leveranciersfacturen met een factuurdatum in dat jaar, ook als hun kostperiode deels in een ander jaar valt. De kostperiode bepaalt alleen hoe de kost tussen verkoper en koper verdeeld wordt.
+Alle geboekte leveranciersfacturen met een factuurdatum in dat jaar, ook als hun kostperiode deels in een ander jaar valt. De kostperiode bepaalt alleen hoe de kost tussen verkoper en koper verdeeld wordt. Komt er een factuur binnen nadat haar jaar is afgesloten, dan telt ze mee in het jaar waarin ze geboekt wordt (zie [Het boekjaar afsluiten](boekjaar-afsluiten.md)).
 
 **Welke provisies tellen mee?**
 De geboekte provisiefacturen van de oproepen voor dat jaar (het budgetjaar, ook als de oproep al in december van het jaar ervoor vertrok). Alleen wat betaald is, wordt van de kosten afgetrokken.
 
 **Waarom worden openstaande provisies niet verrekend in het saldo?**
 Zo blijft de afrekening eenvoudig te volgen: het saldo gaat alleen over wat de eigenaar werkelijk betaalde. Wat nog open staat, blijft apart verschuldigd en staat duidelijk op de afrekening.
+
+**Hoe wordt het saldo geboekt?**
+Bij de afsluiting van het boekjaar: zie [Het boekjaar afsluiten](boekjaar-afsluiten.md). Wie bijbetaalt, krijgt een afrekeningsfactuur; wie terugkrijgt, een creditnota.
 
 **Waarom wordt het reservekapitaal niet afgerekend?**
 Het reservekapitaal is eigendom van de VME. Een eigenaar krijgt het niet terug, ook niet bij een verkoop.

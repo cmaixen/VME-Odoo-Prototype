@@ -58,6 +58,7 @@ erDiagram
 | `vme.works.comparison` / `.column` / `.line` | Offertevergelijking | Aan een `vme.works`; kolommen per offerte (`quote_id`, PDF, gelezen bedragen en btw-tarief), rijen per rubriek met per kolom waarde, pagina en status; statussen Wacht op AI, Concept, Goedgekeurd; `assembly_id` voor de oproeping. Zie [offertes-vergelijken.md](offertes-vergelijken.md). |
 | `vme.insurance.policy` / `vme.damage.claim` | Polis en schadedossier | Polis per VME met vrijstelling en aangiftetermijn; schadedossier met kavels, termijnen, expertise, herstelling en vergoeding. |
 | `vme.provision.call` | Provisieoproep | Uniek per budget en nummer. `date`, `date_due`, `invoice_ids`; opgeslagen sommen per fonds, betaalstatus berekend met `compute_sudo`. Niet verwijderbaar (geen `unlink` in de ACL). |
+| `vme.fiscal.closing` | Afsluiting boekjaar | Uniek per VME en jaar; `state` (te controleren, voorbereid, afgesloten), `settlement_move_ids`, controles en overdracht berekend, snapshot bij het afsluiten. Zie [boekjaarafsluiting.md](boekjaarafsluiting.md). |
 | `vme.arrears` | Achterstal (SQL-view) | Open, vervallen debiteurenlijnen van alle VME's met ouderdom; zie [invordering.md](invordering.md). |
 | `vme.collection` | Invorderingsdossier | Per VME en eigenaar; niveau, kosten, doorsturen. Eén niet-afgesloten dossier per VME en eigenaar. |
 | `vme.collection.reminder` | Herinnering | Niveau 1-3, concept of verstuurd, momentopname van de open bedragen en de tekst. |
@@ -112,6 +113,7 @@ De modellen van de rentmeester (`vme.rent.*`) staan in de module `vme_rentmeeste
 | `account.move` | `vme_allocation_ids` | De kostenverdeling van deze factuur. |
 | `account.move` | `vme_provision_call_id`, `vme_fund` | Op provisiefacturen: de oproep en het fonds (`working` of `reserve`). |
 | `account.move` | `vme_request_id` | Privé-kost van een aanvraag: de factuur aan de eigenaar, of de factuur van de slotenmaker. Niet verdeeld en niet in de jaarafrekening. |
+| `account.move` | `vme_fiscal_closing_id` | Op een afrekeningsfactuur of -creditnota: het afsluitdossier van het boekjaar. |
 | `account.move` | `vme_collection_id` | Op een factuur met nalatigheidsinterest en schadevergoeding: het invorderingsdossier. |
 | `account.move` | `vme_ai_state`, `vme_ai_reading`, `vme_ai_model`, `vme_ai_iban`, `vme_ai_check_ids`, `vme_ai_danger_count`, `vme_ai_warning_count`, `vme_ai_reviewed_by_id`, `vme_ai_reviewed_date` | PDF-factuur zonder UBL, gelezen door AI (stap 21, zie [pdf-ai-lezen.md](pdf-ai-lezen.md)). `vme_ai_iban` is het IBAN zoals gelezen; het wordt nooit een `res.partner.bank`. |
 | `vme.association` | `vme_receive_document()`, `_vme_document_folder()` | Door AI geklasseerd document als bijlage op de VME; het tweede is het uitbreidingspunt voor de mappen van stap 15. |
@@ -140,7 +142,7 @@ De modellen van de rentmeester (`vme.rent.*`) staan in de module `vme_rentmeeste
 | Code | Naam | Waar |
 | --- | --- | --- |
 | 611000 | Onderhoudskosten en herstellingen | Standaardrekening van het aankoopdagboek van elke VME |
-| 100100 | Werkkapitaal | Opbrengstzijde van provisiefacturen werkkapitaal (eigen vermogen) |
+| 100100 | Werkkapitaal | Opbrengstzijde van provisiefacturen werkkapitaal (eigen vermogen), en van de afrekening per eigenaar bij de afsluiting van het boekjaar |
 | 100200 | Reservekapitaal | Idem voor reservekapitaal |
 | 416100 | Door te rekenen privékosten | Privé-aanrekening van een aanvraag (factuur aan de eigenaar, credit) en de factuur van de slotenmaker (debet); wordt de eerste keer aangemaakt. Zie [aanvragen.md](aanvragen.md). |
 

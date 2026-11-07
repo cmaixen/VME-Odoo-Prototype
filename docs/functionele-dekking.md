@@ -25,6 +25,7 @@ Legende: ✅ gebouwd · 🔨 wordt nu gebouwd · 📋 gepland · ➖ bewust late
 | Afrekeningen | Jaarafrekening per eigenaar, ook op verbruik | ✅ | stap 6, 17 |
 | | Commissaris van de rekeningen met leestoegang | ✅ | stap 16 |
 | | Afrekening van lasten aan huurders | ✅ | stap 25 |
+| Afsluiting boekjaar | Saldo per eigenaar boeken (factuur of creditnota), resultaat en overdracht, boekjaar vergrendelen, controles vooraf | ✅ | afsluiting boekjaar |
 | Rappelopvolging | Overzicht, rappels in niveaus, interest, doorsturen | ✅ | stap 10 |
 | | Aangetekend versturen (PDF met verzendregister) | ✅ | stap 23 |
 | Indexatiebeheer | Huurindexering met uitzonderingen (gezondheidsindex, regels per gewest) | ✅ | stap 25 |

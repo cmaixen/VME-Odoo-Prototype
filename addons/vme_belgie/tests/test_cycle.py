@@ -257,6 +257,9 @@ class TestCycle(TransactionCase):
         self._sync(date(2027, 1, 5))
         step = self._step("closing")
         self.assertEqual(step.state, "ready")
+        # "Open" goes to the closing dossier of 2026.
+        self.assertEqual(step.res_model, "vme.fiscal.closing")
+        self.assertEqual(self.env["vme.fiscal.closing"].browse(step.res_id).year, 2026)
         self.vme.company_id.sudo().fiscalyear_lock_date = date(2026, 12, 31)
         self._sync(date(2027, 1, 6))
         self.assertEqual(step.state, "done")
