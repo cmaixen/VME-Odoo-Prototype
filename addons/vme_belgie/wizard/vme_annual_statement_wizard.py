@@ -58,7 +58,9 @@ class VmeAnnualStatementWizard(models.TransientModel):
                     "Controle: geboekte kosten %(bills)s, verdeeld %(allocated)s. Niet verdeeld: %(moves)s",
                     bills=money(data["bills_total"]), allocated=money(data["allocated_total"]),
                     moves=", ".join(data["undistributed_bills"].mapped("display_name")) or "-")
-            wizard.preview_html = check + Markup("<table class='table table-sm'>%s%s</table>") % (header, rows)
+            legend = Markup("<p class='text-muted small'>%s</p>") % self.env._(
+                "Saldo in het rood: de eigenaar betaalt bij. In het groen (min): in het voordeel van de eigenaar.")
+            wizard.preview_html = check + Markup("<table class='table table-sm'>%s%s</table>") % (header, rows) + legend
 
     def action_print(self):
         self.ensure_one()

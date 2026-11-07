@@ -2,4 +2,6 @@
 <odoo>
     <!-- Runs on every install and upgrade, so VME's created before step 7b get their address too. -->
     <function model="vme.association" name="_ensure_all_bill_aliases"/>
+    <!-- Same for the document layout: without one, the first PDF opens Odoo's layout wizard. -->
+    <function model="res.company" name="_ensure_report_layout"/>
 </odoo>

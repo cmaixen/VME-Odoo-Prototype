@@ -19,7 +19,10 @@ class VmeOwnerPortal(CustomerPortal):
 
     def _prepare_home_portal_values(self, counters):
         values = super()._prepare_home_portal_values(counters)
-        values["vme_owner"] = self._vme_partner()._vme_is_owner()
+        if not counters:
+            # Only for rendering /my: /my/counters returns every key, and Odoo's script stops at a
+            # key without a counter on the page, so no tile ever appeared.
+            values["vme_owner"] = self._vme_partner()._vme_is_owner()
         if "vme_count" in counters:
             values["vme_count"] = len(self._vme_partner()._vme_portal_associations())
         return values

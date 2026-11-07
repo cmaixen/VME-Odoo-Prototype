@@ -84,15 +84,24 @@ class TestInstallations(TransactionCase):
         Installation._cron_schedule_inspection_activities()
         self.assertEqual(len(self.lift.activity_ids), 1)
         self.assertEqual(self.lift.activity_ids.date_deadline, date(2026, 11, 12))
-        # A new inspection moves the due date beyond 60 days: no new task.
+        # A new inspection moves the due date beyond 60 days: the task is done, and no new one.
         self._inspection(self.lift, date(2026, 11, 1))
+        self.assertFalse(self.lift.activity_ids)
+        self.assertIn("Keuring geregistreerd", self.lift.message_ids[0].body)
         Installation._cron_schedule_inspection_activities()
-        self.assertEqual(len(self.lift.activity_ids), 1)
-        # A due date that moves back within 60 days gets exactly one more task.
+        self.assertFalse(self.lift.activity_ids)
+        # A due date that moves back within 60 days gets exactly one new task.
         self.lift.inspection_interval_months = 1  # due 01-12-2026, within 60 days
         Installation._cron_schedule_inspection_activities()
         Installation._cron_schedule_inspection_activities()
-        self.assertEqual(len(self.lift.activity_ids), 2)
+        self.assertEqual(len(self.lift.activity_ids), 1)
+        self.assertEqual(self.lift.activity_ids.date_deadline, date(2026, 12, 1))
+
+    def test_maintenance_visit_keeps_inspection_task(self):
+        self._inspection(self.lift, date(2026, 5, 12))  # due 12-11-2026
+        self.env["vme.installation"]._cron_schedule_inspection_activities()
+        self._inspection(self.lift, date(2026, 11, 3), kind="maintenance")
+        self.assertEqual(len(self.lift.activity_ids), 1)
 
     def test_remarks_follow_up(self):
         inspection = self._inspection(self.lift, date(2026, 5, 12), result="remarks", remarks=[
@@ -155,7 +164,10 @@ class TestInspectionInvoices(TransactionCase):
         return bill
 
     def test_bill_of_inspection_body_registers_inspection(self):
+        self.env["vme.installation"]._cron_schedule_inspection_activities()
+        self.assertEqual(self.lift.activity_ids.date_deadline, date(2026, 11, 12))
         bill = self._post_bill(self.edtc)
+        self.assertFalse(self.lift.activity_ids)  # "Keuring plannen" is done: no stale task in the werkbak
         inspection = self.lift.inspection_ids.filtered(lambda i: i.move_id == bill)
         self.assertEqual(len(inspection), 1)
         self.assertEqual(self.lift.last_inspection_date, date(2026, 11, 3))

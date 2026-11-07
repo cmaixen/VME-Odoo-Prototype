@@ -31,6 +31,7 @@ Alle wettelijke standaarden staan bovenaan het bestand, elk met `# LEGAL-CHECK:`
 `ir_cron_vme_inspection_activities` draait dagelijks `vme.installation._cron_schedule_inspection_activities()`:
 - Voor elke installatie waarvan de volgende keuring of risicoanalyse binnen `ACTIVITY_LEAD_DAYS` (60) valt, komt er één to-do (`mail.mail_activity_data_todo`) voor `responsible_user_id`.
 - Dubbels worden vermeden met `activity_inspection_due_date` en `activity_risk_analysis_due_date`: er komt pas een nieuwe taak als de vervaldatum verandert.
+- Een nieuw keuringsverslag (met de hand of uit een factuur) dat de volgende keuring voorbij de datum van de open taak schuift, vinkt die taak af met "Keuring geregistreerd" (`vme.installation._close_done_inspection_activity`, vanuit `vme.inspection.create`). Een onderhoudsbezoek verschuift de vervaldatum niet en laat de taak staan.
 - De demolader roept de cron één keer aan, zodat de demo meteen taken toont.
 
 ## Factuurkoppeling
@@ -47,7 +48,7 @@ Alle wettelijke standaarden staan bovenaan het bestand, elk met `# LEGAL-CHECK:`
 - de frequenties en grenzen
 - dat een onderhoudsbezoek niet als keuring telt, en de risicoanalyse
 - de herkeuring
-- dat de cron per vervaldatum één taak maakt
+- dat de cron per vervaldatum één taak maakt, en dat een nieuwe keuring (ook uit een factuur) die taak afvinkt
 - de opmerkingen en "over termijn"
 - de factuurkoppeling: een factuur van het keuringsorganisme, van een andere leverancier, en dezelfde factuur twee keer
 

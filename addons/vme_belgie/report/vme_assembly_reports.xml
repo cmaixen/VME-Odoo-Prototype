@@ -66,7 +66,7 @@
                 <p>
                     <t t-if="assembly.assembly_type == 'extraordinary'">De syndicus nodigt u uit op de buitengewone algemene vergadering van de VME</t>
                     <t t-else="">De syndicus nodigt u uit op de gewone algemene vergadering van de VME</t> <t t-out="vme.name"/>
-                    op <strong><span t-field="assembly.datetime_start" t-options="{'tz': 'Europe/Brussels', 'format': 'EEEE d MMMM yyyy'}"/> om <span t-field="assembly.datetime_start" t-options="{'tz': 'Europe/Brussels', 'format': 'HH:mm'}"/></strong>,
+                    op <strong><span t-field="assembly.datetime_start" t-options="{'tz_name': 'Europe/Brussels', 'format': 'EEEE d MMMM yyyy'}"/> om <span t-field="assembly.datetime_start" t-options="{'tz_name': 'Europe/Brussels', 'format': 'HH:mm'}"/></strong>,
                     <t t-if="assembly.slot_id.location_type == 'room'">
                         in <strong t-out="assembly.slot_id.room_id.name"/><t t-if="assembly.slot_id.room_id.address">, <t t-out="assembly.slot_id.room_id.address"/></t>.
                     </t>
@@ -140,7 +140,7 @@
                     <t t-if="vme.kbo_number"> · KBO <t t-out="vme.kbo_number"/></t>
                 </div>
                 <p>
-                    Vergadering van <span t-field="assembly.datetime_start" t-options="{'tz': 'Europe/Brussels', 'format': 'd MMMM yyyy'}"/> om <span t-field="assembly.datetime_start" t-options="{'tz': 'Europe/Brussels', 'format': 'HH:mm'}"/>
+                    Vergadering van <span t-field="assembly.datetime_start" t-options="{'tz_name': 'Europe/Brussels', 'format': 'd MMMM yyyy'}"/> om <span t-field="assembly.datetime_start" t-options="{'tz_name': 'Europe/Brussels', 'format': 'HH:mm'}"/>
                     in <t t-out="assembly.location"/><t t-if="assembly.meeting_mode == 'hybrid'"> en online</t>.
                     <t t-if="assembly.chair_id">Voorzitter: <t t-out="assembly.chair_id.name"/>.</t>
                     <t t-if="assembly.secretary_id">Secretaris: <t t-out="assembly.secretary_id.name"/>.</t>
@@ -184,7 +184,7 @@
                             (<t t-out="len(remote_votes.filtered(lambda v: v.source == 'online'))"/> online en
                             <t t-out="len(remote_votes.filtered(lambda v: v.source == 'written'))"/> schriftelijke stemmen
                             via het portaal<t t-if="item.voting_closed_at">, stemming gesloten om
-                            <span t-field="item.voting_closed_at" t-options="{'tz': 'Europe/Brussels', 'format': 'HH:mm'}"/></t>.)
+                            <span t-field="item.voting_closed_at" t-options="{'tz_name': 'Europe/Brussels', 'format': 'HH:mm'}"/></t>.)
                         </span>
                         <div t-if="item.vote_ids.filtered(lambda v: v.vote != 'for')" class="small text-muted">
                             Tegen of onthouding:

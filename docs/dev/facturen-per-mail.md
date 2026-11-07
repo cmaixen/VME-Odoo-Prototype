@@ -49,6 +49,8 @@ Nodig: module `vme_belgie` geüpgraded (alias en domein) en de demodata (leveran
 - Het afzenderadres bepaalt de partner alleen als de UBL er geen geeft; de UBL-decoder zoekt de leverancier op btw-nummer. In de tests heeft de leverancier daarom btw-nummer BE0000000394.
 - De UBL-bestanden vermelden als klant "VME Residentie Linde" enz.; Odoo controleert dat niet tegen de company. De alias bepaalt de VME, dus een leverancier die het verkeerde adres gebruikt, boekt in de verkeerde VME (concept, nagekeken door een mens).
 - Een mail zonder bijlage maakt geen factuur maar een bounce-mail (`mail.mail`) naar de afzender. In het prototype is er geen uitgaande mailserver, dus die blijft in de wachtrij.
+- Een UBL zonder PDF krijgt van Odoo een vervangende PDF "Gegenereerd door Odoo", opgemaakt met de company uit de omgeving. Bij een mail is dat de company van de mailgebruiker, niet die van de VME ("My Company, Verenigde Staten" bovenaan). `_extend_with_attachments` schakelt naar de company van de factuur en laat Odoo de decoder opnieuw opzoeken, want die was al aan de oude omgeving gebonden.
+- Het inlezen commit de cursor (zie de docstring van Odoo's `_extend_with_attachments`): een proef in `odoo shell` met `env.cr.rollback()` laat de factuur toch staan.
 - In tests: lots zonder eigenaar laten het automatisch verdelen bij het boeken mislukken (bericht in de chatter); geef de testkavels eigenaars.
 
 ## Testen

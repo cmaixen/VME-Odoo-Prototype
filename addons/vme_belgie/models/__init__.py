@@ -38,6 +38,7 @@ from . import vme_assembly_online
 from . import vme_financial_statements
 from . import vme_portal_requests
 from . import vme_cycle
+from . import res_company
 from . import vme_syndic
 from . import vme_provision_call_run
 from . import vme_work_item

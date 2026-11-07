@@ -40,7 +40,7 @@ Elke VME heeft installaties die op vaste tijdstippen gekeurd moeten worden: de l
 
 ## Krijg ik een herinnering?
 
-Ja. Elke nacht maakt Odoo een taak voor de verantwoordelijke medewerker zodra een keuring of een risicoanalyse van een lift binnen 60 dagen vervalt. U ziet de taak in het activiteitenicoon bovenaan en bij de installatie. Per vervaldatum komt er maar één taak.
+Ja. Elke nacht maakt Odoo een taak voor de verantwoordelijke medewerker zodra een keuring of een risicoanalyse van een lift binnen 60 dagen vervalt. U ziet de taak in het activiteitenicoon bovenaan en bij de installatie. Per vervaldatum komt er maar één taak. Zodra de nieuwe keuring geregistreerd is, met de hand of via de factuur van het keuringsorganisme, vinkt Odoo die taak zelf af.
 
 ## Werkt de vervaldatum zichzelf bij als de factuur van de keuring binnenkomt?
 
