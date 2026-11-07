@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 19.0-20261102\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-06 11:22+0000\n"
+"POT-Creation-Date: 2026-11-07 19:25+0000\n"
 "PO-Revision-Date: 2026-11-06 11:18+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -151,9 +151,9 @@ msgstr "<i class=\"fa fa-wrench me-2 text-o-color-1\"/>Gestion technique"
 #. module: vme_website
 #: model_terms:ir.ui.view,arch_db:vme_website.footer_copyright
 msgid ""
-"<span class=\"o_footer_copyright_name me-2 small\">Copyright &amp;copy; Quotis (werktitel, prototype)</span>"
+"<span class=\"o_footer_copyright_name me-2 small\">Copyright © Quotis (werktitel, prototype)</span>"
 msgstr ""
-"<span class=\"o_footer_copyright_name me-2 small\">Copyright &amp;copy; Quotis (nom provisoire, prototype)</span>"
+"<span class=\"o_footer_copyright_name me-2 small\">Copyright © Quotis (nom provisoire, prototype)</span>"
 
 #. module: vme_website
 #: model_terms:ir.ui.view,arch_db:vme_website.demo_request_form

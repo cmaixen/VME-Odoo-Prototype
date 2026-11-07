@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Only rendered into the handover package (wizard/vme_handover_wizard.py), so no print menu. -->
+    <!-- Only rendered into the handover package (wizard/vme_handover_wizard.py), so no print menu.
+         In the language of the VME, like the other VME documents (_document pattern, see docs/dev/vertaling.md). -->
     <record id="action_report_handover_form" model="ir.actions.report">
         <field name="name">Overdrachtsdocument</field>
         <field name="model">vme.handover.wizard</field>
@@ -41,185 +42,193 @@
     <template id="report_handover_form">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="wizard">
-                <t t-set="data" t-value="wizard._handover_data()"/>
+                <t t-set="data" t-value="wizard.with_context(lang=wizard.association_id.company_id.partner_id.lang or wizard.env.lang)._handover_data()"/>
                 <t t-set="currency" t-value="data['currency']"/>
                 <t t-set="company" t-value="data['company']"/>
                 <t t-set="o" t-value="wizard"/>
-                <t t-call="web.external_layout">
-                    <div class="page">
-                        <t t-call="vme_belgie.handover_header"><t t-set="title">Overdracht aan de nieuwe syndicus</t></t>
-
-                        <table class="table table-sm table-borderless mb-4">
-                            <tr><th style="width: 35%">Vorige syndicus</th>
-                                <td><t t-out="data['syndic_mandates'].partner_id.name or wizard.env.company.name"/>
-                                    <t t-if="data['syndic_mandates']"> (mandaat van <span t-field="data['syndic_mandates'].date_start"/>
-                                        tot <span t-field="data['syndic_mandates'].date_end"/>)</t></td></tr>
-                            <tr><th>Nieuwe syndicus</th><td t-out="wizard.recipient_id.name or '...'"/></tr>
-                            <tr><th>Overdrachtsdatum</th><td><span t-field="wizard.handover_date"/></td></tr>
-                            <tr><th>Over te dragen uiterlijk</th><td><span t-field="wizard.deadline"/>
-                                <small class="text-muted">(dertig dagen na het einde van het mandaat)</small></td></tr>
-                        </table>
-
-                        <h5>Bankrekeningen</h5>
-                        <table class="table table-sm mb-4">
-                            <thead><tr><th>Fonds</th><th>Rekening</th><th class="text-end">Saldo bank</th><th class="text-end">Stand fonds</th></tr></thead>
-                            <tbody>
-                                <tr t-foreach="data['banks']" t-as="bank">
-                                    <td t-out="bank['label']"/>
-                                    <td><t t-out="bank['iban'] or '-'"/> <small class="text-muted" t-out="bank['bank']"/></td>
-                                    <td class="text-end"><t t-out="bank['bank_balance']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td>
-                                    <td class="text-end"><t t-out="bank['fund_balance']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <p class="small text-muted">De volmachten op de rekeningen gaan over op de nieuwe syndicus; de bank vraagt daarvoor de beslissing van de algemene vergadering.</p>
-
-                        <h5>Lopende werken</h5>
-                        <table t-if="data['works']" class="table table-sm mb-4">
-                            <thead><tr><th>Werken</th><th>Status</th><th>Aannemer</th><th class="text-end">Budget of opdracht</th><th class="text-end">Gefactureerd</th></tr></thead>
-                            <tbody>
-                                <tr t-foreach="data['works']" t-as="works">
-                                    <td t-out="works.name"/>
-                                    <td><span t-field="works.state"/></td>
-                                    <td t-out="works.contractor_id.name or '-'"/>
-                                    <td class="text-end"><t t-out="works.contract_amount or works.budget" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td>
-                                    <td class="text-end"><t t-out="works.invoiced_amount" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <p t-else="" class="mb-4">Geen.</p>
-
-                        <h5>Schadedossiers</h5>
-                        <table t-if="data['claims']" class="table table-sm mb-4">
-                            <thead><tr><th>Schadegeval</th><th>Datum</th><th>Status</th><th>Verzekeraar en dossier</th><th class="text-end">Geraamd</th></tr></thead>
-                            <tbody>
-                                <tr t-foreach="data['claims']" t-as="claim">
-                                    <td t-out="claim.name"/>
-                                    <td><span t-field="claim.event_date"/></td>
-                                    <td><span t-field="claim.state"/></td>
-                                    <td><t t-out="claim.insurer_id.name or '-'"/> <t t-if="claim.insurer_reference">(<t t-out="claim.insurer_reference"/>)</t></td>
-                                    <td class="text-end"><t t-out="claim.estimated_amount" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <p t-else="" class="mb-4">Geen open schadedossiers.</p>
-
-                        <h5>Gerechtelijke procedures</h5>
-                        <ul t-if="data['procedures']" class="mb-4">
-                            <li t-foreach="data['procedures']" t-as="procedure">
-                                <t t-out="procedure['omschrijving']"/>
-                                <t t-if="procedure['stand']"> - <t t-out="procedure['stand']"/></t>
-                            </li>
-                        </ul>
-                        <p t-else="" class="mb-4">Geen.</p>
-
-                        <h5>Contracten en verzekeringen</h5>
-                        <table t-if="data['contracts'] or data['policies']" class="table table-sm mb-4">
-                            <thead><tr><th>Omschrijving</th><th>Partij</th><th>Nummer</th><th>Einde</th><th>Opzeggen uiterlijk</th></tr></thead>
-                            <tbody>
-                                <tr t-foreach="data['contracts']" t-as="contract">
-                                    <td t-out="contract.name"/>
-                                    <td t-out="contract.partner_id.name"/>
-                                    <td t-out="contract.reference or ''"/>
-                                    <td><span t-field="contract.date_end"/></td>
-                                    <td><span t-field="contract.notice_deadline"/></td>
-                                </tr>
-                                <tr t-foreach="data['policies']" t-as="policy">
-                                    <td><span t-field="policy.policy_type"/>: <t t-out="policy.name"/></td>
-                                    <td t-out="policy.insurer_id.name"/>
-                                    <td t-out="policy.policy_number"/>
-                                    <td><span t-field="policy.date_end"/></td>
-                                    <td><span t-field="policy.notice_deadline"/></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <p t-else="" class="mb-4">Geen.</p>
-
-                        <h5>Mandaten</h5>
-                        <table t-if="data['mandates']" class="table table-sm mb-4">
-                            <thead><tr><th>Rol</th><th>Persoon</th><th>Van</th><th>Tot</th></tr></thead>
-                            <tbody>
-                                <tr t-foreach="data['mandates']" t-as="mandate">
-                                    <td><span t-field="mandate.role"/></td>
-                                    <td t-out="mandate.partner_id.name"/>
-                                    <td><span t-field="mandate.date_start"/></td>
-                                    <td><span t-field="mandate.date_end"/></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <p t-else="" class="mb-4">Geen lopende mandaten in de raad of als commissaris.</p>
-
-                        <h5>Inhoud van het pakket</h5>
-                        <p>Het boekhoudkundig dossier staat in de CSV-bestanden (lezen in met "Overstap uit ander pakket"),
-                            met een openingsbalans op de overdrachtsdatum. Daarnaast:</p>
-                        <ul class="small">
-                            <li t-foreach="wizard.env.context.get('handover_files', [])" t-as="path" t-out="path"/>
-                        </ul>
-                        <t t-if="wizard.env.context.get('handover_warnings')">
-                            <h5>Aandachtspunten</h5>
-                            <ul><li t-foreach="wizard.env.context['handover_warnings']" t-as="warning" t-out="warning"/></ul>
-                        </t>
-                        <t t-if="wizard.note">
-                            <h5>Opmerkingen</h5>
-                            <p t-out="wizard.note" style="white-space: pre-line;"/>
-                        </t>
-
-                        <div class="row mt-5" style="page-break-inside: avoid;">
-                            <div class="col-6">
-                                <p><strong>Voor overdracht</strong><br/>de vorige syndicus</p>
-                                <p class="mt-5">datum en handtekening</p>
-                            </div>
-                            <div class="col-6">
-                                <p><strong>Voor ontvangst</strong><br/><t t-out="wizard.recipient_id.name or 'de nieuwe syndicus'"/></p>
-                                <p class="mt-5">datum en handtekening</p>
-                            </div>
-                        </div>
-                    </div>
-                </t>
+                <t t-call="vme_belgie.report_handover_form_document" t-lang="company.partner_id.lang"/>
             </t>
+        </t>
+    </template>
+
+    <template id="report_handover_form_document">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <t t-call="vme_belgie.handover_header"><t t-set="title">Overdracht aan de nieuwe syndicus</t></t>
+
+                <table class="table table-sm table-borderless mb-4">
+                    <tr><th style="width: 35%">Vorige syndicus</th>
+                        <td><t t-out="data['syndic_mandates'].partner_id.name or wizard.env.company.name"/>
+                            <t t-if="data['syndic_mandates']"> (mandaat van <span t-field="data['syndic_mandates'].date_start"/>
+                                tot <span t-field="data['syndic_mandates'].date_end"/>)</t></td></tr>
+                    <tr><th>Nieuwe syndicus</th><td t-out="wizard.recipient_id.name or '...'"/></tr>
+                    <tr><th>Overdrachtsdatum</th><td><span t-field="wizard.handover_date"/></td></tr>
+                    <tr><th>Over te dragen uiterlijk</th><td><span t-field="wizard.deadline"/>
+                        <small class="text-muted">(dertig dagen na het einde van het mandaat)</small></td></tr>
+                </table>
+
+                <h5>Bankrekeningen</h5>
+                <table class="table table-sm mb-4">
+                    <thead><tr><th>Fonds</th><th>Rekening</th><th class="text-end">Saldo bank</th><th class="text-end">Stand fonds</th></tr></thead>
+                    <tbody>
+                        <tr t-foreach="data['banks']" t-as="bank">
+                            <td t-out="bank['label']"/>
+                            <td><t t-out="bank['iban'] or '-'"/> <small class="text-muted" t-out="bank['bank']"/></td>
+                            <td class="text-end"><t t-out="bank['bank_balance']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td>
+                            <td class="text-end"><t t-out="bank['fund_balance']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="small text-muted">De volmachten op de rekeningen gaan over op de nieuwe syndicus; de bank vraagt daarvoor de beslissing van de algemene vergadering.</p>
+
+                <h5>Lopende werken</h5>
+                <table t-if="data['works']" class="table table-sm mb-4">
+                    <thead><tr><th>Werken</th><th>Status</th><th>Aannemer</th><th class="text-end">Budget of opdracht</th><th class="text-end">Gefactureerd</th></tr></thead>
+                    <tbody>
+                        <tr t-foreach="data['works']" t-as="works">
+                            <td t-out="works.name"/>
+                            <td><span t-field="works.state"/></td>
+                            <td t-out="works.contractor_id.name or '-'"/>
+                            <td class="text-end"><t t-out="works.contract_amount or works.budget" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td>
+                            <td class="text-end"><t t-out="works.invoiced_amount" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p t-else="" class="mb-4">Geen.</p>
+
+                <h5>Schadedossiers</h5>
+                <table t-if="data['claims']" class="table table-sm mb-4">
+                    <thead><tr><th>Schadegeval</th><th>Datum</th><th>Status</th><th>Verzekeraar en dossier</th><th class="text-end">Geraamd</th></tr></thead>
+                    <tbody>
+                        <tr t-foreach="data['claims']" t-as="claim">
+                            <td t-out="claim.name"/>
+                            <td><span t-field="claim.event_date"/></td>
+                            <td><span t-field="claim.state"/></td>
+                            <td><t t-out="claim.insurer_id.name or '-'"/> <t t-if="claim.insurer_reference">(<t t-out="claim.insurer_reference"/>)</t></td>
+                            <td class="text-end"><t t-out="claim.estimated_amount" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p t-else="" class="mb-4">Geen open schadedossiers.</p>
+
+                <h5>Gerechtelijke procedures</h5>
+                <ul t-if="data['procedures']" class="mb-4">
+                    <li t-foreach="data['procedures']" t-as="procedure">
+                        <t t-out="procedure['omschrijving']"/>
+                        <t t-if="procedure['stand']"> - <t t-out="procedure['stand']"/></t>
+                    </li>
+                </ul>
+                <p t-else="" class="mb-4">Geen.</p>
+
+                <h5>Contracten en verzekeringen</h5>
+                <table t-if="data['contracts'] or data['policies']" class="table table-sm mb-4">
+                    <thead><tr><th>Omschrijving</th><th>Partij</th><th>Nummer</th><th>Einde</th><th>Opzeggen uiterlijk</th></tr></thead>
+                    <tbody>
+                        <tr t-foreach="data['contracts']" t-as="contract">
+                            <td t-out="contract.name"/>
+                            <td t-out="contract.partner_id.name"/>
+                            <td t-out="contract.reference or ''"/>
+                            <td><span t-field="contract.date_end"/></td>
+                            <td><span t-field="contract.notice_deadline"/></td>
+                        </tr>
+                        <tr t-foreach="data['policies']" t-as="policy">
+                            <td><span t-field="policy.policy_type"/>: <t t-out="policy.name"/></td>
+                            <td t-out="policy.insurer_id.name"/>
+                            <td t-out="policy.policy_number"/>
+                            <td><span t-field="policy.date_end"/></td>
+                            <td><span t-field="policy.notice_deadline"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p t-else="" class="mb-4">Geen.</p>
+
+                <h5>Mandaten</h5>
+                <table t-if="data['mandates']" class="table table-sm mb-4">
+                    <thead><tr><th>Rol</th><th>Persoon</th><th>Van</th><th>Tot</th></tr></thead>
+                    <tbody>
+                        <tr t-foreach="data['mandates']" t-as="mandate">
+                            <td><span t-field="mandate.role"/></td>
+                            <td t-out="mandate.partner_id.name"/>
+                            <td><span t-field="mandate.date_start"/></td>
+                            <td><span t-field="mandate.date_end"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p t-else="" class="mb-4">Geen lopende mandaten in de raad of als commissaris.</p>
+
+                <h5>Inhoud van het pakket</h5>
+                <p>Het boekhoudkundig dossier staat in de CSV-bestanden (lezen in met "Overstap uit ander pakket"),
+                    met een openingsbalans op de overdrachtsdatum. Daarnaast:</p>
+                <ul class="small">
+                    <li t-foreach="wizard.env.context.get('handover_files', [])" t-as="path" t-out="path"/>
+                </ul>
+                <t t-if="wizard.env.context.get('handover_warnings')">
+                    <h5>Aandachtspunten</h5>
+                    <ul><li t-foreach="wizard.env.context['handover_warnings']" t-as="warning" t-out="warning"/></ul>
+                </t>
+                <t t-if="wizard.note">
+                    <h5>Opmerkingen</h5>
+                    <p t-out="wizard.note" style="white-space: pre-line;"/>
+                </t>
+
+                <div class="row mt-5" style="page-break-inside: avoid;">
+                    <div class="col-6">
+                        <p><strong>Voor overdracht</strong><br/>de vorige syndicus</p>
+                        <p class="mt-5">datum en handtekening</p>
+                    </div>
+                    <div class="col-6">
+                        <p><strong>Voor ontvangst</strong><br/><t t-if="wizard.recipient_id" t-out="wizard.recipient_id.name"/><t t-else="">de nieuwe syndicus</t></p>
+                        <p class="mt-5">datum en handtekening</p>
+                    </div>
+                </div>
+            </div>
         </t>
     </template>
 
     <template id="report_handover_arrears">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="wizard">
-                <t t-set="data" t-value="wizard._arrears_data()"/>
+                <t t-set="data" t-value="wizard.with_context(lang=wizard.association_id.company_id.partner_id.lang or wizard.env.lang)._arrears_data()"/>
                 <t t-set="currency" t-value="data['currency']"/>
                 <t t-set="company" t-value="data['company']"/>
                 <t t-set="o" t-value="wizard"/>
-                <t t-call="web.external_layout">
-                    <div class="page">
-                        <t t-call="vme_belgie.handover_header"><t t-set="title">Openstaande saldi per eigenaar</t></t>
-                        <p class="small text-muted">Een positief saldo is een schuld van de eigenaar aan de VME, een negatief
-                            saldo een voorschot. Het saldo staat in de openingsbalans van het pakket.
-                            <t t-if="data['is_past']">De facturen eronder zijn die van vóór de overdrachtsdatum die vandaag nog openstaan.</t></p>
-                        <table t-if="data['owners']" class="table table-sm">
-                            <thead><tr><th>Code</th><th>Eigenaar</th><th>Kavels</th><th>Openstaand</th><th class="text-end">Saldo</th></tr></thead>
-                            <tbody>
-                                <tr t-foreach="data['owners']" t-as="row">
-                                    <td t-out="row['code']"/>
-                                    <td><t t-out="row['partner'].name"/>
-                                        <div t-if="row['collection']" class="small text-muted">Invorderingsdossier: <span t-field="row['collection'].state"/>
-                                            <t t-if="row['collection'].forward_partner_id">, <t t-out="row['collection'].forward_partner_id.name"/></t></div></td>
-                                    <td t-out="row['lots'] or '-'"/>
-                                    <td class="small">
-                                        <div t-foreach="row['open_lines']" t-as="line">
-                                            <t t-out="line.move_id.name"/>, vervaldag <span t-out="line.date_maturity or line.date" t-options="{'widget': 'date'}"/>:
-                                            <t t-out="line.amount_residual" t-options="{'widget': 'monetary', 'display_currency': currency}"/>
-                                        </div>
-                                    </td>
-                                    <td class="text-end"><t t-out="row['balance']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td>
-                                </tr>
-                                <tr class="fw-bold">
-                                    <td colspan="4">Totaal</td>
-                                    <td class="text-end"><t t-out="data['total']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <p t-else="">Geen openstaande saldi.</p>
-                    </div>
-                </t>
+                <t t-call="vme_belgie.report_handover_arrears_document" t-lang="company.partner_id.lang"/>
             </t>
+        </t>
+    </template>
+
+    <template id="report_handover_arrears_document">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <t t-call="vme_belgie.handover_header"><t t-set="title">Openstaande saldi per eigenaar</t></t>
+                <p class="small text-muted">Een positief saldo is een schuld van de eigenaar aan de VME, een negatief
+                    saldo een voorschot. Het saldo staat in de openingsbalans van het pakket.
+                    <t t-if="data['is_past']">De facturen eronder zijn die van vóór de overdrachtsdatum die vandaag nog openstaan.</t></p>
+                <table t-if="data['owners']" class="table table-sm">
+                    <thead><tr><th>Code</th><th>Eigenaar</th><th>Kavels</th><th>Openstaand</th><th class="text-end">Saldo</th></tr></thead>
+                    <tbody>
+                        <tr t-foreach="data['owners']" t-as="row">
+                            <td t-out="row['code']"/>
+                            <td><t t-out="row['partner'].name"/>
+                                <div t-if="row['collection']" class="small text-muted">Invorderingsdossier: <span t-field="row['collection'].state"/>
+                                    <t t-if="row['collection'].forward_partner_id">, <t t-out="row['collection'].forward_partner_id.name"/></t></div></td>
+                            <td t-out="row['lots'] or '-'"/>
+                            <td class="small">
+                                <div t-foreach="row['open_lines']" t-as="line">
+                                    <t t-out="line.move_id.name"/>, vervaldag <span t-out="line.date_maturity or line.date" t-options="{'widget': 'date'}"/>:
+                                    <t t-out="line.amount_residual" t-options="{'widget': 'monetary', 'display_currency': currency}"/>
+                                </div>
+                            </td>
+                            <td class="text-end"><t t-out="row['balance']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td>
+                        </tr>
+                        <tr class="fw-bold">
+                            <td colspan="4">Totaal</td>
+                            <td class="text-end"><t t-out="data['total']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p t-else="">Geen openstaande saldi.</p>
+            </div>
         </t>
     </template>
 
@@ -227,57 +236,61 @@
     <template id="report_handover_reserve">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="wizard">
-                <t t-set="data" t-value="wizard._reserve_data()"/>
+                <t t-set="data" t-value="wizard.with_context(lang=wizard.association_id.company_id.partner_id.lang or wizard.env.lang)._reserve_data()"/>
                 <t t-set="currency" t-value="data['currency']"/>
                 <t t-set="company" t-value="data['company']"/>
                 <t t-set="o" t-value="wizard"/>
-                <t t-call="web.external_layout">
-                    <div class="page">
-                        <t t-call="vme_belgie.handover_header"><t t-set="title">Stand van het reservekapitaal</t></t>
-                        <table class="table table-sm mb-4">
-                            <tr><th>Reservekapitaal op 1 januari</th>
-                                <td class="text-end"><t t-out="data['opening']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td></tr>
-                            <tr class="fw-bold"><th>Reservekapitaal op de overdrachtsdatum</th>
-                                <td class="text-end"><t t-out="data['balance']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td></tr>
-                            <tr><th>Saldo bankrekening reservekapitaal <small class="text-muted" t-out="data['bank']['iban']"/></th>
-                                <td class="text-end"><t t-out="data['bank']['bank_balance']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td></tr>
-                            <tr><th>Vastgelegd voor lopende werken</th>
-                                <td class="text-end"><t t-out="data['committed']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td></tr>
-                            <tr class="fw-bold"><th>Nog beschikbaar</th>
-                                <td class="text-end"><t t-out="data['available']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td></tr>
-                        </table>
-                        <p class="small text-muted">Het verschil tussen fonds en bank zijn provisies die nog niet betaald zijn
-                            of betalingen die nog niet op het fonds geboekt zijn.</p>
-
-                        <h5>Bewegingen dit jaar</h5>
-                        <table t-if="data['movements']" class="table table-sm mb-4">
-                            <thead><tr><th>Datum</th><th>Omschrijving</th><th class="text-end">Bedrag</th></tr></thead>
-                            <tbody>
-                                <tr t-foreach="data['movements']" t-as="line">
-                                    <td><span t-out="line['date']" t-options="{'widget': 'date'}"/></td>
-                                    <td><t t-out="line['name']"/> <t t-out="line['ref']"/></td>
-                                    <td class="text-end"><t t-out="line['amount']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <p t-else="">Geen bewegingen.</p>
-
-                        <h5>Lopende werken op het reservekapitaal</h5>
-                        <table t-if="data['reserve_works']" class="table table-sm">
-                            <thead><tr><th>Werken</th><th>Status</th><th class="text-end">Budget of opdracht</th><th class="text-end">Gefactureerd</th></tr></thead>
-                            <tbody>
-                                <tr t-foreach="data['reserve_works']" t-as="works">
-                                    <td t-out="works.name"/>
-                                    <td><span t-field="works.state"/></td>
-                                    <td class="text-end"><t t-out="works.contract_amount or works.budget" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td>
-                                    <td class="text-end"><t t-out="works.invoiced_amount" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <p t-else="">Geen.</p>
-                    </div>
-                </t>
+                <t t-call="vme_belgie.report_handover_reserve_document" t-lang="company.partner_id.lang"/>
             </t>
+        </t>
+    </template>
+
+    <template id="report_handover_reserve_document">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <t t-call="vme_belgie.handover_header"><t t-set="title">Stand van het reservekapitaal</t></t>
+                <table class="table table-sm mb-4">
+                    <tr><th>Reservekapitaal op 1 januari</th>
+                        <td class="text-end"><t t-out="data['opening']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td></tr>
+                    <tr class="fw-bold"><th>Reservekapitaal op de overdrachtsdatum</th>
+                        <td class="text-end"><t t-out="data['balance']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td></tr>
+                    <tr><th>Saldo bankrekening reservekapitaal <small class="text-muted" t-out="data['bank']['iban']"/></th>
+                        <td class="text-end"><t t-out="data['bank']['bank_balance']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td></tr>
+                    <tr><th>Vastgelegd voor lopende werken</th>
+                        <td class="text-end"><t t-out="data['committed']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td></tr>
+                    <tr class="fw-bold"><th>Nog beschikbaar</th>
+                        <td class="text-end"><t t-out="data['available']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td></tr>
+                </table>
+                <p class="small text-muted">Het verschil tussen fonds en bank zijn provisies die nog niet betaald zijn
+                    of betalingen die nog niet op het fonds geboekt zijn.</p>
+
+                <h5>Bewegingen dit jaar</h5>
+                <table t-if="data['movements']" class="table table-sm mb-4">
+                    <thead><tr><th>Datum</th><th>Omschrijving</th><th class="text-end">Bedrag</th></tr></thead>
+                    <tbody>
+                        <tr t-foreach="data['movements']" t-as="line">
+                            <td><span t-out="line['date']" t-options="{'widget': 'date'}"/></td>
+                            <td><t t-out="line['name']"/> <t t-out="line['ref']"/></td>
+                            <td class="text-end"><t t-out="line['amount']" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p t-else="">Geen bewegingen.</p>
+
+                <h5>Lopende werken op het reservekapitaal</h5>
+                <table t-if="data['reserve_works']" class="table table-sm">
+                    <thead><tr><th>Werken</th><th>Status</th><th class="text-end">Budget of opdracht</th><th class="text-end">Gefactureerd</th></tr></thead>
+                    <tbody>
+                        <tr t-foreach="data['reserve_works']" t-as="works">
+                            <td t-out="works.name"/>
+                            <td><span t-field="works.state"/></td>
+                            <td class="text-end"><t t-out="works.contract_amount or works.budget" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td>
+                            <td class="text-end"><t t-out="works.invoiced_amount" t-options="{'widget': 'monetary', 'display_currency': currency}"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p t-else="">Geen.</p>
+            </div>
         </t>
     </template>
 </odoo>

@@ -147,3 +147,18 @@ class TestTranslation(TransactionCase):
         self.assertIn("juillet 2026", fixed.name)
         self.assertNotIn("Aangetekende zending", service.name)
         self.assertIn("recommandé", service.name.lower())
+
+    def test_handover_documents_in_the_vmes_language(self):
+        wizard = self.env["vme.handover.wizard"].create({"association_id": self.vme.id})
+        Report = self.env["ir.actions.report"]
+        html_nl = Report._render_qweb_html("vme_belgie.action_report_handover_form", wizard.ids)[0].decode()
+        self.assertIn("Overdracht aan de nieuwe syndicus", html_nl)
+        self.assertIn("Werkkapitaal", html_nl)
+        self._set_vme_lang("fr_BE")
+        html = Report._render_qweb_html("vme_belgie.action_report_handover_form", wizard.ids)[0].decode()
+        self.assertIn("Transmission au nouveau syndic", html)
+        self.assertIn("Fonds de roulement", html)  # fund label built in Python
+        self.assertNotIn("Werkkapitaal", html)
+        html = Report._render_qweb_html("vme_belgie.action_report_handover_reserve", wizard.ids)[0].decode()
+        self.assertIn("Situation du fonds de réserve", html)
+        self.assertNotIn("Reservekapitaal", html)

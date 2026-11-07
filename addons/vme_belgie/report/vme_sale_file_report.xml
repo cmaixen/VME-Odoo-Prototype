@@ -195,7 +195,7 @@
                         <div class="text-muted">VME <t t-out="o.association_id.name"/><t t-if="o.association_id.kbo_number"> · KBO <t t-out="o.association_id.kbo_number"/></t></div>
                     </div>
                     <div class="col-5 offset-1">
-                        <strong t-out="o.notary_id.name or 'De notaris'"/>
+                        <strong t-if="o.notary_id" t-out="o.notary_id.name"/><strong t-else="">De notaris</strong>
                         <div t-if="o.notary_reference" class="text-muted">Uw referentie: <t t-out="o.notary_reference"/></div>
                         <div class="text-muted">Datum: <t t-out="format_date(info['date'], lang=doc_lang)"/></div>
                     </div>
