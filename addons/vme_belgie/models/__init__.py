@@ -42,3 +42,4 @@ from . import vme_syndic
 from . import vme_provision_call_run
 from . import vme_work_item
 from . import vme_compliance
+from . import partner_autocomplete
