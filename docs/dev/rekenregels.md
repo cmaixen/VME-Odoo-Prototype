@@ -54,7 +54,7 @@ Voorbeeld (uit `test_consumption.py`): 1000 euro, 30% vast, A1 600/1000 en 100 e
 
 - Standaard: begin en einde = factuurdatum (compute die alleen lege velden vult).
 - UBL/Peppol: `InvoicePeriod/StartDate` en `EndDate` uit het XML-bestand (`_extend_with_attachments`).
-- De kostperiode beïnvloedt alleen de verdeling tussen opeenvolgende eigenaars. Voor de jaarafrekening telt de factuurdatum.
+- De kostperiode beïnvloedt alleen de verdeling tussen opeenvolgende eigenaars. Voor de jaarafrekening telt de factuurdatum, behalve voor een late factuur van een afgesloten jaar (zie hieronder).
 
 ## Verdeelregels
 
@@ -86,7 +86,7 @@ Voorbeeld (uit `test_consumption.py`): 1000 euro, 30% vast, A1 600/1000 en 100 e
 
 `vme.association._get_annual_statement(year, partners=None)` (alles als `sudo`):
 
-- **Kosten**: kostenverdelingen van geboekte leveranciersfacturen met factuurdatum in het jaar.
+- **Kosten**: kostenverdelingen van geboekte leveranciersfacturen met factuurdatum in het jaar. Een factuur die na de afsluiting van haar jaar binnenkomt, krijgt van Odoo een boekingsdatum in het nieuwe jaar en telt dan in dat jaar (zie [boekjaarafsluiting.md](boekjaarafsluiting.md#gevolg-voor-de-jaarafrekening)).
 - **Provisies**: geboekte facturen van provisieoproepen met budgetjaar = het jaar van de afrekening (niet de factuurdatum); per fonds gefactureerd, betaald (`amount_total − amount_residual`) en open.
 - **Eigenaars**: iedereen met kosten of provisies in het jaar (of de opgegeven partners).
 - **Saldo** = aandeel in de kosten − betaalde provisies werkkapitaal. Open provisies worden niet verrekend, reservekapitaal nooit.
@@ -95,3 +95,7 @@ Voorbeeld (uit `test_consumption.py`): 1000 euro, 30% vast, A1 600/1000 en 100 e
 - **Controle**: `is_complete` als er geen geboekte factuur zonder verdeling is en de som van de verdeling gelijk is aan de som van de facturen.
 
 Het rapport (`report/vme_annual_statement_report.xml`) toont per eigenaar kavels, kosten per sleutel, afrekening werkkapitaal, reservekapitaal en het detail per factuur.
+
+## Afrekening bij de afsluiting van het boekjaar
+
+`vme.fiscal.closing.action_prepare()` boekt per eigenaar **aandeel in de kosten − gefactureerde provisies werkkapitaal** (min wat al geboekt is) als concept: een factuur bij een bijbetaling, een creditnota bij een teruggave, op 100100. Het verschil met het saldo van de jaarafrekening (kosten − **betaalde** provisies) zijn de open provisies, die eigen open facturen blijven. Som over alle eigenaars = kosten − gefactureerde provisies werkkapitaal. Details in [boekjaarafsluiting.md](boekjaarafsluiting.md).

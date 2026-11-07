@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Like the other VME models, employees see the closings of all VMEs whatever company is
+         selected; the auditor only reads those of his own VMEs. -->
+    <record id="rule_auditor_read_fiscal_closing" model="ir.rule">
+        <field name="name">Commissaris: afsluitingen van zijn VME's</field>
+        <field name="model_id" ref="model_vme_fiscal_closing"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_auditor_no_write_fiscal_closing" model="ir.rule">
+        <field name="name">Commissaris: afsluitingen niet wijzigen</field>
+        <field name="model_id" ref="model_vme_fiscal_closing"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+</odoo>

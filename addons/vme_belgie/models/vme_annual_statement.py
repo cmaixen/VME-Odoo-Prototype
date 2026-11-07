@@ -27,8 +27,10 @@ class VmeAssociation(models.Model):
             ("company_id", "=", vme.company_id.id),
             ("move_type", "in", ("in_invoice", "in_refund")),
             ("state", "=", "posted"),
-            ("invoice_date", ">=", start),
-            ("invoice_date", "<=", end),
+            # A bill of a closed year that comes in late gets its accounting date in the next open
+            # year (Odoo's lock date): it then belongs to that year, and the closed year stays as it was.
+            "|", "&", "&", ("invoice_date", ">=", start), ("invoice_date", "<=", end), ("date", "<=", end),
+            "&", "&", ("date", ">=", start), ("date", "<=", end), ("invoice_date", "<", start),
             # Private costs of a request (e.g. a key for one owner) are charged to that owner, not distributed.
             ("vme_request_id", "=", False),
         ])

@@ -54,7 +54,8 @@ class AccountMove(models.Model):
     def _compute_partner_bank_id(self):
         super()._compute_partner_bank_id()
         # LEGAL-CHECK: art. 3.89 §5 BW - a provision is paid to the bank account of its fund.
-        for move in self.filtered("vme_fund"):
+        # A credit note (refund of a settlement) is paid to the owner's account, not to the fund.
+        for move in self.filtered(lambda m: m.vme_fund and m.move_type != "out_refund"):
             # Look the VME up by company: vme_association_id may not be computed yet on create.
             vme = move.vme_association_id or self.env["vme.association"].sudo().search(
                 [("company_id", "=", move.company_id.id)], limit=1

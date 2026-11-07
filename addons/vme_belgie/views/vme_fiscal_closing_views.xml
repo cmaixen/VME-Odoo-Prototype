@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="vme_fiscal_closing_view_list" model="ir.ui.view">
+        <field name="name">vme.fiscal.closing.list</field>
+        <field name="model">vme.fiscal.closing</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'closed'" decoration-info="state == 'prepared'">
+                <field name="association_id"/>
+                <field name="year" options="{'enable_formatting': false}"/>
+                <field name="settlement_count" string="Documenten"/>
+                <field name="settlement_total"/>
+                <field name="closed_on" optional="show"/>
+                <field name="closed_by_id" optional="hide"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="state" widget="badge" decoration-success="state == 'closed'" decoration-info="state == 'prepared'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_fiscal_closing_view_form" model="ir.ui.view">
+        <field name="name">vme.fiscal.closing.form</field>
+        <field name="model">vme.fiscal.closing</field>
+        <field name="arch" type="xml">
+            <form string="Afsluiting boekjaar">
+                <header>
+                    <button name="action_prepare" type="object" string="Afrekening voorbereiden" class="btn-primary"
+                            invisible="state != 'draft' or not can_prepare"/>
+                    <button name="action_prepare" type="object" string="Opnieuw voorbereiden"
+                            invisible="state != 'prepared' or not can_prepare"
+                            confirm="De concepten worden vervangen; bevestigde documenten blijven staan en alleen een verschil komt erbij. Verder?"/>
+                    <button name="action_post_settlements" type="object" string="Alles bevestigen" class="btn-primary"
+                            invisible="state != 'prepared' or not settlement_draft_count"
+                            confirm="Alle concepten van de afrekening worden geboekt. Er wordt niets verstuurd. Verder?"/>
+                    <button name="action_close" type="object" string="Boekjaar afsluiten" class="btn-primary"
+                            invisible="state != 'prepared' or not can_close" groups="account.group_account_manager"
+                            confirm="Het boekjaar wordt vergrendeld: niemand kan er nog iets in boeken tot een beheerder het heropent. Verder?"/>
+                    <button name="action_reopen" type="object" string="Heropenen"
+                            invisible="state != 'closed'" groups="account.group_account_manager"
+                            confirm="De vergrendeling van dit boekjaar wordt opgeheven. Verder?"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_settlements" type="object" class="oe_stat_button" icon="fa-file-text-o"
+                                invisible="not settlement_count">
+                            <field name="settlement_count" widget="statinfo" string="Afrekening"/>
+                        </button>
+                        <button name="action_open_annual_statement" type="object" class="oe_stat_button" icon="fa-print"
+                                string="Jaarafrekening" invisible="not id"/>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="display_name" readonly="1" invisible="not id"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="association_id" readonly="id" options="{'no_create': True}"/>
+                            <field name="year" readonly="state != 'draft'" options="{'enable_formatting': false}"/>
+                            <field name="date_end"/>
+                        </group>
+                        <group>
+                            <field name="settlement_total" invisible="state == 'draft'"/>
+                            <field name="settlement_draft_count" invisible="state == 'draft'"/>
+                            <field name="closed_by_id" invisible="state != 'closed'"/>
+                            <field name="closed_on" invisible="state != 'closed'"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="can_prepare" invisible="1"/>
+                            <field name="can_close" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Controles" name="checks">
+                            <field name="check_html" nolabel="1"/>
+                        </page>
+                        <page string="Afrekening per eigenaar" name="settlement">
+                            <p class="text-muted" invisible="state != 'draft'">
+                                "Afrekening voorbereiden" maakt per eigenaar een concept: een factuur voor een bijbetaling,
+                                een creditnota voor een teruggave. Het bedrag is het aandeel in de kosten min de gevraagde
+                                provisies werkkapitaal. Het reservekapitaal wordt niet afgerekend.
+                            </p>
+                            <field name="settlement_html" nolabel="1" invisible="company_selected"/>
+                            <field name="company_selected" invisible="1"/>
+                            <field name="settlement_move_ids" nolabel="1" invisible="not company_selected">
+                                <list create="0" delete="0" decoration-muted="state == 'cancel'" decoration-info="state == 'draft'">
+                                    <field name="name"/>
+                                    <field name="partner_id" string="Eigenaar"/>
+                                    <field name="move_type" string="Soort"/>
+                                    <field name="invoice_date"/>
+                                    <field name="amount_total" sum="Totaal"/>
+                                    <field name="amount_residual" string="Nog open"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="state" widget="badge" decoration-success="state == 'posted'" decoration-info="state == 'draft'"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Resultaat en overdracht" name="carry_forward">
+                            <field name="summary_html" nolabel="1"/>
+                            <group string="Bewaard bij het afsluiten" invisible="state != 'closed'">
+                                <group>
+                                    <field name="working_result"/>
+                                    <field name="working_capital"/>
+                                    <field name="bank_working"/>
+                                    <field name="owner_receivable"/>
+                                </group>
+                                <group>
+                                    <field name="reserve_result"/>
+                                    <field name="reserve_capital"/>
+                                    <field name="bank_reserve"/>
+                                    <field name="supplier_payable"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="vme_fiscal_closing_view_search" model="ir.ui.view">
+        <field name="name">vme.fiscal.closing.search</field>
+        <field name="model">vme.fiscal.closing</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="association_id"/>
+                <field name="year"/>
+                <filter name="open" string="Niet afgesloten" domain="[('state', '!=', 'closed')]"/>
+                <filter name="closed" string="Afgesloten" domain="[('state', '=', 'closed')]"/>
+                <group>
+                    <filter name="group_year" string="Boekjaar" context="{'group_by': 'year'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="vme_fiscal_closing_action" model="ir.actions.act_window">
+        <field name="name">Afsluiting boekjaar</field>
+        <field name="res_model">vme.fiscal.closing</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Sluit het boekjaar van een VME af</p>
+            <p>Per VME en jaar: controles, de afrekening per eigenaar als concept, het resultaat en de overdracht, en de vergrendeling.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_vme_fiscal_closing" name="Afsluiting boekjaar" parent="menu_vme_root"
+              action="vme_fiscal_closing_action" sequence="48" groups="account.group_account_invoice"/>
+
+    <record id="vme_association_view_form_fiscal_closing" model="ir.ui.view">
+        <field name="name">vme.association.form.fiscal.closing</field>
+        <field name="model">vme.association</field>
+        <field name="inherit_id" ref="vme_belgie.vme_association_view_form"/>
+        <field name="arch" type="xml">
+            <button name="action_open_annual_statement" position="after">
+                <button name="action_open_fiscal_closing" type="object" string="Boekjaar afsluiten" invisible="not id"
+                        groups="account.group_account_invoice"/>
+            </button>
+        </field>
+    </record>
+</odoo>

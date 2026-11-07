@@ -3,7 +3,7 @@
 Automatisch gemaakt door `python3 tools/legal_checks.py`; niet met de hand bewerken.
 Elke rij is een wettelijke regel in de code die nog juridisch gevalideerd moet worden.
 
-Aantal punten: 101.
+Aantal punten: 103.
 
 ## Per bron
 
@@ -11,6 +11,7 @@ Aantal punten: 101.
 - **Boek VII WER (omzetting art. 76 PSD2, richtlijn 2015/2366)**: [vme_payment.py:45](../../addons/vme_belgie/models/vme_payment.py#L45)
 - **Brusselse ordonnantie van 13 oktober 2022 (indexering volgens EPB)**: [rent_rules.py:47](../../addons/vme_rentmeester/models/rent_rules.py#L47)
 - **KB 12 juli 2012 (minimum chart of accounts for VMEs)**: [account_chart_template.py:6](../../addons/vme_belgie/models/account_chart_template.py#L6), [vme_association.py:87](../../addons/vme_belgie/models/vme_association.py#L87)
+- **KB 12 juli 2012, bijlage**: [vme_fiscal_closing.py:218](../../addons/vme_belgie/models/vme_fiscal_closing.py#L218)
 - **KB 9 maart 2003**: [vme_installation.py:33](../../addons/vme_belgie/models/vme_installation.py#L33)
 - **KB 9 maart 2003 betreffende de beveiliging van liften**: [vme_installation.py:17](../../addons/vme_belgie/models/vme_installation.py#L17)
 - **NBN S21-050**: [vme_installation.py:20](../../addons/vme_belgie/models/vme_installation.py#L20)
@@ -29,7 +30,7 @@ Aantal punten: 101.
 - **art. 26 Waals decreet van 15 maart 2018**: [rent_rules.py:73](../../addons/vme_rentmeester/models/rent_rules.py#L73)
 - **art. 3 en 21 VWHD, art. 238 BHC, art. 55 Waals decreet 15-03-2018**: [rent_rules.py:91](../../addons/vme_rentmeester/models/rent_rules.py#L91)
 - **art. 3.85 §1 BW**: [vme_key.py:34](../../addons/vme_belgie/models/vme_key.py#L34), [vme_key.py:92](../../addons/vme_belgie/models/vme_key.py#L92), [vme_migration.py:739](../../addons/vme_belgie/models/vme_migration.py#L739)
-- **art. 3.86 §3 BW**: [vme_annual_statement.py:35](../../addons/vme_belgie/models/vme_annual_statement.py#L35), [vme_budget.py:5](../../addons/vme_belgie/models/vme_budget.py#L5), [vme_building_card.py:156](../../addons/vme_belgie/models/vme_building_card.py#L156), [vme_migration.py:445](../../addons/vme_belgie/models/vme_migration.py#L445)
+- **art. 3.86 §3 BW**: [vme_annual_statement.py:37](../../addons/vme_belgie/models/vme_annual_statement.py#L37), [vme_budget.py:5](../../addons/vme_belgie/models/vme_budget.py#L5), [vme_building_card.py:156](../../addons/vme_belgie/models/vme_building_card.py#L156), [vme_fiscal_closing.py:331](../../addons/vme_belgie/models/vme_fiscal_closing.py#L331), [vme_migration.py:445](../../addons/vme_belgie/models/vme_migration.py#L445)
 - **art. 3.86 §3 BW en KB 12 juli 2012 (minimum chart of accounts)**: [vme_works.py:449](../../addons/vme_belgie/models/vme_works.py#L449)
 - **art. 3.87 §1 BW**: [vme_assembly_meeting.py:489](../../addons/vme_belgie/models/vme_assembly_meeting.py#L489), [vme_assembly_online.py:17](../../addons/vme_belgie/models/vme_assembly_online.py#L17), [vme_assembly_online.py:235](../../addons/vme_belgie/models/vme_assembly_online.py#L235), [vme_assembly_online.py:303](../../addons/vme_belgie/models/vme_assembly_online.py#L303)
 - **art. 3.87 §10 BW**: [vme_assembly_meeting.py:234](../../addons/vme_belgie/models/vme_assembly_meeting.py#L234), [vme_assembly_online.py:198](../../addons/vme_belgie/models/vme_assembly_online.py#L198)
@@ -49,9 +50,9 @@ Aantal punten: 101.
 - **art. 3.90 §1 en art. 3.91 BW**: [vme_council.py:35](../../addons/vme_belgie/models/vme_council.py#L35)
 - **art. 3.90 §3 BW**: [vme_payment.py:69](../../addons/vme_belgie/models/vme_payment.py#L69)
 - **art. 3.91 BW**: [vme_council.py:270](../../addons/vme_belgie/models/vme_council.py#L270)
-- **art. 3.93 BW**: [vme_request.py:702](../../addons/vme_belgie/models/vme_request.py#L702)
+- **art. 3.93 BW**: [vme_request.py:694](../../addons/vme_belgie/models/vme_request.py#L694)
 - **art. 3.93 §4 BW**: [vme_assembly_meeting.py:214](../../addons/vme_belgie/models/vme_assembly_meeting.py#L214)
-- **art. 3.94 BW**: [account_move.py:155](../../addons/vme_belgie/models/account_move.py#L155), [account_move.py:259](../../addons/vme_belgie/models/account_move.py#L259)
+- **art. 3.94 BW**: [account_move.py:156](../../addons/vme_belgie/models/account_move.py#L156), [account_move.py:260](../../addons/vme_belgie/models/account_move.py#L260)
 - **art. 3.94 §1 BW**: [vme_sale_file.py:10](../../addons/vme_belgie/models/vme_sale_file.py#L10), [vme_sale_file.py:16](../../addons/vme_belgie/models/vme_sale_file.py#L16)
 - **art. 3.94 §1, 1° BW**: [vme_sale_file.py:264](../../addons/vme_belgie/models/vme_sale_file.py#L264)
 - **art. 3.94 §1, 2° en §2 BW**: [vme_sale_file.py:287](../../addons/vme_belgie/models/vme_sale_file.py#L287)
@@ -80,9 +81,9 @@ Aantal punten: 101.
 | [addons/vme_belgie/models/account_bank_statement_line.py](../../addons/vme_belgie/models/account_bank_statement_line.py#L165) | 165 | art. 3.89 §5 BW | working and reserve capital on separate accounts: never book a provision of one fund silently on the account of the other. |
 | [addons/vme_belgie/models/account_chart_template.py](../../addons/vme_belgie/models/account_chart_template.py#L6) | 6 | KB 12 juli 2012 (minimum chart of accounts for VMEs) | align these codes. |
 | [addons/vme_belgie/models/account_move.py](../../addons/vme_belgie/models/account_move.py#L56) | 56 | art. 3.89 §5 BW | a provision is paid to the bank account of its fund. |
-| [addons/vme_belgie/models/account_move.py](../../addons/vme_belgie/models/account_move.py#L155) | 155 | art. 3.94 BW | between seller and buyer, the consumption of each one's ownership period; without a reading at the deed, pro rata per day between two readings. |
-| [addons/vme_belgie/models/account_move.py](../../addons/vme_belgie/models/account_move.py#L259) | 259 | art. 3.94 BW | costs are split between seller and buyer by the number of days each one owned the lot within the cost period. |
-| [addons/vme_belgie/models/vme_annual_statement.py](../../addons/vme_belgie/models/vme_annual_statement.py#L35) | 35 | art. 3.86 §3 BW | works paid from the reserve capital are not settled in the working capital; each owner sees his share in them apart. |
+| [addons/vme_belgie/models/account_move.py](../../addons/vme_belgie/models/account_move.py#L156) | 156 | art. 3.94 BW | between seller and buyer, the consumption of each one's ownership period; without a reading at the deed, pro rata per day between two readings. |
+| [addons/vme_belgie/models/account_move.py](../../addons/vme_belgie/models/account_move.py#L260) | 260 | art. 3.94 BW | costs are split between seller and buyer by the number of days each one owned the lot within the cost period. |
+| [addons/vme_belgie/models/vme_annual_statement.py](../../addons/vme_belgie/models/vme_annual_statement.py#L37) | 37 | art. 3.86 §3 BW | works paid from the reserve capital are not settled in the working capital; each owner sees his share in them apart. |
 | [addons/vme_belgie/models/vme_assembly.py](../../addons/vme_belgie/models/vme_assembly.py#L13) | 13 | art. 3.87 §2 BW | the ordinary general assembly takes place every year within the period of fifteen days fixed in the rules of co-ownership. |
 | [addons/vme_belgie/models/vme_assembly.py](../../addons/vme_belgie/models/vme_assembly.py#L17) | 17 | art. 3.87 §3 BW | the convocation is sent at least fifteen days before the meeting, unless the rules of co-ownership set another term. |
 | [addons/vme_belgie/models/vme_assembly.py](../../addons/vme_belgie/models/vme_assembly.py#L38) | 38 | art. 3.87 §2 BW | fifteen-day period from the rules of co-ownership. |
@@ -135,6 +136,8 @@ Aantal punten: 101.
 | [addons/vme_belgie/models/vme_damage.py](../../addons/vme_belgie/models/vme_damage.py#L10) | 10 | art. 74 §1 wet 4 april 2014 betreffende de verzekeringen | the insured reports a claim as soon as reasonably possible, and in any case within the term set in the policy. |
 | [addons/vme_belgie/models/vme_damage.py](../../addons/vme_belgie/models/vme_damage.py#L14) | 14 | art. 88 §1 wet 4 april 2014 betreffende de verzekeringen | a claim against the insurer lapses three years after the event that gives rise to it. |
 | [addons/vme_belgie/models/vme_document.py](../../addons/vme_belgie/models/vme_document.py#L17) | 17 | art. 3.89 §5, 12° BW | the syndic gives every co-owner access to the documents of the co-ownership, also via a website. Which documents exactly is not yet validated; minutes go to every co-owner within 30 days (art. 3.87 §10 BW). |
+| [addons/vme_belgie/models/vme_fiscal_closing.py](../../addons/vme_belgie/models/vme_fiscal_closing.py#L218) | 218 | KB 12 juli 2012, bijlage | the result of the year goes to the funds to carry forward (489, entry 693). We show it here instead of booking it; see docs/beslissingen.md. |
+| [addons/vme_belgie/models/vme_fiscal_closing.py](../../addons/vme_belgie/models/vme_fiscal_closing.py#L331) | 331 | art. 3.86 §3 BW | only the working capital is settled; the reserve capital stays with the VME and is not refunded, also not to an owner who sold. |
 | [addons/vme_belgie/models/vme_installation.py](../../addons/vme_belgie/models/vme_installation.py#L17) | 17 | KB 9 maart 2003 betreffende de beveiliging van liften | preventive inspection by an accredited inspection body (EDTC). |
 | [addons/vme_belgie/models/vme_installation.py](../../addons/vme_belgie/models/vme_installation.py#L20) | 20 | NBN S21-050 | yearly maintenance check of portable fire extinguishers and hoses. |
 | [addons/vme_belgie/models/vme_installation.py](../../addons/vme_belgie/models/vme_installation.py#L22) | 22 | AREI (Algemeen Reglement op de Elektrische Installaties) | periodic inspection of the common parts of residential buildings. |
@@ -151,7 +154,7 @@ Aantal punten: 101.
 | [addons/vme_belgie/models/vme_payment.py](../../addons/vme_belgie/models/vme_payment.py#L45) | 45 | Boek VII WER (omzetting art. 76 PSD2, richtlijn 2015/2366) | an owner can ask his bank to refund an authorised direct debit up to eight weeks after the collection; that comes back as MD06. |
 | [addons/vme_belgie/models/vme_payment.py](../../addons/vme_belgie/models/vme_payment.py#L69) | 69 | art. 3.90 §3 BW | the council of co-ownership supervises the syndic; a second approval by a council member is an agreement of the AV or the syndic contract, not a legal obligation. |
 | [addons/vme_belgie/models/vme_request.py](../../addons/vme_belgie/models/vme_request.py#L71) | 71 | art. 3.88 §1, 1°, b) BW | works on the common parts need a two-thirds majority of the assembly; some works (charging points, art. 3.82 §1 BW) follow their own procedure. To be confirmed. |
-| [addons/vme_belgie/models/vme_request.py](../../addons/vme_belgie/models/vme_request.py#L702) | 702 | art. 3.93 BW | the house rules (reglement van orde) bind tenants and occupants once they are made known to them; the checklist asks to send them to the new tenant. To be confirmed. |
+| [addons/vme_belgie/models/vme_request.py](../../addons/vme_belgie/models/vme_request.py#L694) | 694 | art. 3.93 BW | the house rules (reglement van orde) bind tenants and occupants once they are made known to them; the checklist asks to send them to the new tenant. To be confirmed. |
 | [addons/vme_belgie/models/vme_sale_file.py](../../addons/vme_belgie/models/vme_sale_file.py#L10) | 10 | art. 3.94 §1 BW | the syndic answers the notary's first request within 15 days. |
 | [addons/vme_belgie/models/vme_sale_file.py](../../addons/vme_belgie/models/vme_sale_file.py#L12) | 12 | art. 3.94 §2 BW | the syndic answers the second request (after the compromise) within 30 days. |
 | [addons/vme_belgie/models/vme_sale_file.py](../../addons/vme_belgie/models/vme_sale_file.py#L16) | 16 | art. 3.94 §1 BW | the notary receives the minutes of the assemblies of the last three years. |

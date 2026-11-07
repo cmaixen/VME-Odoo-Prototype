@@ -104,6 +104,12 @@ De webclient leest records met `bin_size=True` in de context. Een binair veld (o
 
 Sinds er buitengewone AV's zijn, kan een VME meer dan één AV per jaar hebben. Code of tests die "de AV van VME X in jaar Y" zoeken, filteren op `assembly_type = 'ordinary'`, anders krijgen ze twee records (`ensure_one` faalt, of een vergelijking op een recordset van twee).
 
+## Afsluiting van het boekjaar
+
+- **De vergrendeldatum weigert niets.** In Odoo 19 weigert `fiscalyear_lock_date` een nieuwe boeking in het afgesloten jaar niet. `_post` verschuift de boekingsdatum naar de eerste open periode. Daarom telt de jaarafrekening een factuur nu ook op de boekingsdatum (zie [boekjaarafsluiting.md](boekjaarafsluiting.md)). Een test op "boeken faalt" moet controleren dat de datum verschoven is.
+- **Documenten van een ander bedrijf zijn onzichtbaar, ook in een One2many.** Zonder `sudo()` telde het dossier 0 afrekeningsdocumenten als bovenaan een ander bedrijf stond. "Opnieuw voorbereiden" had dan alles dubbel geboekt.
+- **Rekeningcodes hangen van het bedrijf af.** `account.code` is `False` buiten het bedrijf van de rekening. In tests lees je de code daarom `with_company`.
+
 ## Bekende problemen (nog open)
 
 - Geen op dit moment.

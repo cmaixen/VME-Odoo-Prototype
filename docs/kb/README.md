@@ -26,6 +26,7 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 8. [Budget en provisieoproepen, met de 5%-regel voor het reservefonds](budget-en-provisieoproepen.md)
 9. [De jaarafrekening lezen en afdrukken](jaarafrekening.md)
 10. [Invordering van achterstallen: herinneringen, interest en doorsturen](invordering.md)
+10b. [Het boekjaar afsluiten: afrekening boeken, overdracht en vergrendeling](boekjaar-afsluiten.md)
 
 ### Gebouw en installaties
 

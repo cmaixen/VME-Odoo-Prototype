@@ -16,6 +16,7 @@ Interne documentatie voor wie aan de module `vme_belgie` werkt. De gebruikersdoc
 | [digitale-av.md](digitale-av.md) | Buitengewone AV, online deelname, elektronisch en schriftelijk stemmen, ondertekening van de notulen met auditspoor (stap 24) |
 | [werken-schade.md](werken-schade.md) | Werkdossiers, offertes, financiering uit het reservekapitaal, schadedossiers en polissen (stap 14) |
 | [verkoop-notaris.md](verkoop-notaris.md) | Verkoopdossier, antwoord aan de notaris en overdracht bij de akte (stap 9) |
+| [boekjaarafsluiting.md](boekjaarafsluiting.md) | Afsluiting van het boekjaar: controles, afrekening per eigenaar als factuur of creditnota, resultaat en overdracht, vergrendeling met de lock date van Odoo 19 |
 | [invordering.md](invordering.md) | Achterstallen, ouderdom, herinneringen in drie niveaus, interest en schadevergoeding, doorsturen (stap 10) |
 | [bankafschriften.md](bankafschriften.md) | CODA en CAMT.053 inlezen, betalingen koppelen, wat Community niet kan (stap 12) |
 | [betalingsverkeer.md](betalingsverkeer.md) | Goedkeuren vóór betaling, SEPA-overschrijvingen en -domiciliëringen, terugkoppeling via het afschrift (stap 20) |
