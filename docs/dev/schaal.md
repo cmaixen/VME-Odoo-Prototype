@@ -106,6 +106,8 @@ Odoo heeft twee à drie seconden per VME nodig om de facturen van een oproep te 
 
 Daarom maakt de wizard vanaf 21 VME's (`BACKGROUND_THRESHOLD`) een `vme.provision.call.run` aan en start de cron "VME: provisieoproepen op de achtergrond". Die maakt de oproepen VME per VME met dezelfde `_create_calls()` als de wizard, commit na elke VME via `ir.cron._commit_progress()` en gaat bij de volgende run verder als de tijd op is. Een VME die faalt (geen budget, onbevestigde rekening, geen sleutel) komt in het logboek van de run, de andere lopen door. De gebruiker krijgt een melding als alles klaar is. Tot 20 VME's werkt de wizard zoals voorheen.
 
+De dagelijkse crons van de jaarcyclus, de contracten en de installaties gebruiken `models/cron_tools.py` (`run_per_record`): een savepoint en `_commit_progress` per record. Ze zoeken alleen wat vandaag nog te doen is (jaarcyclus: `cycle_sync_date`; contracten en installaties: de datum van de taak die al bestaat), zodat Odoo een cron die door zijn tijd is, opnieuw kan aanroepen zonder van voren af te beginnen. Buiten een cron commit de helper niets en geeft hij een fout gewoon door; de test simuleert de cron met `ir_cron_progress_id` in de context en een gepatchte `_commit_progress`. De invorderingscron (`vme.collection._refresh`) werkt al in batch en blijft één transactie.
+
 ## Valkuilen
 
 - `ir.cron._commit_progress()` commit ook buiten een cron. Daarom geeft `_cron_process()` het als functie mee aan `_process(progress)`, en roepen tests `_process()` aan zonder of met een eigen functie.

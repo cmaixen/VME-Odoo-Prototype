@@ -6,6 +6,7 @@ from odoo.exceptions import UserError, ValidationError
 from odoo.fields import Command
 from odoo.tools import format_date, formatLang
 
+from .cron_tools import run_per_record
 from .vme_assembly import URGENT_MARGIN_DAYS
 from .vme_budget import RESERVE_MINIMUM_RATE
 
@@ -362,7 +363,15 @@ class VmeCycleStep(models.Model):
 
     @api.model
     def _cron_run_cycle(self):
-        self.env["vme.association"].search([("cycle_start_date", "!=", False)])._cycle_sync()
+        # One VME at a time with a commit after each: the convocations of 200 VMEs are too much for one
+        # transaction, and one failing VME must not roll back the others (K-D18).
+        today = self._today()
+        vmes = self.env["vme.association"].search([
+            ("cycle_start_date", "!=", False),
+            "|", ("cycle_sync_date", "=", False), ("cycle_sync_date", "<", today),
+        ])
+        run_per_record(vmes, lambda vme: vme._cycle_sync(today),
+                       done=lambda vme: vme.sudo().write({"cycle_sync_date": today}))
 
 
 class VmeAssociation(models.Model):
@@ -378,6 +387,8 @@ class VmeAssociation(models.Model):
         help="Krijgt de taken van de jaarcyclus. Leeg: de dossierbeheerder van de VME.",
     )
     cycle_step_ids = fields.One2many("vme.cycle.step", "association_id", string="Jaarcyclus")
+    # Day of the last run of the daily cron, so a cron that ran out of time continues with the next VME.
+    cycle_sync_date = fields.Date(string="Jaarcyclus bijgewerkt op", readonly=True, copy=False)
     cycle_current_step = fields.Char(string="Volgende stap", compute="_compute_cycle_status")
     cycle_late_count = fields.Integer(string="Stappen te laat", compute="_compute_cycle_status")
 

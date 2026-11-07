@@ -6,6 +6,8 @@ from odoo import api, fields, models
 from odoo.exceptions import UserError
 from odoo.tools import format_date
 
+from .cron_tools import run_per_record
+
 CONTRACT_TYPES = [
     ("maintenance", "Onderhoud"),
     ("cleaning", "Schoonmaak"),
@@ -284,11 +286,21 @@ class VmeContract(models.Model):
         todo = self.env.ref("mail.mail_activity_data_todo")
 
         notice_limit = today + relativedelta(days=NOTICE_LEAD_DAYS)
-        for contract in self.search([
+        evaluation_limit = today + relativedelta(days=EVALUATION_LEAD_DAYS)
+        # Only what still needs a task, so a cron that ran out of time continues with the rest (K-D18).
+        to_notice = self.search([
             ("state", "=", "running"), ("notice_deadline", ">=", today), ("notice_deadline", "<=", notice_limit),
-        ]):
-            if contract.activity_notice_deadline == contract.notice_deadline:
-                continue
+        ]).filtered(lambda c: c.activity_notice_deadline != c.notice_deadline)
+        to_evaluate = self.search([("state", "=", "running"), ("next_evaluation_date", "<=", evaluation_limit)]).filtered(
+            lambda c: c.activity_evaluation_date != c.next_evaluation_date)
+        run_per_record(to_notice | to_evaluate, lambda contract: contract._schedule_due_activities(today, todo))
+
+    def _schedule_due_activities(self, today, todo):
+        """The notice and evaluation tasks this contract still needs; one record of the daily cron."""
+        self.ensure_one()
+        contract = self
+        if contract.activity_notice_deadline != contract.notice_deadline and contract.notice_deadline \
+                and today <= contract.notice_deadline <= today + relativedelta(days=NOTICE_LEAD_DAYS):
             next_end = add_months_to_period_end(contract.date_end, contract.renewal_months) \
                 if contract.auto_renew and contract.renewal_months else False
             contract.activity_schedule(
@@ -306,11 +318,8 @@ class VmeContract(models.Model):
                 user_id=(contract.responsible_user_id or contract.association_id._vme_task_user()).id,
             )
             contract.activity_notice_deadline = contract.notice_deadline
-
-        evaluation_limit = today + relativedelta(days=EVALUATION_LEAD_DAYS)
-        for contract in self.search([("state", "=", "running"), ("next_evaluation_date", "<=", evaluation_limit)]):
-            if contract.activity_evaluation_date == contract.next_evaluation_date:
-                continue
+        if contract.activity_evaluation_date != contract.next_evaluation_date and contract.next_evaluation_date \
+                and contract.next_evaluation_date <= today + relativedelta(days=EVALUATION_LEAD_DAYS):
             contract.activity_schedule(
                 activity_type_id=todo.id,
                 date_deadline=max(contract.next_evaluation_date, today),
