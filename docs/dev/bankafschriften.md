@@ -33,7 +33,7 @@ CODA/CAMT-bestand
   └─ parse_statement_file()           -> [Statement(account_number, balances, transactions)]
   └─ per Statement:
        _journal_for_account(IBAN)     -> bankdagboek WK of RK van de VME (maakt het aan als het nog niet bestaat)
-       al ingelezen? (dagboek + naam "CODA 044 van 05/11/2026") -> overslaan
+       al ingelezen? (dagboek + vme_import_key "CODA:044:2026-11-05", of de oude naam) -> overslaan
        account.bank.statement.create  -> regels op de wachtrekening van het dagboek
   └─ lines._vme_match()  (als superuser)
        ontvangst (> 0)  -> _vme_match_receipt()

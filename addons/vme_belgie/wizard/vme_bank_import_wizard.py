@@ -44,11 +44,15 @@ class VmeBankImportWizard(models.TransientModel):
             journal = self._journal_for_account(parsed.account_number)
             name = self.env._("%(format)s %(number)s van %(date)s", format=file_format,
                               number=parsed.number, date=parsed.date.strftime("%d/%m/%Y"))
+            key = f"{file_format}:{parsed.number}:{parsed.date.isoformat()}"
             Statement = self.env["account.bank.statement"].sudo().with_company(journal.company_id)
-            if Statement.search_count([("journal_id", "=", journal.id), ("name", "=", name)]):
+            # The name as well, for statements imported before the key existed.
+            if Statement.search_count([("journal_id", "=", journal.id), "|",
+                                       ("vme_import_key", "=", key), ("name", "=", name)]):
                 continue
             statement = Statement.create({
                 "name": name,
+                "vme_import_key": key,
                 "reference": filename,
                 "journal_id": journal.id,
                 "date": parsed.date,

@@ -27,6 +27,15 @@ EXCEPTIONS = [
 OPEN_ACCOUNT_TYPES = ("asset_receivable", "liability_payable")
 
 
+class AccountBankStatement(models.Model):
+    _inherit = "account.bank.statement"
+
+    # The name is translated ("van" / "du"): duplicates are recognised on this key instead.
+    vme_import_key = fields.Char(
+        string="Importsleutel", readonly=True, copy=False, index=True,
+        help="Formaat, nummer en datum van het ingelezen afschrift.")
+
+
 class AccountBankStatementLine(models.Model):
     """Matching of imported bank movements with provisions and vendor bills of a VME.
 
