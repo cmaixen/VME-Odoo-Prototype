@@ -4,3 +4,4 @@ from . import test_demo
 from . import test_remittance
 from . import test_access_rent
 from . import test_cron_users
+from . import test_check_company_rent

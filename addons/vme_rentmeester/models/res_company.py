@@ -1,4 +1,5 @@
-from odoo import fields, models
+from odoo import api, fields, models
+from odoo.exceptions import ValidationError
 
 RENT_ACCOUNT_CODE = "489100"
 FEE_ACCOUNT_CODE = "700100"
@@ -18,6 +19,13 @@ class ResCompany(models.Model):
         "res.partner.bank", string="Derdenrekening",
         domain="[('partner_id', '=', partner_id)]",
         help="De rekening van het kantoor waarop de huurders betalen en waarvan het saldo naar de verhuurders gaat.")
+
+    @api.constrains("rent_bank_id")
+    def _check_rent_bank(self):
+        # Bank accounts have no company of their own: the third-party account must be one of the office itself.
+        for company in self.filtered("rent_bank_id"):
+            if company.rent_bank_id.partner_id.commercial_partner_id != company.partner_id.commercial_partner_id:
+                raise ValidationError(self.env._("Kies als derdenrekening een rekening van %s zelf.", company.name))
 
     def _rent_account(self):
         """Account for rent and charges collected on behalf of landlords (created when missing)."""

@@ -5,11 +5,11 @@ class AccountMove(models.Model):
     _inherit = "account.move"
 
     rent_contract_id = fields.Many2one("vme.rent.contract", string="Huurcontract", index=True, copy=False,
-                                       readonly=True)
+                                       readonly=True, check_company=True)
     rent_period = fields.Date(string="Huurmaand", copy=False, readonly=True)
     rent_landlord_id = fields.Many2one(related="rent_contract_id.landlord_id", store=True, string="Verhuurder")
     rent_remittance_id = fields.Many2one("vme.rent.remittance", string="Doorstorting", index="btree_not_null",
-                                         copy=False, readonly=True)
+                                         copy=False, readonly=True, check_company=True)
 
     @api.onchange("rent_contract_id")
     def _onchange_rent_contract_cost(self):

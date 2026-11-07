@@ -132,7 +132,8 @@ Elke fix staat in een eigen commit, met een test waar dat kan.
 - **Probleem:** alleen de domeinen in de views beschermen. Een import, RPC (het AI-script) of code met sudo kan een record uit de company van een andere VME koppelen.
 - **Herstel:**
   - Uitgevoerd: `_check_company_auto` en `check_company=True` op de rekening van de verdeelregel, rekening en sleutel van een budgetregel, en `vme_works_id` en `vme_reserve_move_id` op facturen. Bankrekeningen hebben geen eigen company, dus daar zou `check_company` alles doorlaten. Een constraint eist nu dat de rekeningen van de VME van haar eigen partner zijn, en dat de rekening van een SEPA-mandaat van de eigenaar is. Tests: `test_check_company.py`.
-  - Nog open ⏳: de koppelingen in rentmeester, `vme_damage.py`, en de andere Many2one's naar records met een company (installaties, contracten).
+  - Uitgevoerd in rentmeester: `_check_company_auto` op contract, mandaat en doorstorting, `check_company` op mandaat, analytische rekening, btw van het ereloon, de stukken van de doorstorting en de koppelingen op `account.move`; constraints op de rekening van de verhuurder (mandaat, doorstorting) en op de derdenrekening van het kantoor. De analytische rekening van een verhuurder kwam in de company waarin de gebruiker toevallig werkte; nu in die van het contract. Tests: `vme_rentmeester/tests/test_check_company_rent.py`.
+  - Nog open ⏳: `vme_damage.py` en de andere Many2one's naar records met een company (installaties, contracten).
 
 **B-R3. Waalse indexstop voor EPB-label D staat op 50%** ⏳ (juridisch na te kijken)
 - **Waar:** `vme_rentmeester/models/rent_rules.py:57-64`

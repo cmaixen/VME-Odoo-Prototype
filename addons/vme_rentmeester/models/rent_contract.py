@@ -18,6 +18,7 @@ class VmeRentContract(models.Model):
     _name = "vme.rent.contract"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _description = "Huurcontract"
+    _check_company_auto = True
     _order = "date_start desc, id desc"
 
     name = fields.Char(string="Contract", required=True, copy=False, default=lambda self: self.env._("Nieuw"))
@@ -46,7 +47,7 @@ class VmeRentContract(models.Model):
     tenant_id = fields.Many2one("res.partner", string="Huurder", compute="_compute_tenant_id", store=True,
                                 help="De eerste huurder ontvangt de facturen.")
     analytic_account_id = fields.Many2one("account.analytic.account", string="Analytische rekening verhuurder",
-                                          readonly=True, copy=False)
+                                          readonly=True, copy=False, check_company=True)
     user_id = fields.Many2one(
         "res.users", string="Beheerder", domain="[('share', '=', False)]", tracking=True,
         default=lambda self: self.env.user if not self.env.user._is_superuser() else False,
@@ -229,9 +230,14 @@ class VmeRentContract(models.Model):
         self.ensure_one()
         plan = self.env.ref(ANALYTIC_PLAN_XMLID)
         Analytic = self.env["account.analytic.account"].sudo()
-        account = Analytic.search([("plan_id", "=", plan.id), ("partner_id", "=", self.landlord_id.id)], limit=1)
+        # In the office of the lease, not in the company the user happens to work in.
+        account = Analytic.search([
+            ("plan_id", "=", plan.id), ("partner_id", "=", self.landlord_id.id),
+            ("company_id", "in", [False, self.company_id.id]),
+        ], order="company_id", limit=1)
         return account or Analytic.create({
             "name": self.landlord_id.name, "plan_id": plan.id, "partner_id": self.landlord_id.id,
+            "company_id": self.company_id.id,
         })
 
     # Rent and anniversaries

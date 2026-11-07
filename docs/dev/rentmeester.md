@@ -10,7 +10,7 @@ De huur hoort bij de verhuurder, niet bij de VME. `vme_belgie` modelleert de ver
 
 - Een `res.company` met `is_rent_management = True` is het rentmeesterkantoor. Nieuwe contracten krijgen die company als standaard (`_default_company`), anders `env.company`.
 - Huurfacturen, afrekeningsfacturen en betalingen leven in die company. Een company per verhuurder zou honderden boekhoudingen (en rekeningstelsels) geven voor particulieren die zelf geen boekhouding voeren.
-- Elke verhuurder krijgt een analytische rekening in het plan **Verhuurders** (`vme_rentmeester.analytic_plan_landlords`), aangemaakt bij het contract (`_landlord_analytic_account`). Elke huurfactuurlijn krijgt `analytic_distribution = {verhuurder: 100}`.
+- Elke verhuurder krijgt een analytische rekening in het plan **Verhuurders** (`vme_rentmeester.analytic_plan_landlords`), aangemaakt bij het contract (`_landlord_analytic_account`), in de company van het contract (een rekening zonder company telt ook). Elke huurfactuurlijn krijgt `analytic_distribution = {verhuurder: 100}`.
 - De lijnen staan op rekening **489100 Huur en lasten voor rekening van verhuurders** (passief, `res.company._rent_account()` maakt ze aan als ze ontbreekt): de huur is geen omzet van het kantoor maar geld dat het doorstort. Het ereloon van de rentmeester en de doorstorting aan de verhuurder staan in [Doorstorting en ereloon](#doorstorting-en-ereloon-stap-25b).
 
 ## Datamodel
@@ -146,3 +146,7 @@ docker compose run --rm odoo odoo -d vme_test -u vme_belgie,vme_rentmeester --te
 - **Opzeg met reden** door de verhuurder in een contract van negen jaar (eigen gebruik, werken, zonder reden met vergoeding) en de tussentijdse termijnen van drie jaar: niet gemodelleerd.
 - **Daling van de index**: de huur daalt mee; een minimumclausule in het contract is niet voorzien.
 - **bpost** voor brieven valt buiten het prototype (zie stap 23).
+
+## Company-controles
+
+Contract, mandaat en doorstorting hebben `_check_company_auto`. `check_company` staat op het mandaat en de analytische rekening van het contract, de btw van het ereloon, de stukken van de doorstorting, en `rent_contract_id` en `rent_remittance_id` op `account.move`. Bankrekeningen hebben geen eigen company: een constraint eist dat de rekening van mandaat en doorstorting van de verhuurder is, en de derdenrekening (`res.company.rent_bank_id`) van het kantoor zelf. Tests: `tests/test_check_company_rent.py`.

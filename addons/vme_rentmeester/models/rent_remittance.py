@@ -1,5 +1,5 @@
 from odoo import api, fields, models
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 from odoo.fields import Command
 from odoo.tools import format_date
 
@@ -19,6 +19,7 @@ class VmeRentRemittance(models.Model):
     _name = "vme.rent.remittance"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _description = "Doorstorting aan de verhuurder"
+    _check_company_auto = True
     _order = "month desc, landlord_id, id desc"
 
     name = fields.Char(string="Doorstorting", compute="_compute_name", store=True)
@@ -45,10 +46,13 @@ class VmeRentRemittance(models.Model):
     bank_untrusted = fields.Boolean(compute="_compute_payment_status")
     note = fields.Text(string="Opmerkingen", readonly=True)
 
-    fee_invoice_id = fields.Many2one("account.move", string="Ereloonfactuur", readonly=True, copy=False)
+    fee_invoice_id = fields.Many2one("account.move", string="Ereloonfactuur", readonly=True, copy=False,
+                                     check_company=True)
     payout_move_id = fields.Many2one("account.move", string="Doorstortingsstuk", readonly=True, copy=False,
+                                     check_company=True,
                                      help="Het stuk dat de huur op 489100 afboekt; dit staat in de betaalbatch.")
-    offset_move_id = fields.Many2one("account.move", string="Verrekening ereloon", readonly=True, copy=False)
+    offset_move_id = fields.Many2one("account.move", string="Verrekening ereloon", readonly=True, copy=False,
+                                     check_company=True)
     payment_status = fields.Selection(
         [("none", "Niets door te storten"), ("to_approve", "Goed te keuren"), ("to_pay", "Klaar voor betaalbatch"),
          ("in_batch", "In betaalbatch"), ("sent", "Verstuurd"), ("paid", "Doorgestort"),
@@ -75,6 +79,13 @@ class VmeRentRemittance(models.Model):
             remittance.fee_tax = rules.money(sum(fees.mapped("tax_amount")))
             remittance.fee_total = rules.money(remittance.fee_untaxed + remittance.fee_tax)
             remittance.balance = rules.balance(received, costs, remittance.fee_total)
+
+    @api.constrains("partner_bank_id", "landlord_id")
+    def _check_landlord_bank(self):
+        # Bank accounts have no company of their own, so check_company would let any account through.
+        for record in self.filtered("partner_bank_id"):
+            if record.partner_bank_id.partner_id.commercial_partner_id != record.landlord_id.commercial_partner_id:
+                raise ValidationError(self.env._("Kies een rekening van de verhuurder %s zelf.", record.landlord_id.name))
 
     @api.depends("landlord_id", "line_ids.contract_id.mandate_id.partner_bank_id")
     def _compute_partner_bank_id(self):
