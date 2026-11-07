@@ -18,8 +18,8 @@
                         </group>
                         <div class="text-muted">
                             Wat de VME op de facturen van een 281.50-plichtige leverancier betaalt, komt in het
-                            overzicht onder VME &gt; Fiches 281.50. Voor een bedrijf komt het ondernemingsnummer uit het
-                            veld KBO of btw-nummer.
+                            overzicht onder VME &gt; Fiches 281.50. Het ondernemingsnummer komt uit het veld KBO of
+                            btw-nummer, ook voor een zelfstandige met een vrij beroep.
                         </div>
                     </group>
                 </page>
@@ -55,7 +55,7 @@
                             invisible="not id or state == 'filed'"/>
                     <button name="action_mark_checked" type="object" string="Nagekeken" class="btn-primary"
                             invisible="not id or state != 'draft'"/>
-                    <button name="action_download_xml" type="object" string="XML voor Belcotax downloaden"
+                    <button name="action_download_file" type="object" string="Bestand voor Belcotax downloaden"
                             class="btn-primary" invisible="state == 'draft'"/>
                     <button name="action_mark_filed" type="object" string="Opgeladen in Belcotax"
                             invisible="state != 'checked'"
@@ -71,9 +71,13 @@
                         gegevens. Vul ze aan op de leverancier en bereken opnieuw, of verbeter ze hieronder. Het bestand
                         kan toch gemaakt worden, maar Belcotax-on-web weigert een fiche zonder identificatie.
                     </div>
+                    <div class="alert alert-warning" role="alert" invisible="not file_warning">
+                        <field name="file_warning" readonly="1"/>
+                    </div>
                     <div class="alert alert-info" role="alert" invisible="state != 'checked'">
                         Download het bestand en laad het zelf op in Belcotax-on-web. Odoo dient niets in.
-                        Het XML-formaat is nog te valideren tegen de brochure van de FOD Financiën.
+                        Het bestand volgt de schema's van de FOD Financiën; doe vóór het eerste echte gebruik
+                        een proefupload.
                     </div>
                     <group>
                         <group>
@@ -81,6 +85,7 @@
                             <field name="year" options="{'enable_formatting': false}" readonly="id"/>
                             <field name="deadline"/>
                             <field name="threshold"/>
+                            <field name="file_format"/>
                         </group>
                         <group>
                             <field name="fiche_count"/>
@@ -103,7 +108,8 @@
                             <field name="country_id" optional="hide"/>
                             <field name="is_company" optional="hide"/>
                             <field name="national_number" optional="show" readonly="is_company"/>
-                            <field name="kbo" optional="show" readonly="not is_company"/>
+                            <field name="kbo" optional="show"/>
+                            <field name="vat" optional="hide"/>
                             <field name="profession" optional="show"/>
                             <field name="amount_commission" optional="hide"/>
                             <field name="amount_fees" optional="show"/>

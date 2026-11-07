@@ -1,0 +1,193 @@
+{
+  "$id": "urn:f:d:2026:50:2",
+  "$schema": "https://belcotax.be/fiches/schema/1",
+  "additionalProperties": false,
+  "description": "Commissies, makelaarslonen, handelsrestorno's, vacatiegelden,...",
+  "properties": {
+    "$s": {
+      "oneOf": [
+        {
+          "const": "urn:f:d:2026:50:2"
+        },
+        {
+          "const": "urn:f:d:2026:50:2:fr"
+        },
+        {
+          "const": "urn:f:d:2026:50:2:nl"
+        },
+        {
+          "const": "urn:f:d:2026:50:2:de"
+        }
+      ],
+      "title": "Schema van de fiche",
+      "type": "string"
+    },
+    "2010": {
+      "title": "Volgnummer",
+      "type": "string"
+    },
+    "2031": {
+      "oneOf": [
+        {
+          "const": "0",
+          "title": "Niet van toepassing"
+        },
+        {
+          "const": "1",
+          "title": "Van toepassing"
+        }
+      ],
+      "title": "Als er geen enkele betaling is gebeurd in 2026, gelieve de vermelding 'Nihil' aan te duiden",
+      "type": "string"
+    },
+    "2060": {
+      "minimum": 0,
+      "multipleOf": 0.01,
+      "title": "Commissies, makelaarslonen, handelsrestorno's, enz….",
+      "type": "number",
+      "unit": "euro"
+    },
+    "2061": {
+      "minimum": 0,
+      "multipleOf": 0.01,
+      "title": "Erelonen of vacatiegelden",
+      "type": "number",
+      "unit": "euro"
+    },
+    "2062": {
+      "minimum": 0,
+      "multipleOf": 0.01,
+      "title": "Bedrag",
+      "type": "number",
+      "unit": "euro"
+    },
+    "2063": {
+      "minimum": 0,
+      "multipleOf": 0.01,
+      "title": "Kosten gedaan voor rekening van de verkrijger",
+      "type": "number",
+      "unit": "euro"
+    },
+    "2064": {
+      "minimum": 0,
+      "multipleOf": 0.01,
+      "readOnly": true,
+      "title": "TOTAAL",
+      "type": "number",
+      "unit": "euro"
+    },
+    "2065": {
+      "minimum": 0,
+      "multipleOf": 0.01,
+      "title": "Als het in rubriek e) ingevulde bedrag niet overeenkomt met het bedrag dat in 2026 is uitbetaald, vermeld dan hier het bedrag dat werkelijk in 2026  is uitbetaald (met inbegrip van de sommen die betrekking hebben op andere belastbare tijdperken)",
+      "type": "number",
+      "unit": "euro"
+    },
+    "2066": {
+      "minimum": 0,
+      "multipleOf": 0.01,
+      "title": "sportbeoefenaars voor hun sportieve activiteiten",
+      "type": "number",
+      "unit": "euro"
+    },
+    "2067": {
+      "minimum": 0,
+      "multipleOf": 0.01,
+      "title": "opleiders, trainers, begeleiders voor hun activiteiten ten behoeve van sportbeoefenaars",
+      "type": "number",
+      "unit": "euro"
+    },
+    "2068": {
+      "minimum": 0,
+      "multipleOf": 0.01,
+      "title": "Vrijgestelde vergoedingen voor voogdijopdrachten overeenkomstig artikel 38, §1, eerste lid, 21°, WIB 92 (optie uitsluitend bestemd voor FOD JUSTITIE conform art. 38, §1, 4de lid, WIB92)",
+      "type": "number",
+      "unit": "euro"
+    },
+    "2099": {
+      "title": "Eventuele verduidelijking van de onder 3.a) tot 3.f) opgenomen bedragen",
+      "type": "string"
+    },
+    "2103": {
+      "title": "Aard",
+      "type": "string"
+    },
+    "2107": {
+      "title": "Uitgeoefend beroep",
+      "type": "string"
+    },
+    "2205": {
+      "oneOf": [
+        {
+          "const": "3",
+          "title": "annuleert en vervangt een fiche"
+        }
+      ],
+      "title": "Indien gewijzigd, soort wijziging",
+      "type": "string"
+    },
+    "5100": {
+      "minimum": 0,
+      "multipleOf": 0.01,
+      "readOnly": true,
+      "title": "Belastbaar inkomen",
+      "type": "number",
+      "unit": "euro"
+    },
+    "5200": {
+      "minimum": 0,
+      "multipleOf": 0.01,
+      "readOnly": true,
+      "title": "Bedrijfsvoorheffing",
+      "type": "number",
+      "unit": "euro"
+    },
+    "5300": {
+      "minimum": 0,
+      "multipleOf": 0.01,
+      "readOnly": true,
+      "title": "Sociale bijdragen",
+      "type": "number",
+      "unit": "euro"
+    },
+    "b": {
+      "title": "Uw referentie voor de verkrijger van de inkomsten",
+      "type": "string",
+      "entities": [
+        "organisation",
+        "person"
+      ],
+      "role": "beneficiary",
+      "zoneType": "entity"
+    },
+    "c": {
+      "title": "Uw referentie voor de contactgegevens",
+      "type": "string",
+      "zoneType": "contact"
+    },
+    "d": {
+      "title": "Uw referentie voor de schuldenaar van de inkomsten",
+      "type": "string",
+      "entities": [
+        "organisation",
+        "person"
+      ],
+      "role": "debtor",
+      "zoneType": "entity"
+    },
+    "k": {
+      "title": "Uw referentie voor de fiche",
+      "type": "string",
+      "zoneType": "key"
+    }
+  },
+  "required": [
+    "$s",
+    "b",
+    "c",
+    "d",
+    "k"
+  ],
+  "title": "281.50",
+  "type": "object"
+}

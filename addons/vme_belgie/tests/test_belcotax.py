@@ -1,3 +1,4 @@
+import json
 from datetime import date
 
 from lxml import etree
@@ -6,6 +7,7 @@ from odoo.exceptions import AccessError, UserError
 from odoo.fields import Command
 from odoo.tests import TransactionCase, tagged
 
+from ..models import belcotax_jsonl, belcotax_xml
 from ..models.belcotax_xml import kbo_is_valid, national_number_is_valid
 from ..models.vme_belcotax import belcotax_deadline
 
@@ -142,39 +144,120 @@ class TestBelcotax(TransactionCase):
         self.assertFalse(self._line(statement, self.auditor).warning)
         self.assertEqual(statement.warning_count, 1)
         statement.action_mark_checked()
-        statement.action_download_xml()
+        statement.action_download_file()
         self.assertTrue(statement.xml_file)
+        self.assertTrue(statement.xml_filename.endswith(".jsonl"))
 
-    def test_xml_needs_a_check_and_holds_the_fiches(self):
-        self._pay(self._bill(self.auditor, date(2026, 3, 1), 1234.56), date(2026, 3, 20))
-        self._pay(self._bill(self.consultant, date(2026, 3, 1), 100), date(2026, 3, 20))  # below threshold
-        statement = self._statement()
+    def test_xml_up_to_2025_follows_the_official_xsd(self):
+        """Income 2025: the XML of the brochure 2025, valid against the official XSD Belcotax 2025."""
+        office = self.env["res.company"].create({
+            "name": "Kantoor Fiche", "is_syndic_office": True, "company_registry": "0000000295",
+            "street": "Kantoorlaan 4", "zip": "2000", "city": "Voorbeeldstad", "phone": "03 000 00 00",
+            "email": "kantoor@voorbeeld.test",
+        })
+        self.env["vme.management.agreement"].create({"association_id": self.vme.id, "syndic_company_id": office.id,
+                                                     "date_start": date(2024, 1, 1), "fee_amount": 10.0})
+        self.auditor.vat = "BE0000000394"  # self-employed with a company number
+        self._pay(self._bill(self.auditor, date(2025, 3, 1), 1234.56), date(2025, 3, 20))
+        self._pay(self._bill(self.consultant, date(2025, 3, 1), 700), date(2025, 3, 20))
+        self._pay(self._bill(self.expert, date(2025, 3, 1), 100), date(2025, 3, 20))  # below threshold
+        statement = self._statement(2025)
+        self.assertIn("XML", statement.file_format)
         with self.assertRaises(UserError):
-            statement.action_download_xml()
+            statement.action_download_file()
         with self.assertRaises(UserError):
             statement.action_mark_filed()
         statement.action_mark_checked()
         self.assertEqual(statement.checked_by_id, self.env.user)
-        statement.action_download_xml()
-        root = etree.fromstring(statement._belcotax_xml())
-        fiches = root.findall(".//Fiche28150")
-        self.assertEqual(len(fiches), 1)
-        self.assertEqual(fiches[0].findtext("f2013_naam"), "Commissaris Fiche")
-        self.assertEqual(fiches[0].findtext("f2011_nationaalnr"), "00000000196")
-        self.assertEqual(fiches[0].findtext("f50_2061_erelonenofvacatie"), "123456")
-        self.assertEqual(fiches[0].findtext("f50_2064_totaal"), "123456")
-        self.assertEqual(fiches[0].findtext("f50_2060_commissies"), "0")
+        statement.action_download_file()
+        self.assertTrue(statement.xml_filename.endswith(".xml"))
+        data, _filename = statement._belcotax_file()
+        self.assertEqual(belcotax_xml.validate(data), [])
+        root = etree.fromstring(data)
+        # The office of the syndic sends; the VME is the debtor.
+        self.assertEqual(root.findtext("Verzending/v0024_nationaalnr"), "0000000295")
+        self.assertEqual(root.findtext("Verzending/v0014_naam"), "Kantoor Fiche")
         self.assertEqual(root.findtext(".//a1005_registratienummer"), "0000000196")
-        self.assertEqual(root.findtext(".//r8012_controletotaal"), "123456")
+        fiches = {f.findtext("f2013_naam"): f for f in root.findall(".//Fiche28150")}
+        self.assertEqual(set(fiches), {"Commissaris Fiche", "Advies Fiche BV"})
+        person, company = fiches["Commissaris Fiche"], fiches["Advies Fiche BV"]
+        # A natural person: national number in 2.011, company number in 2.110.
+        self.assertEqual(person.findtext("f2011_nationaalnr"), "00000000196")
+        self.assertEqual(person.findtext("f50_2110_kbonbr"), "0000000394")
+        self.assertEqual(person.findtext("f50_2030_aardpersoon"), "1")
+        self.assertEqual(person.findtext("f2018_landwoonplaats"), "0")  # Belgium
+        self.assertEqual(person.findtext("f50_2061_erelonenofvacatie"), "123456")
+        self.assertEqual(person.findtext("f50_2060_commissies"), "0")
+        self.assertEqual(person.findtext("f50_2064_totaal"), "123456")
+        self.assertEqual(person.findtext("f50_2059_totaalcontrole"), "246912")  # 2.060 up to 2.064
+        self.assertIsNone(person.find("f50_2065_werkelijkbetaaldb"))
+        # A legal person: company number in 2.011, 2.110 stays empty.
+        self.assertEqual(company.findtext("f2011_nationaalnr"), "0000000592")
+        self.assertIsNone(company.find("f50_2110_kbonbr"))
+        self.assertEqual(company.findtext("f50_2030_aardpersoon"), "2")
+        # Control records: 2 fiches, sequence numbers 1 + 2, the sum of the control totals 2.059.
+        self.assertEqual(root.findtext(".//r8010_aantalrecords"), "4")
+        self.assertEqual(root.findtext(".//r8011_controletotaal"), "3")
+        self.assertEqual(root.findtext(".//r8012_controletotaal"), str(246912 + 140000))
+        self.assertEqual(root.findtext(".//r9013_controletotaal"), str(246912 + 140000))
+        self.assertEqual(root.findtext(".//r9011_totaalaantalrecords"), "6")
         statement.action_mark_filed()
         self.assertEqual(statement.state, "filed")
+
+    def test_jsonl_from_2026_follows_the_official_schemas(self):
+        """Income 2026: JSON Lines of the new Belcotax-on-web, valid against the published JSON schemas."""
+        self.env.user.email = "medewerker@voorbeeld.test"
+        self.auditor.vat = "BE0000000394"
+        self._pay(self._bill(self.auditor, date(2026, 3, 1), 1234.56), date(2026, 3, 20))
+        self._pay(self._bill(self.consultant, date(2026, 3, 1), 700), date(2026, 3, 20))
+        statement = self._statement()
+        self.assertIn("JSON", statement.file_format)
+        statement.action_mark_checked()
+        data, filename = statement._belcotax_file()
+        self.assertTrue(filename.endswith(".jsonl"))
+        self.assertEqual(belcotax_jsonl.validate(data), [])
+        lines = [json.loads(text) for text in data.decode().splitlines()]
+        by_schema = {}
+        for line in lines:
+            by_schema.setdefault(line["$s"], []).append(line)
+        contact, = by_schema["urn:r:d:c:1"]
+        debtor, = by_schema["urn:r:d:o:1"][:1]
+        self.assertEqual(contact["e"], "medewerker@voorbeeld.test")
+        self.assertEqual(debtor["i"], {"cbein": "0000000196"})
+        self.assertEqual(debtor["a"]["l"], "150")
+        person, = by_schema["urn:r:d:p:1"]
+        self.assertEqual(person["i"], {"ssin": "00000000196", "cbein": "0000000394"})
+        company = by_schema["urn:r:d:o:1"][1]
+        self.assertEqual(company["i"], {"cbein": "0000000592"})
+        fiches = {line["b"]: line for line in by_schema["urn:f:d:2026:50:2"]}
+        fiche = fiches[person["k"]]
+        self.assertEqual(fiche["2061"], 1234.56)
+        self.assertNotIn("2064", fiche)  # the total is computed by Belcotax
+        self.assertNotIn("2060", fiche)
+        self.assertEqual((fiche["c"], fiche["d"]), (contact["k"], debtor["k"]))
+        self.assertEqual(fiches[company["k"]]["2060"], 700.0)
+        # Recomputing gives the same keys, so a corrected upload replaces the fiches in Belcotax.
+        statement.action_compute()
+        statement.action_mark_checked()
+        again = [json.loads(text) for text in statement._belcotax_file()[0].decode().splitlines()]
+        self.assertEqual([line["k"] for line in again], [line["k"] for line in lines])
+
+    def test_schema_checks_catch_what_belcotax_refuses(self):
+        valid = (b'{"$s": "urn:f:d:2026:50:2", "k": "f1", "2010": "1", "2061": 300.0, '
+                 b'"b": "p1", "c": "c1", "d": "d1"}\n')
+        self.assertEqual(belcotax_jsonl.validate(valid), [])
+        self.assertTrue(belcotax_jsonl.validate(valid.replace(b'"2061": 300.0', b'"2061": 300.001')))
+        self.assertTrue(belcotax_jsonl.validate(valid.replace(b'"2010": "1"', b'"2064": 300.0, "2999": "x"')))
+        self.assertTrue(belcotax_jsonl.validate(valid + valid))  # the same key twice
+        self.assertTrue(belcotax_jsonl.validate(b'{"$s": "urn:r:d:p:1", "k": "p1", "i": {"ssin": "123"}}\n'))
+        self.assertTrue(belcotax_xml.validate(b"<Verzendingen><Verzending/></Verzendingen>"))
 
     def test_recompute_takes_new_payments_and_resets_the_check(self):
         statement = self._statement()
         self.assertFalse(statement.line_ids)
         statement.action_mark_checked()
         with self.assertRaises(UserError):
-            statement.action_download_xml()  # no fiches at all
+            statement.action_download_file()  # no fiches at all
         self._pay(self._bill(self.auditor, date(2026, 3, 1), 600), date(2026, 3, 20))
         statement.action_compute()
         self.assertEqual(statement.state, "draft")
@@ -214,4 +297,4 @@ class TestBelcotax(TransactionCase):
         self.assertFalse(kbo_is_valid("0000000593"))
         self.assertTrue(national_number_is_valid("00.00.00-001.96"))
         self.assertFalse(national_number_is_valid("00000000195"))
-        self.assertEqual(belcotax_deadline(2026), date(2027, 6, 30))
+        self.assertEqual(belcotax_deadline(2025), date(2026, 6, 29))
