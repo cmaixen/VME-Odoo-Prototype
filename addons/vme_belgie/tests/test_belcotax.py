@@ -267,7 +267,7 @@ class TestBelcotax(TransactionCase):
         """The totals do not depend on the companies switched on, and the audit trail only changes by button."""
         main = self.env.ref("base.main_company")
         staff = self.env["res.users"].with_context(no_reset_password=True).create({
-            "name": "Medewerker Fiche", "login": "medewerker.fiche@example.com",
+            "name": "Medewerker Fiche", "login": "medewerker.fiche@example.com", "email": "medewerker.fiche@example.com",
             "group_ids": [Command.set([self.env.ref("account.group_account_invoice").id])],
             "company_id": main.id, "company_ids": [Command.set((main | self.company).ids)],
         })
@@ -283,7 +283,7 @@ class TestBelcotax(TransactionCase):
             statement.line_ids.amount_fees = 1.0
         with self.assertRaises(UserError):
             statement.action_mark_checked()
-        statement.action_download_xml()
+        statement.action_download_file()
         statement.action_mark_filed()
         with self.assertRaises(UserError):
             statement.action_compute()

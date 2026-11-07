@@ -322,7 +322,8 @@ class VmeBelcotaxStatement(models.Model):
             raise UserError(self.env._("Kijk het overzicht eerst na: pas daarna is het bestand beschikbaar."))
         if not self.fiche_count:
             raise UserError(self.env._("Geen enkele verkrijger komt boven de drempel: er zijn geen fiches nodig."))
-        data, filename = self._belcotax_file()
+        # The VME's company may not be switched on in the user's session (see C-F4).
+        data, filename = self.with_company(self.company_id)._belcotax_file()
         self.write({"xml_file": base64.b64encode(data), "xml_filename": filename})
         return {
             "type": "ir.actions.act_url",
