@@ -192,6 +192,18 @@ class TestWorks(TransactionCase):
         self.assertEqual(works.reserve_shortfall, 7000)  # budget 10000
         self.assertEqual(self._works(financing="working").reserve_shortfall, 0)
 
+    def test_reserve_in_the_list_does_not_query_per_works(self):
+        works = self.env["vme.works"].concat(*(self._works(financing="reserve") for _i in range(5)))
+
+        def queries(records):
+            self.env.invalidate_all()
+            before = self.env.cr.sql_log_count
+            records.read(["reserve_available", "reserve_shortfall"])
+            return self.env.cr.sql_log_count - before
+
+        self.assertEqual(set(works.mapped("reserve_available")), {5000})
+        self.assertEqual(queries(works[:1]), queries(works))
+
     def test_award_warns_when_the_reserve_is_short(self):
         works = self._awarded(amount=9600)
         self.assertEqual(works.reserve_shortfall, 4600)
