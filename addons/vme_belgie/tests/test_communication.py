@@ -239,7 +239,8 @@ class TestCommunication(TransactionCase):
         convocation = self.env["vme.assembly.convocation"].create({
             "assembly_id": assembly.id, "partner_id": self.owner2.id, "lot_names": "A2"})
         log = self.env["vme.communication.log"]._get_for_records(convocation)
-        self.assertEqual((log.state, log.channel, log.lot_names), ("draft", "letter", "A2"))
+        # No written consent for e-mail: registered letter (art. 3.87 §3 BW).
+        self.assertEqual((log.state, log.channel, log.lot_names), ("draft", "registered", "A2"))
         convocation.action_mark_sent()
         self.assertEqual((log.state, log.sent_date), ("sent", TODAY))
         self.assertEqual(convocation.state, "sent", "The convocation itself works as before")

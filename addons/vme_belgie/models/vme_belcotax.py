@@ -8,7 +8,7 @@ import base64
 from datetime import date
 
 from odoo import api, fields, models
-from odoo.exceptions import UserError
+from odoo.exceptions import AccessError, UserError
 
 from .belcotax_xml import Debtor, Fiche, build_belcotax_xml, digits, kbo_is_valid, national_number_is_valid
 from .vme_access import check_not_auditor
@@ -100,11 +100,34 @@ class VmeBelcotaxStatement(models.Model):
             statement.total_amount = sum(fiches.mapped("amount_total"))
             statement.warning_count = len(fiches.filtered("warning"))
 
+    # Written only by the buttons (as superuser): who checked it and when it was filed is the audit trail.
+    PROTECTED_FIELDS = {"state", "checked_by_id", "checked_date", "filed_date"}
+
     @api.model_create_multi
     def create(self, vals_list):
+        if not self.env.su and any(self.PROTECTED_FIELDS & set(vals) for vals in vals_list):
+            raise AccessError(self.env._("Een overzicht 281.50 begint altijd als concept."))
         statements = super().create(vals_list)
         statements._fill_lines()
         return statements
+
+    def write(self, vals):
+        if not self.env.su:
+            if self.PROTECTED_FIELDS & set(vals):
+                raise AccessError(self.env._("De status van een overzicht 281.50 wijzigt alleen via de knoppen."))
+            if {"association_id", "year", "line_ids"} & set(vals):
+                self._check_draft()
+        return super().write(vals)
+
+    def unlink(self):
+        if not self.env.su:
+            self._check_draft()
+        return super().unlink()
+
+    def _check_draft(self):
+        if self.filtered(lambda s: s.state != "draft"):
+            raise UserError(self.env._("Een nagekeken of opgeladen overzicht wijzigt niet meer. Zet het eerst "
+                                       "terug naar concept."))
 
     # Selection and totals
 
@@ -117,7 +140,8 @@ class VmeBelcotaxStatement(models.Model):
         # what was paid (reconciled) in the year, VAT included because most VMEs cannot deduct it.
         self.ensure_one()
         start, end = date(self.year, 1, 1), date(self.year, 12, 31)
-        bills = self.env["account.move"].search([
+        # In the company of the VME, whatever companies the user has switched on.
+        bills = self.env["account.move"].with_company(self.company_id).search([
             ("company_id", "=", self.company_id.id), ("move_type", "in", ("in_invoice", "in_refund")),
             ("state", "=", "posted"), ("commercial_partner_id.vme_belcotax_liable", "=", True),
         ])
@@ -156,9 +180,11 @@ class VmeBelcotaxStatement(models.Model):
 
     def _fill_lines(self):
         for statement in self:
+            # In the company of the VME: the bills on the lines are checked against the active companies.
+            statement = statement.with_company(statement.company_id)
             statement.line_ids.unlink()
             paid = statement._paid_by_partner()
-            self.env["vme.belcotax.line"].create([
+            statement.env["vme.belcotax.line"].create([
                 statement._line_values(partner, amount, bills)
                 for partner, (amount, bills) in sorted(paid.items(), key=lambda item: item[0].name or "")
                 if not statement.currency_id.is_zero(amount)
@@ -168,18 +194,21 @@ class VmeBelcotaxStatement(models.Model):
 
     def action_compute(self):
         check_not_auditor(self.env)
-        self.write({"state": "draft", "checked_by_id": False, "checked_date": False, "xml_file": False,
+        if self.filtered(lambda s: s.state == "filed"):
+            raise UserError(self.env._("Dit overzicht is al opgeladen. Zet het eerst terug naar concept."))
+        self.sudo().write({"state": "draft", "checked_by_id": False, "checked_date": False, "xml_file": False,
                     "xml_filename": False})
         self._fill_lines()
 
     def action_mark_checked(self):
         check_not_auditor(self.env)
-        self.write({"state": "checked", "checked_by_id": self.env.user.id,
+        self._check_draft()
+        self.sudo().write({"state": "checked", "checked_by_id": self.env.user.id,
                     "checked_date": fields.Date.context_today(self)})
 
     def action_back_to_draft(self):
         check_not_auditor(self.env)
-        self.write({"state": "draft", "checked_by_id": False, "checked_date": False, "xml_file": False,
+        self.sudo().write({"state": "draft", "checked_by_id": False, "checked_date": False, "xml_file": False,
                     "xml_filename": False, "filed_date": False})
 
     def action_mark_filed(self):
@@ -188,7 +217,7 @@ class VmeBelcotaxStatement(models.Model):
         for statement in self:
             if statement.state != "checked":
                 raise UserError(self.env._("Kijk het overzicht eerst na."))
-        self.write({"state": "filed", "filed_date": fields.Date.context_today(self)})
+        self.sudo().write({"state": "filed", "filed_date": fields.Date.context_today(self)})
 
     def _belcotax_fiches(self):
         self.ensure_one()
@@ -238,6 +267,23 @@ class VmeBelcotaxLine(models.Model):
     statement_id = fields.Many2one("vme.belcotax.statement", string="Overzicht", required=True, ondelete="cascade",
                                    index=True)
     company_id = fields.Many2one(related="statement_id.company_id", store=True)
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        lines = super().create(vals_list)
+        if not self.env.su:
+            lines.statement_id._check_draft()
+        return lines
+
+    def write(self, vals):
+        if not self.env.su:
+            (self.statement_id | self.env["vme.belcotax.statement"].browse(vals.get("statement_id")))._check_draft()
+        return super().write(vals)
+
+    def unlink(self):
+        if not self.env.su:
+            self.statement_id._check_draft()
+        return super().unlink()
     currency_id = fields.Many2one(related="statement_id.currency_id")
     partner_id = fields.Many2one("res.partner", string="Leverancier")
     name = fields.Char(string="Verkrijger", required=True)

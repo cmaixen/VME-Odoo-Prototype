@@ -85,7 +85,7 @@ Voorbeeld uit de demo: de lopende verkoop van A3 en G3 in Residentie Linde (vul 
 
 In het log staan ook:
 
-- de **oproepingen voor de algemene vergadering**: als concept zodra ze gemaakt zijn, als verstuurd zodra u ze verstuurt;
+- de **oproepingen voor de algemene vergadering**: als concept zodra ze gemaakt zijn, als verstuurd zodra u ze verstuurt. Zonder schriftelijk akkoord van de eigenaar voor e-mail gaan ze aangetekend en komen ze in het verzendregister;
 - de **herinneringen van de invordering**. Een **ingebrekestelling** gaat altijd aangetekend: ze komt in het verzendregister, ook als u ze per e-mail verstuurt. In de herinnering staat daarvoor de knop **Aangetekend versturen**.
 
 ## Veelgestelde vragen

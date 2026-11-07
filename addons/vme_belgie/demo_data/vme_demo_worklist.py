@@ -69,7 +69,7 @@ class VmeAssociation(models.Model):
                     "<p class=\"text-muted\">Fictieve mail voor de demo.</p>") % (lot, topic, reply, question),
                 user_id=vme._vme_task_user().id)
 
-        # An owner asked a key by mail: verified at once, the order is prepared and waits for a click.
+        # An owner asked a key by mail and confirmed it by phone: the order is prepared and waits for a click.
         # Not in Residentie Linde: there the demo shows the badge request of A4 through the AI assistant.
         beuken = self.search([("name", "=", "Hof ter Beuken")], limit=1)
         Request = self.env["vme.request"]
@@ -77,4 +77,6 @@ class VmeAssociation(models.Model):
             beuken.id, "key", "eigenaar.beuken.b3@example.com", subject="Extra sleutel voordeur",
             body="Graag een extra sleutel van de voordeur voor mijn dochter."))
         request.request_date = date(2026, 11, 4)
+        request.proof_sender_confirmed = True
+        request.action_verify()
         request.activity_ids.write({"date_deadline": DEMO_WORKLIST_DATE})

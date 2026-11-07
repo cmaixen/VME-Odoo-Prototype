@@ -497,6 +497,9 @@ class VmeAssociation(models.Model):
                     "email": f"eigenaar.{short_name.lower()}.{name.lower()}@example.com",
                     # A few owners want their letters on paper (step 23).
                     "vme_communication_preference": "paper" if name in PAPER_OWNERS else "email",
+                    # Owners on e-mail agreed in writing to receive the convocation by e-mail; the others get
+                    # it by registered letter (art. 3.87 §3 BW).
+                    "vme_convocation_consent_date": False if name in PAPER_OWNERS else date(2025, 1, 15),
                 })
 
             buyer = None

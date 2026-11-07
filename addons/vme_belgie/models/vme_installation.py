@@ -3,6 +3,8 @@ from dateutil.relativedelta import relativedelta
 from odoo import api, fields, models
 from odoo.tools import format_date
 
+from .cron_tools import run_per_record
+
 INSTALLATION_TYPES = [
     ("elevator", "Lift"),
     ("fire_extinguishers", "Brandblussers en haspels"),
@@ -187,29 +189,44 @@ class VmeInstallation(models.Model):
         """Create one task per due date for inspections and risk analyses due within 60 days."""
         limit = fields.Date.context_today(self) + relativedelta(days=ACTIVITY_LEAD_DAYS)
         todo = self.env.ref("mail.mail_activity_data_todo")
-        for installation in self.search([("next_inspection_date", "<=", limit)]):
-            if installation.activity_inspection_due_date != installation.next_inspection_date:
-                installation.activity_schedule(
-                    activity_type_id=todo.id,
-                    date_deadline=installation.next_inspection_date,
-                    summary=self.env._("Keuring plannen: %s", installation.name),
-                    note=self.env._(
-                        "De keuring van %(installation)s (%(vme)s) vervalt op %(date)s.",
-                        installation=installation.name, vme=installation.association_id.name,
-                        date=format_date(self.env, installation.next_inspection_date),
-                    ),
-                    user_id=(installation.responsible_user_id or installation.association_id._vme_task_user()).id,
-                )
-                installation.activity_inspection_due_date = installation.next_inspection_date
-        for installation in self.search([("next_risk_analysis_date", "<=", limit)]):
-            if installation.activity_risk_analysis_due_date != installation.next_risk_analysis_date:
-                installation.activity_schedule(
-                    activity_type_id=todo.id,
-                    date_deadline=installation.next_risk_analysis_date,
-                    summary=self.env._("Risicoanalyse lift laten uitvoeren: %s", installation.name),
-                    user_id=(installation.responsible_user_id or installation.association_id._vme_task_user()).id,
-                )
-                installation.activity_risk_analysis_due_date = installation.next_risk_analysis_date
+        # Only what still needs a task, so a cron that ran out of time continues with the rest (K-D18).
+        due = self.search(["|", ("next_inspection_date", "<=", limit), ("next_risk_analysis_date", "<=", limit)]).filtered(
+            lambda i: i._inspection_task_due(limit) or i._risk_analysis_task_due(limit))
+        run_per_record(due, lambda installation: installation._schedule_due_activities(limit, todo))
+
+    def _inspection_task_due(self, limit):
+        return self.next_inspection_date and self.next_inspection_date <= limit \
+            and self.activity_inspection_due_date != self.next_inspection_date
+
+    def _risk_analysis_task_due(self, limit):
+        return self.next_risk_analysis_date and self.next_risk_analysis_date <= limit \
+            and self.activity_risk_analysis_due_date != self.next_risk_analysis_date
+
+    def _schedule_due_activities(self, limit, todo):
+        """The inspection and risk analysis tasks this installation still needs; one record of the daily cron."""
+        self.ensure_one()
+        installation = self
+        if installation._inspection_task_due(limit):
+            installation.activity_schedule(
+                activity_type_id=todo.id,
+                date_deadline=installation.next_inspection_date,
+                summary=self.env._("Keuring plannen: %s", installation.name),
+                note=self.env._(
+                    "De keuring van %(installation)s (%(vme)s) vervalt op %(date)s.",
+                    installation=installation.name, vme=installation.association_id.name,
+                    date=format_date(self.env, installation.next_inspection_date),
+                ),
+                user_id=(installation.responsible_user_id or installation.association_id._vme_task_user()).id,
+            )
+            installation.activity_inspection_due_date = installation.next_inspection_date
+        if installation._risk_analysis_task_due(limit):
+            installation.activity_schedule(
+                activity_type_id=todo.id,
+                date_deadline=installation.next_risk_analysis_date,
+                summary=self.env._("Risicoanalyse lift laten uitvoeren: %s", installation.name),
+                user_id=(installation.responsible_user_id or installation.association_id._vme_task_user()).id,
+            )
+            installation.activity_risk_analysis_due_date = installation.next_risk_analysis_date
 
     def _close_done_inspection_activity(self):
         """Mark the "Keuring plannen" task done once a new inspection moved the due date past it."""

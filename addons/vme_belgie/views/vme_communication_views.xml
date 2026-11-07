@@ -441,6 +441,7 @@
             </div>
             <field name="category_id" position="after">
                 <field name="vme_communication_preference"/>
+                <field name="vme_convocation_consent_date"/>
             </field>
         </field>
     </record>

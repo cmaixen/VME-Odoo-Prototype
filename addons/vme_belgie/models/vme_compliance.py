@@ -291,7 +291,8 @@ class VmeAssociation(models.Model):
                     else today + relativedelta(days=30),
                     summary=f"{prefix} {action}",
                     note=entry["message"],
-                    user_id=self.env.user.id,
+                    # The cron runs as OdooBot: the case manager of the VME gets the task.
+                    user_id=vme._vme_task_user().id,
                 )
 
     # Form

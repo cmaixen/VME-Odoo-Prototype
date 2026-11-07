@@ -116,6 +116,8 @@
                                            readonly="state != 'waiting_proof'"/>
                                     <field name="proof_lease" invisible="requester_role != 'tenant'"
                                            readonly="state != 'waiting_proof'"/>
+                                    <field name="proof_sender_confirmed" invisible="requester_role != 'owner'"
+                                           readonly="state != 'waiting_proof'"/>
                                 </group>
                                 <group>
                                     <field name="proof_requested_date"/>

@@ -61,6 +61,8 @@ Niet opgeslagen compute `warning` + `warning_level` (`ok`/`warning`/`danger`), m
 | Geen datum, laatste oproepdag binnen 30 dagen (`URGENT_MARGIN_DAYS`) | warning: "Dringend plannen" |
 | Datum, oproeping na `convocation_deadline` verstuurd | danger |
 | Datum, geen oproeping en vandaag na `convocation_deadline` | danger |
+| Een oproeping (`vme.assembly.convocation`) na `convocation_deadline` verstuurd, ook als de eerste op tijd was | danger, met de namen (override in `vme_assembly_meeting.py`, B-D2) |
+| Oproepingen nog in concept en vandaag na `convocation_deadline` | danger, met de namen |
 | Datum buiten de periode | warning |
 
 ## Agenda (`calendar`)

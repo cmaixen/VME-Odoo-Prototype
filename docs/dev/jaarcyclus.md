@@ -45,7 +45,7 @@ Op `vme.association`: `cycle_start_date` (leeg = geen cyclus; bestaande VME's ve
 
 ## De cron
 
-`ir_cron_vme_cycle` → `vme.cycle.step._cron_run_cycle()` → `vme.association._cycle_sync(today)` voor elke VME met `cycle_start_date`:
+`ir_cron_vme_cycle` → `vme.cycle.step._cron_run_cycle()` → `vme.association._cycle_sync(today)` voor elke VME met `cycle_start_date` die vandaag nog niet aan de beurt was (`cycle_sync_date`). Dat gebeurt VME per VME via `cron_tools.run_per_record()`: een savepoint en een commit (`_commit_progress`) per VME, zodat een VME die faalt alleen wordt teruggedraaid en gelogd. Is de tijd van de cron op, dan roept Odoo hem opnieuw aan en gaat hij verder met de volgende VME. De knop **Nu bijwerken** (`action_cycle_sync`) kijkt niet naar `cycle_sync_date`.
 
 1. `_cycle_ensure_steps(year)` voor `today.year` en `today.year + 1`: ontbrekende stappen aanmaken, datums van open stappen bijwerken (de AV-datum kan verschuiven), provisiestappen die niet meer bestaan na een wijziging van `calls_per_year` verwijderen (alleen als ze nog `pending` zijn).
 2. `_check_done()`: open stappen afronden als het feit er is.

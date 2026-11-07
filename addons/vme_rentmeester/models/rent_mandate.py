@@ -8,6 +8,7 @@ class VmeRentMandate(models.Model):
     _name = "vme.rent.mandate"
     _inherit = ["mail.thread"]
     _description = "Beheermandaat van een verhuurder"
+    _check_company_auto = True
     _order = "landlord_id, date_start desc, id desc"
 
     name = fields.Char(string="Mandaat", compute="_compute_name", store=True)
@@ -27,7 +28,7 @@ class VmeRentMandate(models.Model):
         help="Het percentage geldt dan op huur en lasten samen; anders alleen op de huur.")
     fee_amount = fields.Monetary(string="Vast bedrag per maand", tracking=True, help="Zonder btw.")
     fee_tax_id = fields.Many2one(
-        "account.tax", string="Btw op het ereloon", default=lambda self: self._default_fee_tax(),
+        "account.tax", string="Btw op het ereloon", default=lambda self: self._default_fee_tax(), check_company=True,
         domain="[('type_tax_use', '=', 'sale'), ('company_id', 'parent_of', company_id)]")
     partner_bank_id = fields.Many2one(
         "res.partner.bank", string="Rekening van de verhuurder", tracking=True,
@@ -71,6 +72,13 @@ class VmeRentMandate(models.Model):
                     raise ValidationError(self.env._(
                         "%s heeft al een beheermandaat in die periode.", mandate.landlord_id.name))
 
+    @api.constrains("partner_bank_id", "landlord_id")
+    def _check_landlord_bank(self):
+        # Bank accounts have no company of their own, so check_company would let any account through.
+        for record in self.filtered("partner_bank_id"):
+            if record.partner_bank_id.partner_id.commercial_partner_id != record.landlord_id.commercial_partner_id:
+                raise ValidationError(self.env._("Kies een rekening van de verhuurder %s zelf.", record.landlord_id.name))
+
     @api.model_create_multi
     def create(self, vals_list):
         mandates = super().create(vals_list)
@@ -111,7 +119,7 @@ class VmeRentContract(models.Model):
     _inherit = "vme.rent.contract"
 
     mandate_id = fields.Many2one(
-        "vme.rent.mandate", string="Beheermandaat", index=True, tracking=True,
+        "vme.rent.mandate", string="Beheermandaat", index=True, tracking=True, check_company=True,
         domain="[('landlord_id', '=', landlord_id), ('company_id', '=', company_id)]",
         help="Bepaalt het ereloon van de rentmeester en de rekening waarop de huur doorgestort wordt.")
 

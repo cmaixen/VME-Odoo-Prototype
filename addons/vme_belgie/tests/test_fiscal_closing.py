@@ -252,6 +252,36 @@ class TestFiscalClosing(TransactionCase):
             self.closing.with_user(staff).action_close()
         self.assertFalse(self.company.fiscalyear_lock_date)
 
+    def test_reopen_keeps_a_lock_set_by_someone_else(self):
+        """Reopening restores the lock from before the closing, and leaves a lock moved since alone."""
+        self.company.sudo().fiscalyear_lock_date = date(YEAR - 1, 6, 30)  # e.g. after a migration
+        self.closing.action_prepare()
+        self.closing.action_post_settlements()
+        self.closing.action_close()
+        self.closing.action_reopen()
+        self.assertEqual(self.company.fiscalyear_lock_date, date(YEAR - 1, 6, 30))
+        self.closing.action_close()
+        self.company.sudo().fiscalyear_lock_date = date(YEAR + 1, 3, 31)  # the accountant locked further
+        self.closing.action_reopen()
+        self.assertEqual(self.company.fiscalyear_lock_date, date(YEAR + 1, 3, 31))
+
+    def test_state_and_snapshot_only_through_the_buttons(self):
+        staff = self.env["res.users"].with_context(no_reset_password=True).create({
+            "name": "Medewerker Status", "login": "medewerker.status@example.com",
+            "group_ids": [Command.set([self.env.ref("account.group_account_invoice").id])],
+            "company_id": self.company.id, "company_ids": [Command.set(self.company.ids)],
+        })
+        closing = self.closing.with_user(staff)
+        for vals in ({"state": "prepared"}, {"state": "closed"}, {"reserve_capital": 1.0},
+                     {"closed_by_id": staff.id}):
+            with self.assertRaises(AccessError):
+                closing.write(vals)
+        with self.assertRaises(AccessError):
+            self.env["vme.fiscal.closing"].with_user(staff).create(
+                {"association_id": self.vme.id, "year": YEAR - 2, "state": "closed"})
+        closing.action_prepare()
+        self.assertEqual(closing.state, "prepared")
+
     def test_open_from_vme(self):
         action = self.vme.action_open_fiscal_closing(YEAR)
         self.assertEqual(action["res_id"], self.closing.id)

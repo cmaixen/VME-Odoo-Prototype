@@ -19,7 +19,7 @@ Er wordt nooit iets automatisch verstuurd: brieven en facturen zijn concepten di
 
 1. Open **Rentmeester > Huurcontracten** en klik op **Nieuw**.
 2. Vul het **pand** in: kies de kavels (bijvoorbeeld het appartement en de garage). VME, adres en **gewest** komen vanzelf mee; voor een huis buiten een VME tik je het adres en kies je het gewest.
-3. Kies de **verhuurder** en de **huurders**. De eerste huurder krijgt de facturen.
+3. Kies de **verhuurder** en de **huurders**. De eerste huurder krijgt de facturen. Bij **Beheerder** staat wie de taken krijgt (opzegtermijn, indexering, einde huur); standaard bent u dat zelf. Is er geen beheerder, dan gaan ze naar de dossierbeheerder van de VME.
 4. Vul de **datum van ondertekening**, de **ingangsdatum** en de **duur** in. Een contract van hoogstens drie jaar is kortlopend; de einddatum en de uiterste opzegdatum rekent Odoo uit.
 5. Vul de **basishuur** per maand in (zonder lasten), de **lasten** per maand en of het een provisie (jaarlijks afgerekend) of een forfait is.
 6. Vul de **huurwaarborg** in. Is hij hoger dan wat in het gewest mag, dan verschijnt een waarschuwing.

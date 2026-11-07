@@ -172,7 +172,7 @@ class VmeInsurancePolicy(models.Model):
                     "Kijk de polis van %(vme)s na: verzekerde waarde, premie en dekking. Verlengen of opzeggen "
                     "(opzeg uiterlijk %(notice)s). Na de verlenging: knop Verlengd.",
                     vme=policy.association_id.name, notice=format_date(self.env, policy.notice_deadline)),
-                user_id=(policy.user_id or self.env.user).id,
+                user_id=(policy.user_id or policy.association_id._vme_task_user()).id,
             )
             policy.activity_due_date = policy.date_end
 

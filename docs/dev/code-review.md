@@ -99,10 +99,10 @@ Elke fix staat in een eigen commit, met een test waar dat kan.
 - **Probleem:** via RPC kan een medewerker een handtekening op `signed` zetten met een willekeurige naam en IP-adres, of een stem aanmaken met `source="online"`. Het auditspoor van de digitale AV is dan geen bewijs meer.
 - **Herstel (uitgevoerd):** `create` en `write` weigeren zonder superuser de auditvelden van de handtekening en een stem met bron online of schriftelijk. `_portal_sign` en `_portal_cast_votes` schrijven als superuser. Geen contextvlag, want die kan een RPC-aanroep zelf meegeven. Tests: `test_staff_cannot_forge_an_online_vote`, `test_staff_cannot_sign_for_an_owner`.
 
-**B-S4. Bij de mail-intake wordt de eigenaar alleen herkend aan het afzenderadres** ⏳
+**B-S4. Bij de mail-intake wordt de eigenaar alleen herkend aan het afzenderadres** ✅
 - **Waar:** `models/vme_request.py:279-292`, `:412-413`
 - **Probleem:** een vervalste `From:` geeft een sleutelaanvraag die meteen geverifieerd is.
-- **Herstel:** zet sleutel- en badgeaanvragen met `channel == "mail"` op "na te kijken", met een taak. Later kan het SPF/DKIM-resultaat van de mailgateway meetellen.
+- **Herstel (uitgevoerd):** een sleutel- of badgeaanvraag van een eigenaar via `channel == "mail"` wacht op het bewijs "Eigenaar bevestigde de aanvraag" (`proof_sender_confirmed`, `_owner_by_mail()`), met de gewone bewijsvraag en taak. De bewijsvraag gaat naar het gekende adres, dus naar de echte eigenaar. Portaal en manueel blijven meteen geverifieerd. Later kan het SPF/DKIM-resultaat van de mailgateway meetellen. Test: `test_owner_by_mail_confirms_first`.
 
 ### Geld en boekhouding
 
@@ -132,7 +132,8 @@ Elke fix staat in een eigen commit, met een test waar dat kan.
 - **Probleem:** alleen de domeinen in de views beschermen. Een import, RPC (het AI-script) of code met sudo kan een record uit de company van een andere VME koppelen.
 - **Herstel:**
   - Uitgevoerd: `_check_company_auto` en `check_company=True` op de rekening van de verdeelregel, rekening en sleutel van een budgetregel, en `vme_works_id` en `vme_reserve_move_id` op facturen. Bankrekeningen hebben geen eigen company, dus daar zou `check_company` alles doorlaten. Een constraint eist nu dat de rekeningen van de VME van haar eigen partner zijn, en dat de rekening van een SEPA-mandaat van de eigenaar is. Tests: `test_check_company.py`.
-  - Nog open ⏳: de koppelingen in rentmeester, `vme_damage.py`, en de andere Many2one's naar records met een company (installaties, contracten).
+  - Uitgevoerd in rentmeester: `_check_company_auto` op contract, mandaat en doorstorting, `check_company` op mandaat, analytische rekening, btw van het ereloon, de stukken van de doorstorting en de koppelingen op `account.move`; constraints op de rekening van de verhuurder (mandaat, doorstorting) en op de derdenrekening van het kantoor. De analytische rekening van een verhuurder kwam in de company waarin de gebruiker toevallig werkte; nu in die van het contract. Tests: `vme_rentmeester/tests/test_check_company_rent.py`.
+  - Nog open ⏳: `vme_damage.py` en de andere Many2one's naar records met een company (installaties, contracten).
 
 **B-R3. Waalse indexstop voor EPB-label D staat op 50%** ⏳ (juridisch na te kijken)
 - **Waar:** `vme_rentmeester/models/rent_rules.py:57-64`
@@ -152,11 +153,12 @@ Elke fix staat in een eigen commit, met een test waar dat kan.
 
 ### Wettelijke logica
 
-**B-D2. Een oproeping geldt als "op tijd" zodra de eerste verstuurd is** ⏳
+**B-D2. Een oproeping geldt als "op tijd" zodra de eerste verstuurd is** ✅
 - **Waar:** `models/vme_assembly_meeting.py:520-524`
 - **Probleem:** `convocation_sent_date` wordt gezet bij de eerste oproeping die vertrekt. Komen de andere te laat, dan verschijnt er geen waarschuwing. `# LEGAL-CHECK: art. 3.87 §3 BW` (15 dagen, voor elke eigenaar).
+- **Herstel (uitgevoerd):** `vme.assembly._get_warning` kijkt nu ook naar elke oproeping: een oproeping die na de uiterste dag vertrok, of een concept na die dag, geeft "Te laat" met de namen van de eigenaars. `convocation_sent_date` blijft de eerste verzending. Test: `test_every_convocation_must_leave_on_time`.
 
-**B-D3. Oproepingen gaan zonder schriftelijk akkoord per e-mail of gewone brief** ⏳ (grotere herwerking)
+**B-D3. Oproepingen gaan zonder schriftelijk akkoord per e-mail of gewone brief** ✅
 - **Waar:**
   - `models/vme_communication.py:53-56` (standaard "email"), `:643`, `:651`;
   - de composer in `vme_assembly_meeting.py:468`.
@@ -165,27 +167,29 @@ Elke fix staat in een eigen commit, met een test waar dat kan.
   - een veld voor het akkoord, met de datum;
   - zonder akkoord gaat de oproeping via `vme.registered.mail`;
   - tests en documentatie.
+- **Uitgevoerd:** `res.partner.vme_convocation_consent_date` en `vme.assembly.convocation.channel`. Zonder akkoord weigert **Versturen** en zet **Aangetekend versturen** de oproeping in het verzendregister; de knop **Per post verstuurd** is weg. Een aangetekende oproeping telt pas als vertrokken bij de afgifte bij de post (`_left_on`). In de demo hebben de eigenaars met e-mail een akkoord, die op papier niet. Test: `test_convocation_without_consent_goes_registered`. Nog na te kijken: of het akkoord per VME moet gelden in plaats van per persoon.
 
 ### Performance bij 200 VME's
 
 | # | Waar | Probleem | Herstel |
 | --- | --- | --- | --- |
-| B-F5 / B-D6 ✅ (deels) | `models/vme_collection.py:296-336`, `:388-399`, `:535-569` | Invorderingsdossiers: ongeveer 3 searches per dossier in de lijst. De nachtelijke cron zoekt per dossier, maakt nieuwe dossiers één per één aan en gebruikt geen `_commit_progress`. | Uitgevoerd: `_open_lines_by_collection()` (één search voor de lijst en de cron), kavels in één search, batch-create; test `test_list_does_not_query_per_dossier`. Nog open ⏳: `_commit_progress` per VME (zie K-D18) |
+| B-F5 / B-D6 ✅ (deels) | `models/vme_collection.py:296-336`, `:388-399`, `:535-569` | Invorderingsdossiers: ongeveer 3 searches per dossier in de lijst. De nachtelijke cron zoekt per dossier, maakt nieuwe dossiers één per één aan en gebruikt geen `_commit_progress`. | Uitgevoerd: `_open_lines_by_collection()` (één search voor de lijst en de cron), kavels in één search, batch-create; test `test_list_does_not_query_per_dossier`. De cron blijft één transactie: hij werkt nu in batch (zie K-D18) |
 | B-D5 ✅ | `models/res_partner_supplier_card.py:96-137` | Leverancierslijst: 4 searches per rij, en alle facturen van de leverancier worden geladen om een saldo op te tellen | Uitgevoerd: één search per model en één `_read_group` voor de hele lijst; test `test_supplier_list_does_not_query_per_supplier` |
 | B-D7 ✅ | `models/vme_works.py:58-70`, `:200-216` | Werkenlijst: per rij een search plus een optelling in Python over alle lijnen van het reservekapitaal | Uitgevoerd: saldo en vastgelegde werken één keer per VME, `_get_fund_balance` met `_read_group`; test `test_reserve_in_the_list_does_not_query_per_works` |
 | B-F8 | `wizard/vme_provision_call_wizard.py:37-61` | Voorbeeld in de provisiewizard: ongeveer 400 queries per wijziging bij 200 VME's | Eén `vme.budget`-search en de waarschuwing voor de hele recordset |
-| K-D18 | crons `ir_cron_vme_cycle`, `ir_cron_vme_contract_activities`, `ir_cron_vme_inspection_activities` | Geen `_commit_progress`. De cycluscron maakt oproepingen met pdf's voor alle VME's in één transactie, dus één fout rolt alles terug. | `_commit_progress` per VME, zoals `vme_provision_call_run` |
+| K-D18 ✅ | crons `ir_cron_vme_cycle`, `ir_cron_vme_contract_activities`, `ir_cron_vme_inspection_activities` | Geen `_commit_progress`. De cycluscron maakt oproepingen met pdf's voor alle VME's in één transactie, dus één fout rolt alles terug. | Uitgevoerd: `cron_tools.run_per_record()` met een savepoint en `_commit_progress` per VME of record; een mislukte VME wordt gelogd en overgeslagen. Elke cron zoekt alleen wat vandaag nog te doen is (nieuw veld `cycle_sync_date`), zodat Odoo hem na een time-out verder laat lopen. Test `test_cron_commits_per_vme_and_skips_a_failing_one`. De invorderingscron werkt in batch en blijft één transactie |
 | K-D7 ✅ | `models/vme_assembly_meeting.py:439-466` | Twee pdf's per eigenaar, één voor één gerenderd | Uitgevoerd: één wkhtmltopdf-run voor alle oproepingen en één voor alle jaarafrekeningen (`_render_pdf_per_record`), met terugval per record; de overbodige afrekening per eigenaar ter controle is weg. Test `test_convocation_pdfs_in_one_run`. Nog niet gemeten op de schaaldatabase |
 
 ### Odoo-idioom
 
-**B-D4 / B-R2. Crons maken taken voor OdooBot** ⏳
+**B-D4 / B-R2. Crons maken taken voor OdooBot** ✅
 - **Waar:**
   - `models/vme_syndic.py:876` en `:881`;
   - `vme_rentmeester/models/rent_contract.py:417` en `:434`;
   - terugval naar `self.env.user` in `vme_contract.py:306` en `:322` en `vme_installation.py:201` en `:210`.
 - **Probleem:** de crons draaien als superuser, dus de taken landen bij OdooBot en geen medewerker ziet ze.
 - **Herstel:** wijs ze toe aan de verantwoordelijke van de VME (`_cycle_default_user()` bestaat al), of aan een veld op het contract of mandaat.
+- **Uitgevoerd:** mandaten, contracten en installaties gingen al naar de dossierbeheerder (`_vme_task_user()`, sessie werkbak). Nu ook de polissen (`user_id` van de polis, dan dossierbeheerder), de attesten (dossierbeheerder) en de rentmeester: een nieuw veld **Beheerder** op het huurcontract, met `_rent_task_user()` als terugval naar de dossierbeheerder van de VME of admin. Tests: `test_cron_tasks_go_to_the_case_manager`, `test_notice_task_goes_to_the_manager`.
 
 **B-D8. AI-documenten komen nooit in een map terecht** ⏳
 - **Waar:** `models/vme_document_intake.py:15-24` en `:71-78`
@@ -254,6 +258,20 @@ Elke fix staat in een eigen commit, met een test waar dat kan.
 | K-X1 | `vme_portal_requests.py:136` `_portal_is_open`, `vme_syndic.py:851` `action_print_posting`, `vme_lot_contact.py:86` `action_return` | Dode code (nergens aangeroepen) | Knop toevoegen of schrappen |
 | K-X2 | `account_move_ai.py:53-84`, `vme_migration.py:65-98`, `vme_association.py:171`, `sepa_xml.py:78`, `tools/make_demo_bank_files.py` | Dubbele helpers: KBO-controle (3×), IBAN-controle (2×), `parse_date`/`parse_amount` (2×, verschillend; de AI-versie leest "1,234.56" als 1,23456), `fake_iban` (2×) | Eén `be_tools.py` |
 | K-X3 | rentmeester: `rent_contract.py:293,306`, `rent_settlement.py:44,149`, `vme_lot.py:23`, `account_move.py:21`, `rent_remittance.py:303` | De analytische verdeling (4×) en het einde van de huur (3×) worden telkens opnieuw berekend | `contract._analytic_distribution()`, `contract._lease_end()` |
+
+## Derde ronde: nieuw samengevoegde code
+
+Nagekeken na de merge van boekjaarafsluiting, Belcotax, overdracht en `vme_mail_plugin`: company-regels, sudo, toegang en verzenden zonder klik.
+
+| # | Waar | Probleem | Status |
+| --- | --- | --- | --- |
+| C-F1 | `models/vme_fiscal_closing.py` | Status, "afgesloten door" en de bewaarde overdracht waren via RPC te schrijven door elke medewerker (alleen readonly in het scherm); zo kon een medewerker de controles overslaan of een afgesloten jaar op concept zetten. | ✅ `create`/`write` weigeren die velden zonder superuser; de knoppen schrijven als superuser. Test `test_state_and_snapshot_only_through_the_buttons` |
+| C-F2 | `vme_fiscal_closing.py`, `action_reopen` | Heropenen zette de vergrendeling op het einde van het vorige jaar of op leeg, ook als de boekhouder ze intussen verder had gezet of een oudere vergrendeling buiten dit model stond. | ✅ De vergrendeling van vóór de afsluiting wordt bewaard (`lock_date_before`) en teruggezet, alleen als niemand ze intussen verlegde. Test `test_reopen_keeps_a_lock_set_by_someone_else` |
+| C-F3 | `vme_fiscal_closing.py` | `account.move.vme_fiscal_closing_id` zonder `check_company`; afsluiten en heropenen schreven als superuser zonder `check_not_auditor`. | ✅ |
+| C-F4 | `models/vme_belcotax.py`, `_paid_by_partner` | De facturen werden gezocht met de companies die in de schakelaar aan stonden: met een andere VME actief kreeg een medewerker een leeg overzicht, en herberekenen wiste correcte lijnen. | ✅ Zoeken en lijnen maken in de company van de VME. Test `test_staff_with_another_company_switched_on` |
+| C-F5 | `vme_belcotax.py`, `ir.model.access.csv` | Status, "nagekeken door" en "opgeladen op" waren via RPC te schrijven; lijnen bleven wijzigbaar na "Nagekeken" of "Opgeladen", een opgeladen overzicht kon verwijderd worden, en de knoppen hadden geen statuscontrole. | ✅ Auditvelden alleen via de knoppen, lijnen en verwijderen alleen in concept, statuscontrole in de knoppen. Zelfde test |
+| C-D1 | `wizard/vme_handover_wizard.py` | Het overdrachtspakket leest alles als superuser na een leescontrole op de VME: een medewerker zonder boekhoudrechten krijgt saldi, achterstallen en rekeningnummers. Ontwerpvraag, geen fout. | ⏳ Voorstel: `account.group_account_invoice` eisen |
+| C-X1 | `vme_mail_plugin` | Nagekeken: alles draait als de aangemelde gebruiker onder de record rules; een notitie vraagt schrijfrecht (de commissaris niet); niets wordt verstuurd. Een aanvraag vanuit Outlook volgt nu ook B-S4. | in orde |
 
 ## Nagekeken en in orde
 

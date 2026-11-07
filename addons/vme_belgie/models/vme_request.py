@@ -45,12 +45,16 @@ PROOFS = {
     "proof_ownership": "een eigendomsbewijs (bijvoorbeeld de akte of een attest van de notaris)",
     "proof_owner_consent": "de schriftelijke toestemming van de eigenaar van de kavel",
     "proof_lease": "een kopie van het huurcontract",
+    "proof_sender_confirmed": "uw bevestiging dat u deze aanvraag zelf stuurde (een antwoord op deze mail volstaat)",
 }
 REQUIRED_PROOFS = {
     "owner": [],
     "tenant": ["proof_owner_consent", "proof_lease"],
     "unknown": ["proof_ownership"],
 }
+# The sender of a mail can be forged: an owner who asks for a key or badge by mail confirms first.
+# Later the SPF/DKIM result of the mail gateway can count as that confirmation.
+MAIL_OWNER_PROOFS = ["proof_sender_confirmed"]
 # The proof request is followed up with a reminder after this many days.
 PROOF_REMINDER_DAYS = 7
 # Days after the order at which the staff member checks the delivery.
@@ -158,6 +162,10 @@ class VmeRequest(models.Model):
     proof_ownership = fields.Boolean(string="Eigendomsbewijs ontvangen en nagekeken", tracking=True)
     proof_owner_consent = fields.Boolean(string="Toestemming eigenaar ontvangen en nagekeken", tracking=True)
     proof_lease = fields.Boolean(string="Huurcontract ontvangen en nagekeken", tracking=True)
+    proof_sender_confirmed = fields.Boolean(
+        string="Eigenaar bevestigde de aanvraag", tracking=True,
+        help="De afzender van een mail kan vervalst zijn. Bevestigd via een antwoord op de bewijsvraag, "
+             "telefonisch of in het portaal.")
     proof_attachment_ids = fields.Many2many("ir.attachment", string="Bewijsstukken")
     missing_proofs = fields.Char(string="Ontbrekend bewijs", compute="_compute_missing_proofs")
     proof_requested_date = fields.Date(string="Bewijs gevraagd op", readonly=True, copy=False)
@@ -221,12 +229,18 @@ class VmeRequest(models.Model):
         for request in self:
             request.checks_progress = f"{len(request.check_ids.filtered('done'))}/{len(request.check_ids)}"
 
-    @api.depends("request_type_id.needs_verification", "requester_role")
+    @api.depends("request_type_id.needs_verification", "requester_role", "channel", "type_code")
     def _compute_needs_verification(self):
         for request in self:
-            request.needs_verification = request.request_type_id.needs_verification and request.requester_role != "owner"
+            request.needs_verification = request.request_type_id.needs_verification and (
+                request.requester_role != "owner" or request._owner_by_mail())
 
-    @api.depends("requester_role", "proof_ownership", "proof_owner_consent", "proof_lease")
+    def _owner_by_mail(self):
+        """A key or badge for an owner recognised only by the sender of a mail, which can be forged."""
+        self.ensure_one()
+        return self.requester_role == "owner" and self.channel == "mail" and self.type_code == "key"
+
+    @api.depends("requester_role", "proof_ownership", "proof_owner_consent", "proof_lease", "proof_sender_confirmed")
     def _compute_missing_proofs(self):
         for request in self:
             missing = request._missing_proof_fields()
@@ -265,7 +279,8 @@ class VmeRequest(models.Model):
         self.ensure_one()
         if not self.needs_verification:
             return []
-        return [f for f in REQUIRED_PROOFS[self.requester_role or "unknown"] if not self[f]]
+        required = MAIL_OWNER_PROOFS if self._owner_by_mail() else REQUIRED_PROOFS[self.requester_role or "unknown"]
+        return [f for f in required if not self[f]]
 
     # Who is asking?
 
@@ -460,9 +475,14 @@ class VmeRequest(models.Model):
     def _proof_mail_body(self):
         self.ensure_one()
         role = self.requester_role or "unknown"
-        proofs = [PROOFS[f] for f in REQUIRED_PROOFS[role]]
+        required = MAIL_OWNER_PROOFS if self._owner_by_mail() else REQUIRED_PROOFS[role]
+        proofs = [PROOFS[f] for f in required]
         lot = self.lot_id.name or self.env._("uw kavel")
-        if role == "tenant":
+        if self._owner_by_mail():
+            reason = self.env._(
+                "Een veiligheidssleutel of badge geeft toegang tot het gebouw. Daarom kijken we eerst na of "
+                "de aanvraag echt van u komt. We hebben nodig:")
+        elif role == "tenant":
             reason = self.env._("U staat bij ons gekend als huurder van kavel %s. Voor deze aanvraag hebben we nodig:", lot)
         else:
             reason = self.env._(

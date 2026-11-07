@@ -65,6 +65,8 @@ In de lijst staan AV's in het oranje of rood als er iets dreigt mis te lopen. Me
 | Niet meer haalbaar | De AV heeft nog geen datum en de oproeping kan niet meer op tijd vertrekken voor een vergadering binnen de periode. |
 | De oproeping zou te laat vertrekken | De datum staat vast, maar de uiterste dag voor de oproeping is voorbij en er is nog geen oproeping verstuurd. |
 | De oproeping vertrok te laat | De oproeping werd na de uiterste dag verstuurd. |
+| Oproeping(en) vertrokken na … | Elke eigenaar moet op tijd opgeroepen worden. De eerste oproepingen vertrokken op tijd, maar die van de genoemde eigenaars niet. |
+| Oproeping(en) nog niet verstuurd | De uiterste dag is voorbij en de genoemde eigenaars kregen nog geen oproeping. |
 | De AV valt buiten de periode | U koos met de hand een blok buiten de periode van 15 dagen. |
 
 ## Veelgestelde vragen

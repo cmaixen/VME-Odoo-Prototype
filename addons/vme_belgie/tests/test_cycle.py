@@ -3,6 +3,7 @@ from unittest.mock import patch
 
 from psycopg2 import IntegrityError
 
+from odoo.exceptions import UserError
 from odoo.fields import Command
 from odoo.tests import TransactionCase, tagged
 from odoo.tools import format_date, mute_logger
@@ -121,6 +122,55 @@ class TestCycle(TransactionCase):
         self._sync(date(2026, 11, 5), vme)
         self.assertEqual(set(self._steps(vme).mapped("code")), {"closing", "statement", "provision"})
         self.assertEqual(self._step("closing", vme=vme).date_deadline, date(2027, 3, 31))
+
+    def test_cron_commits_per_vme_and_skips_a_failing_one(self):
+        """K-D18: a commit after each VME, a failing VME is rolled back alone, and a cron that ran out of
+        time continues with the next VME instead of starting over."""
+        other = self._create_vme("Residentie Cyclus Twee", budget=False)
+        vmes = self.vme | other
+        Vme = type(self.vme)
+        original = Vme._cycle_sync
+        search = Vme.search
+
+        def own_vmes(model, domain, **kwargs):  # only the VMEs of this test
+            return search(model, domain + [("id", "in", vmes.ids)], **kwargs)
+
+        def failing_sync(vme, today=None):
+            original(vme, today)
+            if vme == self.vme:
+                raise UserError("Kapot")
+
+        calls = []
+        time_left = [100]
+
+        def commit_progress(cron, processed=0, *, remaining=None, deactivate=False):
+            calls.append((processed, remaining))
+            return time_left[0]
+
+        # Running as a cron: Odoo puts the progress record in the context.
+        Step = self.Step.with_context(vme_today=date(2026, 11, 5), ir_cron_progress_id=-1)
+        with patch.object(Vme, "_cycle_sync", failing_sync), \
+                patch.object(type(self.env["ir.cron"]), "_commit_progress", commit_progress), \
+                patch.object(Vme, "search", own_vmes), \
+                mute_logger("odoo.addons.vme_belgie.models.cron_tools"):
+            Step._cron_run_cycle()
+        self.assertEqual(calls, [(0, 2), (1, None), (1, None)])
+        self.assertFalse(self._steps())  # rolled back
+        self.assertTrue(self._steps(other))
+        self.assertEqual(vmes.mapped("cycle_sync_date"), [date(2026, 11, 5)] * 2)
+
+        # Out of time after the first VME: the next run only does the second one.
+        vmes.cycle_sync_date = False
+        time_left[0] = 0
+        calls.clear()
+        with patch.object(type(self.env["ir.cron"]), "_commit_progress", commit_progress), \
+                patch.object(Vme, "search", own_vmes):
+            Step._cron_run_cycle()
+            self.assertEqual(self.vme.cycle_sync_date, date(2026, 11, 5))
+            self.assertFalse(other.cycle_sync_date)
+            Step._cron_run_cycle()
+        self.assertEqual(other.cycle_sync_date, date(2026, 11, 5))
+        self.assertEqual(calls[-2:], [(0, 1), (1, None)])
 
     def test_cycle_off_without_start_date(self):
         self.vme.cycle_start_date = False

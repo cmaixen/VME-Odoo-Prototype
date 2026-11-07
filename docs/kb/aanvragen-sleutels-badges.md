@@ -22,9 +22,11 @@ Odoo herkent de aanvrager aan zijn e-mailadres:
 
 | Aanvrager | Wat er gebeurt |
 | --- | --- |
-| **Eigenaar van de kavel** | Meteen geverifieerd. De bestelling staat meteen klaar. |
+| **Eigenaar van de kavel** | Via het portaal of manueel: meteen geverifieerd, de bestelling staat meteen klaar. Per mail: eerst bevestigen (zie hieronder). |
 | **Huurder van de kavel** | Bezorgt de **schriftelijke toestemming van de eigenaar** en een **kopie van het huurcontract**. |
 | **Onbekend** (adres niet gekend, of eigenaar van een ander appartement) | Bezorgt een **eigendomsbewijs**, bijvoorbeeld de akte of een attest van de notaris. |
+
+Een afzenderadres van een mail kan vervalst worden. Vraagt een eigenaar per mail een sleutel of badge, dan wacht de aanvraag op zijn bevestiging. Klik op **Bewijs opvragen**: de mail vertrekt naar het adres dat bij ons gekend is, dus naar de echte eigenaar. Antwoordt hij, of bevestigt hij telefonisch, vink dan **Eigenaar bevestigde de aanvraag** aan en klik op **Bewijs goedkeuren**.
 
 Stelt iemand zich anders voor dan Odoo denkt (bv. een onbekend adres dat schrijft "ik ben de nieuwe huurder"), pas dan **Aanvrager is** aan en klik op **Opnieuw starten**.
 
@@ -74,7 +76,7 @@ De demo heeft een slotenmaker (Slotenmaker Voorbeeld BV), een sleutelcertificaat
 
 | Aanvraag | Aanvrager | Wat u ziet |
 | --- | --- | --- |
-| Extra badge voor de inkom | Eigenaar Linde A4 | Meteen geverifieerd. De bestelling aan Slotenmaker Voorbeeld BV staat klaar met de bestelbon. |
+| Extra badge voor de inkom | Eigenaar Linde A4 | Wacht op de bevestiging van de eigenaar, want de aanvraag kwam per mail. Vink **Eigenaar bevestigde de aanvraag** aan en klik op **Bewijs goedkeuren**: de bestelling aan Slotenmaker Voorbeeld BV staat klaar met de bestelbon. |
 | Extra sleutel van de inkom | Huurder Linde A6 | Wacht op bewijs: toestemming van de eigenaar en huurcontract. Klik op **Bewijs opvragen**. |
 | Extra badge met toestemming | Huurder Beuken B12 | Wacht op bewijs, maar de toestemming en het huurcontract zitten als bijlage bij de mail. Vink beide aan en klik op **Bewijs goedkeuren**. |
 
@@ -86,7 +88,7 @@ Een badge kost in de demo 25 euro, een veiligheidssleutel 45 euro. Na **Levering
 Nee, nog niet. De bestelling staat klaar en vertrekt met één klik. Of dat later per gebouw automatisch mag, is nog niet beslist.
 
 **De eigenaar woont zelf niet in het gebouw en vraagt een badge voor zijn huurder. Moet hij bewijs leveren?**
-Nee. De aanvraag komt van de eigenaar zelf, dus ze is meteen geverifieerd. De badge komt op naam van de eigenaar in het register; pas de naam aan als de huurder hem krijgt.
+Nee. De aanvraag komt van de eigenaar zelf: via het portaal is ze meteen geverifieerd, per mail na zijn bevestiging. De badge komt op naam van de eigenaar in het register; pas de naam aan als de huurder hem krijgt.
 
 **Waarom krijgt de eigenaar de factuur als de huurder de aanvraag deed?**
 De VME rekent alleen met eigenaars af. De eigenaar regelt de kost met zijn huurder.

@@ -18,6 +18,7 @@ class VmeRentContract(models.Model):
     _name = "vme.rent.contract"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _description = "Huurcontract"
+    _check_company_auto = True
     _order = "date_start desc, id desc"
 
     name = fields.Char(string="Contract", required=True, copy=False, default=lambda self: self.env._("Nieuw"))
@@ -46,7 +47,11 @@ class VmeRentContract(models.Model):
     tenant_id = fields.Many2one("res.partner", string="Huurder", compute="_compute_tenant_id", store=True,
                                 help="De eerste huurder ontvangt de facturen.")
     analytic_account_id = fields.Many2one("account.analytic.account", string="Analytische rekening verhuurder",
-                                          readonly=True, copy=False)
+                                          readonly=True, copy=False, check_company=True)
+    user_id = fields.Many2one(
+        "res.users", string="Beheerder", domain="[('share', '=', False)]", tracking=True,
+        default=lambda self: self.env.user if not self.env.user._is_superuser() else False,
+        help="Krijgt de taken van de dagelijkse controle: opzegtermijn, indexering en einde huur.")
 
     date_signed = fields.Date(string="Ondertekend op", required=True,
                               help="De aanvangsindex is de gezondheidsindex van de maand vóór deze datum.")
@@ -225,9 +230,14 @@ class VmeRentContract(models.Model):
         self.ensure_one()
         plan = self.env.ref(ANALYTIC_PLAN_XMLID)
         Analytic = self.env["account.analytic.account"].sudo()
-        account = Analytic.search([("plan_id", "=", plan.id), ("partner_id", "=", self.landlord_id.id)], limit=1)
+        # In the office of the lease, not in the company the user happens to work in.
+        account = Analytic.search([
+            ("plan_id", "=", plan.id), ("partner_id", "=", self.landlord_id.id),
+            ("company_id", "in", [False, self.company_id.id]),
+        ], order="company_id", limit=1)
         return account or Analytic.create({
             "name": self.landlord_id.name, "plan_id": plan.id, "partner_id": self.landlord_id.id,
+            "company_id": self.company_id.id,
         })
 
     # Rent and anniversaries
@@ -385,8 +395,16 @@ class VmeRentContract(models.Model):
                 note=self.env._(
                     "De huur eindigt op %(date)s. Plan de plaatsbeschrijving bij vertrek, de opname van de meters "
                     "en de vrijgave van de huurwaarborg.", date=format_date(self.env, contract.notice_end_date)),
-                user_id=self.env.user.id,
+                user_id=contract._rent_task_user().id,
             )
+
+    def _rent_task_user(self):
+        """Who gets a task on this lease: its manager, else the case manager of the VME, else the admin.
+
+        The daily cron runs as OdooBot, so self.env.user is no fallback.
+        """
+        self.ensure_one()
+        return self.user_id or self.association_id._vme_task_user()
 
     def action_end(self):
         today = fields.Date.context_today(self)
@@ -414,7 +432,7 @@ class VmeRentContract(models.Model):
                     end=format_date(self.env, contract.date_end), deadline=format_date(self.env, contract.notice_deadline))
             contract.activity_schedule(
                 activity_type_id=todo.id, date_deadline=contract.notice_deadline,
-                summary=self.env._("Opzegtermijn verstrijkt: %s", contract.name), note=note, user_id=self.env.user.id,
+                summary=self.env._("Opzegtermijn verstrijkt: %s", contract.name), note=note, user_id=contract._rent_task_user().id,
             )
             contract.activity_notice_deadline = contract.notice_deadline
         for contract in running.filtered(lambda c: c.is_written and not c.indexation_excluded):
@@ -431,7 +449,7 @@ class VmeRentContract(models.Model):
                 activity_type_id=todo.id, date_deadline=anniversary,
                 summary=self.env._("Indexatiebrief nakijken en versturen"),
                 note=self.env._("De conceptbrief voor de indexering op %s staat klaar.", format_date(self.env, anniversary)),
-                user_id=self.env.user.id,
+                user_id=contract._rent_task_user().id,
             )
             indexation.message_post(body=self.env._("Concept aangemaakt door de dagelijkse controle."))
 

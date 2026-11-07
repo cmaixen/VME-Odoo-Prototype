@@ -229,7 +229,9 @@ class TestAssemblyMeeting(TransactionCase):
         self.assertTrue(all(c.attachment_ids for c in convocations))
         self.assertEqual(self.env["mail.mail"].search_count([]), mails_before)
         self.assertFalse(self.assembly.convocation_sent_date)
-        # Sending through the composer marks the convocation and the assembly.
+        # Sending through the composer marks the convocation and the assembly; e-mail only with written consent.
+        convocations[0].partner_id.write({"email": "av.stemming@example.com", "vme_convocation_consent_date": TODAY})
+        self.assertEqual(convocations[0].channel, "email")
         composer = convocations[0].action_open_composer()
         self.assertTrue(composer["context"]["mark_convocation_as_sent"])
         convocations[0].with_context(mark_convocation_as_sent=True).message_post(body="Oproeping")
@@ -240,6 +242,50 @@ class TestAssemblyMeeting(TransactionCase):
     def test_late_convocation_warns(self):
         action = self.assembly.with_context(vme_today=date(2027, 3, 10)).action_create_convocations()
         self.assertEqual(action["params"]["type"], "warning")
+
+    def test_convocation_without_consent_goes_registered(self):
+        """B-D3: without written consent for e-mail the convocation goes by registered letter."""
+        owner = self.owners[0]
+        owner.email = "zonder.akkoord@example.com"
+        convocation = self.env["vme.assembly.convocation"].create({
+            "assembly_id": self.assembly.id, "partner_id": owner.id, "lot_names": "L1"})
+        self.assertEqual(convocation.channel, "registered")
+        with self.assertRaises(UserError):
+            convocation.action_open_composer()
+        convocation.attachment_ids = self.env["ir.attachment"].create({"name": "Oproeping.pdf", "raw": b"%PDF-1.4"})
+        convocation.action_send_registered()
+        registered = convocation.registered_mail_id
+        self.assertEqual((registered.state, registered.partner_id), ("prepared", owner))
+        self.assertEqual(convocation.state, "sent")
+        log = self.env["vme.communication.log"]._get_for_records(convocation)
+        self.assertEqual((log.channel, log.registered_mail_id), ("registered", registered))
+        # It only counts as sent once it is handed to the post (B-D2).
+        self.assertFalse(convocation._left_on())
+        registered.action_deposit()
+        self.assertEqual(convocation._left_on(), registered.deposit_date)
+        # With consent, a new convocation goes by e-mail.
+        other = self.owners[1]
+        other.write({"email": "met.akkoord@example.com", "vme_convocation_consent_date": TODAY})
+        self.assertEqual(self.env["vme.assembly.convocation"].create({
+            "assembly_id": self.assembly.id, "partner_id": other.id, "lot_names": "L2"}).channel, "email")
+
+    def test_every_convocation_must_leave_on_time(self):
+        """B-D2: the first convocation on time does not cover the others (deadline 5 March 2027)."""
+        first, second = self.env["vme.assembly.convocation"].create([
+            {"assembly_id": self.assembly.id, "partner_id": owner.id, "lot_names": "L"} for owner in self.owners[:2]])
+        first.write({"state": "sent", "sent_date": date(2027, 3, 1)})
+        self.assembly.convocation_sent_date = date(2027, 3, 1)
+        on_time = self.assembly.with_context(vme_today=date(2027, 3, 4))
+        self.assertNotEqual(on_time.warning_level, "danger")
+        after = self.assembly.with_context(vme_today=date(2027, 3, 6))
+        self.assertEqual(after.warning_level, "danger")
+        self.assertIn("nog niet verstuurd", after.warning)
+        self.assertIn(second.partner_id.name, after.warning)
+        second.write({"state": "sent", "sent_date": date(2027, 3, 6)})
+        after.invalidate_recordset(["warning", "warning_level"])
+        self.assertEqual(after.warning_level, "danger")
+        self.assertIn("vertrokken na", after.warning)
+        self.assertNotIn(first.partner_id.name, after.warning)
 
     def test_convocation_needs_a_date(self):
         unplanned = self.env["vme.assembly"].create({"association_id": self.vme.id, "year": 2028})

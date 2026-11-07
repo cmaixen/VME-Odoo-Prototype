@@ -8,8 +8,15 @@ from odoo.fields import Command
 from odoo.tools import formatLang
 
 from .account_chart_template import VME_FUND_ACCOUNTS
+from .vme_access import check_not_auditor
 
 STATES = [("draft", "Te controleren"), ("prepared", "Afrekening voorbereid"), ("closed", "Afgesloten")]
+# Written only by the buttons (as superuser), never directly: the state skips the checks otherwise, and the
+# snapshot is the proof of what was carried forward.
+PROTECTED_FIELDS = {
+    "state", "closed_by_id", "closed_on", "lock_date_before", "working_result", "reserve_result", "working_capital",
+    "reserve_capital", "owner_receivable", "supplier_payable", "bank_working", "bank_reserve",
+}
 
 
 class VmeFiscalClosing(models.Model):
@@ -52,9 +59,23 @@ class VmeFiscalClosing(models.Model):
     supplier_payable = fields.Monetary(string="Schulden aan leveranciers", readonly=True, copy=False)
     bank_working = fields.Monetary(string="Bank werkkapitaal", readonly=True, copy=False)
     bank_reserve = fields.Monetary(string="Bank reservekapitaal", readonly=True, copy=False)
+    # Lock date of the company before this closing, restored when the year is reopened.
+    lock_date_before = fields.Date(readonly=True, copy=False)
 
     _association_year_unique = models.Constraint(
         "UNIQUE (association_id, year)", "Er bestaat al een afsluiting voor deze VME en dit jaar.")
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        if not self.env.su and any(PROTECTED_FIELDS & set(vals) - {"state"} or vals.get("state", "draft") != "draft"
+                                   for vals in vals_list):
+            raise AccessError(self.env._("Een afsluiting begint altijd als concept."))
+        return super().create(vals_list)
+
+    def write(self, vals):
+        if not self.env.su and PROTECTED_FIELDS & set(vals):
+            raise AccessError(self.env._("Status en overdracht van een afsluiting wijzigen alleen via de knoppen."))
+        return super().write(vals)
 
     @api.depends("association_id.name", "year")
     def _compute_display_name(self):
@@ -364,7 +385,7 @@ class VmeFiscalClosing(models.Model):
                 })],
             })
         moves = Move.create(values)
-        self.state = "prepared"
+        self.sudo().state = "prepared"
         self.message_post(body=self.env._(
             "Afrekening voorbereid: %(count)s concepten, samen %(total)s.",
             count=len(moves), total=formatLang(self.env, self.settlement_total, currency_obj=currency)))
@@ -387,6 +408,7 @@ class VmeFiscalClosing(models.Model):
     def action_close(self):
         """Lock the year with the fiscal lock date of Odoo (a soft lock that an administrator can lift)."""
         self.ensure_one()
+        check_not_auditor(self.env)  # the lock date is written as superuser
         self._check_manager()
         if self.state != "prepared":
             raise UserError(self.env._("Bereid eerst de afrekening voor."))
@@ -394,10 +416,12 @@ class VmeFiscalClosing(models.Model):
         company = self.company_id.sudo()
         end = date(self.year, 12, 31)
         data = self._get_carry_forward()
-        if not company.fiscalyear_lock_date or company.fiscalyear_lock_date < end:
+        lock_before = company.fiscalyear_lock_date
+        if not lock_before or lock_before < end:
             company.fiscalyear_lock_date = end
-        self.write({
+        self.sudo().write({
             "state": "closed",
+            "lock_date_before": lock_before,
             "closed_by_id": self.env.user.id,
             "closed_on": fields.Datetime.now(),
             "working_result": data["working_result"],
@@ -416,6 +440,7 @@ class VmeFiscalClosing(models.Model):
     def action_reopen(self):
         """Lift the lock back to the end of the previous year, so corrections in this year are possible."""
         self.ensure_one()
+        check_not_auditor(self.env)  # the lock date is written as superuser
         self._check_manager()
         if self.state != "closed":
             raise UserError(self.env._("Dit boekjaar is niet afgesloten."))
@@ -423,11 +448,20 @@ class VmeFiscalClosing(models.Model):
                              ("state", "=", "closed")], limit=1)
         if later:
             raise UserError(self.env._("Heropen eerst het boekjaar %s.", later.year))
-        previous = self.search([("association_id", "=", self.association_id.id), ("year", "=", self.year - 1),
-                                ("state", "=", "closed")], limit=1)
-        self.company_id.sudo().fiscalyear_lock_date = date(self.year - 1, 12, 31) if previous else False
-        self.write({"state": "prepared", "closed_by_id": False, "closed_on": False})
-        self.message_post(body=self.env._("Boekjaar %s heropend.", self.year))
+        # Back to the lock date from before the closing, and only if nobody moved the lock since: a lock
+        # set by the accountant or after a migration is never lifted here.
+        company = self.company_id.sudo()
+        if company.fiscalyear_lock_date == date(self.year, 12, 31):
+            # A closing from before lock_date_before existed: back to the end of a closed previous year.
+            previous = self.search([("association_id", "=", self.association_id.id), ("year", "=", self.year - 1),
+                                    ("state", "=", "closed")], limit=1)
+            company.fiscalyear_lock_date = self.lock_date_before or (date(self.year - 1, 12, 31) if previous else False)
+            body = self.env._("Boekjaar %s heropend.", self.year)
+        else:
+            body = self.env._("Boekjaar %s heropend; de vergrendeling van de boekhouding is niet gewijzigd, want ze "
+                              "werd intussen verlegd.", self.year)
+        self.sudo().write({"state": "prepared", "closed_by_id": False, "closed_on": False, "lock_date_before": False})
+        self.message_post(body=body)
         return True
 
     def action_open_settlements(self):
@@ -504,4 +538,5 @@ class AccountMove(models.Model):
     _inherit = "account.move"
 
     vme_fiscal_closing_id = fields.Many2one(
-        "vme.fiscal.closing", string="Afsluiting boekjaar", index=True, ondelete="restrict", copy=False, readonly=True)
+        "vme.fiscal.closing", string="Afsluiting boekjaar", index=True, ondelete="restrict", copy=False, readonly=True,
+        check_company=True)

@@ -22,7 +22,9 @@ Zodra een AV bevestigd is in de AV-planner (zie [Algemene vergaderingen plannen]
    - een volmachtformulier met de agendapunten,
    - de jaarafrekening van het vorige jaar van die eigenaar (als die er is).
 3. Odoo meldt tot wanneer u de oproeping moet versturen. Is die datum al voorbij, dan krijgt u een waarschuwing.
-4. Open een oproeping en klik op **Versturen**. Er opent een e-mail met de bijlagen; kijk die na en verstuur ze zelf. Verstuurt u per post, klik dan op **Per post verstuurd**.
+4. Kijk bij elke oproeping naar **Verzending**. De wet vraagt een aangetekende brief, tenzij de eigenaar schriftelijk akkoord gaf voor e-mail. Dat akkoord vult u in op de contactpersoon, veld **Akkoord oproeping per e-mail** (met de datum).
+   - **E-mail**: klik op **Versturen**. Er opent een e-mail met de bijlagen; kijk die na en verstuur ze zelf.
+   - **Aangetekend**: klik op **Aangetekend versturen**. De oproeping komt in het **Verzendregister aangetekend**. Druk de oproeping en de jaarafrekening af, geef de brief af bij de post en klik daar op **Afgegeven**. Pas dan telt de oproeping als vertrokken voor de termijn van 15 dagen.
 
 Er wordt nooit iets automatisch verstuurd. De eerste verstuurde oproeping vult op de AV de datum **Oproeping verstuurd op** in.
 
@@ -58,6 +60,9 @@ Odoo telt in quotiteiten. Onthoudingen tellen niet mee als uitgebrachte stem. Ee
 **Voorbeeld in de demo:** de AV 2026 van Residentie Linde (10 maart 2026) is al gehouden. 10 van de 12 eigenaars waren aanwezig of vertegenwoordigd (858 van 1000 quotiteiten). De dakwerken (twee derde) zijn aangenomen met een opvolgtaak "Drie offertes vragen voor de dakwerken"; de statutenwijziging over de tuin (vier vijfde) is verworpen.
 
 ## Veelgestelde vragen
+
+**Waarom kan ik een oproeping niet per e-mail versturen?**
+De eigenaar gaf geen schriftelijk akkoord voor e-mail, of heeft geen e-mailadres. Zonder dat akkoord gaat de oproeping aangetekend. Krijgt u het akkoord, vul dan de datum in op de contactpersoon: de oproepingen in concept gaan dan per e-mail.
 
 **Telt een onthouding als tegenstem?**
 Nee. Onthoudingen tellen niet mee bij het berekenen van de meerderheid.
