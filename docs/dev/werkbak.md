@@ -15,6 +15,9 @@ Eén lijst per medewerker met alles wat te laat is, vandaag of deze week vervalt
 | `_cron_schedule_inspection_activities` | idem | idem |
 | `vme.syndic.mandate._cron_schedule_mandate_activities` | `self.env.user` | dossierbeheerder |
 | `vme.request.create_from_intake` zonder `user_id` (mailgateway, AI) | `self.env.user` | dossierbeheerder |
+| `_cron_schedule_policy_activities` (polissen) | `user_id` van de polis of `self.env.user` | `user_id`, dan dossierbeheerder |
+| `_cron_schedule_certificate_activities` (attesten) | `self.env.user` | dossierbeheerder |
+| `vme.rent.contract._cron_rent_reminders` en opzeg registreren (rentmeester) | `self.env.user` | `_rent_task_user()`: het nieuwe veld **Beheerder** (`user_id`) van het huurcontract, dan de dossierbeheerder van de VME, dan admin |
 | Aanvraag uit het portaal, adreswijziging | admin | dossierbeheerder |
 
 Velden met een eigen verantwoordelijke (aanvraag, verkoop, werken, schade, contract, installatie) houden hun standaard (`self.env.user` bij aanmaken in het scherm).

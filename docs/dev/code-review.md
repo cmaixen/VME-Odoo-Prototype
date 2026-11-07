@@ -179,13 +179,14 @@ Elke fix staat in een eigen commit, met een test waar dat kan.
 
 ### Odoo-idioom
 
-**B-D4 / B-R2. Crons maken taken voor OdooBot** ⏳
+**B-D4 / B-R2. Crons maken taken voor OdooBot** ✅
 - **Waar:**
   - `models/vme_syndic.py:876` en `:881`;
   - `vme_rentmeester/models/rent_contract.py:417` en `:434`;
   - terugval naar `self.env.user` in `vme_contract.py:306` en `:322` en `vme_installation.py:201` en `:210`.
 - **Probleem:** de crons draaien als superuser, dus de taken landen bij OdooBot en geen medewerker ziet ze.
 - **Herstel:** wijs ze toe aan de verantwoordelijke van de VME (`_cycle_default_user()` bestaat al), of aan een veld op het contract of mandaat.
+- **Uitgevoerd:** mandaten, contracten en installaties gingen al naar de dossierbeheerder (`_vme_task_user()`, sessie werkbak). Nu ook de polissen (`user_id` van de polis, dan dossierbeheerder), de attesten (dossierbeheerder) en de rentmeester: een nieuw veld **Beheerder** op het huurcontract, met `_rent_task_user()` als terugval naar de dossierbeheerder van de VME of admin. Tests: `test_cron_tasks_go_to_the_case_manager`, `test_notice_task_goes_to_the_manager`.
 
 **B-D8. AI-documenten komen nooit in een map terecht** ⏳
 - **Waar:** `models/vme_document_intake.py:15-24` en `:71-78`

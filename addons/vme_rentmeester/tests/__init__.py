@@ -3,3 +3,4 @@ from . import test_settlement
 from . import test_demo
 from . import test_remittance
 from . import test_access_rent
+from . import test_cron_users

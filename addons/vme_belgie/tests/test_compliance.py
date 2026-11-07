@@ -165,6 +165,17 @@ class TestCompliance(TransactionCase):
         self.assertEqual(policy.claim_count, 1)
         self.assertEqual(policy.action_open_claims()["domain"], [("policy_id", "=", policy.id)])
 
+    def test_cron_tasks_go_to_the_case_manager(self):
+        """The crons run as OdooBot: their tasks go to the case manager of the VME (B-D4)."""
+        manager = self.env["res.users"].create({"name": "Dossierbeheerder Attest", "login": "beheerder.attest"})
+        self.vme.manager_user_id = manager
+        policy = self._policy(date(2026, 12, 1), user_id=False)
+        self.assertEqual(self.env.user, self.env.ref("base.user_root"))
+        policy._cron_schedule_policy_activities()
+        self.env["vme.association"]._cron_schedule_certificate_activities()
+        self.assertEqual(policy.activity_ids.user_id, manager)
+        self.assertEqual(self.vme.activity_ids.user_id, manager)
+
     # Tasks for certificates
 
     def test_certificate_tasks(self):
