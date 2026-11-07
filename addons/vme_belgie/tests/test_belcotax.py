@@ -2,7 +2,7 @@ from datetime import date
 
 from lxml import etree
 
-from odoo.exceptions import UserError
+from odoo.exceptions import AccessError, UserError
 from odoo.fields import Command
 from odoo.tests import TransactionCase, tagged
 
@@ -179,6 +179,35 @@ class TestBelcotax(TransactionCase):
         statement.action_compute()
         self.assertEqual(statement.state, "draft")
         self.assertEqual(statement.total_amount, 600.0)
+
+    def test_staff_with_another_company_switched_on(self):
+        """The totals do not depend on the companies switched on, and the audit trail only changes by button."""
+        main = self.env.ref("base.main_company")
+        staff = self.env["res.users"].with_context(no_reset_password=True).create({
+            "name": "Medewerker Fiche", "login": "medewerker.fiche@example.com",
+            "group_ids": [Command.set([self.env.ref("account.group_account_invoice").id])],
+            "company_id": main.id, "company_ids": [Command.set((main | self.company).ids)],
+        })
+        self._pay(self._bill(self.auditor, date(2026, 3, 1), 600), date(2026, 3, 20))
+        statement = self.env["vme.belcotax.statement"].with_user(staff).with_company(main).create(
+            {"association_id": self.vme.id, "year": 2026})
+        self.assertEqual(statement.total_amount, 600.0)
+        with self.assertRaises(AccessError):
+            statement.write({"state": "filed"})
+        statement.action_mark_checked()
+        self.assertEqual(statement.checked_by_id, staff)
+        with self.assertRaises(UserError):
+            statement.line_ids.amount_fees = 1.0
+        with self.assertRaises(UserError):
+            statement.action_mark_checked()
+        statement.action_download_xml()
+        statement.action_mark_filed()
+        with self.assertRaises(UserError):
+            statement.action_compute()
+        with self.assertRaises(UserError):
+            statement.unlink()
+        statement.action_back_to_draft()
+        statement.line_ids.amount_fees = 650.0
 
     def test_number_checks_and_deadline(self):
         self.assertTrue(kbo_is_valid("BE 0000.000.592"))

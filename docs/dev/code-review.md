@@ -259,6 +259,20 @@ Elke fix staat in een eigen commit, met een test waar dat kan.
 | K-X2 | `account_move_ai.py:53-84`, `vme_migration.py:65-98`, `vme_association.py:171`, `sepa_xml.py:78`, `tools/make_demo_bank_files.py` | Dubbele helpers: KBO-controle (3×), IBAN-controle (2×), `parse_date`/`parse_amount` (2×, verschillend; de AI-versie leest "1,234.56" als 1,23456), `fake_iban` (2×) | Eén `be_tools.py` |
 | K-X3 | rentmeester: `rent_contract.py:293,306`, `rent_settlement.py:44,149`, `vme_lot.py:23`, `account_move.py:21`, `rent_remittance.py:303` | De analytische verdeling (4×) en het einde van de huur (3×) worden telkens opnieuw berekend | `contract._analytic_distribution()`, `contract._lease_end()` |
 
+## Derde ronde: nieuw samengevoegde code
+
+Nagekeken na de merge van boekjaarafsluiting, Belcotax, overdracht en `vme_mail_plugin`: company-regels, sudo, toegang en verzenden zonder klik.
+
+| # | Waar | Probleem | Status |
+| --- | --- | --- | --- |
+| C-F1 | `models/vme_fiscal_closing.py` | Status, "afgesloten door" en de bewaarde overdracht waren via RPC te schrijven door elke medewerker (alleen readonly in het scherm); zo kon een medewerker de controles overslaan of een afgesloten jaar op concept zetten. | ✅ `create`/`write` weigeren die velden zonder superuser; de knoppen schrijven als superuser. Test `test_state_and_snapshot_only_through_the_buttons` |
+| C-F2 | `vme_fiscal_closing.py`, `action_reopen` | Heropenen zette de vergrendeling op het einde van het vorige jaar of op leeg, ook als de boekhouder ze intussen verder had gezet of een oudere vergrendeling buiten dit model stond. | ✅ De vergrendeling van vóór de afsluiting wordt bewaard (`lock_date_before`) en teruggezet, alleen als niemand ze intussen verlegde. Test `test_reopen_keeps_a_lock_set_by_someone_else` |
+| C-F3 | `vme_fiscal_closing.py` | `account.move.vme_fiscal_closing_id` zonder `check_company`; afsluiten en heropenen schreven als superuser zonder `check_not_auditor`. | ✅ |
+| C-F4 | `models/vme_belcotax.py`, `_paid_by_partner` | De facturen werden gezocht met de companies die in de schakelaar aan stonden: met een andere VME actief kreeg een medewerker een leeg overzicht, en herberekenen wiste correcte lijnen. | ✅ Zoeken en lijnen maken in de company van de VME. Test `test_staff_with_another_company_switched_on` |
+| C-F5 | `vme_belcotax.py`, `ir.model.access.csv` | Status, "nagekeken door" en "opgeladen op" waren via RPC te schrijven; lijnen bleven wijzigbaar na "Nagekeken" of "Opgeladen", een opgeladen overzicht kon verwijderd worden, en de knoppen hadden geen statuscontrole. | ✅ Auditvelden alleen via de knoppen, lijnen en verwijderen alleen in concept, statuscontrole in de knoppen. Zelfde test |
+| C-D1 | `wizard/vme_handover_wizard.py` | Het overdrachtspakket leest alles als superuser na een leescontrole op de VME: een medewerker zonder boekhoudrechten krijgt saldi, achterstallen en rekeningnummers. Ontwerpvraag, geen fout. | ⏳ Voorstel: `account.group_account_invoice` eisen |
+| C-X1 | `vme_mail_plugin` | Nagekeken: alles draait als de aangemelde gebruiker onder de record rules; een notitie vraagt schrijfrecht (de commissaris niet); niets wordt verstuurd. Een aanvraag vanuit Outlook volgt nu ook B-S4. | in orde |
+
 ## Nagekeken en in orde
 
 - **Portaal**: elke `<int:…>`-route en elke download vertrekt van `request.env.user.partner_id` en filtert via de helpers. Stemmen en handtekeningen worden met de eigen lijnen vergeleken. `/av/<token>` is 128 bit en stuurt alleen door naar een pagina achter de login.

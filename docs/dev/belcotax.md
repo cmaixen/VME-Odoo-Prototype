@@ -53,3 +53,7 @@ docker compose run --rm odoo odoo -d vme_test -u vme_belgie --test-enable --test
 ```
 
 De demohistoriek voegt in Residentie Linde een factuur toe (advies, 1.800 euro): de trage test `TestAnnualStatementDemo.test_all_costs_distributed` telt daarom acht facturen.
+
+## Beveiliging
+
+`state`, `checked_by_id`, `checked_date` en `filed_date` schrijven alleen de knoppen (als superuser). Een nagekeken of opgeladen overzicht en zijn lijnen wijzigen of verdwijnen pas na **Terug naar concept**; **Herberekenen** weigert een opgeladen overzicht. De facturen worden gezocht en de lijnen gemaakt met `with_company(company_id)`, want de record rule van `account.move` volgt de companies die in de schakelaar aan staan.
