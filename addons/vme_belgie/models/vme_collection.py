@@ -1,5 +1,6 @@
 """Collection of overdue provisions and settlements: arrears overview, dossiers, reminders and costs."""
 import base64
+from collections import defaultdict
 from datetime import timedelta
 
 from markupsafe import Markup
@@ -303,12 +304,15 @@ class VmeCollection(models.Model):
             collection.last_reminder_date = max(sent.mapped("sent_date"), default=False)
 
     def _compute_lot_names(self):
+        # One search for the whole list, not one per dossier.
+        names = defaultdict(set)
+        for ownership in self.env["vme.ownership"].sudo().search([
+            ("partner_id", "in", self.partner_id.ids),
+            ("lot_id.association_id", "in", self.association_id.ids),
+        ]):
+            names[ownership.partner_id.id, ownership.lot_id.association_id.id].add(ownership.lot_id.name)
         for collection in self:
-            ownerships = self.env["vme.ownership"].sudo().search([
-                ("partner_id", "=", collection.partner_id.id),
-                ("lot_id.association_id", "=", collection.association_id.id),
-            ])
-            collection.lot_names = ", ".join(sorted(set(ownerships.lot_id.mapped("name"))))
+            collection.lot_names = ", ".join(sorted(names[collection.partner_id.id, collection.association_id.id]))
 
     @api.model
     def _get_today(self):
@@ -317,25 +321,39 @@ class VmeCollection(models.Model):
     def _open_lines(self, today=None, overdue_only=True):
         """Open receivable lines of the owner in this VME; overdue only, plus costs of this dossier."""
         self.ensure_one()
+        return self._open_lines_by_collection(today, overdue_only)[self]
+
+    def _open_lines_by_collection(self, today=None, overdue_only=True):
+        """_open_lines for every dossier in self, with one search: {collection: lines}."""
         today = today or self._get_today()
-        lines = self.env["account.move.line"].sudo().search([
-            ("company_id", "=", self.company_id.id),
-            ("partner_id", "=", self.partner_id.id),
+        Line = self.env["account.move.line"].sudo()
+        lines = Line.search([
+            ("company_id", "in", self.company_id.ids),
+            ("partner_id", "in", self.partner_id.ids),
             ("account_id.account_type", "=", "asset_receivable"),
             ("parent_state", "=", "posted"),
             ("reconciled", "=", False),
             ("amount_residual", ">", 0),
-        ], order="date_maturity, id")
-        if overdue_only:
-            # Charged costs are due at once, so they appear on the next reminder of the same day.
-            lines = lines.filtered(lambda l: l.date_maturity < today or l.move_id.vme_collection_id == self)
-        return lines
+        ], order="date_maturity, id") if self.company_id else Line
+        lines.move_id.mapped("vme_collection_id")  # read the moves of all dossiers at once
+        by_owner = defaultdict(list)
+        for line in lines:
+            by_owner[line.company_id.id, line.partner_id.id].append(line.id)
+        result = {}
+        for collection in self:
+            own = lines.browse(by_owner[collection.company_id.id, collection.partner_id.id]).with_prefetch(lines._prefetch_ids)
+            if overdue_only:
+                # Charged costs are due at once, so they appear on the next reminder of the same day.
+                own = own.filtered(lambda l, c=collection: l.date_maturity < today or l.move_id.vme_collection_id == c)
+            result[collection] = own
+        return result
 
     @api.depends_context("vme_today")
     def _compute_status(self):
         today = self._get_today()
+        open_lines = self._open_lines_by_collection(today)
         for collection in self:
-            lines = collection._open_lines(today) if collection.company_id else self.env["account.move.line"]
+            lines = open_lines[collection]
             overdue = lines.filtered(lambda l: l.date_maturity < today)
             collection.amount_due = collection.currency_id.round(sum(lines.mapped("amount_residual")))
             collection.oldest_due_date = min(overdue.mapped("date_maturity"), default=False)
@@ -397,12 +415,13 @@ class VmeCollection(models.Model):
     @api.depends_context("vme_today")
     def _compute_costs_preview(self):
         today = self._get_today()
+        open_lines = self._open_lines_by_collection(today)
         for collection in self:
             if not collection.company_id:
                 collection.interest_preview = collection.penalty_preview = 0.0
                 collection.costs_blocked_reason = False
                 continue
-            costs = collection._compute_costs(today)
+            costs = collection._compute_costs(today, open_lines[collection])
             collection.interest_preview = sum(item["amount"] for item in costs["interest"])
             collection.penalty_preview = costs["penalty"]
             collection.costs_blocked_reason = costs["blocked"]
@@ -421,7 +440,7 @@ class VmeCollection(models.Model):
             return False
         return first.sent_date + timedelta(days=vme.collection_interval_days)
 
-    def _compute_costs(self, today):
+    def _compute_costs(self, today, open_lines=None):
         """Interest per open invoice and the lump-sum damages that can be charged on `today`.
 
         Interest: open amount x rate x days / 365, from the due date (or the end of the consumer term,
@@ -433,7 +452,9 @@ class VmeCollection(models.Model):
         vme = self.association_id
         currency = self.currency_id
         result = {"interest": [], "penalty": 0.0, "blocked": False}
-        lines = self._open_lines(today).filtered(lambda l: not l.move_id.vme_collection_id and l.date_maturity < today)
+        if open_lines is None:
+            open_lines = self._open_lines(today)
+        lines = open_lines.filtered(lambda l: not l.move_id.vme_collection_id and l.date_maturity < today)
         if not lines:
             return result
         start_min = self._costs_start_date()
@@ -560,13 +581,13 @@ class VmeCollection(models.Model):
         ], ["company_id", "partner_id"])
         Collection = self.sudo()
         existing = {(c.association_id.id, c.partner_id.id): c for c in Collection.search([("state", "!=", "closed")])}
-        new = Collection
-        for company, partner in groups:
-            vme = by_company[company.id]
-            if (vme.id, partner.id) not in existing:
-                new |= Collection.create({"association_id": vme.id, "partner_id": partner.id})
+        new = Collection.create([
+            {"association_id": by_company[company.id].id, "partner_id": partner.id}
+            for company, partner in groups if (by_company[company.id].id, partner.id) not in existing
+        ])
         collections = Collection.search([("state", "!=", "closed")])
-        paid = collections.filtered(lambda c: not c._open_lines(today, overdue_only=False))
+        open_lines = collections._open_lines_by_collection(today, overdue_only=False)
+        paid = collections.filtered(lambda c: not open_lines[c])
         for collection in paid:
             collection.reminder_ids.filtered(lambda r: r.state == "draft").write({"state": "cancel"})
             collection.state = "closed"

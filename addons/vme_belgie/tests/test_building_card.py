@@ -323,6 +323,20 @@ class TestBuildingCard(TransactionCase):
         self.assertEqual(self.supplier.vme_supplier_contract_count, 1)
         self.assertEqual(self.supplier.vme_supplier_open_amount, 300 + 500 - 100 + 400 + 777)
 
+    def test_supplier_list_does_not_query_per_supplier(self):
+        suppliers = self.supplier | self.env["res.partner"].create(
+            [{"name": f"Leverancier Lijst {i}", "supplier_rank": 1} for i in range(4)])
+
+        def queries(partners):
+            self.env.invalidate_all()
+            before = self.env.cr.sql_log_count
+            partners.read(["vme_supplier_contract_count", "vme_supplier_open_amount", "vme_supplier_vme_names"])
+            return self.env.cr.sql_log_count - before
+
+        self.assertEqual(queries(suppliers[:2]), queries(suppliers))
+        self.assertEqual(suppliers[0].vme_supplier_open_amount, 300 + 500 - 100 + 400 + 777)
+        self.assertEqual(suppliers[1:].mapped("vme_supplier_contract_count"), [0] * 4)
+
     def test_portal_finances(self):
         finances = self.vme._get_portal_finances(MID_YEAR)
         self.assertEqual(finances["reserve"], 30)

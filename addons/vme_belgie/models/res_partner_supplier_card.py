@@ -1,3 +1,4 @@
+from collections import defaultdict
 from datetime import date
 
 from odoo import api, fields, models
@@ -97,6 +98,30 @@ class ResPartner(models.Model):
     def _compute_vme_supplier_card(self):
         vmes = self._vme_supplier_card_scope().sudo()
         role_partners = self._vme_supplier_partners()
+        # One query per model for the whole list, grouped on the commercial partner.
+        commercials = self.filtered("id").commercial_partner_id
+        contract_count, vme_ids = defaultdict(int), defaultdict(set)
+        open_amount, bill_companies = defaultdict(float), defaultdict(set)
+        if commercials:
+            for contract in self.env["vme.contract"].sudo().search([
+                    ("association_id", "in", vmes.ids), ("partner_id", "child_of", commercials.ids),
+                    ("state", "=", "running")]):
+                contract_count[contract.partner_id.commercial_partner_id] += 1
+                vme_ids[contract.partner_id.commercial_partner_id].add(contract.association_id.id)
+            for installation in self.env["vme.installation"].sudo().search([
+                    ("association_id", "in", vmes.ids), "|", ("maintenance_partner_id", "child_of", commercials.ids),
+                    ("inspection_partner_id", "child_of", commercials.ids)]):
+                for supplier in (installation.maintenance_partner_id | installation.inspection_partner_id).commercial_partner_id:
+                    vme_ids[supplier].add(installation.association_id.id)
+            for works in self.env["vme.works"].sudo().search([
+                    ("association_id", "in", vmes.ids), ("contractor_id", "child_of", commercials.ids)]):
+                vme_ids[works.contractor_id.commercial_partner_id].add(works.association_id.id)
+            for supplier, company, amount in self.env["account.move"].sudo()._read_group([
+                    ("company_id", "in", vmes.company_id.ids), ("move_type", "in", ("in_invoice", "in_refund")),
+                    ("state", "=", "posted"), ("commercial_partner_id", "in", commercials.ids)],
+                    ["commercial_partner_id", "company_id"], ["amount_residual_signed:sum"]):
+                open_amount[supplier] -= amount
+                bill_companies[supplier].add(company.id)
         for partner in self:
             commercial = partner.commercial_partner_id
             if not partner.id:
@@ -104,23 +129,15 @@ class ResPartner(models.Model):
                                 "vme_supplier_vme_names": False, "vme_supplier_currency_id": False,
                                 "vme_is_supplier": False})
                 continue
-            contracts = self.env["vme.contract"].sudo().search([
-                ("association_id", "in", vmes.ids), ("partner_id", "child_of", commercial.id), ("state", "=", "running")])
-            bills = self.env["account.move"].sudo().search([
-                ("company_id", "in", vmes.company_id.ids), ("move_type", "in", ("in_invoice", "in_refund")),
-                ("state", "=", "posted"), ("commercial_partner_id", "=", commercial.id)])
-            installations = self.env["vme.installation"].sudo().search([
-                ("association_id", "in", vmes.ids), "|", ("maintenance_partner_id", "child_of", commercial.id),
-                ("inspection_partner_id", "child_of", commercial.id)])
-            works = self.env["vme.works"].sudo().search([
-                ("association_id", "in", vmes.ids), ("contractor_id", "child_of", commercial.id)])
-            names = (contracts.association_id | installations.association_id | works.association_id
-                     | vmes.filtered(lambda v: v.company_id in bills.company_id)).mapped("name")
+            companies = bill_companies[commercial]
+            names = (vmes.browse(vme_ids[commercial])
+                     | vmes.filtered(lambda v, c=companies: v.company_id.id in c)).mapped("name")
+            currency = vmes.company_id.filtered(lambda c, ids=companies: c.id in ids).currency_id
             partner.update({
-                "vme_supplier_currency_id": (bills.company_currency_id or vmes.company_id.currency_id)[:1],
+                "vme_supplier_currency_id": (currency or vmes.company_id.currency_id)[:1],
                 "vme_is_supplier": bool(commercial.supplier_rank) or commercial in role_partners,
-                "vme_supplier_contract_count": len(contracts),
-                "vme_supplier_open_amount": sum(bills.mapped("amount_residual_signed")) * -1,
+                "vme_supplier_contract_count": contract_count[commercial],
+                "vme_supplier_open_amount": open_amount[commercial],
                 "vme_supplier_vme_names": ", ".join(sorted(set(names))) or False,
             })
 

@@ -304,7 +304,8 @@ class VmeAssemblyItem(models.Model):
             absent = self.env["vme.assembly.attendee"].concat(*choices).filtered(lambda a: a.attendance == "absent")
             absent.write({"attendance": "present", "attendance_mode": "written",
                           "checked_in_at": now, "check_in_ip": ip_address})
-        return Vote.create([{
+        # As superuser: only this method creates portal votes (see VmeAssemblyVote._check_audit_vals).
+        return Vote.sudo().create([{
             "item_id": self.id,
             "attendee_id": attendee.id,
             "vote": vote,
@@ -347,10 +348,25 @@ class VmeAssemblyVote(models.Model):
 
     # The audit trail: a vote from the portal is final and can no longer be changed or removed.
     LOCKED_SOURCES = ("online", "written")
+    AUDIT_FIELDS = ("cast_at", "voter_partner_id", "ip_address")
+
+    def _check_audit_vals(self, vals):
+        """Only _portal_cast_votes (as superuser) records a portal vote: staff cannot make one over RPC."""
+        if self.env.su:
+            return
+        if vals.get("source") in self.LOCKED_SOURCES or any(f in vals for f in self.AUDIT_FIELDS):
+            raise UserError(self.env._("Een online of schriftelijke stem komt alleen uit het portaal."))
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            self._check_audit_vals(vals)
+        return super().create(vals_list)
 
     def write(self, vals):
         if self.filtered(lambda v: v.source in self.LOCKED_SOURCES):
             raise UserError(self.env._("Een online of schriftelijke stem kan niet meer gewijzigd worden."))
+        self._check_audit_vals(vals)
         return super().write(vals)
 
     def unlink(self):
@@ -384,9 +400,24 @@ class VmeAssemblySignature(models.Model):
         for signature in self:
             signature.is_valid = signature.state == "signed" and signature.document_sha256 == signature.assembly_id.minutes_sha256
 
+    # Set only by _portal_sign, as superuser: staff cannot sign for an owner over RPC.
+    AUDIT_FIELDS = ("state", "signed_at", "signed_name", "ip_address", "user_agent")
+
+    def _check_audit_vals(self, vals):
+        audit = {f: v for f, v in vals.items() if f in self.AUDIT_FIELDS and (f, v) != ("state", "pending")}
+        if audit and not self.env.su:
+            raise UserError(self.env._("Alleen de ondertekenaar zelf kan ondertekenen, in het portaal."))
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            self._check_audit_vals(vals)
+        return super().create(vals_list)
+
     def write(self, vals):
         if self.filtered(lambda s: s.state == "signed"):
             raise UserError(self.env._("Een handtekening kan na het ondertekenen niet meer gewijzigd worden."))
+        self._check_audit_vals(vals)
         return super().write(vals)
 
     def unlink(self):
@@ -407,7 +438,8 @@ class VmeAssemblySignature(models.Model):
             raise UserError(self.env._("De notulen zijn gewijzigd sinds ze ter ondertekening klaargezet werden."))
         if not (signed_name or "").strip():
             raise UserError(self.env._("Typ uw naam om te ondertekenen."))
-        self.write({
+        # As superuser: the only way to sign (see _check_audit_vals).
+        self.sudo().write({
             "state": "signed",
             "signed_at": fields.Datetime.now(),
             "signed_name": signed_name.strip(),

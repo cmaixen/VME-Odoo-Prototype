@@ -151,6 +151,9 @@ class TestBankMatching(TransactionCase):
         self.assertEqual(set(lines.mapped("vme_match_state")), {"auto"})
         # The same file again creates nothing.
         self.assertFalse(self.env["vme.bank.import.wizard"]._import_file(data, "twee.cod"))
+        # Also when the statement got another name, as in the language of a French-speaking colleague.
+        lines.statement_id.name = "CODA 007 du 01/02/2026"
+        self.assertFalse(self.env["vme.bank.import.wizard"]._import_file(data, "twee.cod"))
 
     def test_unknown_account_is_refused(self):
         statement = Statement("BE40999000100963", "EUR", "001", date(2026, 2, 1), Decimal(0), Decimal(1),

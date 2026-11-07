@@ -67,7 +67,7 @@ erDiagram
 | `vme.council.dossier` | Lopend dossier voor de raad (SQL-view) | Verkopen, invorderingen, open keuringsopmerkingen en opvolgtaken van de AV; `dossier_type`, `status`, `date_deadline`, `res_model`, `res_id`. Uitbreidbaar via `_dossier_queries()`. |
 | `vme.contract` | Contract | VME, soort, leverancier, optioneel de installatie; `date_end` (einde huidige periode), `auto_renew`, `renewal_months`, `notice_period_months`; opgeslagen `notice_deadline` en `next_evaluation_date`, niet opgeslagen `notice_state`, verdeelregel en `billed_this_year`. Zie [contracten.md](contracten.md). |
 | `vme.contract.evaluation` | Jaarlijkse evaluatie | Contract, datum, beoordeling, voorstel, optioneel de AV. |
-| `vme.request` | Aanvraag van een bewoner | VME, kavel, `request_type_id`, `channel`, `requester_id` en `requester_role` (herkend aan het e-mailadres), `owner_id`, `state`, bewijs, bestelling, levering, checklist. Zie [aanvragen.md](aanvragen.md). |
+| `vme.request` | Aanvraag van een bewoner | VME, kavel, `request_type_id`, `channel`, `requester_id` en `requester_role` (uit de partner van de aanvrager, niet uit diens e-mailadres), `owner_id`, `state`, bewijs, bestelling, levering, checklist. Zie [aanvragen.md](aanvragen.md). |
 | `vme.request.type` | Soort aanvraag | `code` (uniek, één per procedure), `needs_verification`, `checklist` (tekst). |
 | `vme.request.check` | Stap van de checklist | `request_id`, `name`, `done`, `done_date`. |
 | `vme.lot.contact` | Huurder of bewoner van een kavel | `lot_id`, `partner_id`, `role` (huurder, bewoner, contactpersoon), `date_start`, `date_end`. |

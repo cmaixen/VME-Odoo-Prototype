@@ -77,7 +77,7 @@ Voorbeeld (uit `test_consumption.py`): 1000 euro, 30% vast, A1 600/1000 en 100 e
 
 `vme.budget._compute_reserve_check` (`# LEGAL-CHECK: art. 3.86 §3 BW`):
 
-- Lasten vorig jaar = som van `amount_total_signed` (inclusief btw) van geboekte leveranciersfacturen en -creditnota's van de company met factuurdatum in jaar − 1.
+- Lasten vorig jaar = som van `amount_total_signed` (inclusief btw) van geboekte leveranciersfacturen en -creditnota's van de company met factuurdatum in jaar − 1. Alleen de gewone lasten: facturen die uit het reservekapitaal betaald zijn (`vme_reserve_move_id`) en privékosten van een aanvraag (`vme_request_id`) tellen niet mee.
 - Zijn die nul (nieuwe VME of demo zonder historiek), dan wordt het werkkapitaalbudget als schatting gebruikt en is `previous_year_charges_estimated` waar.
 - Minimum = lasten × `RESERVE_MINIMUM_RATE` (0,05).
 - Waarschuwing als de jaarbijdrage lager is en `reserve_exception_by_general_assembly` niet aanstaat. Het is een waarschuwing, geen blokkering.
@@ -87,7 +87,7 @@ Voorbeeld (uit `test_consumption.py`): 1000 euro, 30% vast, A1 600/1000 en 100 e
 `vme.association._get_annual_statement(year, partners=None)` (alles als `sudo`):
 
 - **Kosten**: kostenverdelingen van geboekte leveranciersfacturen met factuurdatum in het jaar. Een factuur die na de afsluiting van haar jaar binnenkomt, krijgt van Odoo een boekingsdatum in het nieuwe jaar en telt dan in dat jaar (zie [boekjaarafsluiting.md](boekjaarafsluiting.md#gevolg-voor-de-jaarafrekening)).
-- **Provisies**: geboekte facturen van provisieoproepen met budgetjaar = het jaar van de afrekening (niet de factuurdatum); per fonds gefactureerd, betaald (`amount_total − amount_residual`) en open.
+- **Provisies**: geboekte facturen van provisieoproepen met budgetjaar = het jaar van de afrekening (niet de factuurdatum); per fonds gefactureerd (`amount_total` min wat met een creditnota afgepunt is, `_credited_amount`), betaald (gefactureerd − `amount_residual`) en open. Een oproep die met een creditnota volledig tegengeboekt is (`payment_state = reversed`), telt niet mee: hij was nooit verschuldigd. Een gedeeltelijke creditnota verlaagt het gefactureerde bedrag, niet het betaalde.
 - **Eigenaars**: iedereen met kosten of provisies in het jaar (of de opgegeven partners).
 - **Saldo** = aandeel in de kosten − betaalde provisies werkkapitaal. Open provisies worden niet verrekend, reservekapitaal nooit.
 - **Per sleutel**: totale kosten van de VME, de quotiteiten van de eigenaar (`"70 + 6"` voor twee kavels) en zijn aandeel.

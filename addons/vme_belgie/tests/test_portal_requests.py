@@ -107,6 +107,16 @@ class TestPortalRequests(PortalRequestFixture, TransactionCase):
         with self.assertRaises(UserError):
             request._portal_add_proof(self.owner, [self._file()])  # not the requester
 
+    def test_tenant_with_owner_email_stays_tenant(self):
+        # The portal lets a user change its own e-mail address: that address proves nothing.
+        self.tenant.email = self.owner.email
+        request = self.tenant._vme_portal_create_request(self.a1, "key", "Sleutel inkom", "")
+        self.assertEqual(request.requester_id, self.tenant)
+        self.assertEqual(request.requester_role, "tenant")
+        self.assertTrue(request.needs_verification)
+        self.assertEqual(request.state, "waiting_proof")
+        self.assertFalse(request.order_ready)
+
     def test_own_requests_only(self):
         mine = self.owner._vme_portal_create_request(self.a1, "document", "Attest", "")
         self.assertEqual(mine.activity_ids.summary, "Aanvraag uit het portaal behandelen")

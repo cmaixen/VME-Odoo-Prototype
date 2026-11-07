@@ -172,6 +172,26 @@ class TestProvisionCall(TransactionCase):
         self.assertEqual(self.budget.reserve_minimum, 1500.0)
         self.assertTrue(self.budget.reserve_warning)  # 1000 < 1500
 
+    def test_reserve_minimum_counts_only_ordinary_charges(self):
+        supplier = self.env["res.partner"].create({"name": "Leverancier 2025", "is_company": True})
+        request = self.env["vme.request"].create({
+            "association_id": self.vme.id, "request_type_id": self.env.ref("vme_belgie.request_type_key").id,
+            "title": "Sleutel voor één eigenaar", "requester_id": supplier.id,
+        })
+        bills = self.env["account.move"].with_company(self.vme.company_id).create([{
+            "move_type": "in_invoice", "partner_id": supplier.id, "invoice_date": date(2025, 6, 1),
+            "invoice_line_ids": [Command.create({"name": name, "price_unit": amount, "tax_ids": [Command.clear()]})],
+        } for name, amount in (("Onderhoud", 20000), ("Dakwerken", 50000), ("Sleutel", 100))])
+        bills.invoice_line_ids.vme_key_id = self.vme.key_ids
+        bills[1].vme_reserve_move_id = bills[1]  # paid from the reserve capital
+        bills[2].vme_request_id = request  # charged to one owner
+        bills.action_post()
+        self.budget.invalidate_recordset()
+        # Only the maintenance is an ordinary common charge: 5% of 20000.
+        self.assertEqual(self.budget.previous_year_charges, 20000.0)
+        self.assertEqual(self.budget.reserve_minimum, 1000.0)
+        self.assertFalse(self.budget.reserve_warning)
+
     def test_large_selection_runs_in_background(self):
         # More than BACKGROUND_THRESHOLD VMEs: queued, then made VME per VME by the cron (docs/dev/schaal.md).
         other = self.env["vme.association"].create({"name": "Residentie Zonder Budget"})

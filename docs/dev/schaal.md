@@ -86,6 +86,20 @@ Nu leest `_get_portfolio_figures(today)` alles voor een hele recordset in een va
 
 `_get_signals()` van één VME en de zoekfilters gebruiken dezelfde functie, zodat er één plaats is waar signalen bepaald worden. De gebouwkaart van één VME blijft `_get_capital_history` en `_get_budget_tracking` gebruiken (met de details per jaar en per rekening); `test_portfolio_matches_card_figures` controleert dat beide wegen dezelfde bedragen geven, en `test_portfolio_query_count_does_not_grow_per_vme` dat het aantal queries niet groeit met het aantal VME's.
 
+### Lijsten: invordering, leveranciers en werken
+
+Drie lijsten rekenden per rij met eigen zoekopdrachten. Ze lezen nu per model één keer voor de hele lijst:
+
+- invorderingsdossiers: `_open_lines_by_collection()` zoekt de openstaande lijnen van alle dossiers samen (ook in de nachtelijke cron, die nieuwe dossiers in één `create` maakt); de kavels in één zoekopdracht;
+- leverancierskaart in de lijst van contacten: contracten, installaties en werken in één zoekopdracht per model, het saldo met één `_read_group`;
+- werken met financiering uit het reservekapitaal: saldo en vastgelegde werken één keer per VME; `_get_fund_balance` telt op met `_read_group` in plaats van alle lijnen te laden.
+
+De tests `test_list_does_not_query_per_dossier`, `test_supplier_list_does_not_query_per_supplier` en `test_reserve_in_the_list_does_not_query_per_works` controleren dat het aantal queries niet groeit met het aantal rijen.
+
+### Oproepingen: één pdf-run per rapport
+
+`vme.assembly.convocation._generate_documents()` maakte per eigenaar twee pdf's, elk met een eigen wkhtmltopdf-proces, en rekende per eigenaar de volledige jaarafrekening uit om te controleren of er een was (dat was altijd zo). Nu rendert `_render_pdf_per_record()` alle oproepingen in één run en alle jaarafrekeningen in een tweede; Odoo splitst de pdf per record (`_render_qweb_pdf_prepare_streams`, op pagina's of outlines). Lukt dat niet, of in een test (Odoo rendert daar HTML), dan rendert het per record zoals voorheen. Test: `test_convocation_pdfs_in_one_run`.
+
 ### Provisieoproepen voor alle VME's: op de achtergrond
 
 Odoo heeft twee à drie seconden per VME nodig om de facturen van een oproep te maken en te boeken (vooral de eigen logica van `account.move`: nummering, regels, analytische modellen, chatter). Dat is geen N+1 van onze code: het profiel toont dat de tijd in `account.move.create()` en `_post()` zit, en zonder chatterbericht (`mail_create_nolog`) wint het maar 13%. Voor 200 VME's duurt één klik dus minuten, langer dan een webverzoek mag duren (`limit_time_real` is standaard 120 seconden op een productieserver met workers).

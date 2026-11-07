@@ -6,6 +6,15 @@ from odoo.tools import float_is_zero
 from .vme_meter import METER_UNITS
 
 
+def _credited_amount(invoices):
+    """Part of these customer invoices settled by a credit note instead of a payment."""
+    receivable = invoices.line_ids.filtered(lambda l: l.account_id.account_type == "asset_receivable")
+    return sum(
+        partial.amount for partial in receivable.matched_credit_ids
+        if partial.credit_move_id.move_id.move_type == "out_refund"
+    )
+
+
 class VmeAssociation(models.Model):
     _inherit = "vme.association"
 
@@ -101,7 +110,8 @@ class VmeAssociation(models.Model):
             funds = {}
             for fund in ("working", "reserve"):
                 invoices = provisions.filtered(lambda m, f=fund: m.partner_id == partner and m.vme_fund == f)
-                invoiced = sum(invoices.mapped("amount_total"))
+                # A (partial) credit note lowers what was asked, not what was paid.
+                invoiced = sum(invoices.mapped("amount_total")) - _credited_amount(invoices)
                 open_amount = sum(invoices.mapped("amount_residual"))
                 funds[fund] = {
                     "invoiced": currency.round(invoiced),

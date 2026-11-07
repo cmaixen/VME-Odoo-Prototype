@@ -69,6 +69,28 @@ class TestCollection(TransactionCase):
         draft.with_context(vme_today=today).action_mark_sent()
         return draft
 
+    def _list_queries(self, collections, today):
+        """Queries to show these dossiers in the list, from an empty cache."""
+        self.env.invalidate_all()
+        before = self.env.cr.sql_log_count
+        collections.with_context(vme_today=today).read(["lot_names", "amount_due", "next_step", "interest_preview"])
+        return self.env.cr.sql_log_count - before
+
+    def test_list_does_not_query_per_dossier(self):
+        owners = self.env["res.partner"].create([{"name": f"Eigenaar Lijst {i}"} for i in range(6)])
+        lots = self.env["vme.lot"].create([{"association_id": self.vme.id, "name": f"L{i}"} for i in range(6)])
+        self.env["vme.ownership"].create([
+            {"lot_id": lot.id, "partner_id": owner.id, "date_start": date(2020, 1, 1)} for lot, owner in zip(lots, owners)])
+        for owner in owners:
+            self._invoice(owner, 100, "working")
+        today = DUE + timedelta(days=5)
+        self.Collection._refresh(today)
+        collections = self.Collection.search([("association_id", "=", self.vme.id), ("partner_id", "in", owners.ids)])
+        self.assertEqual(len(collections), 6)
+        self.assertEqual(collections.sorted(lambda c: c.partner_id.name).mapped("lot_names"), lots.mapped("name"))
+        self.assertEqual(set(collections.with_context(vme_today=today).mapped("amount_due")), {100.0})
+        self.assertEqual(self._list_queries(collections[:2], today), self._list_queries(collections, today))
+
     # Aging
 
     def test_aging_buckets(self):

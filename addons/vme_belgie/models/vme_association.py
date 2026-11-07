@@ -194,6 +194,14 @@ class VmeAssociation(models.Model):
                     "Werkkapitaal en reservekapitaal moeten op aparte bankrekeningen staan."
                 ))
 
+    @api.constrains("working_capital_bank_id", "reserve_capital_bank_id")
+    def _check_own_bank_accounts(self):
+        # Bank accounts have no company of their own, so check_company would let any account through.
+        for vme in self:
+            banks = vme.working_capital_bank_id | vme.reserve_capital_bank_id
+            if banks.filtered(lambda b: b.partner_id.commercial_partner_id != vme.partner_id.commercial_partner_id):
+                raise ValidationError(self.env._("Kies een rekening van de VME %s zelf.", vme.name))
+
     @api.depends("working_capital_bank_id.allow_out_payment", "reserve_capital_bank_id.allow_out_payment")
     def _compute_untrusted_fund_bank_ids(self):
         # Odoo only puts a company bank account on customer invoices once a person with the

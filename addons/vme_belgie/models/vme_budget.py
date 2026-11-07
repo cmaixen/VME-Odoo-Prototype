@@ -75,7 +75,8 @@ class VmeBudget(models.Model):
         return self._get_previous_year_charges_by_budget()[self]
 
     def _get_previous_year_charges_by_budget(self):
-        """Posted vendor bills (incl. VAT, which is a cost for a VME) of the previous year, per budget.
+        """Ordinary charges of the previous year, per budget: posted vendor bills (incl. VAT, which is
+        a cost for a VME), without works paid from the reserve capital and private costs of a request.
 
         One query for all budgets: the portfolio checks the budgets of all VMEs at once.
         """
@@ -89,6 +90,10 @@ class VmeBudget(models.Model):
                 ("state", "=", "posted"),
                 ("invoice_date", ">=", f"{min(years) - 1}-01-01"),
                 ("invoice_date", "<=", f"{max(years) - 1}-12-31"),
+                # LEGAL-CHECK: art. 3.86 §3 BW - only the ordinary common charges: not the works
+                # paid from the reserve capital, not the private costs charged to one owner.
+                ("vme_reserve_move_id", "=", False),
+                ("vme_request_id", "=", False),
             ], ["company_id", "invoice_date:year"], ["amount_total_signed:sum"]):
                 totals[company.id, year_start.year] = -amount
         return {budget: totals.get((budget.company_id.id, budget.year - 1), 0.0) for budget in self}

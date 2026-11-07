@@ -7,7 +7,7 @@ from psycopg2 import IntegrityError
 
 from odoo.exceptions import UserError
 from odoo.fields import Command
-from odoo.tests import HttpCase, TransactionCase, tagged
+from odoo.tests import HttpCase, TransactionCase, new_test_user, tagged
 from odoo.tools import mute_logger
 
 TODAY = date(2026, 11, 5)
@@ -50,6 +50,12 @@ class OnlineAssemblyFixture:
 
     def _att(self, index):
         return self.attendee[self.owners[index]]
+
+    def _staff(self):
+        """A staff member of the VME, not superuser: what an RPC call of a colleague can do."""
+        company = self.vme.company_id
+        return new_test_user(self.env, login="medewerker.online", groups="base.group_user",
+                             company_id=company.id, company_ids=[Command.set(company.ids)])
 
     def _vote(self, item, partner, votes, ip=IP_A):
         """votes: {owner index: vote}"""
@@ -197,6 +203,20 @@ class TestAssemblyOnlineVoting(OnlineAssemblyFixture, TransactionCase):
         self.item.action_all_for()  # touches only votes from the room
         self.assertEqual(vote.vote, "for")
 
+    def test_staff_cannot_forge_an_online_vote(self):
+        self.assembly.action_open_online()
+        self.item.action_open_voting()
+        Vote = self.env["vme.assembly.vote"].with_user(self._staff())
+        base = {"item_id": self.item.id, "attendee_id": self._att(0).id, "vote": "for"}
+        for extra in ({"source": "online"}, {"source": "written"}, {"ip_address": IP_A},
+                      {"voter_partner_id": self.owners[0].id}):
+            with self.assertRaises(UserError, msg=extra):
+                Vote.create(dict(base, **extra))
+        room_vote = Vote.create(base)  # a vote from the room stays possible
+        with self.assertRaises(UserError):
+            room_vote.source = "online"
+        self.assertEqual(self.item.online_vote_count, 0)
+
     def test_room_votes_skip_owners_voting_online(self):
         """In a hybrid meeting the room list has no default vote for owners who vote in the portal."""
         self._att(4).write({"attendance": "represented", "proxy_holder_id": self.owners[0].id})
@@ -320,6 +340,22 @@ class TestAssemblyMinutesSignature(OnlineAssemblyFixture, TransactionCase):
             signature.document_sha256 = "0" * 64
         with self.assertRaises(UserError):
             signature.unlink()
+
+    def test_staff_cannot_sign_for_an_owner(self):
+        staff = self._staff()
+        signature = self._signature(0).with_user(staff)
+        with self.assertRaises(UserError):
+            signature.write({"state": "signed", "signed_name": "Eigenaar L1", "ip_address": IP_A})
+        with self.assertRaises(UserError):
+            signature.signed_name = "Eigenaar L1"
+        with self.assertRaises(UserError):
+            self.env["vme.assembly.signature"].with_user(staff).create({
+                "assembly_id": self.assembly.id, "partner_id": self.owners[3].id, "role": "owner",
+                "document_sha256": self.assembly.minutes_sha256, "state": "signed"})
+        self.assertEqual(self._signature(0).state, "pending")
+        # The owner itself still signs in the portal, whoever calls the method.
+        signature._portal_sign(self.owners[0], "Eigenaar L1", IP_A, "")
+        self.assertEqual(self._signature(0).state, "signed")
 
     def test_changed_pdf_invalidates_signatures(self):
         self._signature(0)._portal_sign(self.owners[0], "Eigenaar L1", IP_A, "")

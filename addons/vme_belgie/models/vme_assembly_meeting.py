@@ -44,6 +44,21 @@ def _units(shares):
     return round(shares * SHARE_FACTOR)
 
 
+
+def _render_pdf_per_record(records, report_ref):
+    """{record: PDF bytes}, with one wkhtmltopdf run for all records instead of one per record.
+
+    Odoo splits the PDF per record (on the pages or the outlines). When it cannot, or in a test
+    (where Odoo renders HTML), each record is rendered on its own, as before.
+    """
+    Report = records.env["ir.actions.report"]
+    if not records:
+        return {}
+    streams, report_type = Report._pre_render_qweb_pdf(report_ref, res_ids=records.ids)
+    if report_type == "pdf" and all((streams.get(record.id) or {}).get("stream") for record in records):
+        return {record: streams[record.id]["stream"].getvalue() for record in records}
+    return {record: Report._render_qweb_pdf(report_ref, record.ids)[0] for record in records}
+
 class VmeAssembly(models.Model):
     _inherit = "vme.assembly"
 
@@ -442,24 +457,26 @@ class VmeAssemblyConvocation(models.Model):
 
     def _generate_documents(self):
         """Convocation with agenda and proxy form, plus the owner's annual statement of last year."""
-        Report = self.env["ir.actions.report"]
+        convocation_pdfs = _render_pdf_per_record(self, "vme_belgie.action_report_assembly_convocation")
+        ordinary = self.filtered(lambda c: c.assembly_id.assembly_type == "ordinary")
+        statements = self.env["vme.annual.statement.wizard"].create([{
+            "association_id": convocation.assembly_id.association_id.id,
+            "year": convocation.assembly_id.year - 1,
+            "partner_ids": [fields.Command.set(convocation.partner_id.ids)],
+        } for convocation in ordinary])
+        statement_pdfs = dict(zip(ordinary, _render_pdf_per_record(
+            statements, "vme_belgie.action_report_annual_statement").values()))
         for convocation in self:
             assembly = convocation.assembly_id
-            content, _ext = Report._render_qweb_pdf("vme_belgie.action_report_assembly_convocation", convocation.ids)
             attachments = self.env["ir.attachment"].create({
                 "name": f"Oproeping AV {assembly.year} {assembly.association_id.name} - {convocation.partner_id.name}.pdf",
-                "datas": base64.b64encode(content),
+                "datas": base64.b64encode(convocation_pdfs[convocation]),
                 "res_model": convocation._name,
                 "res_id": convocation.id,
                 "mimetype": "application/pdf",
             })
-            statement = self.env["vme.annual.statement.wizard"].create({
-                "association_id": assembly.association_id.id,
-                "year": assembly.year - 1,
-                "partner_ids": [fields.Command.set(convocation.partner_id.ids)],
-            })
-            if assembly.assembly_type == "ordinary" and statement._get_statement()["statements"]:
-                content, _ext = Report._render_qweb_pdf("vme_belgie.action_report_annual_statement", statement.ids)
+            if convocation in statement_pdfs:
+                content = statement_pdfs[convocation]
                 attachments |= self.env["ir.attachment"].create({
                     "name": f"Jaarafrekening {assembly.year - 1} - {convocation.partner_id.name}.pdf",
                     "datas": base64.b64encode(content),

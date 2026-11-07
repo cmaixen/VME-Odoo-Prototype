@@ -204,7 +204,9 @@ class VmeRequest(models.Model):
     def _compute_requester_role(self):
         for request in self:
             if request.requester_id and request.association_id:
-                role, _lot = request._identify(request.requester_id.email, request.lot_id, request.request_date)
+                # By the partner itself, not its e-mail address: a portal user chooses that address.
+                role, _lot = request.env["vme.request"]._identify_partner_in(
+                    request.association_id, request.requester_id, request.lot_id, request.request_date)
                 request.requester_role = role
             elif not request.requester_role:
                 request.requester_role = "unknown"
@@ -292,6 +294,22 @@ class VmeRequest(models.Model):
                 return "tenant", candidate
         return "unknown", lot
 
+    @api.model
+    def _identify_partner_in(self, vme, partner, lot=None, on_date=None):
+        """Role of this partner for the lot: (role, lot). Like _identify_in, on the partner record."""
+        on_date = on_date or fields.Date.context_today(self)
+        commercial = partner.commercial_partner_id
+        lots = (lot or vme.sudo().lot_ids).sudo().sorted(lambda l: (l.sequence, l.name))
+        if not commercial:
+            return "unknown", lot
+        for candidate in lots:
+            if candidate._get_owner_on(on_date) == commercial:
+                return "owner", candidate
+        for candidate in lots:
+            if commercial in candidate._get_tenants_on(on_date).commercial_partner_id:
+                return "tenant", candidate
+        return "unknown", lot
+
     # Intake: mail (ai/), portal (step 15) or manual
 
     @api.model
@@ -318,9 +336,13 @@ class VmeRequest(models.Model):
         lot = self.env["vme.lot"].browse(lot_id).exists() if lot_id else self.env["vme.lot"]
         if lot and lot.association_id != vme:
             lot = self.env["vme.lot"]
-        role, lot = self._identify_in(vme, email, lot)
         partner = self.env["res.partner"].browse(requester_id).exists() if requester_id else None
-        partner = partner or self._find_or_create_requester(vme, email, name, lot, role)
+        if partner:
+            # A known partner (the portal): its own role, whatever e-mail address it set.
+            _role, lot = self._identify_partner_in(vme, partner, lot)
+        else:
+            role, lot = self._identify_in(vme, email, lot)
+            partner = self._find_or_create_requester(vme, email, name, lot, role)
         text = f"{subject}\n{body}".lower()
         vals = {
             "association_id": vme.id,

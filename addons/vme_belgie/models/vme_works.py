@@ -66,8 +66,8 @@ class VmeAssociation(models.Model):
         domain = [("account_id", "=", account.id), ("company_id", "=", company.id), ("parent_state", "=", "posted")]
         if on_date:
             domain.append(("date", "<=", on_date))
-        lines = self.env["account.move.line"].sudo().search(domain)
-        return company.currency_id.round(-sum(lines.mapped("balance")))
+        [(balance,)] = self.env["account.move.line"].sudo()._read_group(domain, aggregates=["balance:sum"])
+        return company.currency_id.round(-(balance or 0.0))
 
 
 class VmeAssemblyItem(models.Model):
@@ -199,15 +199,19 @@ class VmeWorks(models.Model):
 
     @api.depends("financing", "budget", "contract_amount", "association_id", "bill_ids.state")
     def _compute_reserve(self):
+        # Balance and committed works once per VME, not once per row of the list.
+        balances, running = {}, {}
         for works in self:
             if not works.association_id or works.financing != "reserve":
                 works.reserve_balance = works.reserve_committed = works.reserve_available = works.reserve_shortfall = 0.0
                 continue
             vme = works.association_id
-            balance = vme._get_fund_balance("reserve")
-            others = self.search([
-                ("association_id", "=", vme.id), ("financing", "=", "reserve"),
-                ("state", "in", BILLABLE_STATES), ("id", "!=", works._origin.id)])
+            if vme not in balances:
+                balances[vme] = vme._get_fund_balance("reserve")
+                running[vme] = self.search([
+                    ("association_id", "=", vme.id), ("financing", "=", "reserve"), ("state", "in", BILLABLE_STATES)])
+            balance = balances[vme]
+            others = running[vme].filtered(lambda other, w=works: other.id != w._origin.id)
             committed = sum(max(other.contract_amount - other.invoiced_amount, 0.0) for other in others)
             needed = max((works.contract_amount or works.budget) - works.invoiced_amount, 0.0)
             works.reserve_balance = balance
@@ -414,12 +418,12 @@ class AccountMove(models.Model):
 
     vme_works_id = fields.Many2one(
         "vme.works", string="Werkdossier", compute="_compute_vme_works_id", store=True, readonly=False,
-        index=True, copy=False, domain="[('company_id', '=', company_id), ('state', 'in', %s)]" % (BILLABLE_STATES,),
+        index=True, copy=False, check_company=True, domain="[('company_id', '=', company_id), ('state', 'in', %s)]" % (BILLABLE_STATES,),
         help="Werken waarvoor deze factuur is. Wordt voorgesteld als de leverancier de aannemer is van gegunde werken.",
     )
     vme_works_financing = fields.Selection(related="vme_works_id.financing", string="Financiering werken")
     vme_reserve_move_id = fields.Many2one(
-        "account.move", string="Aanwending reservekapitaal", readonly=True, copy=False,
+        "account.move", string="Aanwending reservekapitaal", readonly=True, copy=False, check_company=True,
         help="Boeking die deze factuur ten laste van het reservekapitaal brengt.")
 
     @api.depends("partner_id", "company_id", "move_type")

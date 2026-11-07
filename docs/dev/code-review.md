@@ -19,7 +19,7 @@ Review van `addons/vme_belgie`, `addons/vme_rentmeester`, `addons/vme_website`, 
   - Geen `t-raw` of `|safe`; elke `Markup` escapet zijn argumenten.
   - De AI-uitvoer wordt volledig ge-escapet, en `ai/.env` staat in `.gitignore`.
   - Wel een paar zwakke plekken in de **verificatie** (huurder of vervalste afzender als eigenaar) en in de **schrijfrechten** (handtekeningen, consumptieprijsindex).
-- **Rekenlogica: goed getest.** Er waren twee fouten met geldgevolgen: een tegengeboekte provisie telde als betaald, en de 5%-basis was te breed. De eerste is hersteld; de tweede, en een paar controles bij SEPA en de bankimport, staan als voorstel in het rapport.
+- **Rekenlogica: goed getest.** Er waren twee fouten met geldgevolgen: een tegengeboekte provisie telde als betaald, en de 5%-basis was te breed. Beide zijn hersteld, net als de controles bij SEPA en de bankimport (tweede ronde).
 - **Performance bij 200 VME's.** De portefeuille is al geoptimaliseerd (`docs/dev/schaal.md`). Ernaast staan nog lijsten met N+1-queries: invorderingsdossiers, leverancierskaart en werken, en de invorderingscron. Geen enkele cron behalve de provisieoproepen gebruikt `_commit_progress`.
 - **Odoo-idioom.**
   - Nergens `check_company=True` of `_check_company_auto`.
@@ -47,9 +47,24 @@ Elke fix staat in een eigen commit, met een test waar dat kan.
 | B-R6 | De afrekening aan huurders las alle rubrieken opnieuw voor elke kostenverdeling | `vme_rentmeester/models/rent_charge_category.py`, `rent_settlement.py` |
 | K-R9 | De footer van de website toonde letterlijk `&copy;` | `vme_website/views/layout_templates.xml` |
 
+**Tweede ronde** (op vraag van de hoofdsessie, na de merge van de eerste):
+
+| # | Wat | Bestanden |
+| --- | --- | --- |
+| B-S1 | De rol van een aanvrager komt uit de partner, niet uit een e-mailadres dat de huurder zelf kiest | `models/vme_request.py`, test `test_tenant_with_owner_email_stays_tenant` |
+| B-S2 | Handtekeningen en online of schriftelijke stemmen kunnen alleen uit het portaal komen, niet via RPC | `models/vme_assembly_online.py`, tests in `test_assembly_online.py` |
+| K-F1 | Een gedeeltelijke creditnota op een provisie telt niet als betaald | `models/vme_annual_statement.py`, test `test_partial_credit_note_is_not_paid` |
+| B-F4 | De 5%-basis telt werken uit het reservekapitaal en privékosten niet meer mee | `models/vme_budget.py`, test `test_reserve_minimum_counts_only_ordinary_charges` |
+| B-F2 | Een bankbestand wordt herkend aan een sleutel, niet aan de vertaalde naam van het afschrift | `models/account_bank_statement_line.py`, `wizard/vme_bank_import_wizard.py` |
+| B-F3 | SEPA-bestanden weigeren een bedrag dat niet meer openstaat | `models/vme_payment.py`, tests in `test_payments.py` |
+| B-F5, B-D5, B-D7 | Invordering, leverancierskaart en werken: geen queries meer per rij | `vme_collection.py`, `res_partner_supplier_card.py`, `vme_works.py` |
+| B-F7 | `check_company` op rekeningen, sleutels en werkdossiers; constraint op de bankrekeningen van VME en mandaat | `test_check_company.py` |
+| K-P1 | `partner_autocomplete` stuurt niets meer naar Odoo of VIES | `models/partner_autocomplete.py` |
+| K-D7 | Oproepingen: één pdf-run per rapport in plaats van twee per eigenaar | `models/vme_assembly_meeting.py` |
+
 ## Kritiek
 
-### K-F1. Jaarafrekening telt een tegengeboekte provisie als betaald ✅ (deels)
+### K-F1. Jaarafrekening telt een tegengeboekte provisie als betaald ✅
 - **Waar:** `addons/vme_belgie/models/vme_annual_statement.py:42-46` en `:96-105`
 - **Probleem:**
   - Betaald wordt berekend als "gefactureerd min openstaand".
@@ -58,7 +73,7 @@ Elke fix staat in een eigen commit, met een test waar dat kan.
 - **Risico:** het saldo van de eigenaar daalt met een provisie die hij nooit betaald heeft. Het portaal toont hetzelfde.
 - **Herstel:**
   - Uitgevoerd: volledig tegengeboekte facturen tellen niet meer mee.
-  - Voorstel ⏳: een gedeeltelijke creditnota is nog altijd fout. Neem "betaald" uit de echte afpunting met betalingen (`matched_credit_ids`, zonder `out_refund`), in plaats van uit het openstaande saldo.
+  - Uitgevoerd (tweede ronde): een gedeeltelijke creditnota verlaagt nu het gefactureerde bedrag, niet het betaalde. Het deel dat met een `out_refund` afgepunt is (`matched_credit_ids`), gaat af van "gefactureerd". Test: `test_partial_credit_note_is_not_paid`.
 
 ### K-D1. Aanvraag zonder kavel crasht bij opslaan ✅
 - **Waar:** `addons/vme_belgie/models/vme_request.py:215`
@@ -70,21 +85,19 @@ Elke fix staat in een eigen commit, met een test waar dat kan.
 
 ### Veiligheid
 
-**B-S1. Een huurder kan zich in het portaal als eigenaar voordoen** ⏳
+**B-S1. Een huurder kan zich in het portaal als eigenaar voordoen** ✅
 - **Waar:** `models/vme_portal_requests.py:85-90`; `models/vme_request.py:279-292`, `:320-322`, `:412-413`
 - **Probleem:**
   - De rol (eigenaar, huurder of onbekend) volgt uit een vergelijking van `partner.email` met het e-mailadres van de eigenaar, niet uit de ingelogde partner.
   - Een huurder die zijn e-mailadres in /my/account verandert in dat van de eigenaar, krijgt een sleutelaanvraag die meteen als "geverifieerd" staat, en de bestelling bij de slotenmaker staat klaar.
-- **Herstel:** bepaal de rol uit `requester_id` met `lot._get_owner_on()` en `_get_tenants_on()`. Ongeveer tien regels, plus een test. Nog na te gaan in de browser: of Odoo 19 een huurder in het portaal zijn e-mailadres laat wijzigen.
+- **Herstel (uitgevoerd):** de rol komt nu uit de partner zelf (`_identify_partner_in`, met `_get_owner_on()` en `_get_tenants_on()`), ook in `create_from_intake` als het portaal `requester_id` meegeeft. Test: `test_tenant_with_owner_email_stays_tenant`. De mail-intake herkent een onbekende afzender nog altijd aan het adres; zie B-S4.
 
-**B-S2. Medewerkers kunnen een elektronische handtekening of een online stem vervalsen** ⏳
+**B-S2. Medewerkers kunnen een elektronische handtekening of een online stem vervalsen** ✅
 - **Waar:**
   - `security/ir.model.access.csv`: `vme.assembly.signature` en `vme.assembly.vote` staan op 1111 voor `base.group_user`;
   - `models/vme_assembly_online.py:351-354` en `:387-390`.
 - **Probleem:** via RPC kan een medewerker een handtekening op `signed` zetten met een willekeurige naam en IP-adres, of een stem aanmaken met `source="online"`. Het auditspoor van de digitale AV is dan geen bewijs meer.
-- **Herstel:**
-  - Forceer `state="pending"` bij het aanmaken.
-  - Laat de velden van de handtekening en de bronnen online en schriftelijk alleen toe met een contextvlag die `_portal_sign` en `_portal_cast_votes` zetten.
+- **Herstel (uitgevoerd):** `create` en `write` weigeren zonder superuser de auditvelden van de handtekening en een stem met bron online of schriftelijk. `_portal_sign` en `_portal_cast_votes` schrijven als superuser. Geen contextvlag, want die kan een RPC-aanroep zelf meegeven. Tests: `test_staff_cannot_forge_an_online_vote`, `test_staff_cannot_sign_for_an_owner`.
 
 **B-S4. Bij de mail-intake wordt de eigenaar alleen herkend aan het afzenderadres** ⏳
 - **Waar:** `models/vme_request.py:279-292`, `:412-413`
@@ -93,26 +106,22 @@ Elke fix staat in een eigen commit, met een test waar dat kan.
 
 ### Geld en boekhouding
 
-**B-F2. Hetzelfde bankbestand kan twee keer ingelezen worden** ⏳
+**B-F2. Hetzelfde bankbestand kan twee keer ingelezen worden** ✅
 - **Waar:** `wizard/vme_bank_import_wizard.py:45-49`
 - **Probleem:** dubbels worden herkend aan de naam van het afschrift, en die naam is vertaald ("van" wordt "du" in `fr.po`). Een Franstalige medewerker leest zo een tweede afschrift in, en de lijnen worden opnieuw afgepunt.
-- **Herstel:** herken dubbels aan dagboek, afschriftnummer en datum, niet aan de getoonde naam.
+- **Herstel (uitgevoerd):** een nieuw veld `vme_import_key` (formaat, nummer en datum) op `account.bank.statement`. Dubbels worden herkend aan dagboek en sleutel, of aan de oude naam voor afschriften van vóór het veld. Test: uitbreiding van `test_import_routes_each_account_to_its_fund_journal`.
 
-**B-F3. SEPA-bestanden controleren niet opnieuw of de factuur nog openstaat voor hetzelfde bedrag** ⏳
+**B-F3. SEPA-bestanden controleren niet opnieuw of de factuur nog openstaat voor hetzelfde bedrag** ✅
 - **Waar:** `models/vme_payment.py:502-531` (domiciliëring) en `:476-486` (overschrijving)
 - **Probleem:** een eigenaar die tussen het voorstel en het bestand per overschrijving betaalt, wordt toch voor het volle bedrag geïnd.
-- **Herstel:** vergelijk in beide bestanden `line.amount` met het huidige `amount_residual` en weiger als het niet meer klopt. Klein, maar het raakt de betaalflow; daarom niet in deze review uitgevoerd.
+- **Herstel (uitgevoerd):** `vme.payment.batch.line._check_still_open` weigert in beide bestanden een bedrag boven het huidige `amount_residual`. Tests: `test_file_refused_when_paid_since_the_proposal`, `test_transfer_refused_when_paid_since_the_proposal`.
 
-**B-F4. De basis voor de minimale reserve van 5% telt ook lasten mee die niet gewoon zijn** ⏳
+**B-F4. De basis voor de minimale reserve van 5% telt ook lasten mee die niet gewoon zijn** ✅
 - **Waar:** `models/vme_budget.py:86-92`
 - **Probleem:** de basis bevat werken die uit het reservekapitaal betaald zijn (`vme_reserve_move_id`) en privékosten van aanvragen (`vme_request_id`). Een jaar met grote werken verhoogt zo het wettelijke minimum van het jaar erna, en blokkeert de cyclusstap "budget".
-- **Herstel:**
-  - Twee voorwaarden toevoegen aan het domein.
-  - `docs/dev/rekenregels.md` en de bestaande test bijwerken.
-  - `tools/legal_checks.py` opnieuw draaien.
-  - Het getal verandert bewust, dus eerst afstemmen. `# LEGAL-CHECK: art. 3.86 §3 BW`.
+- **Herstel (uitgevoerd):** het domein van `_get_previous_year_charges_by_budget` sluit `vme_reserve_move_id` en `vme_request_id` uit, met `# LEGAL-CHECK: art. 3.86 §3 BW`. `docs/dev/rekenregels.md` en `legal-checks.md` zijn bijgewerkt. Test: `test_reserve_minimum_counts_only_ordinary_charges`. Het minimum daalt in een jaar na grote werken; dat is de bedoeling.
 
-**B-F7. Nergens `check_company`** ⏳
+**B-F7. Nergens `check_company`** ✅ (deels)
 - **Voorbeelden:**
   - `vme_distribution_rule.py:22` (`account_id`);
   - `vme_budget_tracking.py:54-61`;
@@ -121,7 +130,9 @@ Elke fix staat in een eigen commit, met een test waar dat kan.
   - `vme_works.py:415`, `vme_damage.py:339`;
   - de koppelingen in rentmeester.
 - **Probleem:** alleen de domeinen in de views beschermen. Een import, RPC (het AI-script) of code met sudo kan een record uit de company van een andere VME koppelen.
-- **Herstel:** `_check_company_auto = True` en `check_company=True` per model. Het gedrag verandert alleen voor ongeldige data.
+- **Herstel:**
+  - Uitgevoerd: `_check_company_auto` en `check_company=True` op de rekening van de verdeelregel, rekening en sleutel van een budgetregel, en `vme_works_id` en `vme_reserve_move_id` op facturen. Bankrekeningen hebben geen eigen company, dus daar zou `check_company` alles doorlaten. Een constraint eist nu dat de rekeningen van de VME van haar eigen partner zijn, en dat de rekening van een SEPA-mandaat van de eigenaar is. Tests: `test_check_company.py`.
+  - Nog open ⏳: de koppelingen in rentmeester, `vme_damage.py`, en de andere Many2one's naar records met een company (installaties, contracten).
 
 **B-R3. Waalse indexstop voor EPB-label D staat op 50%** ⏳ (juridisch na te kijken)
 - **Waar:** `vme_rentmeester/models/rent_rules.py:57-64`
@@ -159,12 +170,12 @@ Elke fix staat in een eigen commit, met een test waar dat kan.
 
 | # | Waar | Probleem | Herstel |
 | --- | --- | --- | --- |
-| B-F5 / B-D6 | `models/vme_collection.py:296-336`, `:388-399`, `:535-569` | Invorderingsdossiers: ongeveer 3 searches per dossier in de lijst. De nachtelijke cron zoekt per dossier, maakt nieuwe dossiers één per één aan en gebruikt geen `_commit_progress`. | Eén `_read_group` van de openstaande lijnen voor de hele recordset; batch-create; `_commit_progress` per VME |
-| B-D5 | `models/res_partner_supplier_card.py:96-137` | Leverancierslijst: 4 searches per rij, en alle facturen van de leverancier worden geladen om een saldo op te tellen | `_read_group` per model voor de hele recordset |
-| B-D7 | `models/vme_works.py:58-70`, `:200-216` | Werkenlijst: per rij een search plus een optelling in Python over alle lijnen van het reservekapitaal | Saldo één keer per VME met `_read_group` |
+| B-F5 / B-D6 ✅ (deels) | `models/vme_collection.py:296-336`, `:388-399`, `:535-569` | Invorderingsdossiers: ongeveer 3 searches per dossier in de lijst. De nachtelijke cron zoekt per dossier, maakt nieuwe dossiers één per één aan en gebruikt geen `_commit_progress`. | Uitgevoerd: `_open_lines_by_collection()` (één search voor de lijst en de cron), kavels in één search, batch-create; test `test_list_does_not_query_per_dossier`. Nog open ⏳: `_commit_progress` per VME (zie K-D18) |
+| B-D5 ✅ | `models/res_partner_supplier_card.py:96-137` | Leverancierslijst: 4 searches per rij, en alle facturen van de leverancier worden geladen om een saldo op te tellen | Uitgevoerd: één search per model en één `_read_group` voor de hele lijst; test `test_supplier_list_does_not_query_per_supplier` |
+| B-D7 ✅ | `models/vme_works.py:58-70`, `:200-216` | Werkenlijst: per rij een search plus een optelling in Python over alle lijnen van het reservekapitaal | Uitgevoerd: saldo en vastgelegde werken één keer per VME, `_get_fund_balance` met `_read_group`; test `test_reserve_in_the_list_does_not_query_per_works` |
 | B-F8 | `wizard/vme_provision_call_wizard.py:37-61` | Voorbeeld in de provisiewizard: ongeveer 400 queries per wijziging bij 200 VME's | Eén `vme.budget`-search en de waarschuwing voor de hele recordset |
 | K-D18 | crons `ir_cron_vme_cycle`, `ir_cron_vme_contract_activities`, `ir_cron_vme_inspection_activities` | Geen `_commit_progress`. De cycluscron maakt oproepingen met pdf's voor alle VME's in één transactie, dus één fout rolt alles terug. | `_commit_progress` per VME, zoals `vme_provision_call_run` |
-| K-D7 | `models/vme_assembly_meeting.py:439-466` | Twee pdf's per eigenaar, één voor één gerenderd | Rapport in één keer renderen of naar de achtergrond verplaatsen |
+| K-D7 ✅ | `models/vme_assembly_meeting.py:439-466` | Twee pdf's per eigenaar, één voor één gerenderd | Uitgevoerd: één wkhtmltopdf-run voor alle oproepingen en één voor alle jaarafrekeningen (`_render_pdf_per_record`), met terugval per record; de overbodige afrekening per eigenaar ter controle is weg. Test `test_convocation_pdfs_in_one_run`. Nog niet gemeten op de schaaldatabase |
 
 ### Odoo-idioom
 
@@ -194,6 +205,12 @@ Elke fix staat in een eigen commit, met een test waar dat kan.
 - **Herstel:**
   - Draai beide scripts (ze kunnen veilig opnieuw) één keer op langlevende databases, of maak `vme_demo` opnieuw aan.
   - Spreek af dat alleen de merge-commit de versie verhoogt.
+
+### Privacy
+
+**K-P1. `partner_autocomplete` stuurt partnergegevens naar Odoo** ✅
+- **Probleem:** de module installeert zichzelf en stuurt getypte namen, btw-nummers (ook naar VIES) en het maildomein van elke nieuwe company naar buiten. Elke VME is een company.
+- **Herstel (uitgevoerd):** `models/partner_autocomplete.py` blokkeert de oproepen; `vme_belgie` hangt van de module af, zodat de overrides na haar komen. Test: `test_partner_autocomplete.py`.
 
 ## Klein
 
