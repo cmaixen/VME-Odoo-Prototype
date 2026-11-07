@@ -43,6 +43,7 @@ class VmeBudgetLine(models.Model):
     _name = "vme.budget.line"
     _description = "Budget per rekening en sleutel"
     _order = "budget_id, sequence, id"
+    _check_company_auto = True
 
     budget_id = fields.Many2one("vme.budget", string="Jaarbudget", required=True, ondelete="cascade", index=True)
     sequence = fields.Integer(default=10)
@@ -52,11 +53,11 @@ class VmeBudgetLine(models.Model):
     year = fields.Integer(related="budget_id.year", store=True, string="Jaar")
     name = fields.Char(string="Omschrijving")
     account_id = fields.Many2one(
-        "account.account", string="Rekening", required=True,
+        "account.account", string="Rekening", required=True, check_company=True,
         domain="[('company_ids', 'in', company_id), ('account_type', '=like', 'expense%')]",
     )
     key_id = fields.Many2one(
-        "vme.key", string="Verdeelsleutel", domain="[('association_id', '=', association_id)]",
+        "vme.key", string="Verdeelsleutel", domain="[('association_id', '=', association_id)]", check_company=True,
         help="Leeg: de kosten op deze rekening, welke sleutel ze ook krijgen.",
     )
     amount = fields.Monetary(string="Budget", required=True)

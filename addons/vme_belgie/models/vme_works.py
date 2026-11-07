@@ -418,12 +418,12 @@ class AccountMove(models.Model):
 
     vme_works_id = fields.Many2one(
         "vme.works", string="Werkdossier", compute="_compute_vme_works_id", store=True, readonly=False,
-        index=True, copy=False, domain="[('company_id', '=', company_id), ('state', 'in', %s)]" % (BILLABLE_STATES,),
+        index=True, copy=False, check_company=True, domain="[('company_id', '=', company_id), ('state', 'in', %s)]" % (BILLABLE_STATES,),
         help="Werken waarvoor deze factuur is. Wordt voorgesteld als de leverancier de aannemer is van gegunde werken.",
     )
     vme_works_financing = fields.Selection(related="vme_works_id.financing", string="Financiering werken")
     vme_reserve_move_id = fields.Many2one(
-        "account.move", string="Aanwending reservekapitaal", readonly=True, copy=False,
+        "account.move", string="Aanwending reservekapitaal", readonly=True, copy=False, check_company=True,
         help="Boeking die deze factuur ten laste van het reservekapitaal brengt.")
 
     @api.depends("partner_id", "company_id", "move_type")

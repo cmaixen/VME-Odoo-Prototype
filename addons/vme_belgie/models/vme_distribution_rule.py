@@ -6,6 +6,7 @@ class VmeDistributionRule(models.Model):
     _name = "vme.distribution.rule"
     _description = "Verdeelregel"
     _order = "association_id, partner_id"
+    _check_company_auto = True
 
     association_id = fields.Many2one(
         "vme.association", string="VME", required=True, ondelete="cascade", index=True
@@ -22,6 +23,7 @@ class VmeDistributionRule(models.Model):
     account_id = fields.Many2one(
         "account.account",
         string="Boeken op rekening",
+        check_company=True,
         domain="[('company_ids', 'in', company_id), ('account_type', 'in', ('expense', 'expense_direct_cost'))]",
         help="Optioneel: factuurlijnen zonder product van deze leverancier worden op deze rekening geboekt.",
     )

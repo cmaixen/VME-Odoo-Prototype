@@ -252,6 +252,12 @@ class VmeSepaMandate(models.Model):
         for mandate in self:
             mandate.display_name = f"{mandate.reference} ({mandate.partner_id.name})"
 
+    @api.constrains("partner_id", "partner_bank_id")
+    def _check_owner_bank(self):
+        for mandate in self:
+            if mandate.partner_bank_id.partner_id.commercial_partner_id != mandate.partner_id.commercial_partner_id:
+                raise ValidationError(self.env._("De rekening van het mandaat is niet van %s.", mandate.partner_id.name))
+
     @api.constrains("state", "partner_id", "association_id")
     def _check_one_active(self):
         for mandate in self.filtered(lambda m: m.state == "active"):
