@@ -154,7 +154,7 @@ Andere stappen voegen nog termen toe. Na het samenvoegen van zo'n branch (of vó
    `docker compose -p vme-fr run --rm odoo odoo -d vme_fr -u vme_belgie,vme_rentmeester,vme_website --stop-after-init`
 2. De sjablonen opnieuw exporteren. Het entrypoint geeft de databaseverbinding als extra argumenten mee en dat aanvaardt `odoo i18n` niet, dus via een configbestand:
    ```bash
-   docker compose -p vme-fr run --rm --entrypoint sh odoo -c "cat /etc/odoo/odoo.conf > /tmp/o.conf; printf 'db_host = db\ndb_user = odoo\ndb_password = odoo\n' >> /tmp/o.conf; odoo i18n export -c /tmp/o.conf -d vme_fr vme_belgie vme_rentmeester vme_website"
+   docker compose -p vme-fr run --rm --entrypoint sh odoo -c "cat /etc/odoo/odoo.conf > /tmp/o.conf; printf 'db_host = db\ndb_user = odoo\ndb_password = odoo\n' >> /tmp/o.conf; odoo i18n export -c /tmp/o.conf -d vme_fr vme_belgie vme_rentmeester vme_website vme_mail_plugin"
    ```
    Dat schrijft `addons/<module>/i18n/<module>.pot`.
 3. De vertaling samenvoegen met de nieuwe sjabloon (nieuwe termen leeg, gewijzigde termen "fuzzy", verdwenen termen weg):
@@ -167,7 +167,7 @@ Andere stappen voegen nog termen toe. Na het samenvoegen van zo'n branch (of vó
 7. Laden: `-u vme_belgie,vme_rentmeester,vme_website --i18n-overwrite`. Zonder `--i18n-overwrite` laat Odoo bestaande vertalingen in de database staan.
 8. `.pot` en `fr.po` samen committen.
 
-Een database met Frans: `--load-language=nl_BE,fr_BE` bij het aanmaken, of later **Instellingen > Talen**. De test `tests/test_translation.py` laadt fr_BE zelf en faalt zodra een term van een `.pot` in `fr.po` ontbreekt of fuzzy is (`test_po_files_are_complete`, voor de drie modules): na nieuwe termen dus altijd stap 1 tot 8.
+Een database met Frans: `--load-language=nl_BE,fr_BE` bij het aanmaken, of later **Instellingen > Talen**. De test `tests/test_translation.py` laadt fr_BE zelf en faalt zodra een term van een `.pot` in `fr.po` ontbreekt of fuzzy is (`test_po_files_are_complete`, voor de vier modules): na nieuwe termen dus altijd stap 1 tot 8.
 
 De productwebsite neemt bij elke installatie of upgrade fr_BE op in haar talen als die taal actief is (`LANGUAGES` in `vme_website/models/website.py`); Nederlands blijft de standaard. Wie fr_BE later activeert, upgradet `vme_website` zodat ook de menunamen vertaald worden.
 

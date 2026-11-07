@@ -453,3 +453,12 @@ def test_directory_creates_request_with_attachments():
     assert [a["name"] for a in kwargs["attachments"]] == ["toestemming_eigenaar_B12.pdf", "huurcontract_B12.pdf"]
     assert base64.b64decode(kwargs["attachments"][0]["datas"]).startswith(b"%PDF")
     assert kwargs["context"] == {"allowed_company_ids": [1, 2]}
+
+
+def test_outlook_demo_mails_are_the_inbox():
+    """The browser preview of the Outlook add-in shows copies of these mails (the Odoo container only
+    mounts addons/); copy ai/inbox/ to addons/vme_mail_plugin/demo_data/inbox/ after a change."""
+    copies = INBOX.parent.parent / "addons" / "vme_mail_plugin" / "demo_data" / "inbox"
+    assert sorted(p.name for p in copies.iterdir()) == sorted(p.name for p in INBOX.iterdir())
+    for path in INBOX.iterdir():
+        assert (copies / path.name).read_bytes() == path.read_bytes(), path.name

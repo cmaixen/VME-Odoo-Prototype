@@ -7,7 +7,7 @@ from odoo.tests import TransactionCase, tagged
 from odoo.tools.misc import file_path
 
 # Modules with a French translation; each has i18n/<module>.pot and i18n/fr.po.
-TRANSLATED_MODULES = ("vme_belgie", "vme_rentmeester", "vme_website")
+TRANSLATED_MODULES = ("vme_belgie", "vme_rentmeester", "vme_website", "vme_mail_plugin")
 
 
 @tagged("post_install", "-at_install")

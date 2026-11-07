@@ -25,6 +25,7 @@ Interne documentatie voor wie aan de module `vme_belgie` werkt. De gebruikersdoc
 | [pdf-ai-lezen.md](pdf-ai-lezen.md) | PDF-facturen zonder UBL en documenten lezen met AI, veld- en IBAN-controle, haakje voor de mappen van stap 15 (stap 21) |
 | [offertes-vergelijken.md](offertes-vergelijken.md) | Offertes voor werken vergelijken met AI: tabel per post met bronpagina, deterministische controles, goedkeuring en PDF bij de oproeping van de AV |
 | [ai-assistent.md](ai-assistent.md) | Het losse script in `ai/` voor mails van eigenaars (stap 7) |
+| [outlook.md](outlook.md) | Module `vme_mail_plugin`: invoegtoepassing voor Outlook op de login van `mail_plugin`, koppeling van afzender aan VME en kavel, AI-voorstel, manifest per instance, https met Caddy, browservoorbeeld |
 | [ai-modellen.md](ai-modellen.md) | Welk Claude-model per AI-taak, de vergelijking op de demodocumenten en hoe je een ander model probeert |
 | [portaal.md](portaal.md) | Documenten in vaste mappen, eigenaarsportaal, zichtbaarheidsregels, adreswijzigingen (stap 15); aanvragen en bevragingen in het portaal, ook voor huurders (stap 27) |
 | [raad-commissaris.md](raad-commissaris.md) | Mandaten, leesrechten van de commissaris met record rules, overzicht voor de raad, verslagsjabloon (stap 16) |

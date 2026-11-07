@@ -15,7 +15,7 @@ Draai dit ongeveer 15 minuten voor de demo, in de map van het project. Docker (O
    ```bash
    docker compose stop odoo
    docker compose exec db dropdb -U odoo --if-exists vme_demo
-   docker compose run --rm odoo odoo -d vme_demo -i vme_belgie,vme_rentmeester,vme_website --load-language=nl_BE --stop-after-init
+   docker compose run --rm odoo odoo -d vme_demo -i vme_belgie,vme_rentmeester,vme_website,vme_mail_plugin --load-language=nl_BE --stop-after-init
    echo "env = env(user=env.ref('base.user_admin')); env['vme.association']._load_demo_data(); env.cr.commit()" | docker compose run --rm -T odoo odoo shell -d vme_demo --no-http
    echo "env = env(user=env.ref('base.user_admin')); env['vme.association']._load_demo_history(); env.cr.commit()" | docker compose run --rm -T odoo odoo shell -d vme_demo --no-http
    docker compose up -d odoo
@@ -312,6 +312,23 @@ Doe deze extra **na** stap 5 (de provisieoproep 1 van 2027 met de hand) of sla s
 3. Haal de filter **Mijn werk** weg en groepeer per **Verantwoordelijke**: collega **Medewerker Voorbeeld** beheert Kaaihuis, met een AI-antwoord voor K3.
 
 > Boodschap: "Uw dag begint met één lijst over al uw gebouwen: wat te laat is, wat vandaag moet, en wat klaarstaat voor uw klik."
+
+### Extra: een mail van een eigenaar in Outlook (2 minuten)
+
+Na stap 8: de AI-assistent heeft de mails al gelezen. Nu ziet de medewerker hetzelfde zonder Odoo te openen, in het paneel naast de mail.
+
+**Zonder Outlook (browservoorbeeld, altijd mogelijk):**
+
+1. Open http://localhost:8069/vme_mail_plugin/static/outlook/taskpane.html?demo=1 (ingelogd als `admin`), of **VME > Configuratie > Outlook-invoegtoepassing > Voorbeeld in de browser**. Bovenaan staat een keuzelijst met de acht fictieve mails; daaronder het paneel zoals in Outlook.
+2. De eerste keer: **Verbinden met Odoo** en **Toestaan**. Zo verbindt een medewerker ook zijn echte Outlook.
+3. Mail **01 (lek bij Linde A4)**: het paneel toont Residentie Linde, kavels A4 en G4, eigenaar, en het voorstel van de AI-assistent met *nog niet verstuurd*. Klik op **Antwoord invoegen**: het antwoordvenster toont het voorstel, en er is niets verstuurd.
+4. Mail **02 (Beuken B7)**: onder **Wat staat er open** staan de achterstallige provisies van B7, met bedrag en vervaldag.
+5. Mail **04 (lift, van een privéadres)**: de afzender is onbekend. Klik op **Koppeling van de AI-assistent gebruiken** (of zoek *Linde A11*) en maak met **Aanvraag maken** een aanvraag *Defect of schade*. Ze verschijnt meteen bij de open punten.
+6. **Bewaren bij dossier** zet de mail als interne notitie bij de VME of de aanvraag, met de bijlagen (probeer mail 08).
+
+**Met echte Outlook (vooraf voorbereiden):** start https met `docker compose --profile outlook up -d`, vertrouw het certificaat en zet het adres `https://localhost:8443` in **VME > Configuratie > Outlook-invoegtoepassing** (zie `docs/dev/outlook.md`). Download het manifest en voeg het toe in Outlook op het web (**Apps > Mijn invoegtoepassingen > Aangepaste invoegtoepassing toevoegen > Toevoegen vanuit bestand**). Zet uw eigen testadres tijdelijk op een fictieve eigenaar (bv. Eigenaar Linde A4), **alleen in uw lokale database**, nooit in git of de demodata, en stuur uzelf de lekmail. Het paneel herkent u dan als eigenaar van A4.
+
+> Boodschap: "Uw medewerkers blijven in Outlook en zien bij elke mail het gebouw, de kavel en wat er openstaat, met een antwoord klaar om na te kijken. Verzenden blijft hun klik."
 
 ## Na de demo
 

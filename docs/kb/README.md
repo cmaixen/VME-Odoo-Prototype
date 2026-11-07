@@ -146,6 +146,10 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 
 42. [Mijn werk vandaag: alles wat vandaag moet, over al uw VME's](mijn-werk-vandaag.md)
 
+### Outlook
+
+43. [Mails in Outlook koppelen aan de VME en de kavel](outlook-invoegtoepassing.md)
+
 ### Gebruikers
 
 

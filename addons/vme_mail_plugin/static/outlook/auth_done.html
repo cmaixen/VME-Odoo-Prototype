@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="utf-8"/>
+    <title>Verbonden met Odoo</title>
+    <link rel="stylesheet" href="taskpane.css"/>
+</head>
+<body>
+    <main id="app"><p>Verbinden met Odoo…</p></main>
+    <script>
+        // Odoo (/mail_plugin/auth/confirm) sends the browser here with ?success=1&auth_code=...
+        // This page hands the result back to the task pane; the task pane exchanges the code for a key.
+        (function () {
+            var params = new URLSearchParams(window.location.search);
+            var message = JSON.stringify({ success: params.get("success") === "1", auth_code: params.get("auth_code") || "" });
+            function done() {
+                document.getElementById("app").innerHTML = "<p>U kunt dit venster sluiten.</p>";
+            }
+            if (params.get("demo") === "1" && window.opener) {
+                // Browser preview: the stand-in for Office opened this page with window.open.
+                // (Outlook on the web also opens its dialog as a popup, hence the explicit demo flag.)
+                window.opener.postMessage({ vmeAuth: message }, window.location.origin);
+                done();
+                window.close();
+                return;
+            }
+            if (params.get("demo") === "1") {
+                // Browser preview where the "popup" opened in the same tab (no opener): exchange the code
+                // here, keep the key where taskpane.js looks for it, and go back to the preview.
+                var back = function () { window.location.replace("taskpane.html?demo=1"); };
+                if (params.get("success") !== "1") return back();
+                fetch("/mail_plugin/auth/access_token", {
+                    method: "POST", headers: { "Content-Type": "application/json" }, credentials: "omit",
+                    body: JSON.stringify({ jsonrpc: "2.0", method: "call", id: 1, params: { auth_code: params.get("auth_code") } }),
+                }).then(function (r) { return r.json(); }).then(function (data) {
+                    if (data.result && data.result.access_token) {
+                        try { window.localStorage.setItem("vme_outlook_token", data.result.access_token); } catch (e) { /* ignore */ }
+                    }
+                    back();
+                }, back);
+                return;
+            }
+            var script = document.createElement("script");
+            script.src = "https://appsforoffice.microsoft.com/lib/1/hosted/office.js";
+            script.onload = function () {
+                Office.onReady(function () {
+                    Office.context.ui.messageParent(message);
+                    done();
+                });
+            };
+            document.body.appendChild(script);
+        })();
+    </script>
+</body>
+</html>
