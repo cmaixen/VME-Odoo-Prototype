@@ -23,6 +23,7 @@ cp .env.example .env   # en vul in
 | `ODOO_URL`, `ODOO_DB` | Odoo en database, standaard `http://localhost:8069` en `vme_demo`. |
 | `ODOO_USER`, `ODOO_PASSWORD` | Gebruiker die alle VME-companies ziet; wachtwoord of API-sleutel. |
 | `ODOO_ACTIVITY_USER_ID` | Optioneel: wie de taken krijgt (standaard de gebruiker hierboven). |
+| `VME_AI_MODEL` | Optioneel: één Claude-model voor alle taken. Standaard heeft elke taak het goedkoopste model dat volstond: Sonnet 5.5 voor mails, offertes en overname, Haiku 5.5 voor facturen en documenten (zie `docs/dev/ai-modellen.md`). |
 
 Odoo heeft de module `vme_belgie` met demodata nodig (zie `CLAUDE.md`).
 
@@ -31,7 +32,7 @@ Odoo heeft de module `vme_belgie` met demodata nodig (zie `CLAUDE.md`).
 ```bash
 .venv/bin/python assistant.py --mock --dry-run   # zonder taalmodel, niets schrijven: toont de voorstellen
 .venv/bin/python assistant.py --mock             # zonder taalmodel, zet taken in Odoo
-.venv/bin/python assistant.py                    # met Claude (claude-opus-5-5), zet taken in Odoo
+.venv/bin/python assistant.py                    # met Claude (Sonnet 5.5), zet taken in Odoo
 ```
 
 | Optie | Effect |
@@ -91,3 +92,31 @@ Een PDF zonder UBL op het factuuradres (of opgeladen in Odoo) wordt een conceptf
 ```
 
 De mock leest alleen de tekst van de eigen demo-PDF's; een echte PDF of scan heeft Claude nodig. Uitleg voor medewerkers: `docs/kb/pdf-facturen-ai.md`; architectuur: `docs/dev/pdf-ai-lezen.md`.
+
+## Offertes voor werken vergelijken
+
+Klikt een medewerker in een werkdossier op **Offertes vergelijken** (twee tot vier offertes met een PDF), dan wacht de vergelijking op AI. `offertes.py` leest de PDF's met Claude en geeft Odoo per offerte de prijzen, het btw-tarief, de posten (inbegrepen, uitdrukkelijk niet inbegrepen of niet vermeld), de voorwaarden, waarborg, verzekering en voorbehouden, telkens met het paginanummer, plus een neutrale samenvatting. Odoo maakt er een concept van met controles; de syndicus keurt het goed. Er wordt niets verstuurd.
+
+```bash
+.venv/bin/python offertes.py                      # Claude (zonder sleutel vanzelf offline)
+.venv/bin/python offertes.py --offline            # vaste testmodus, zonder netwerk
+.venv/bin/python offertes.py --offline --dry-run  # tonen wat gelezen wordt, niets invullen
+.venv/bin/python offertes.py --offline --bestand ../addons/vme_belgie/demo_data/offertes/*.pdf   # zonder Odoo
+.venv/bin/python tools/maak_demo_offertes.py      # de drie fictieve offertes opnieuw maken
+```
+
+De testmodus leest alleen de drie demo-offertes (gevelrenovatie Residentie Linde); een echte offerte of scan heeft Claude nodig. Uitleg voor medewerkers: `docs/kb/offertes-vergelijken.md`; architectuur: `docs/dev/offertes-vergelijken.md`.
+## Basisakte en notulen lezen bij een overname
+
+`overname.py` leest de basisakte (ook een scan) en de notulen van de laatste AV's van een gebouw dat de syndicus overneemt, en zet het resultaat als voorstel in de overstap in Odoo (**VME > Configuratie > Overstap uit ander pakket**). Een medewerker kijkt elke regel na naast het fragment; er wordt niets aangemaakt tot de import.
+
+```bash
+.venv/bin/python overname.py --mock --dry-run   # offline, toont wat er gelezen wordt
+.venv/bin/python overname.py --mock             # offline, zet het voorstel in Odoo
+.venv/bin/python overname.py                    # met Claude (Sonnet 5.5)
+.venv/bin/python overname.py --mock --json --bestand ../addons/vme_belgie/demo_data/migratie/residentie-wilg-documenten/basisakte-scan.pdf
+.venv/bin/python tools/maak_demo_overname.py    # demodocumenten opnieuw maken (de scan vraagt Pillow)
+```
+
+De demodocumenten van de verzonnen Residentie Wilg staan in `addons/vme_belgie/demo_data/migratie/residentie-wilg-documenten/`: een leesbare basisakte, dezelfde akte als slechte scan (aandeel A2 onleesbaar, B3 gelezen als "1O5"), en de notulen van de AV's van 2025 en 2026. Uitleg voor medewerkers: `docs/kb/overname-basisakte-ai.md`; architectuur: `docs/dev/overname-ai.md`.
+

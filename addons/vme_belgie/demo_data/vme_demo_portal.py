@@ -1,8 +1,8 @@
-"""Fictitious documents, portal logins and an address change for the owner portal (step 15)."""
+"""Fictitious documents, portal logins, an address change, a portal request and a survey for the owner portal (steps 15 and 27)."""
 import base64
-from datetime import date
+from datetime import date, timedelta
 
-from odoo import api, models
+from odoo import api, fields, models
 from odoo.fields import Command
 
 # Test logins for the owner portal. Fictitious and only for a local demo: they are in docs/demo.md.
@@ -52,6 +52,18 @@ DOCUMENTS = [
 ]
 
 # Address change of Linde A1 that waits for the syndic.
+# Portal login of a tenant (step 27): rents A6 in Residentie Linde (see vme_demo_requests.TENANTS).
+PORTAL_TENANTS = ["Huurder Linde A6"]
+# A request filed in the portal: (owner, lot, request type, subject, question).
+PORTAL_REQUEST = ("Eigenaar Linde A1", "A1", "document", "Attest betaalde provisies 2026",
+                  "Mijn bank vraagt een attest van de betaalde provisies van dit jaar. Kunt u mij dat bezorgen?")
+# A survey that went out earlier, with answers: (lot of the owner, answer, note, via the portal).
+PORTAL_SURVEY_ANSWERS = [
+    ("A1", "Ja, binnen het jaar", "Graag op mijn garage G1.", True),
+    ("A2", "Ja, later", "", False),
+    ("A3", "Nee", "", False),
+]
+
 ADDRESS_REQUEST = ("Eigenaar Linde A1", {
     "street": "Voorbeeldstraat 12 bus 3", "zip": "9000", "city": "Gent", "phone": "+32 470 00 00 00",
 })
@@ -124,3 +136,49 @@ class VmeAssociation(models.Model):
         owner = Partner.search([("name", "=", owner_name)], limit=1)
         self.env["vme.address.request"]._create_from_portal(
             owner, {**values, "country_id": self.env.ref("base.be").id, "email": owner.email})
+
+    @api.model
+    def _load_demo_portal_requests(self):
+        """A tenant login, a request filed in the portal and a survey with answers (step 27). Nothing is sent."""
+        Partner = self.env["res.partner"]
+        portal_group = self.env.ref("base.group_portal")
+        for name in PORTAL_TENANTS:
+            tenant = Partner.search([("name", "=", name)], limit=1)
+            if tenant and not tenant.user_ids:
+                self.env["res.users"].with_context(no_reset_password=True).create({
+                    "login": tenant.email, "password": PORTAL_PASSWORD, "partner_id": tenant.id,
+                    "group_ids": [Command.set(portal_group.ids)],
+                })
+
+        def as_portal_user(partner):
+            user = partner.user_ids[:1]
+            return partner.with_user(user).with_context(allowed_company_ids=user.company_ids.ids)
+
+        linde = self.search([("name", "=", "Residentie Linde")])
+        lots = {lot.name: lot for lot in linde.lot_ids}
+        owner_name, lot_name, type_code, subject, body = PORTAL_REQUEST
+        owner = Partner.search([("name", "=", owner_name)], limit=1)
+        as_portal_user(owner)._vme_portal_create_request(lots[lot_name], type_code, subject, body)
+
+        # The survey on charging points went out three weeks ago; the letters are not sent again.
+        template = self.env.ref("vme_belgie.communication_template_survey_charging")
+        Communication = self.env["vme.communication"]
+        today = fields.Date.context_today(self)
+        survey = Communication.create({
+            "association_id": linde.id, "template_id": template.id,
+            "reference_date": today - timedelta(days=21), "answer_deadline": today + timedelta(days=14),
+            **Communication._template_values(template),
+        })
+        survey.action_prepare_recipients()
+        sent_on = today - timedelta(days=21)
+        survey.log_ids.write({"state": "sent", "sent_date": sent_on, "date": sent_on})
+        survey.write({"state": "sent", "sent_date": sent_on})
+        options = {option.name: option for option in survey.option_ids}
+        for lot_name, answer, note, via_portal in PORTAL_SURVEY_ANSWERS:
+            partner = lots[lot_name]._get_owner_on(today)
+            log = survey.log_ids.filtered(lambda line, p=partner: line.partner_id == p)
+            if via_portal:
+                as_portal_user(partner).env["vme.communication.log"].browse(log.id)._portal_answer(
+                    partner, options[answer].id, note)
+            else:
+                log.write({"answer_option_id": options[answer].id, "answer_note": note or False})

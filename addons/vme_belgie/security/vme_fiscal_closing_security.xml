@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Like the other VME models, employees see the closings of all VMEs whatever company is
-         selected; the auditor only reads those of his own VMEs. -->
+    <!-- Like the other VME models (vme_company_security.xml): the closings of the companies the user
+         is allowed in, whatever company is selected; the auditor only reads those of his own VMEs. -->
+    <record id="rule_company_fiscal_closing" model="ir.rule">
+        <field name="name">VME: vme.fiscal.closing van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_fiscal_closing"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
     <record id="rule_auditor_read_fiscal_closing" model="ir.rule">
         <field name="name">Commissaris: afsluitingen van zijn VME's</field>
         <field name="model_id" ref="model_vme_fiscal_closing"/>

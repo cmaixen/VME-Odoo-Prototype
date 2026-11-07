@@ -9,6 +9,8 @@ Je werkt altijd in twee stappen:
 
 Eén overstap is één VME. Voor een kantoor met veel gebouwen doe je dit per gebouw.
 
+Neem je een gebouw over van een andere syndicus en heb je geen export, maar wel de basisakte en de notulen? Dan leest de AI die voor je: zie [Een gebouw overnemen met de basisakte en de notulen](overname-basisakte-ai.md).
+
 ## Wat heb ik nodig?
 
 Een export uit het oude pakket, één bestand per onderwerp. Het platform kent een vast formaat. Je kunt de bestanden maken in Excel (één bestand met een tabblad per onderwerp) of als losse CSV-bestanden ("opslaan als CSV" in Excel).

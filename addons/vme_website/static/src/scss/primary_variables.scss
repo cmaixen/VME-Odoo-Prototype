@@ -1,0 +1,26 @@
+// Quotis house style: deep teal with warm ochre, Inter for text and headings.
+$o-color-palettes: map-merge($o-color-palettes, (
+    'vme-quotis': (
+        'o-color-1': #1F5F6B,
+        'o-color-2': #C8893B,
+        'o-color-3': #F4F1EA,
+        'o-color-4': #FFFFFF,
+        'o-color-5': #12252A,
+        'menu': 1,
+        'footer': 5,
+        'copyright': 5,
+    ),
+));
+
+$o-website-values-palettes: (
+    (
+        'color-palettes-name': 'vme-quotis',
+        'font': 'Inter',
+        'headings-font': 'Inter',
+        'navbar-font': 'Inter',
+        'buttons-font': 'Inter',
+        'btn-border-radius': 0.5rem,
+        'btn-border-radius-lg': 0.6rem,
+        'link-underline': 'hover',
+    ),
+);

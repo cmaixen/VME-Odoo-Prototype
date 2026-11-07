@@ -39,6 +39,8 @@ Besliste de algemene vergadering met 4/5 om minder op te bouwen, vink dan **AV b
 
 Je komt terug in de lijst met de nieuwe oproepen, per VME met het aantal facturen, hoeveel al betaald zijn en hoeveel nog open staan.
 
+Kies je **meer dan 20 VME's**, dan maakt het platform de oproepen op de achtergrond, één VME na de andere (twee à drie seconden per VME, dus ongeveer tien minuten voor 200 VME's). Je ziet meteen een overzicht met de voortgang ("120 van 200 VME's") en kunt intussen verder werken. Als alles klaar is, krijg je een melding; de knop **Provisieoproepen tonen** opent dan de lijst. Een VME die niet kon (geen budget, een niet bevestigde rekening, geen algemene sleutel) staat met de reden in het vak **Overgeslagen of mislukt**; de andere VME's lopen gewoon door. Herstel het probleem en roep die VME apart op. Een beheerder vindt alle achtergrondtaken terug onder **VME > Configuratie > Provisieoproepen op de achtergrond**.
+
 ![De gemaakte provisieoproepen](img/provisie-resultaat.png)
 
 ### 4. De facturen bekijken

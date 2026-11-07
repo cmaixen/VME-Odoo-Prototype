@@ -113,6 +113,13 @@
         <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/raad-en-commissaris.md"}</field>
     </record>
 
+    <record id="action_help_user_access" model="ir.actions.server">
+        <field name="name">Help: toegang voor medewerkers</field>
+        <field name="model_id" ref="model_vme_association"/>
+        <field name="state">code</field>
+        <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/toegang-medewerkers.md"}</field>
+    </record>
+
     <record id="action_help_sale" model="ir.actions.server">
         <field name="name">Help: verkoop en notaris</field>
         <field name="model_id" ref="model_vme_association"/>
@@ -133,6 +140,13 @@
         <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/migratie.md"}</field>
     </record>
 
+    <record id="action_help_takeover_ai" model="ir.actions.server">
+        <field name="name">Help: gebouw overnemen met basisakte en notulen</field>
+        <field name="model_id" ref="model_vme_association"/>
+        <field name="state">code</field>
+        <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/overname-basisakte-ai.md"}</field>
+    </record>
+
     <record id="action_help_works" model="ir.actions.server">
         <field name="name">Help: werken opvolgen</field>
         <field name="model_id" ref="model_vme_association"/>
@@ -140,11 +154,25 @@
         <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/werken.md"}</field>
     </record>
 
+    <record id="action_help_quote_comparison" model="ir.actions.server">
+        <field name="name">Help: offertes vergelijken met de AI</field>
+        <field name="model_id" ref="model_vme_association"/>
+        <field name="state">code</field>
+        <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/offertes-vergelijken.md"}</field>
+    </record>
+
     <record id="action_help_damage" model="ir.actions.server">
         <field name="name">Help: schadegevallen</field>
         <field name="model_id" ref="model_vme_association"/>
         <field name="state">code</field>
         <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/schadegevallen.md"}</field>
+    </record>
+
+    <record id="action_help_compliance" model="ir.actions.server">
+        <field name="name">Help: verzekering en attesten</field>
+        <field name="model_id" ref="model_vme_association"/>
+        <field name="state">code</field>
+        <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/verzekeringen-en-attesten.md"}</field>
     </record>
 
     <record id="action_help_documents" model="ir.actions.server">
@@ -159,6 +187,13 @@
         <field name="model_id" ref="model_vme_association"/>
         <field name="state">code</field>
         <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/eigenaarsportaal.md"}</field>
+    </record>
+
+    <record id="action_help_french" model="ir.actions.server">
+        <field name="name">Help: documenten in het Frans</field>
+        <field name="model_id" ref="model_vme_association"/>
+        <field name="state">code</field>
+        <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/documenten-in-het-frans.md"}</field>
     </record>
 
     <record id="action_help_contracts" model="ir.actions.server">
@@ -202,14 +237,48 @@
         <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/boekjaar-afsluiten.md"}</field>
     </record>
 
+    <record id="action_help_cycle" model="ir.actions.server">
+        <field name="name">Help: jaarcyclus</field>
+        <field name="model_id" ref="model_vme_association"/>
+        <field name="state">code</field>
+        <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/jaarcyclus.md"}</field>
+    </record>
+
+    <record id="action_help_worklist" model="ir.actions.server">
+        <field name="name">Help: mijn werk vandaag</field>
+        <field name="model_id" ref="model_vme_association"/>
+        <field name="state">code</field>
+        <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/mijn-werk-vandaag.md"}</field>
+    </record>
+
     <record id="action_help_digital_assembly" model="ir.actions.server">
         <field name="name">Help: hybride of online AV</field>
         <field name="model_id" ref="model_vme_association"/>
         <field name="state">code</field>
         <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/digitale-av.md"}</field>
     </record>
+
+    <record id="action_help_financial_statements" model="ir.actions.server">
+        <field name="name">Help: balans en resultatenrekening</field>
+        <field name="model_id" ref="model_vme_association"/>
+        <field name="state">code</field>
+        <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/balans-en-resultatenrekening.md"}</field>
+    </record>
+
+    <record id="action_help_portal_requests" model="ir.actions.server">
+        <field name="name">Help: aanvragen en bevragingen in het portaal</field>
+        <field name="model_id" ref="model_vme_association"/>
+        <field name="state">code</field>
+        <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/portaal-aanvragen-bevragingen.md"}</field>
+    </record>
     <menuitem id="menu_vme_help" name="Help" parent="menu_vme_root" sequence="99"/>
     <menuitem id="menu_vme_help_kb" name="Kennisbank" parent="menu_vme_help" action="action_help_kb" sequence="1"/>
+    <record id="action_help_syndic" model="ir.actions.server">
+        <field name="name">Help: ereloon en mandaat</field>
+        <field name="model_id" ref="model_vme_association"/>
+        <field name="state">code</field>
+        <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/ereloon-en-mandaat.md"}</field>
+    </record>
     <menuitem id="menu_vme_help_vme" name="VME aanmaken en bankrekeningen" parent="menu_vme_help" action="action_help_vme" sequence="10"/>
     <menuitem id="menu_vme_help_lots" name="Kavels en eigendom" parent="menu_vme_help" action="action_help_lots" sequence="20"/>
     <menuitem id="menu_vme_help_sale" name="Verkoop: inlichtingen aan de notaris" parent="menu_vme_help" action="action_help_sale" sequence="35"/>
@@ -223,7 +292,10 @@
     <menuitem id="menu_vme_help_payments" name="Leveranciers betalen en domiciliëren" parent="menu_vme_help" action="action_help_payments" sequence="76"/>
     <menuitem id="menu_vme_help_inspections" name="Keuringen en liften" parent="menu_vme_help" action="action_help_inspections" sequence="80"/>
     <menuitem id="menu_vme_help_works" name="Werken opvolgen" parent="menu_vme_help" action="action_help_works" sequence="85"/>
+    <!-- Same sequence as "Werken opvolgen": created later, so it comes right after it. -->
+    <menuitem id="menu_vme_help_quote_comparison" name="Offertes vergelijken met de AI" parent="menu_vme_help" action="action_help_quote_comparison" sequence="85"/>
     <menuitem id="menu_vme_help_damage" name="Schadegevallen en verzekering" parent="menu_vme_help" action="action_help_damage" sequence="86"/>
+    <menuitem id="menu_vme_help_compliance" name="Brandverzekering en verplichte attesten" parent="menu_vme_help" action="action_help_compliance" sequence="87"/>
     <menuitem id="menu_vme_help_planner" name="Algemene vergaderingen plannen" parent="menu_vme_help" action="action_help_planner" sequence="90"/>
     <menuitem id="menu_vme_help_assembly" name="De algemene vergadering" parent="menu_vme_help" action="action_help_assembly" sequence="100"/>
     <menuitem id="menu_vme_help_bill_mail" name="Facturen per e-mail" parent="menu_vme_help" action="action_help_bill_mail" sequence="110"/>
@@ -233,11 +305,19 @@
     <menuitem id="menu_vme_help_council" name="Raad van mede-eigendom en commissaris" parent="menu_vme_help" action="action_help_council" sequence="105"/>
     <menuitem id="menu_vme_help_requests" name="Aanvragen: sleutels, badges en vaste procedures" parent="menu_vme_help" action="action_help_requests" sequence="125"/>
     <menuitem id="menu_vme_help_migration" name="Overstap uit een ander pakket" parent="menu_vme_help" action="action_help_migration" sequence="130"/>
+    <menuitem id="menu_vme_help_takeover_ai" name="Gebouw overnemen met basisakte en notulen (AI)" parent="menu_vme_help" action="action_help_takeover_ai" sequence="131"/>
     <menuitem id="menu_vme_help_documents" name="Documenten" parent="menu_vme_help" action="action_help_documents" sequence="140"/>
     <menuitem id="menu_vme_help_portal" name="Het eigenaarsportaal" parent="menu_vme_help" action="action_help_portal" sequence="150"/>
+    <menuitem id="menu_vme_help_portal_requests" name="Aanvragen en bevragingen in het portaal" parent="menu_vme_help" action="action_help_portal_requests" sequence="151"/>
     <menuitem id="menu_vme_help_contracts" name="Contracten en personeel" parent="menu_vme_help" action="action_help_contracts" sequence="140"/>
     <menuitem id="menu_vme_help_communication" name="Communicatie met eigenaars" parent="menu_vme_help" action="action_help_communication" sequence="115"/>
     <menuitem id="menu_vme_help_building_card" name="Gebouwkaart, budgetopvolging en portefeuille" parent="menu_vme_help" action="action_help_building_card" sequence="15"/>
     <menuitem id="menu_vme_help_digital_assembly" name="Hybride of online AV" parent="menu_vme_help" action="action_help_digital_assembly" sequence="101"/>
     <menuitem id="menu_vme_help_fiscal_closing" name="Het boekjaar afsluiten" parent="menu_vme_help" action="action_help_fiscal_closing" sequence="74"/>
+    <menuitem id="menu_vme_help_financial_statements" name="Balans en resultatenrekening" parent="menu_vme_help" action="action_help_financial_statements" sequence="65"/>
+    <menuitem id="menu_vme_help_user_access" name="Toegang voor medewerkers" parent="menu_vme_help" action="action_help_user_access" sequence="160"/>
+    <menuitem id="menu_vme_help_worklist" name="Mijn werk vandaag en de dossierbeheerder" parent="menu_vme_help" action="action_help_worklist" sequence="14"/>
+    <menuitem id="menu_vme_help_cycle" name="Het jaar van een VME opvolgen (jaarcyclus)" parent="menu_vme_help" action="action_help_cycle" sequence="16"/>
+    <menuitem id="menu_vme_help_syndic" name="Ereloon, prestaties en mandaat van de syndicus" parent="menu_vme_help" action="action_help_syndic" sequence="145"/>
+    <menuitem id="menu_vme_help_french" name="Documenten in het Frans" parent="menu_vme_help" action="action_help_french" sequence="155"/>
 </odoo>

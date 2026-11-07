@@ -30,7 +30,7 @@
         <table class="table table-sm mb-1">
             <tbody>
                 <tr>
-                    <td>Reservekapitaal van de VME op <t t-out="format_date(info['date'])"/></td>
+                    <td>Reservekapitaal van de VME op <t t-out="format_date(info['date'], lang=doc_lang)"/></td>
                     <td class="text-end"><t t-out="info['reserve_balance']" t-options="money"/></td>
                 </tr>
                 <tr class="fw-bold">
@@ -66,8 +66,8 @@
             <tbody>
                 <tr t-foreach="info['arrears']" t-as="a">
                     <td t-out="a['move'].name"/>
-                    <td t-out="a['fund']"/>
-                    <td t-out="format_date(a['due'])"/>
+                    <td><t t-if="a['fund'] == 'working'">Werkkapitaal</t><t t-elif="a['fund'] == 'reserve'">Reservekapitaal</t></td>
+                    <td t-out="format_date(a['due'], lang=doc_lang)"/>
                     <td class="text-end"><t t-out="a['amount']" t-options="money"/></td>
                 </tr>
                 <tr class="fw-bold text-danger">
@@ -83,7 +83,7 @@
             <thead><tr><th>Beslissing</th><th>Omschrijving</th><th class="text-end">Raming</th><th class="text-end">Aandeel kavels</th></tr></thead>
             <tbody>
                 <tr t-foreach="info['works']" t-as="w">
-                    <td><t t-out="w['item'].decision_number"/> <small class="text-muted">(AV <t t-out="format_date(w['item'].assembly_date)"/>)</small></td>
+                    <td><t t-out="w['item'].decision_number"/> <small class="text-muted">(AV <t t-out="format_date(w['item'].assembly_date, lang=doc_lang)"/>)</small></td>
                     <td t-out="w['item'].decision or w['item'].name"/>
                     <td class="text-end"><t t-out="w['amount']" t-options="money"/></td>
                     <td class="text-end"><t t-out="w['share']" t-options="money"/></td>
@@ -99,7 +99,7 @@
         <h5>7. Algemene vergaderingen van de laatste drie jaar</h5>
         <t t-if="info['assemblies']">
             <div t-foreach="info['assemblies']" t-as="assembly" class="mb-2">
-                <strong t-out="assembly.name"/> (<t t-out="format_date(assembly.date)"/>)
+                <strong t-out="assembly.name"/> (<t t-out="format_date(assembly.date, lang=doc_lang)"/>)
                 <ul class="small mb-0">
                     <li t-foreach="assembly.item_ids.filtered(lambda i: i.decision_number)" t-as="item">
                         <t t-out="item.decision_number"/>: <t t-out="item.name"/>
@@ -121,7 +121,7 @@
                     <td t-out="key.lot_id.name"/>
                     <td t-out="dict(key._fields['kind'].selection).get(key.kind)"/>
                     <td t-out="key.number"/>
-                    <td t-out="format_date(key.issue_date)"/>
+                    <td t-out="format_date(key.issue_date, lang=doc_lang)"/>
                     <td t-out="key.partner_id.name"/>
                 </tr>
             </tbody>
@@ -130,6 +130,43 @@
             De verkoper bezorgt deze sleutels en badges aan de koper bij de akte. Bijkomende exemplaren bestelt alleen de syndicus.
         </p>
         <p t-else="">Er zijn geen sleutels of badges geregistreerd voor deze kavels.</p>
+
+        <h5 class="mt-4">9. Verplichte attesten van de gemene delen</h5>
+        <table t-if="info['certificates']" class="table table-sm">
+            <thead><tr><th>Attest</th><th>Datum</th><th>Geldig tot</th><th>Toestand</th></tr></thead>
+            <tbody>
+                <tr t-foreach="info['certificates']" t-as="entry">
+                    <td t-out="entry['label']"/>
+                    <td>
+                        <t t-if="entry['document']" t-out="format_date(entry['document'].date, lang=doc_lang)"/>
+                        <t t-elif="entry['installation'].last_inspection_date" t-out="format_date(entry['installation'].last_inspection_date, lang=doc_lang)"/>
+                    </td>
+                    <td><t t-if="entry['valid_until']" t-out="format_date(entry['valid_until'], lang=doc_lang)"/></td>
+                    <td>
+                        <strong t-if="entry['state'] in ('missing', 'expired')" t-out="entry['state_label']"/>
+                        <t t-else="" t-out="entry['state_label']"/>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p t-if="[e for e in info['certificates'] if e['state'] in ('missing', 'expired')]" class="small">
+            Een ontbrekend of vervallen attest is nog niet beschikbaar bij de syndicus. De bestaande attesten zijn bijgevoegd of op aanvraag beschikbaar.
+        </p>
+        <p t-if="not info['certificates']">Voor dit gebouw zijn geen attesten van de gemene delen vereist.</p>
+
+        <h5 class="mt-4">10. Brandverzekering van het gebouw</h5>
+        <table t-if="info['insurance']" class="table table-sm">
+            <thead><tr><th>Verzekeraar</th><th>Polisnummer</th><th>Vervaldag</th><th class="text-end">Verzekerde waarde</th></tr></thead>
+            <tbody>
+                <tr t-foreach="info['insurance']" t-as="policy">
+                    <td t-out="policy.insurer_id.name"/>
+                    <td t-out="policy.policy_number"/>
+                    <td t-out="format_date(policy.date_end, lang=doc_lang)"/>
+                    <td class="text-end"><t t-if="policy.insured_value" t-out="policy.insured_value" t-options="money"/></td>
+                </tr>
+            </tbody>
+        </table>
+        <p t-else="">Er is geen brandverzekering van het gebouw geregistreerd bij de syndicus.</p>
     </template>
 
     <template id="report_notary_information">
@@ -138,39 +175,45 @@
                 <t t-set="info" t-value="infos[o.id]"/>
                 <t t-set="answer" t-value="answers[o.id]"/>
                 <t t-set="company" t-value="o.company_id"/>
-                <t t-call="web.external_layout">
-                    <div class="page">
-                        <div class="row mb-4">
-                            <div class="col-6">
-                                <h2 class="mb-0">Inlichtingen aan de notaris</h2>
-                                <div class="text-muted">
-                                    <t t-if="answer == 'second'">Antwoord op de tweede vraag (art. 3.94 §2 BW)</t>
-                                    <t t-else="">Antwoord op de eerste vraag (art. 3.94 §1 BW)</t>
-                                </div>
-                                <div class="text-muted">VME <t t-out="o.association_id.name"/><t t-if="o.association_id.kbo_number"> · KBO <t t-out="o.association_id.kbo_number"/></t></div>
-                            </div>
-                            <div class="col-5 offset-1">
-                                <strong t-out="o.notary_id.name or 'De notaris'"/>
-                                <div t-if="o.notary_reference" class="text-muted">Uw referentie: <t t-out="o.notary_reference"/></div>
-                                <div class="text-muted">Datum: <t t-out="format_date(info['date'])"/></div>
-                            </div>
-                        </div>
-                        <p>
-                            Betreft: verkoop van <strong t-out="', '.join(info['lots'].mapped('name'))"/>
-                            door <strong t-out="o.seller_id.name"/><t t-if="o.buyer_id"> aan <strong t-out="o.buyer_id.name"/></t>.
-                        </p>
-                        <p t-if="answer == 'second'">
-                            Uw tweede vraag ontvingen we op <t t-out="format_date(o.second_request_date)"/><t t-if="o.deed_date">; de akte is gepland op <t t-out="format_date(o.deed_date)"/></t>.
-                        </p>
-                        <p t-else="">Uw vraag ontvingen we op <t t-out="format_date(o.first_request_date)"/>.
-                        </p>
-                        <t t-call="vme_belgie.notary_information_body"/>
-                        <p class="mt-4">
-                            Met vriendelijke groeten,<br/>de syndicus van VME <t t-out="o.association_id.name"/>
-                        </p>
-                    </div>
-                </t>
+                <t t-set="doc_lang" t-value="o.notary_id.lang or company.partner_id.lang"/>
+                <t t-call="vme_belgie.report_notary_information_document" t-lang="o.notary_id.lang or company.partner_id.lang"/>
             </t>
+        </t>
+    </template>
+
+    <!-- In the language of the recipient: see docs/dev/vertaling.md -->
+    <template id="report_notary_information_document">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <div class="row mb-4">
+                    <div class="col-6">
+                        <h2 class="mb-0">Inlichtingen aan de notaris</h2>
+                        <div class="text-muted">
+                            <t t-if="answer == 'second'">Antwoord op de tweede vraag (art. 3.94 §2 BW)</t>
+                            <t t-else="">Antwoord op de eerste vraag (art. 3.94 §1 BW)</t>
+                        </div>
+                        <div class="text-muted">VME <t t-out="o.association_id.name"/><t t-if="o.association_id.kbo_number"> · KBO <t t-out="o.association_id.kbo_number"/></t></div>
+                    </div>
+                    <div class="col-5 offset-1">
+                        <strong t-out="o.notary_id.name or 'De notaris'"/>
+                        <div t-if="o.notary_reference" class="text-muted">Uw referentie: <t t-out="o.notary_reference"/></div>
+                        <div class="text-muted">Datum: <t t-out="format_date(info['date'], lang=doc_lang)"/></div>
+                    </div>
+                </div>
+                <p>
+                    Betreft: verkoop van <strong t-out="', '.join(info['lots'].mapped('name'))"/>
+                    door <strong t-out="o.seller_id.name"/><t t-if="o.buyer_id"> aan <strong t-out="o.buyer_id.name"/></t>.
+                </p>
+                <p t-if="answer == 'second'">
+                    Uw tweede vraag ontvingen we op <t t-out="format_date(o.second_request_date, lang=doc_lang)"/><t t-if="o.deed_date">; de akte is gepland op <t t-out="format_date(o.deed_date, lang=doc_lang)"/></t>.
+                </p>
+                <p t-else="">Uw vraag ontvingen we op <t t-out="format_date(o.first_request_date, lang=doc_lang)"/>.
+                </p>
+                <t t-call="vme_belgie.notary_information_body"/>
+                <p class="mt-4">
+                    Met vriendelijke groeten,<br/>de syndicus van VME <t t-out="o.association_id.name"/>
+                </p>
+            </div>
         </t>
     </template>
 </odoo>

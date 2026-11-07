@@ -269,6 +269,38 @@ class TestBuildingCard(TransactionCase):
         self.assertIn("Vervallen keuring", self.vme.signal_summary)
         self.assertIn(self.vme, self.env["vme.association"].search([("signal_count", ">", 0)]))
 
+    def test_portfolio_matches_card_figures(self):
+        # The portfolio reads all VMEs at once; its figures equal those of the building card.
+        vmes = self.vme | self.other_vme
+        for day in (MID_YEAR, TODAY):
+            figures = vmes._get_portfolio_figures(day)
+            for vme in vmes:
+                capital = vme._get_capital_history(day)
+                tracking = vme._get_budget_tracking(day.year, day)["total"]
+                self.assertEqual(figures[vme.id]["working"], capital["working"])
+                self.assertEqual(figures[vme.id]["reserve"], capital["reserve"])
+                self.assertEqual(figures[vme.id]["arrears"], vme._get_arrears_total())
+                self.assertEqual(figures[vme.id]["budget_to_date"], tracking["budget_to_date"])
+                self.assertEqual(figures[vme.id]["actual"], tracking["actual"])
+                self.assertAlmostEqual(figures[vme.id]["usage"], tracking["usage"])
+        self.assertTrue(figures[self.vme.id]["working"])
+
+    def test_portfolio_query_count_does_not_grow_per_vme(self):
+        # Scale (docs/dev/schaal.md): the portfolio costs the same number of queries for 1 or 7 VMEs.
+        # Companies without a chart of accounts: loading five charts would only slow the test down.
+        companies = self.env["res.company"].create([{"name": f"Residentie Extra {i}"} for i in range(5)])
+        extra = self.env["vme.association"].create([
+            {"name": company.name, "company_id": company.id} for company in companies])
+
+        def count(vmes):
+            self.env.invalidate_all()
+            before = self.env.cr.sql_log_count
+            vmes.mapped("signal_count")
+            return self.env.cr.sql_log_count - before
+
+        one = count(self.vme)
+        self.assertLessEqual(count(self.vme | self.other_vme | extra), one + 5)
+
     # Cards
 
     def test_building_card_shows_everything(self):

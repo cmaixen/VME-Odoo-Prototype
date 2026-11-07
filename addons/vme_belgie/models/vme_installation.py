@@ -198,7 +198,7 @@ class VmeInstallation(models.Model):
                         installation=installation.name, vme=installation.association_id.name,
                         date=format_date(self.env, installation.next_inspection_date),
                     ),
-                    user_id=installation.responsible_user_id.id or self.env.user.id,
+                    user_id=(installation.responsible_user_id or installation.association_id._vme_task_user()).id,
                 )
                 installation.activity_inspection_due_date = installation.next_inspection_date
         for installation in self.search([("next_risk_analysis_date", "<=", limit)]):
@@ -207,7 +207,7 @@ class VmeInstallation(models.Model):
                     activity_type_id=todo.id,
                     date_deadline=installation.next_risk_analysis_date,
                     summary=self.env._("Risicoanalyse lift laten uitvoeren: %s", installation.name),
-                    user_id=installation.responsible_user_id.id or self.env.user.id,
+                    user_id=(installation.responsible_user_id or installation.association_id._vme_task_user()).id,
                 )
                 installation.activity_risk_analysis_due_date = installation.next_risk_analysis_date
 
@@ -313,7 +313,11 @@ class VmeInspectionRemark(models.Model):
 
     def _search_is_overdue(self, operator, value):
         domain = [("is_open", "=", True), ("deadline", "<", fields.Date.context_today(self))]
-        positive = (operator in ("=", "in") and bool(value)) or (operator in ("!=", "not in") and not value)
+        # Odoo 19 passes "in"/"not in" with a list of values (e.g. [False]), not a single boolean.
+        if operator in ("in", "not in"):
+            positive = (True in value) == (operator == "in")
+        else:
+            positive = bool(value) == (operator == "=")
         return domain if positive else ["!", "&", *domain]
 
     def write(self, vals):

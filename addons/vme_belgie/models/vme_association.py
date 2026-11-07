@@ -30,6 +30,12 @@ class VmeAssociation(models.Model):
         related="company_id.country_id", string="Land", readonly=False
     )
     partner_id = fields.Many2one(related="company_id.partner_id", string="Partner")
+    manager_user_id = fields.Many2one(
+        "res.users", string="Dossierbeheerder", domain="[('share', '=', False)]", tracking=True,
+        default=lambda self: self.env.user if not self.env.user._is_superuser() else False,
+        help="Volgt deze VME op. Krijgt de taken die Odoo zelf aanmaakt als er geen andere verantwoordelijke "
+             "is, en ziet het werk van de VME in Mijn werk vandaag.",
+    )
 
     # LEGAL-CHECK: art. 3.89 §5 BW - working and reserve capital on separate accounts.
     working_capital_bank_id = fields.Many2one(
@@ -103,12 +109,24 @@ class VmeAssociation(models.Model):
                 # create loads the accounts but leaves partners without a default payable and
                 # receivable account in this company, so entering a bill by hand fails.
                 self.env.cr.precommit.add(functools.partial(self._load_vme_chart, company.id))
-                # Syndic staff work on every VME, so every internal user gets access to it,
-                # not only the user who created it (which may be the system user in a script).
-                internal_users = self.env["res.users"].sudo().search([("share", "=", False)]) | self.env.user
-                internal_users.sudo().write({"company_ids": [fields.Command.link(company.id)]})
+                # Staff with access to every VME get the new one too, not only the user who created
+                # it (which may be the system user in a script). Others only get the VMEs an
+                # administrator assigns them: the record rules follow the companies of the user.
+                self._vme_all_companies_users().write({"company_ids": [fields.Command.link(company.id)]})
                 vals["company_id"] = company.id
         return super().create(vals_list)
+
+    def _vme_task_user(self):
+        """Who gets a task that Odoo makes for this VME without a responsible: the case manager, else the admin.
+
+        Also on an empty recordset (a request without a VME). Crons run as OdooBot, so self.env.user is no fallback.
+        """
+        return self[:1].sudo().manager_user_id.with_env(self.env) or self.env.ref("base.user_admin")
+
+    def _vme_all_companies_users(self):
+        users = self.env.ref("vme_belgie.group_vme_all_companies").sudo().all_user_ids | self.env.user.sudo()
+        # The auditor only sees the VMEs of his mandates (vme_council.py).
+        return users.filtered(lambda u: not u.share and not u.has_group("vme_belgie.group_vme_auditor"))
 
     def _purchase_journal(self):
         self.ensure_one()

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- The auditor reads the agreement, services and mandate of his own VME's, and changes nothing. -->
+    <record id="rule_auditor_read_management_agreement" model="ir.rule">
+        <field name="name">Commissaris: vme.management.agreement van zijn VME's</field>
+        <field name="model_id" ref="model_vme_management_agreement"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_auditor_no_write_management_agreement" model="ir.rule">
+        <field name="name">Commissaris: vme.management.agreement alleen lezen</field>
+        <field name="model_id" ref="model_vme_management_agreement"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_auditor_read_service_rate" model="ir.rule">
+        <field name="name">Commissaris: vme.service.rate van zijn VME's</field>
+        <field name="model_id" ref="model_vme_service_rate"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[('agreement_id.company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_auditor_no_write_service_rate" model="ir.rule">
+        <field name="name">Commissaris: vme.service.rate alleen lezen</field>
+        <field name="model_id" ref="model_vme_service_rate"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_auditor_read_service_line" model="ir.rule">
+        <field name="name">Commissaris: vme.service.line van zijn VME's</field>
+        <field name="model_id" ref="model_vme_service_line"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_auditor_no_write_service_line" model="ir.rule">
+        <field name="name">Commissaris: vme.service.line alleen lezen</field>
+        <field name="model_id" ref="model_vme_service_line"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_auditor_read_syndic_mandate" model="ir.rule">
+        <field name="name">Commissaris: vme.syndic.mandate van zijn VME's</field>
+        <field name="model_id" ref="model_vme_syndic_mandate"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_auditor_no_write_syndic_mandate" model="ir.rule">
+        <field name="name">Commissaris: vme.syndic.mandate alleen lezen</field>
+        <field name="model_id" ref="model_vme_syndic_mandate"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_auditor_read_consumer_price_index" model="ir.rule">
+        <field name="name">Commissaris: vme.consumer.price.index van zijn VME's</field>
+        <field name="model_id" ref="model_vme_consumer_price_index"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_auditor_no_write_consumer_price_index" model="ir.rule">
+        <field name="name">Commissaris: vme.consumer.price.index alleen lezen</field>
+        <field name="model_id" ref="model_vme_consumer_price_index"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+</odoo>

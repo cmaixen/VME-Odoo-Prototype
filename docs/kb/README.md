@@ -25,40 +25,51 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 
 8. [Budget en provisieoproepen, met de 5%-regel voor het reservefonds](budget-en-provisieoproepen.md)
 9. [De jaarafrekening lezen en afdrukken](jaarafrekening.md)
-10. [Invordering van achterstallen: herinneringen, interest en doorsturen](invordering.md)
-10b. [Het boekjaar afsluiten: afrekening boeken, overdracht en vergrendeling](boekjaar-afsluiten.md)
+10. [De balans en resultatenrekening van een VME maken](balans-en-resultatenrekening.md)
+11. [Invordering van achterstallen: herinneringen, interest en doorsturen](invordering.md)
+11b. [Het boekjaar afsluiten: afrekening boeken, overdracht en vergrendeling](boekjaar-afsluiten.md)
 
 ### Gebouw en installaties
 
-11. [Keuringen en liften opvolgen](keuringen.md)
-12. [Werken opvolgen, van offertes tot oplevering](werken.md)
-13. [Een schadegeval behandelen met de verzekering](schadegevallen.md)
+12. [Keuringen en liften opvolgen](keuringen.md)
+13. [Werken opvolgen, van offertes tot oplevering](werken.md)
+14. [Een schadegeval behandelen met de verzekering](schadegevallen.md)
+15. [De brandverzekering en de verplichte attesten van een gebouw opvolgen](verzekeringen-en-attesten.md)
+16. [Offertes voor werken vergelijken met de AI](offertes-vergelijken.md)
 
 ### Algemene vergaderingen
 
-14. [Algemene vergaderingen plannen in blokken](av-planner.md)
-15. [De algemene vergadering: oproeping, stemming en notulen](algemene-vergadering.md)
-16. [Een hybride of online algemene vergadering houden](digitale-av.md)
+17. [Algemene vergaderingen plannen in blokken](av-planner.md)
+18. [De algemene vergadering: oproeping, stemming en notulen](algemene-vergadering.md)
+19. [Een hybride of online algemene vergadering houden](digitale-av.md)
 
 ### Post en mails
 
-17. [Leveranciersfacturen per e-mail ontvangen](facturen-per-mail.md)
-18. [Een antwoord behandelen dat de AI-assistent voorstelt](ai-voorstellen-mails.md)
-19. [Bankafschriften inlezen en betalingen koppelen](bankafschriften.md)
+20. [Leveranciersfacturen per e-mail ontvangen](facturen-per-mail.md)
+21. [Een antwoord behandelen dat de AI-assistent voorstelt](ai-voorstellen-mails.md)
+22. [Bankafschriften inlezen en betalingen koppelen](bankafschriften.md)
 
 ### Overstappen
 
-20. [Een VME overnemen uit een ander syndicuspakket](migratie.md)
+23. [Een VME overnemen uit een ander syndicuspakket](migratie.md)
 
 ### Documenten en eigenaars
 
-21. [Documenten van een VME en van een kavel bewaren](documenten.md)
-22. [Het eigenaarsportaal: toegang, wat de eigenaar ziet, adreswijzigingen](eigenaarsportaal.md)
-23. [De raad van mede-eigendom en de commissaris van de rekeningen](raad-en-commissaris.md)
+24. [Documenten van een VME en van een kavel bewaren](documenten.md)
+25. [Het eigenaarsportaal: toegang, wat de eigenaar ziet, adreswijzigingen](eigenaarsportaal.md)
+26. [De raad van mede-eigendom en de commissaris van de rekeningen](raad-en-commissaris.md)
 
 ### Overzichten
 
-24. [De gebouwkaart, de budgetopvolging en de portefeuille](gebouwkaart.md)
+27. [De gebouwkaart, de budgetopvolging en de portefeuille](gebouwkaart.md)
+28. [Het jaar van een VME opvolgen: de jaarcyclus](jaarcyclus.md)
+29. [Een gebouw overnemen met de basisakte en de notulen (AI)](overname-basisakte-ai.md)
+
+### Documenten en eigenaars
+
+
+### Overzichten
+
 
 ### Post en mails
 
@@ -74,7 +85,7 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 
 ### Overstappen
 
-25. [Contracten en personeel opvolgen](contracten.md)
+30. [Contracten en personeel opvolgen](contracten.md)
 
 ### Algemene vergaderingen
 
@@ -84,30 +95,73 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 
 ### Bewoners
 
-26. [Aanvragen van bewoners: sleutels, badges en andere vaste procedures](aanvragen-sleutels-badges.md)
+31. [Aanvragen van bewoners: sleutels, badges en andere vaste procedures](aanvragen-sleutels-badges.md)
+32. [Aanvragen en bevragingen in het eigenaarsportaal](portaal-aanvragen-bevragingen.md)
 
 ### Overstappen
 
-27. [Leveranciers betalen en provisies domiciliëren](betalingen.md)
+33. [Leveranciers betalen en provisies domiciliëren](betalingen.md)
 
 ### Overstappen
 
-28. [PDF-facturen en documenten laten lezen door de AI-assistent](pdf-facturen-ai.md)
+34. [PDF-facturen en documenten laten lezen door de AI-assistent](pdf-facturen-ai.md)
 
 ### Overstappen
 
-29. [Communicatie met eigenaars: mededelingen, bevragingen en aangetekende brieven](communicatie.md)
+35. [Communicatie met eigenaars: mededelingen, bevragingen en aangetekende brieven](communicatie.md)
+
+### Overstappen
+
+
+### Overstappen
+
+
+### Overstappen
+
 
 ### Overstappen
 
 
 ### Rentmeester
 
-30. [Een verhuurd appartement beheren: huurcontract, huurfacturen, indexering en afrekening aan de huurder](rentmeester.md)
+36. [Een verhuurd appartement beheren: huurcontract, huurfacturen, indexering en afrekening aan de huurder](rentmeester.md)
+37. [De huur doorstorten aan de verhuurder: ereloon, kosten, afrekening en betaalbatch](doorstorting-verhuurder.md)
+
+### Gebruikers
+
+38. [Medewerkers toegang geven tot alle of enkele VME's](toegang-medewerkers.md)
+
+### De website
+
+39. [De website en inloggen voor medewerkers en eigenaars](website-en-inloggen.md)
+
+### Het kantoor van de syndicus
+
+40. [Uw ereloon, extra prestaties en uw mandaat als syndicus](ereloon-en-mandaat.md)
+
+### Taal
+
+41. [Documenten in het Frans sturen](documenten-in-het-frans.md)
+
+### De dag van de medewerker
+
+42. [Mijn werk vandaag: alles wat vandaag moet, over al uw VME's](mijn-werk-vandaag.md)
+
+### Gebruikers
+
+
+### De website
+
+
+### Het kantoor van de syndicus
+
+
+### Taal
+
 
 ## Zo is het platform opgebouwd
 
-- **Eén VME = één bedrijf in Odoo.** Elke VME heeft haar eigen boekhouding, eigen rekeningnummers en eigen facturen. Rechtsboven in Odoo kies je in welke VME je werkt wanneer je facturen ingeeft. De schermen in de app **VME** (kavels, sleutels, provisieoproepen, jaarafrekening) tonen altijd alle VME's samen.
+- **Eén VME = één bedrijf in Odoo.** Elke VME heeft haar eigen boekhouding, eigen rekeningnummers en eigen facturen. Rechtsboven in Odoo kies je in welke VME je werkt wanneer je facturen ingeeft. De schermen in de app **VME** (kavels, sleutels, provisieoproepen, jaarafrekening) tonen altijd alle VME's samen waartoe je toegang hebt.
 - **Werkkapitaal en reservekapitaal staan apart.** Elk fonds heeft een eigen bankrekening, en elke eigenaar krijgt per fonds een eigen provisiefactuur.
 - **Kosten volgen de eigenaar op de dag zelf.** Wordt een kavel verkocht, dan verdeelt het platform elke kost over verkoper en koper volgens het aantal dagen dat elk eigenaar was.
 
@@ -126,6 +180,8 @@ De demo bevat drie verzonnen gebouwen:
 | Kaaihuis | 6 appartementen (K1–K6) | Algemene sleutel | Klein gebouw zonder lift; K2 is verhuurd |
 
 Elk gebouw heeft een sleutelregister en dezelfde verzonnen slotenmaker (Slotenmaker Voorbeeld BV).
+
+De drie gebouwen worden beheerd door het fictieve kantoor **Syndicus Voorbeeld BV**, met een beheerovereenkomst en een mandaat per gebouw; zie [ereloon en mandaat](ereloon-en-mandaat.md).
 
 Bij de demo horen ook drie verhuurde appartementen (Linde A2, Linde A7 en Beuken B23), beheerd door het fictieve kantoor **Rentmeester Voorbeeld BV**; zie [rentmeester](rentmeester.md).
 

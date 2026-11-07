@@ -110,6 +110,14 @@ class TestDistributionRules(TransactionCase):
         self.assertFalse(bill.vme_allocation_ids)
         self.assertIn("Automatische verdeling mislukt", bill.message_ids[0].body)
 
+    def test_key_without_lots_does_not_block_posting(self):
+        key = self.env["vme.key"].create({"name": "Nog leeg", "association_id": self.vme.id, "total_shares": 1000})
+        bill = self._bill(self.unknown, vme_key_id=key.id)
+        bill.action_post()
+        self.assertEqual(bill.state, "posted")
+        self.assertFalse(bill.vme_allocation_ids)
+        self.assertIn("geen kavels met een aandeel", bill.message_ids[0].body)
+
     def test_one_rule_per_supplier_and_vme(self):
         with self.assertRaises(IntegrityError), mute_logger("odoo.sql_db"):
             self.env["vme.distribution.rule"].create({

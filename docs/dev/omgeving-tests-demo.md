@@ -51,8 +51,10 @@ De tests van de rentmeester staan in [rentmeester.md](rentmeester.md#tests).
 | `test_provision_call.py` | Bedragen, bankrekeningen en rekeningen per fonds, één factuur per fonds voor een eigenaar met twee kavels, eigenaar op factuurdatum, gestructureerde mededeling, concept zonder boeken, weigeringen (dubbele oproep, onbevestigde rekening, nummer buiten budget), andere company geselecteerd, voorbeeld in een open formulier, VME zonder budget, 5%-regel |
 | `test_annual_statement.py` | Saldo's, reservekapitaal niet afgerekend, controle op niet-verdeelde facturen, rapport; `TestAnnualStatementDemo` met een volledig demojaar (tag `vme_slow`) |
 | `test_portal.py` | Eigenaarsportaal: geen andere VME, geen andere kavel, niets nieuws na de verkoop, geen invorderingskosten bij de provisies, geen ORM-rechten voor portaalgebruikers, adreswijziging met goedkeuring; routes als portaalgebruiker (`HttpCase`) |
+| `test_cycle.py` | Jaarcyclus: termijnen per stap, verschuiven met de AV-datum, maandelijkse oproepen, startdatum, VME zonder AV-periode; cron maakt alleen concepten en taken, nooit twee keer; afronden door boeken, versturen, bevestigen, lockdatum en afvinken; signaal in de portefeuille, blok op de gebouwkaart. De demo-test staat in `TestAnnualStatementDemo` (`vme_slow`) |
 | `test_council.py` | Raad en commissaris: mandaat van een jaar, raad alleen met eigenaars, één voorzitter, raad verplicht vanaf 20 kavels; leesrechten van de commissaris (zijn VME wel, andere VME niet), niets wijzigen, knoppen met `sudo` geweigerd, schermen zonder Nieuw/Bewerken, medewerkers houden hun rechten, toegang volgt de mandaten, overzicht voor de raad, verslag |
 | `test_migration.py` | Overstap uit een ander pakket: parsing, proefrun schrijft niets, verwachte fouten en waarschuwingen, openingsbalans in evenwicht, volledige import met openingsboeking, zip met Excel |
+| `test_works_comparison.py` | Offertevergelijking: 2-4 offertes met PDF, tabel met bronpagina's en statussen, aandachtspunten (btw-tarief, rekenfout, bedrag in het werkdossier, ontbrekende post, aanbeveling), maar één keer lezen, goedkeuren met PDF en vergrendeling, niets naar aannemers of eigenaars, PDF bij de oproeping |
 
 De trage test met een volledig demojaar (meer dan 10 minuten) draai je apart, vóór een demo en na wijzigingen aan de verdeling of de afrekening:
 
@@ -105,6 +107,7 @@ Wat er dan in de demo zit:
 | Historiek 2026 | Vier provisieoproepen, betalingen behalve A3 (oproep 4) en B7 (oproepen 3 en 4), leveranciersfacturen, drie Peppol-facturen elektriciteit |
 | Betalingsverkeer | Na stap 5: goedkeuringen door "Medewerker Syndicus (demo)", de ingelogde gebruiker als tweede goedkeurder, bevestigde rekeningen van leveranciers, vijf SEPA-mandaten |
 | Bankafschriften | Afschriften van 5 november 2026 (drie CODA-bestanden, één CAMT.053) met bewuste uitzonderingen, in `demo_data/bankafschriften/` |
+| Dossierbeheerders en werkbak | admin beheert Linde en Hof ter Beuken, Medewerker Voorbeeld beheert Kaaihuis; na de historiek een AI-antwoord per medewerker en een klaarstaande sleutelbestelling voor Beuken B3 (zie [werkbak.md](werkbak.md)) |
 
 De Peppol-voorbeeldfacturen staan in `addons/vme_belgie/demo_data/facturen/`; importeer ze in de company van de juiste VME via **Facturatie > Leveranciers > Facturen > Upload**. Na de demohistoriek zijn ze al ingelezen.
 
@@ -125,6 +128,10 @@ docker compose -p vme-docs run --rm -p 8370:8069 odoo -- --db-filter=^vme_demo$
 Open een tweede demo in dezelfde browser niet op `localhost` of `127.0.0.1` maar op een eigen naam, bv. `http://verbruik.localhost:8770`: cookies houden geen rekening met de poort, dus twee Odoo's op `localhost` loggen elkaar voortdurend uit ("Odoo-sessie verlopen").
 
 Zet in die demo de systeemparameter `report.url` op `http://localhost:8069` en herstart, anders komen PDF's zonder opmaak (zie [valkuilen](valkuilen.md#pdfs-zonder-opmaak)).
+
+## Schaaldatabase met 200 VME's
+
+Om te meten of het prototype een portefeuille van 200 VME's aankan, is er een aparte database `vme_scale` met fictieve VME's "Residentie Test 001" tot "200". Opbouwen en meten staat in [schaal.md](schaal.md); gebruik er een eigen Docker-project voor (`-p vme-schaal`).
 
 ## Inloggen als eigenaar
 

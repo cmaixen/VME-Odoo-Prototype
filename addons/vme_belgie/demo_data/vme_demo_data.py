@@ -50,6 +50,7 @@ BUILDINGS = [
         "street": "Lindedreef 12",
         "zip": "2000",
         "city": "Voorbeeldstad",
+        "construction_year": 1995,
         "lots": _apartments("A", 4, [72, 95, 68])
         + [{"name": f"G{i}", "lot_type": "garage", "floor": "Kelder", "floor_number": -1, "area": 15}
            for i in range(1, 9)],
@@ -64,6 +65,8 @@ BUILDINGS = [
         "street": "Beukenhof 3",
         "zip": "9000",
         "city": "Voorbeeldstad",
+        # Built before 2001 and no asbestos certificate of the common parts yet (signal on the card).
+        "construction_year": 1978,
         "lots": _apartments("B", 6, [85, 110, 78, 92]),
         # Heating is split on consumption: heat cost allocators per radiator (readings in demo_data/meterstanden).
         "keys": ["general", "consumption"],
@@ -76,6 +79,7 @@ BUILDINGS = [
         "street": "Kaaistraat 7",
         "zip": "8000",
         "city": "Voorbeeldstad",
+        "construction_year": 2012,
         "lots": _apartments("K", 3, [64, 88]),
         "keys": ["general"],
     },
@@ -165,10 +169,16 @@ INSTALLATIONS = {
         ("Rookluiken", "smoke_vents", "Dak trappenhal", "fire_safety", "fire_safety", [
             (date(2025, 11, 25), "inspection", "compliant", []),  # due within 30 days
         ]),
+        ("Elektrische installatie gemene delen", "electrical", "Kelder", None, "inspection_body", [
+            (date(2023, 6, 20), "inspection", "compliant", []),
+        ]),
     ],
     "Kaaihuis": [
         ("Brandblussers", "fire_extinguishers", "Gelijkvloers", "fire_safety", "fire_safety", [
             (date(2026, 3, 1), "inspection", "compliant", []),
+        ]),
+        ("Elektrische installatie gemene delen", "electrical", "Technische ruimte", None, "inspection_body", [
+            (date(2024, 2, 8), "inspection", "compliant", []),
         ]),
     ],
 }
@@ -392,6 +402,7 @@ class VmeAssociation(models.Model):
                 "street": building["street"],
                 "zip": building["zip"],
                 "city": building["city"],
+                "construction_year": building["construction_year"],
                 "assembly_period_month": ASSEMBLY_PERIODS[building["name"]][0],
                 "assembly_period_day": ASSEMBLY_PERIODS[building["name"]][1],
                 **({"arrears_signal_threshold": ARREARS_SIGNAL_THRESHOLDS[building["name"]]}
@@ -518,6 +529,8 @@ class VmeAssociation(models.Model):
             self.env["vme.ownership"].create(ownership_vals)
             vmes |= vme
 
+        # The syndic's agreements come first: the demo dossiers below register their services.
+        self._load_demo_syndic()
         self._load_demo_assembly_blocks()
         self._load_demo_assembly_2026()
         self._load_demo_sale()
@@ -527,6 +540,8 @@ class VmeAssociation(models.Model):
         self._load_demo_council()
         self._load_demo_contracts(suppliers)
         self._load_demo_requests()
+        self._load_demo_portal_requests()
+        self._load_demo_managers()
 
         def set_rule_accounts():
             # Runs at commit, after the chart of accounts of the new companies is loaded.
@@ -549,6 +564,8 @@ class VmeAssociation(models.Model):
         # as the daily crons would create them.
         self.env["vme.installation"]._cron_schedule_inspection_activities()
         self.env["vme.contract"]._cron_schedule_contract_activities()
+        self.env["vme.insurance.policy"]._cron_schedule_policy_activities()
+        self.env["vme.association"]._cron_schedule_certificate_activities()
 
         return {
             "type": "ir.actions.client",
@@ -609,8 +626,16 @@ class VmeAssociation(models.Model):
         rooms = self.env["vme.assembly.room"].create([
             {"name": name, "address": address, "capacity": capacity} for name, address, capacity in ASSEMBLY_ROOMS
         ])
+        # A staff member of the syndic who works on every VME (record rules follow his companies).
+        vme_companies = self.env["vme.association"].search([]).company_id
         staff = self.env["res.users"].search([("login", "=", STAFF_USER["login"])]) or \
-            self.env["res.users"].with_context(no_reset_password=True).create(STAFF_USER)
+            self.env["res.users"].with_context(no_reset_password=True).create({
+                **STAFF_USER,
+                "group_ids": [Command.link(self.env.ref("base.group_user").id),
+                              Command.link(self.env.ref("vme_belgie.group_vme_all_companies").id)],
+                "company_id": vme_companies[:1].id or self.env.company.id,
+                "company_ids": [Command.link(c.id) for c in vme_companies | self.env.company],
+            })
         users = {"admin": self.env.ref("base.user_admin"), "staff": staff}
         self.env["vme.assembly.slot"].create([{
             "date": day,

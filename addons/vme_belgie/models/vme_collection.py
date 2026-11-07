@@ -9,7 +9,6 @@ from odoo.exceptions import UserError, ValidationError
 from odoo.fields import Command
 from odoo.tools import format_date
 
-from .vme_provision_call import FUNDS
 from .vme_access import check_not_auditor
 
 AGING_BUCKETS = [
@@ -78,14 +77,19 @@ def composer_action(record, subject, body, partners, attachment, context):
     }
 
 
-def move_description(move):
-    """Readable description of an open invoice: fund and provision call, or the costs of a dossier."""
+def move_description(move, lang=None):
+    """Readable description of an open invoice: fund and provision call, or the costs of a dossier.
+
+    lang: the language of the reader (the owner for a reminder), else that of the user.
+    """
+    env = move.with_context(lang=lang).env if lang else move.env
     if move.vme_collection_id:
-        return move.env._("Interest en schadevergoeding")
+        return env._("Interest en schadevergoeding")
     if move.vme_provision_call_id:
         call = move.vme_provision_call_id
-        return move.env._(
-            "%(fund)s oproep %(number)s/%(total)s %(year)s", fund=dict(FUNDS).get(move.vme_fund, ""),
+        fund = dict(move._fields["vme_fund"]._description_selection(env)).get(move.vme_fund, "")
+        return env._(
+            "%(fund)s oproep %(number)s/%(total)s %(year)s", fund=fund,
             number=call.number, total=call.budget_id.calls_per_year, year=call.budget_id.year)
     return move.ref or move.name
 
@@ -175,6 +179,15 @@ class VmeArrears(models.Model):
     _description = "Achterstal"
     _auto = False
     _order = "date_maturity, id"
+    # Flush pending writes on these fields before the view is read.
+    _depends = {
+        "account.move.line": ["company_id", "company_currency_id", "partner_id", "account_id", "move_id",
+                              "parent_state", "reconciled", "amount_residual", "date_maturity"],
+        "account.move": ["name", "payment_reference", "vme_fund", "vme_collection_id"],
+        "account.account": ["account_type"],
+        "vme.association": ["company_id"],
+        "vme.collection": ["association_id", "partner_id", "state"],
+    }
 
     association_id = fields.Many2one("vme.association", string="VME", readonly=True)
     company_id = fields.Many2one("res.company", readonly=True)
@@ -490,11 +503,13 @@ class VmeCollection(models.Model):
         journal = self.env["account.journal"].sudo().search([("company_id", "=", company.id), ("type", "=", "sale")], limit=1)
         if not journal or not all(accounts.values()):
             raise UserError(self.env._("Het rekeningstelsel van %s is niet volledig.", self.association_id.name))
+        # The invoice goes to the owner: line texts in the owner's language.
+        owner_env = self.with_context(lang=self.partner_id.lang).env
         lines = [Command.create({
-            "name": self.env._(
+            "name": owner_env._(
                 "Nalatigheidsinterest %(rate)s%% per jaar op %(invoice)s, %(days)s dagen vanaf %(start)s",
                 rate=f"{item['rate']:g}", invoice=item["line"].move_id.name, days=item["days"],
-                start=format_date(self.env, item["start"]),
+                start=format_date(owner_env, item["start"]),
             ),
             "quantity": 1,
             "price_unit": item["amount"],
@@ -503,7 +518,7 @@ class VmeCollection(models.Model):
         }) for item in costs["interest"]]
         if costs["penalty"]:
             lines.append(Command.create({
-                "name": self.env._("Forfaitaire schadevergoeding volgens het reglement van mede-eigendom"),
+                "name": owner_env._("Forfaitaire schadevergoeding volgens het reglement van mede-eigendom"),
                 "quantity": 1,
                 "price_unit": costs["penalty"],
                 "account_id": accounts[PENALTY_ACCOUNT_CODE].id,
@@ -717,14 +732,14 @@ class VmeCollectionReminder(models.Model):
                 "%(level)s %(owner)s", level=levels.get(reminder.level, ""), owner=reminder.partner_id.name or "")
 
     def _update_content(self):
-        """Snapshot the open amounts and render the Dutch template of the level (fast, no PDF)."""
+        """Snapshot the open amounts and render the template of the level in the owner's language (fast, no PDF)."""
         for reminder in self:
             collection = reminder.collection_id
             lines = collection._open_lines(reminder.date)
             reminder.write({
                 "line_ids": [Command.clear()] + [Command.create({
                     "move_name": line.move_id.name,
-                    "description": move_description(line.move_id),
+                    "description": move_description(line.move_id, lang=collection.partner_id.lang),
                     "fund": line.move_id.vme_fund,
                     "date_maturity": line.date_maturity,
                     "payment_reference": line.move_id.payment_reference,
@@ -736,11 +751,12 @@ class VmeCollectionReminder(models.Model):
             })
             template = self.env.ref(LEVEL_TEMPLATES[reminder.level]).sudo()
             reminder.write({
-                "subject": template._render_field("subject", reminder.ids)[reminder.id],
-                "body_html": template._render_field("body_html", reminder.ids)[reminder.id],
+                "subject": template._render_field("subject", reminder.ids, compute_lang=True)[reminder.id],
+                "body_html": template._render_field("body_html", reminder.ids, compute_lang=True)[reminder.id],
             })
 
     def action_update(self):
+        check_not_auditor(self.env)
         if self.filtered(lambda r: r.state != "draft"):
             raise UserError(self.env._("Alleen concepten kunnen bijgewerkt worden."))
         self._update_content()

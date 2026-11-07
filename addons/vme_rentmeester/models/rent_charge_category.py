@@ -36,13 +36,15 @@ class VmeRentChargeCategory(models.Model):
     note = fields.Text(string="Uitleg")
 
     @api.model
-    def _match(self, allocation):
+    def _match(self, allocation, categories=None):
         """Rubric of a cost allocation of the owner's annual statement.
 
         A supplier listed on a rubric wins, then the kind of key, then the longest matching
-        account prefix. Costs that match nothing stay with the landlord.
+        account prefix. Costs that match nothing stay with the landlord. Pass `categories`
+        (all rubrics) when matching many allocations, to read them only once.
         """
-        categories = self.search([])
+        if categories is None:
+            categories = self.search([])
         supplier = allocation.move_id.partner_id.commercial_partner_id
         by_partner = categories.filtered(lambda c: supplier in c.partner_ids.commercial_partner_id)
         if by_partner:

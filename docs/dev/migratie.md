@@ -4,6 +4,8 @@ Een syndicus die overstapt, brengt een hele portefeuille mee. We kennen het expo
 
 Code: `addons/vme_belgie/models/vme_migration.py`, scherm `views/vme_migration_views.xml`, tests `tests/test_migration.py`, voorbeeldbestanden `demo_data/migratie/`.
 
+Een overname met de basisakte en de notulen in plaats van (of naast) een export: [overname-ai.md](overname-ai.md). Die levert de tabellen `vme`, `kavels`, `sleutels`, `werken`, `procedures` en `mandaten` als voorstel, via het haakje `_apply_proposal`.
+
 ## Werking
 
 `vme.migration` is een gewoon (niet-transient) model, zodat elke overstap een spoor nalaat: de bestanden, het rapport, de nieuwe VME en de openingsboeking. Menu: **VME > Configuratie > Overstap uit ander pakket**, alleen voor beheerders (`base.group_system`).
@@ -38,9 +40,12 @@ Vetgedrukte kolommen zijn verplicht.
 | `kavels.csv` | **kavel**, type, verdieping | type: appartement (standaard), garage, berging, handelsruimte, andere |
 | `eigenaars.csv` | **code**, **naam**, email, telefoon, straat, postcode, gemeente | `code` is de code uit het oude pakket; ze komt in `res.partner.ref` |
 | `eigendommen.csv` | **kavel**, **eigenaar**, **begindatum**, einddatum | eigenaar = code; einddatum leeg zolang de eigendom loopt |
-| `sleutels.csv` | **sleutel**, **soort**, **totaal**, **kavel**, **quotiteit** | Lang formaat: één rij per sleutel en kavel. soort: algemeen, lift, verwarming, verbruik, andere |
+| `sleutels.csv` | **sleutel**, **soort**, **totaal**, **kavel**, **quotiteit**, meerderheid | Lang formaat: één rij per sleutel en kavel. soort: algemeen, lift, verwarming, verbruik, andere. meerderheid: voor een sleutel die de AV besliste, letterlijk uit de notulen; minder dan 4/5 geeft een waarschuwing |
 | `leveranciers.csv` | **code**, **naam**, btw, email, iban, sleutel | Optioneel bestand. sleutel = naam uit `sleutels.csv` en maakt een verdeelregel |
 | `openingsbalans.csv` | **soort**, code, **bedrag**, omschrijving | Zie hieronder |
+| `werken.csv` | **omschrijving**, **bedrag**, financiering, sleutel, datum_av | Optioneel. Beslist maar nog niet uitgevoerd; wordt een werkdossier in voorbereiding. financiering: werkkapitaal of reservekapitaal (standaard) |
+| `procedures.csv` | **omschrijving**, tegenpartij, stand | Optioneel. Lopende procedures; worden een taak op de VME en komen in "Gerechtelijke procedures" |
+| `mandaten.csv` | **rol**, **naam**, **begindatum**, einddatum | Optioneel. rol: voorzitter, lid, commissaris. Een raadslid moet eigenaar zijn op de begindatum (naam zoals in `eigenaars.csv`) |
 
 ### Openingsbalans
 

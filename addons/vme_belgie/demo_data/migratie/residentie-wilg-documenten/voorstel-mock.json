@@ -1,0 +1,1079 @@
+{
+ "basisakte-scan.pdf": {
+  "document_kind": "deed",
+  "meeting_date": null,
+  "summary": "Basisakte met 14 kavels en 4 verdeelsleutels.",
+  "vme": [
+   {
+    "field": "naam",
+    "value": "Residentie Wilg",
+    "page": 1,
+    "fragment": "draagt de naam Residentie Wilg.",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "field": "straat",
+    "value": "Wilgenlaan 21",
+    "page": 1,
+    "fragment": "gelegen aan de Wilgenlaan 21, 3000 Voorbeeldstad",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "field": "postcode",
+    "value": "3000",
+    "page": 1,
+    "fragment": "gelegen aan de Wilgenlaan 21, 3000 Voorbeeldstad",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "field": "gemeente",
+    "value": "Voorbeeldstad",
+    "page": 1,
+    "fragment": "gelegen aan de Wilgenlaan 21, 3000 Voorbeeldstad",
+    "confidence": "high",
+    "note": ""
+   }
+  ],
+  "lots": [
+   {
+    "name": "A1",
+    "lot_type": "apartment",
+    "floor": "gelijkvloers",
+    "page": 2,
+    "fragment": "A1 | appartement | gelijkvloers | trap A | 95/1000",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "name": "A2",
+    "lot_type": "apartment",
+    "floor": "eerste verdieping",
+    "page": 2,
+    "fragment": "A2 | appartement | eerste verdieping | trap A | 1?0/1000",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "name": "A3",
+    "lot_type": "apartment",
+    "floor": "tweede verdieping",
+    "page": 2,
+    "fragment": "A3 | appartement | tweede verdieping | trap A | 110/1000",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "name": "A4",
+    "lot_type": "apartment",
+    "floor": "derde verdieping",
+    "page": 2,
+    "fragment": "A4 | appartement | derde verdieping | trap A | 135/1000",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "name": "B1",
+    "lot_type": "apartment",
+    "floor": "gelijkvloers",
+    "page": 2,
+    "fragment": "B1 | appartement | gelijkvloers | trap B | 90/1000",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "name": "B2",
+    "lot_type": "apartment",
+    "floor": "eerste verdieping",
+    "page": 2,
+    "fragment": "B2 | appartement | eerste verdieping | trap B | 105/1000",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "name": "B3",
+    "lot_type": "apartment",
+    "floor": "tweede verdieping",
+    "page": 2,
+    "fragment": "B3 | appartement | tweede verdieping | trap B | 1O5/1000",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "name": "B4",
+    "lot_type": "apartment",
+    "floor": "derde verdieping",
+    "page": 2,
+    "fragment": "B4 | appartement | derde verdieping | trap B | 130/1000",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "name": "G1",
+    "lot_type": "garage",
+    "floor": "kelder",
+    "page": 2,
+    "fragment": "G1 | garage | kelder | - | 25/1000",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "name": "G2",
+    "lot_type": "garage",
+    "floor": "kelder",
+    "page": 2,
+    "fragment": "G2 | garage | kelder | - | 25/1000",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "name": "G3",
+    "lot_type": "garage",
+    "floor": "kelder",
+    "page": 2,
+    "fragment": "G3 | garage | kelder | - | 25/1000",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "name": "G4",
+    "lot_type": "garage",
+    "floor": "kelder",
+    "page": 2,
+    "fragment": "G4 | garage | kelder | - | 25/1000",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "name": "K1",
+    "lot_type": "storage",
+    "floor": "kelder",
+    "page": 2,
+    "fragment": "K1 | berging | kelder | - | 10/1000",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "name": "K2",
+    "lot_type": "storage",
+    "floor": "kelder",
+    "page": 2,
+    "fragment": "K2 | berging | kelder | - | 10/1000",
+    "confidence": "high",
+    "note": ""
+   }
+  ],
+  "keys": [
+   {
+    "name": "Algemene delen",
+    "key_type": "general",
+    "total": "1000",
+    "majority": null,
+    "shares": [
+     {
+      "lot": "A1",
+      "value": "95",
+      "page": 2,
+      "fragment": "A1 | appartement | gelijkvloers | trap A | 95/1000",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "A2",
+      "value": null,
+      "page": 2,
+      "fragment": "A2 | appartement | eerste verdieping | trap A | 1?0/1000",
+      "confidence": "low",
+      "note": "Onleesbaar: '1?0'. Lees het aandeel na in de akte."
+     },
+     {
+      "lot": "A3",
+      "value": "110",
+      "page": 2,
+      "fragment": "A3 | appartement | tweede verdieping | trap A | 110/1000",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "A4",
+      "value": "135",
+      "page": 2,
+      "fragment": "A4 | appartement | derde verdieping | trap A | 135/1000",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "B1",
+      "value": "90",
+      "page": 2,
+      "fragment": "B1 | appartement | gelijkvloers | trap B | 90/1000",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "B2",
+      "value": "105",
+      "page": 2,
+      "fragment": "B2 | appartement | eerste verdieping | trap B | 105/1000",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "B3",
+      "value": "105",
+      "page": 2,
+      "fragment": "B3 | appartement | tweede verdieping | trap B | 1O5/1000",
+      "confidence": "low",
+      "note": "Onzeker gelezen: '1O5' lijkt 105; lees na in de akte."
+     },
+     {
+      "lot": "B4",
+      "value": "130",
+      "page": 2,
+      "fragment": "B4 | appartement | derde verdieping | trap B | 130/1000",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "G1",
+      "value": "25",
+      "page": 2,
+      "fragment": "G1 | garage | kelder | - | 25/1000",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "G2",
+      "value": "25",
+      "page": 2,
+      "fragment": "G2 | garage | kelder | - | 25/1000",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "G3",
+      "value": "25",
+      "page": 2,
+      "fragment": "G3 | garage | kelder | - | 25/1000",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "G4",
+      "value": "25",
+      "page": 2,
+      "fragment": "G4 | garage | kelder | - | 25/1000",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "K1",
+      "value": "10",
+      "page": 2,
+      "fragment": "K1 | berging | kelder | - | 10/1000",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "K2",
+      "value": "10",
+      "page": 2,
+      "fragment": "K2 | berging | kelder | - | 10/1000",
+      "confidence": "high",
+      "note": ""
+     }
+    ],
+    "page": 2,
+    "fragment": "Tabel 1 - Algemene delen - totaal 1000/1000",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "name": "Lift",
+    "key_type": "elevator",
+    "total": "1000",
+    "majority": null,
+    "shares": [
+     {
+      "lot": "A1",
+      "value": "60",
+      "page": 3,
+      "fragment": "A1 | 60/1000",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "A2",
+      "value": "125",
+      "page": 3,
+      "fragment": "A2 | 125/1000",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "A3",
+      "value": "145",
+      "page": 3,
+      "fragment": "A3 | 145/1000",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "A4",
+      "value": "170",
+      "page": 3,
+      "fragment": "A4 | 170/1000",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "B1",
+      "value": "60",
+      "page": 3,
+      "fragment": "B1 | 60/1000",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "B2",
+      "value": "125",
+      "page": 3,
+      "fragment": "B2 | 125/1000",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "B3",
+      "value": "145",
+      "page": 3,
+      "fragment": "B3 | 145/1000",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "B4",
+      "value": "170",
+      "page": 3,
+      "fragment": "B4 | 170/1000",
+      "confidence": "high",
+      "note": ""
+     }
+    ],
+    "page": 3,
+    "fragment": "Tabel 2 - Lift - totaal 1000/1000",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "name": "Trap A",
+    "key_type": "other",
+    "total": "450",
+    "majority": null,
+    "shares": [
+     {
+      "lot": "A1",
+      "value": "95",
+      "page": 3,
+      "fragment": "A1 | 95/450",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "A2",
+      "value": "110",
+      "page": 3,
+      "fragment": "A2 | 110/450",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "A3",
+      "value": "110",
+      "page": 3,
+      "fragment": "A3 | 110/450",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "A4",
+      "value": "135",
+      "page": 3,
+      "fragment": "A4 | 135/450",
+      "confidence": "high",
+      "note": ""
+     }
+    ],
+    "page": 3,
+    "fragment": "Tabel 3 - Trap A - totaal 450/450",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "name": "Trap B",
+    "key_type": "other",
+    "total": "430",
+    "majority": null,
+    "shares": [
+     {
+      "lot": "B1",
+      "value": "90",
+      "page": 3,
+      "fragment": "B1 | 90/430",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "B2",
+      "value": "105",
+      "page": 3,
+      "fragment": "B2 | 105/430",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "B3",
+      "value": "105",
+      "page": 3,
+      "fragment": "B3 | 105/430",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "B4",
+      "value": "130",
+      "page": 3,
+      "fragment": "B4 | 130/430",
+      "confidence": "high",
+      "note": ""
+     }
+    ],
+    "page": 3,
+    "fragment": "Tabel 4 - Trap B - totaal 430/430",
+    "confidence": "high",
+    "note": ""
+   }
+  ],
+  "works": [],
+  "procedures": [],
+  "mandates": []
+ },
+ "basisakte.pdf": {
+  "document_kind": "deed",
+  "meeting_date": null,
+  "summary": "Basisakte met 14 kavels en 4 verdeelsleutels.",
+  "vme": [
+   {
+    "field": "naam",
+    "value": "Residentie Wilg",
+    "page": 1,
+    "fragment": "draagt de naam Residentie Wilg.",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "field": "straat",
+    "value": "Wilgenlaan 21",
+    "page": 1,
+    "fragment": "gelegen aan de Wilgenlaan 21, 3000 Voorbeeldstad",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "field": "postcode",
+    "value": "3000",
+    "page": 1,
+    "fragment": "gelegen aan de Wilgenlaan 21, 3000 Voorbeeldstad",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "field": "gemeente",
+    "value": "Voorbeeldstad",
+    "page": 1,
+    "fragment": "gelegen aan de Wilgenlaan 21, 3000 Voorbeeldstad",
+    "confidence": "high",
+    "note": ""
+   }
+  ],
+  "lots": [
+   {
+    "name": "A1",
+    "lot_type": "apartment",
+    "floor": "gelijkvloers",
+    "page": 2,
+    "fragment": "A1 | appartement | gelijkvloers | trap A | 95/1000",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "name": "A2",
+    "lot_type": "apartment",
+    "floor": "eerste verdieping",
+    "page": 2,
+    "fragment": "A2 | appartement | eerste verdieping | trap A | 110/1000",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "name": "A3",
+    "lot_type": "apartment",
+    "floor": "tweede verdieping",
+    "page": 2,
+    "fragment": "A3 | appartement | tweede verdieping | trap A | 110/1000",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "name": "A4",
+    "lot_type": "apartment",
+    "floor": "derde verdieping",
+    "page": 2,
+    "fragment": "A4 | appartement | derde verdieping | trap A | 135/1000",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "name": "B1",
+    "lot_type": "apartment",
+    "floor": "gelijkvloers",
+    "page": 2,
+    "fragment": "B1 | appartement | gelijkvloers | trap B | 90/1000",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "name": "B2",
+    "lot_type": "apartment",
+    "floor": "eerste verdieping",
+    "page": 2,
+    "fragment": "B2 | appartement | eerste verdieping | trap B | 105/1000",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "name": "B3",
+    "lot_type": "apartment",
+    "floor": "tweede verdieping",
+    "page": 2,
+    "fragment": "B3 | appartement | tweede verdieping | trap B | 105/1000",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "name": "B4",
+    "lot_type": "apartment",
+    "floor": "derde verdieping",
+    "page": 2,
+    "fragment": "B4 | appartement | derde verdieping | trap B | 130/1000",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "name": "G1",
+    "lot_type": "garage",
+    "floor": "kelder",
+    "page": 2,
+    "fragment": "G1 | garage | kelder | - | 25/1000",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "name": "G2",
+    "lot_type": "garage",
+    "floor": "kelder",
+    "page": 2,
+    "fragment": "G2 | garage | kelder | - | 25/1000",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "name": "G3",
+    "lot_type": "garage",
+    "floor": "kelder",
+    "page": 2,
+    "fragment": "G3 | garage | kelder | - | 25/1000",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "name": "G4",
+    "lot_type": "garage",
+    "floor": "kelder",
+    "page": 2,
+    "fragment": "G4 | garage | kelder | - | 25/1000",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "name": "K1",
+    "lot_type": "storage",
+    "floor": "kelder",
+    "page": 2,
+    "fragment": "K1 | berging | kelder | - | 10/1000",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "name": "K2",
+    "lot_type": "storage",
+    "floor": "kelder",
+    "page": 2,
+    "fragment": "K2 | berging | kelder | - | 10/1000",
+    "confidence": "high",
+    "note": ""
+   }
+  ],
+  "keys": [
+   {
+    "name": "Algemene delen",
+    "key_type": "general",
+    "total": "1000",
+    "majority": null,
+    "shares": [
+     {
+      "lot": "A1",
+      "value": "95",
+      "page": 2,
+      "fragment": "A1 | appartement | gelijkvloers | trap A | 95/1000",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "A2",
+      "value": "110",
+      "page": 2,
+      "fragment": "A2 | appartement | eerste verdieping | trap A | 110/1000",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "A3",
+      "value": "110",
+      "page": 2,
+      "fragment": "A3 | appartement | tweede verdieping | trap A | 110/1000",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "A4",
+      "value": "135",
+      "page": 2,
+      "fragment": "A4 | appartement | derde verdieping | trap A | 135/1000",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "B1",
+      "value": "90",
+      "page": 2,
+      "fragment": "B1 | appartement | gelijkvloers | trap B | 90/1000",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "B2",
+      "value": "105",
+      "page": 2,
+      "fragment": "B2 | appartement | eerste verdieping | trap B | 105/1000",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "B3",
+      "value": "105",
+      "page": 2,
+      "fragment": "B3 | appartement | tweede verdieping | trap B | 105/1000",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "B4",
+      "value": "130",
+      "page": 2,
+      "fragment": "B4 | appartement | derde verdieping | trap B | 130/1000",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "G1",
+      "value": "25",
+      "page": 2,
+      "fragment": "G1 | garage | kelder | - | 25/1000",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "G2",
+      "value": "25",
+      "page": 2,
+      "fragment": "G2 | garage | kelder | - | 25/1000",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "G3",
+      "value": "25",
+      "page": 2,
+      "fragment": "G3 | garage | kelder | - | 25/1000",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "G4",
+      "value": "25",
+      "page": 2,
+      "fragment": "G4 | garage | kelder | - | 25/1000",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "K1",
+      "value": "10",
+      "page": 2,
+      "fragment": "K1 | berging | kelder | - | 10/1000",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "K2",
+      "value": "10",
+      "page": 2,
+      "fragment": "K2 | berging | kelder | - | 10/1000",
+      "confidence": "high",
+      "note": ""
+     }
+    ],
+    "page": 2,
+    "fragment": "Tabel 1 - Algemene delen - totaal 1000/1000",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "name": "Lift",
+    "key_type": "elevator",
+    "total": "1000",
+    "majority": null,
+    "shares": [
+     {
+      "lot": "A1",
+      "value": "60",
+      "page": 3,
+      "fragment": "A1 | 60/1000",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "A2",
+      "value": "125",
+      "page": 3,
+      "fragment": "A2 | 125/1000",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "A3",
+      "value": "145",
+      "page": 3,
+      "fragment": "A3 | 145/1000",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "A4",
+      "value": "170",
+      "page": 3,
+      "fragment": "A4 | 170/1000",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "B1",
+      "value": "60",
+      "page": 3,
+      "fragment": "B1 | 60/1000",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "B2",
+      "value": "125",
+      "page": 3,
+      "fragment": "B2 | 125/1000",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "B3",
+      "value": "145",
+      "page": 3,
+      "fragment": "B3 | 145/1000",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "B4",
+      "value": "170",
+      "page": 3,
+      "fragment": "B4 | 170/1000",
+      "confidence": "high",
+      "note": ""
+     }
+    ],
+    "page": 3,
+    "fragment": "Tabel 2 - Lift - totaal 1000/1000",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "name": "Trap A",
+    "key_type": "other",
+    "total": "450",
+    "majority": null,
+    "shares": [
+     {
+      "lot": "A1",
+      "value": "95",
+      "page": 3,
+      "fragment": "A1 | 95/450",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "A2",
+      "value": "110",
+      "page": 3,
+      "fragment": "A2 | 110/450",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "A3",
+      "value": "110",
+      "page": 3,
+      "fragment": "A3 | 110/450",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "A4",
+      "value": "135",
+      "page": 3,
+      "fragment": "A4 | 135/450",
+      "confidence": "high",
+      "note": ""
+     }
+    ],
+    "page": 3,
+    "fragment": "Tabel 3 - Trap A - totaal 450/450",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "name": "Trap B",
+    "key_type": "other",
+    "total": "430",
+    "majority": null,
+    "shares": [
+     {
+      "lot": "B1",
+      "value": "90",
+      "page": 3,
+      "fragment": "B1 | 90/430",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "B2",
+      "value": "105",
+      "page": 3,
+      "fragment": "B2 | 105/430",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "B3",
+      "value": "105",
+      "page": 3,
+      "fragment": "B3 | 105/430",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "B4",
+      "value": "130",
+      "page": 3,
+      "fragment": "B4 | 130/430",
+      "confidence": "high",
+      "note": ""
+     }
+    ],
+    "page": 3,
+    "fragment": "Tabel 4 - Trap B - totaal 430/430",
+    "confidence": "high",
+    "note": ""
+   }
+  ],
+  "works": [],
+  "procedures": [],
+  "mandates": []
+ },
+ "notulen-av-2025.pdf": {
+  "document_kind": "minutes",
+  "meeting_date": "2025-04-10",
+  "summary": "Notulen van de AV van 2025-04-10: 1 werken, 0 procedures, 0 mandaten.",
+  "vme": [
+   {
+    "field": "kbo",
+    "value": "0000.001.483",
+    "page": 1,
+    "fragment": "Vereniging van mede-eigenaars Residentie Wilg - Wilgenlaan 21, 3000 Voorbeeldstad - KBO 0000.001.483",
+    "confidence": "high",
+    "note": ""
+   }
+  ],
+  "lots": [],
+  "keys": [],
+  "works": [
+   {
+    "description": "Renovatie dak trap B",
+    "amount": "48500.00",
+    "financing": "reserve",
+    "key": "Algemene delen",
+    "page": 1,
+    "fragment": "Punt 3. Renovatie dak trap B. De vergadering beslist het dak van trap B te vernieuwen, omdat de dakbedekking aan het einde van haar levensduur is. De kostprijs wordt geraamd op 48.500,00 EUR excl. btw, te betalen uit het reservekapitaal en te verdelen volgens de algemene delen. De syndicus vraagt dr",
+    "confidence": "high",
+    "note": ""
+   }
+  ],
+  "procedures": [],
+  "mandates": []
+ },
+ "notulen-av-2026.pdf": {
+  "document_kind": "minutes",
+  "meeting_date": "2026-04-16",
+  "summary": "Notulen van de AV van 2026-04-16: 1 werken, 2 procedures, 3 mandaten.",
+  "vme": [
+   {
+    "field": "kbo",
+    "value": "0000.001.483",
+    "page": 1,
+    "fragment": "Vereniging van mede-eigenaars Residentie Wilg - Wilgenlaan 21, 3000 Voorbeeldstad - KBO 0000.001.483",
+    "confidence": "high",
+    "note": ""
+   }
+  ],
+  "lots": [],
+  "keys": [
+   {
+    "name": "Garagepoort",
+    "key_type": "other",
+    "total": "4",
+    "majority": "4/5 van de stemmen",
+    "shares": [
+     {
+      "lot": "G1",
+      "value": "1",
+      "page": 1,
+      "fragment": "eigen sleutel 'Garagepoort': alleen de garages G1, G2, G3 en G4, elk voor een gelijk deel.",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "G2",
+      "value": "1",
+      "page": 1,
+      "fragment": "eigen sleutel 'Garagepoort': alleen de garages G1, G2, G3 en G4, elk voor een gelijk deel.",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "G3",
+      "value": "1",
+      "page": 1,
+      "fragment": "eigen sleutel 'Garagepoort': alleen de garages G1, G2, G3 en G4, elk voor een gelijk deel.",
+      "confidence": "high",
+      "note": ""
+     },
+     {
+      "lot": "G4",
+      "value": "1",
+      "page": 1,
+      "fragment": "eigen sleutel 'Garagepoort': alleen de garages G1, G2, G3 en G4, elk voor een gelijk deel.",
+      "confidence": "high",
+      "note": ""
+     }
+    ],
+    "page": 1,
+    "fragment": "eigen sleutel 'Garagepoort': alleen de garages G1, G2, G3 en G4, elk voor een gelijk deel.",
+    "confidence": "high",
+    "note": ""
+   }
+  ],
+  "works": [
+   {
+    "description": "Vervanging garagepoort",
+    "amount": "6200.00",
+    "financing": "working",
+    "key": "Garagepoort",
+    "page": 1,
+    "fragment": "Punt 3. Vervanging garagepoort. De vergadering beslist de garagepoort te vervangen. De kostprijs wordt geraamd op 6.200,00 EUR excl. btw, te betalen uit het werkkapitaal. In afwijking van de basisakte worden deze kosten verdeeld volgens een eigen sleutel 'Garagepoort': alleen de garages G1, G2, G3 e",
+    "confidence": "high",
+    "note": ""
+   }
+  ],
+  "procedures": [
+   {
+    "description": "De procedure tegen Bouwbedrijf Voorbeeld NV wegens de waterinfiltratie in de kelder loopt bij de rechtbank van eerste aanleg Voorbeeldstad; de zaak is uitgesteld naar 12 januari 2027.",
+    "counterparty": "Bouwbedrijf Voorbeeld NV",
+    "status": null,
+    "page": 2,
+    "fragment": "De procedure tegen Bouwbedrijf Voorbeeld NV wegens de waterinfiltratie in de kelder loopt bij de rechtbank van eerste aanleg Voorbeeldstad; de zaak is uitgesteld naar 12 januari 2027.",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "description": "Tegen de eigenaar van kavel G3 loopt een procedure bij het vredegerecht voor achterstallige provisies van 1.240,00 EUR.",
+    "counterparty": "de eigenaar van kavel G3",
+    "status": null,
+    "page": 2,
+    "fragment": "Tegen de eigenaar van kavel G3 loopt een procedure bij het vredegerecht voor achterstallige provisies van 1.240,00 EUR.",
+    "confidence": "high",
+    "note": ""
+   }
+  ],
+  "mandates": [
+   {
+    "role": "chair",
+    "person": "Eigenaar Wilg A3",
+    "date_start": "2026-04-16",
+    "date_end": null,
+    "page": 2,
+    "fragment": "Eigenaar Wilg A3 wordt voorzitter van de raad van mede-eigendom.",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "role": "member",
+    "person": "Eigenaar Wilg B2",
+    "date_start": "2026-04-16",
+    "date_end": null,
+    "page": 2,
+    "fragment": "Eigenaar Wilg B2 wordt lid van de raad van mede-eigendom.",
+    "confidence": "high",
+    "note": ""
+   },
+   {
+    "role": "auditor",
+    "person": "Eigenaar Wilg B4",
+    "date_start": "2026-04-16",
+    "date_end": null,
+    "page": 2,
+    "fragment": "Eigenaar Wilg B4 wordt commissaris van de rekeningen.",
+    "confidence": "high",
+    "note": ""
+   }
+  ]
+ }
+}

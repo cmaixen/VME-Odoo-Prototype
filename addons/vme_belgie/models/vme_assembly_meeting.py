@@ -301,9 +301,13 @@ class VmeAssemblyItem(models.Model):
             return "no_quorum"
         votes_for, cast = counted["for"], counted["for"] + counted["against"]
         if self.majority == "unanimous":
-            # LEGAL-CHECK: art. 3.88 §3 BW - unanimity of the votes of all co-owners.
-            all_units = sum(_units(a.shares) for a in assembly.attendee_ids)
-            return "adopted" if votes_for == all_units else "rejected"
+            # LEGAL-CHECK: art. 3.88 §3 BW - unanimity of the votes of all co-owners. Every owner
+            # votes for, so the cap of art. 3.87 §6 on the counted votes plays no role here.
+            owners = assembly.attendee_ids.filtered("shares")
+            voted_for = self.vote_ids.filtered(
+                lambda v: v.vote == "for" and v.attendee_id.attendance in ("present", "represented")
+            ).attendee_id
+            return "adopted" if owners and owners <= voted_for else "rejected"
         numerator, denominator, strict = MAJORITY_RULES[self.majority]
         if not cast:
             return "rejected"

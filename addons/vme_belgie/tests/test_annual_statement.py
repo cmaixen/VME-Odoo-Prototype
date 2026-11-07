@@ -75,6 +75,18 @@ class TestAnnualStatementSmall(TransactionCase):
         # B: costs 400, paid 240 (second call open), balance +160 to pay; 240 still open.
         self.assertEqual((b["cost_total"], b["working"]["paid"], b["working"]["open"], b["balance"]), (400.0, 240.0, 240.0, 160.0))
 
+    def test_reversed_call_is_not_paid(self):
+        unpaid = self.env["account.move"].search([
+            ("vme_provision_call_id.association_id", "=", self.vme.id), ("partner_id", "=", self.owner_b.id),
+            ("vme_fund", "=", "working"), ("vme_provision_call_id.number", "=", 2),
+        ])
+        unpaid._reverse_moves(cancel=True)
+        self.assertEqual(unpaid.payment_state, "reversed")
+        _data, b = self._statement(self.owner_b)
+        # The cancelled call of 240 is neither invoiced nor paid: B still owes 400 - 240.
+        self.assertEqual((b["working"]["invoiced"], b["working"]["paid"], b["working"]["open"], b["balance"]),
+                         (240.0, 240.0, 0.0, 160.0))
+
     def test_reserve_capital_is_not_settled(self):
         _data, a = self._statement(self.owner_a)
         self.assertEqual((a["reserve"]["invoiced"], a["reserve"]["paid"]), (120.0, 120.0))
@@ -147,6 +159,15 @@ class TestAnnualStatementDemo(TransactionCase):
         self.assertAlmostEqual(self.data["allocated_total"], sum(bills.mapped("amount_total")), places=2)
         self.assertAlmostEqual(sum(st["cost_total"] for st in self.data["statements"]), self.data["bills_total"], places=2)
 
+    def test_syndic_fee_bills_stay_drafts(self):
+        # Fee invoices of Q3 2026 are confirmed in the office; in the VME they wait as drafts, so the
+        # costs of the demo year do not change.
+        invoices = self.env["account.move"].search([("vme_fee_agreement_id", "!=", False)])
+        self.assertEqual(len(invoices), 5)  # Linde and Kaaihuis per quarter, Hof ter Beuken per month
+        self.assertEqual(set(invoices.mapped("state")), {"posted"})
+        self.assertEqual(set(invoices.vme_fee_bill_id.mapped("state")), {"draft"})
+        self.assertEqual(invoices.vme_fee_bill_id.company_id, self.env["vme.association"].search([]).company_id)
+
     def test_sale_of_a5(self):
         seller = self.by_name["Eigenaar Linde A5"]
         buyer = self.by_name["Nieuwe eigenaar Linde A5"]
@@ -170,9 +191,28 @@ class TestAnnualStatementDemo(TransactionCase):
         beuken = self.env["vme.association"].search([("name", "=", "Hof ter Beuken")])
         data = beuken._get_annual_statement(2026)
         self.assertTrue(data["is_complete"])
-        paid_all = [st for st in data["statements"] if st["working"]["open"] == 0]
-        self.assertTrue(any(st["balance"] > 0 for st in paid_all))
-        self.assertTrue(any(st["balance"] < 0 for st in paid_all))
+        # The budget follows gas and caretaker (docs/beslissingen.md): heavy gas users pay extra, light ones get money back.
+        settled = [st["balance"] for st in data["statements"] if st["working"]["open"] == 0]
+        self.assertTrue(any(balance > 0 for balance in settled))
+        self.assertTrue(any(balance < 0 for balance in settled))
+
+    def test_financial_statements_of_demo_history(self):
+        """Stap 26: the balance sheet and income statement 2026 of every demo VME agree with the books."""
+        for vme in self.env["vme.association"].search([]):
+            data = vme._get_financial_statements(2026)
+            self.assertTrue(data["balance_ok"], vme.name)
+            self.assertTrue(data["carry_ok"], vme.name)
+            self.assertFalse(data["unclassified"], vme.name)
+            bills = self.env["account.move"].search([
+                ("company_id", "=", vme.company_id.id), ("move_type", "in", ("in_invoice", "in_refund")),
+                ("state", "=", "posted"), ("date", ">=", date(2026, 1, 1)), ("date", "<=", date(2026, 12, 31))])
+            # VAT is a cost: the costs of the year are the bills VAT included.
+            self.assertAlmostEqual(data["costs_total"]["amount"], -sum(bills.mapped("amount_total_signed")), places=2,
+                                   msg=vme.name)
+            capital = vme._get_capital_history(date(2026, 12, 31))
+            liabilities = {row["code"]: row["amount"] for row in data["liabilities"]}
+            self.assertAlmostEqual(liabilities["48901"], capital["reserve"], places=2, msg=vme.name)
+            self.assertAlmostEqual(liabilities["48902"], capital["working"], places=2, msg=vme.name)
 
     def test_demo_bank_statements(self):
         """The fictitious CODA/CAMT files (stap 12) still match the invoice numbers of the demo history."""
@@ -226,3 +266,56 @@ class TestAnnualStatementDemo(TransactionCase):
         self.assertEqual(debit.rejected_count, 1)
         self.assertEqual(sum(batches.mapped("paid_count")), sum(batches.mapped("line_count")) - 1)
         self.assertTrue(self.env["vme.collection"].search([("partner_id.name", "=", "Eigenaar Beuken B7"), ("state", "=", "open")]))
+
+    def test_demo_cycle(self):
+        """The three demo VMEs each at another point of their yearly cycle on 5 November 2026."""
+        today = date(2026, 11, 5)
+        Vme = self.env["vme.association"].with_context(vme_today=today)
+        linde, hof, kaai = (Vme.search([("name", "=", n)]) for n in ("Residentie Linde", "Hof ter Beuken", "Kaaihuis"))
+        Step = self.env["vme.cycle.step"].with_context(vme_today=today)
+
+        def steps(vme, year):
+            return Step.search([("association_id", "=", vme.id), ("year", "=", year)])
+
+        # Residentie Linde: 2026 done, the assembly of 2027 proposed and waiting for confirmation.
+        self.assertEqual(set(steps(linde, 2026).mapped("state")), {"done"})
+        planning = steps(linde, 2027).filtered(lambda s: s.code == "planning")
+        self.assertEqual(planning.state, "ready")
+        self.assertEqual(self.env["vme.assembly"].browse(planning.res_id).state, "proposed")
+        self.assertEqual(linde.cycle_late_count, 0)
+        self.assertIn("Klaargezet: AV 2027 plannen", linde.cycle_current_step)
+        # Hof ter Beuken: the assembly of 2026 was never planned.
+        late = hof.cycle_step_ids.filtered(lambda s: s._is_late(today))
+        self.assertEqual(sorted(late.mapped("code")), ["agenda", "assembly", "convocation"])
+        self.assertTrue(hof.signal_cycle)
+        self.assertNotIn(linde, Vme.search([("signal_cycle", "=", True)]))
+        # Kaaihuis: taken over in October, next step from 10 November.
+        self.assertEqual(steps(kaai, 2026).mapped("code"), ["provision"])
+        self.assertEqual(steps(kaai, 2026).state, "done")
+        self.assertEqual(kaai.cycle_late_count, 0)
+        self.assertIn("AV 2027 plannen", kaai.cycle_current_step)
+        # The cycle posted nothing: no posted invoice of 2027.
+        self.assertFalse(self.env["account.move"].search([("state", "=", "posted"), ("date", ">=", "2027-01-01")]))
+
+    def test_demo_worklist(self):
+        """Mijn werk vandaag of the demo login on 5 November 2026: late, today and this week are filled."""
+        admin = self.env.ref("base.user_admin")
+        items = self.env["vme.work.item"].with_user(admin).with_context(vme_today=date(2026, 11, 5))._build()
+        mine = items.filtered(lambda i: i.user_id == admin)
+        self.assertEqual(set(mine.mapped("urgency")), {"late", "today", "week"})
+        self.assertEqual(set(mine.association_id.mapped("name")), {"Residentie Linde", "Hof ter Beuken"})
+        by_name = {item.name: item for item in mine}
+        self.assertEqual(by_name["AV 2026 houden"].urgency, "late")
+        self.assertEqual(by_name["Keuring plannen: Brandblussers"].urgency, "late")
+        self.assertEqual(by_name["AI-voorstel: Vraag over afrekening of provisies (A8)"].item_type, "draft")
+        self.assertEqual(mine.filtered(lambda i: i.kind == "order").association_id.name, "Hof ter Beuken")
+        self.assertEqual(len(mine.filtered(lambda i: i.kind == "reminder")), 2)
+        self.assertEqual(by_name["Inlichtingen notaris: eerste vraag beantwoorden"].urgency, "week")
+        # The colleague of Kaaihuis has his own work; nothing of it is on the list of admin.
+        staff = items.user_id - admin
+        self.assertEqual(staff.login, "medewerker.voorbeeld@example.com")
+        self.assertEqual(set((items - mine).association_id.mapped("name")), {"Kaaihuis"})
+        # Building the list sent nothing: the drafts are still drafts.
+        self.assertEqual(set(self.env["vme.collection.reminder"].search([]).mapped("state")) - {"sent"}, {"draft"})
+        self.assertFalse(self.env["vme.request"].search([("association_id.name", "=", "Hof ter Beuken"),
+                                                         ("order_sent_date", "!=", False)]))

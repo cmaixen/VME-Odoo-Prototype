@@ -30,6 +30,14 @@ Elke VME is een company, en een medewerker heeft meestal maar een deel van de co
 - **Rekeningcodes zijn per company.** In Odoo 19 is `account.account.code` afhankelijk van de company in de context. Lees de code van een rekening uit een VME met `account.with_company(vme_company).code`, anders is ze leeg (zo vielen verzekering en energie eerst in geen enkele rubriek).
 - **`format_date` in een QWeb-rapport** bestaat niet vanzelf: geef het mee via een `report.<module>.<template>`-model met `_get_report_values`, zoals de rapporten van de rentmeester en het verkoopdossier.
 
+## Doorstorting en betaalbatch van het kantoor (stap 25b)
+
+- **Een `related` veld overschrijven met een compute.** `company_id` van `vme.payment.batch` was `related="association_id.company_id"`. In `vme_rentmeester` wordt het `fields.Many2one("res.company", related=None, compute=..., store=True)`; zonder de comodel faalt het laden met "unknown comodel_name '???'", want een related veld haalt die anders van zijn bron.
+- **Een niet-opgeslagen statusveld zonder `@api.depends` blijft in de cache hangen.** De betaalstatus van een doorstorting bleef "klaar voor betaalbatch" nadat de batch gevuld was; met depends op de status van het doorstortingsstuk wordt ze opnieuw berekend.
+- **Knoppen met een andere company geselecteerd.** Bevestigen, goedkeuren en het SEPA-bestand lazen btw, facturen en het doorstortingsstuk van het kantoor en gaven "Toegangsfout" zodra de gebruiker alleen een andere company had aangevinkt. Doorstorting en betaalbatch van het kantoor draaien hun knoppen daarom met `with_company(kantoor)` (`_in_own_company` op de batch); de test `test_confirm_with_other_company_selected` doet het als admin met alleen de hoofdcompany.
+- **De ereloonfactuur vraagt een bevestigde rekening van het kantoor.** Odoo weigert een klantfactuur te boeken met een niet-bevestigde eigen rekening ("The company bank account ... is not trusted"), behalve voor de superuser. Tests die als gewone gebruiker bevestigen, laten de rekening eerst door admin bevestigen; de demo laadt als admin.
+- **Het rekeningstelsel van het kantoor bestaat pas bij de commit.** De btw van de demomandaten wordt daarom in een precommit ingevuld, en `_get_fee_tax()` valt terug op 21 % diensten van het kantoor als het mandaat geen btw heeft.
+
 ## Tijdelijke records in formulieren (`_origin`)
 
 In een open formulier of wizard zijn Many2one- en Many2many-waarden tijdelijke `NewId`-records. Een `search` met `vme.id` vindt dan niets. Gebruik `record._origin` (of `record._origin.id`) om het echte record te krijgen, zoals in `vme.provision.call.wizard._get_budget()` en `vme.annual.statement.wizard._get_statement()`. Het voorbeeld (`preview_html`) wordt berekend terwijl het formulier nog open is, dus elke compute die zoekt, moet dit doen.
@@ -103,6 +111,26 @@ De webclient leest records met `bin_size=True` in de context. Een binair veld (o
 ## Een tweede AV in hetzelfde jaar (stap 24)
 
 Sinds er buitengewone AV's zijn, kan een VME meer dan één AV per jaar hebben. Code of tests die "de AV van VME X in jaar Y" zoeken, filteren op `assembly_type = 'ordinary'`, anders krijgen ze twee records (`ensure_one` faalt, of een vergelijking op een recordset van twee).
+
+## Btw op aankopen en de verdeelregels van een belasting (stap 26)
+
+- **Btw kwam op 411000 terecht.** Het Belgische rekeningstelsel boekt aankoopbtw als terug te vorderen; voor een VME is ze een kost. Een btw-verdeelregel zonder rekening laat Odoo de btw op de rekening van de factuurregel boeken. Belastingen met een negatieve verdeelregel (verlegging) slaan we over, anders komen +21% en −21% op dezelfde kostenrekening.
+- **Facturen van vóór de migratie** houden hun btw op 411000. Op een bestaande database staat die dan als "diverse vorderingen" op de balans; een verse demo heeft dat niet.
+- **`_read_group` met `move_id` in de groepering** geeft één groep per boeking. Voor 200 VME's per rapport is dat snel genoeg (één VME per keer); voor een rapport over alle VME's samen zou je per rekening en dagboek groeperen en de fondsen apart opzoeken.
+
+## Record rules: OR tussen groepen, AND met globale regels (review toegangsrechten)
+
+- Regels van verschillende groepen waarin een gebruiker zit, worden met OR gecombineerd. Een regel "alleen eigen companies" voor `base.group_user` zou de commissaris (ook een interne gebruiker) weer laten schrijven, ondanks zijn regel `[(0, '=', 1)]`. Afscherming voor iedereen hoort daarom in een globale regel (zonder groep), die met AND geldt.
+- `company_ids` in een regel zijn de companies die in de bedrijvenkiezer geselecteerd zijn; `user.company_ids.ids` zijn alle toegestane. Onze VME-regels gebruiken de tweede, anders verdwijnen VME's uit de lijsten zodra een medewerker één company selecteert.
+- Een test die als superuser (`cls.env.user`) een company aanmaakt en daarna als `base.user_admin` leest, moet admin die company ook geven (zie `vme_rentmeester/tests/test_settlement.py`).
+- `vme.request` zonder kavel faalt bij het opslaan: `owner_id = request.lot_id and ...` geeft een lege `vme.lot`-recordset aan een veld op `res.partner`. Nog open.
+
+## Vertaling: rapporten in de taal van de ontvanger
+
+- **Een `t-lang` op `web.external_layout` vertaalt de inhoud niet.** De body van een `t-call` hoort bij het aanroepende template en wordt in de taal van dat template vertaald. De inhoud moet in een eigen `_document`-template dat met `t-lang` aangeroepen wordt; zie [vertaling.md](vertaling.md#rapporten-qweb).
+- **`--i18n-overwrite`.** Zonder die optie laat `-u` bestaande vertalingen in de database staan; een verbeterde vertaling in `fr.po` komt er dan niet door.
+- **`odoo i18n export` via `docker compose run`** faalt met "unrecognized arguments: --db_host": het entrypoint plakt de databaseverbinding achter elk commando. Gebruik een configbestand (`-c`), zie [vertaling.md](vertaling.md#nieuwe-termen-bijwerken).
+- **Tekst in een datumformaat of zinnen in stukken** (`'\'om\' HH:mm'`, "op de `<t t-if>`buitengewone`</t>` algemene vergadering") zijn niet te vertalen. Volledige zinnen per tak.
 
 ## Afsluiting van het boekjaar
 

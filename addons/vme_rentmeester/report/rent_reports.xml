@@ -15,53 +15,59 @@
             <t t-foreach="docs" t-as="o">
                 <t t-set="company" t-value="o.company_id"/>
                 <t t-set="money" t-value="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
-                <t t-call="web.external_layout">
-                    <div class="page">
-                        <div t-if="o.state == 'draft'" class="text-danger fw-bold mb-3">CONCEPT - nog niet verstuurd</div>
-                        <div class="row mb-4">
-                            <div class="col-6">
-                                <div>In naam van <strong t-out="o.landlord_id.name"/>, verhuurder</div>
-                                <div class="text-muted">Datum: <t t-out="format_date(o.request_date)"/></div>
-                            </div>
-                            <div class="col-5 offset-1">
-                                <div t-foreach="o.contract_id.tenant_ids" t-as="tenant"><strong t-out="tenant.name"/></div>
-                                <div t-out="o.contract_id.property_address"/>
-                            </div>
-                        </div>
-                        <h4>Indexering van de huurprijs</h4>
-                        <p>
-                            Betreft: huurcontract <strong t-out="o.contract_id.name"/>, ingegaan op
-                            <t t-out="format_date(o.contract_id.date_start)"/>.
-                        </p>
-                        <p>
-                            Beste huurder,<br/>
-                            Zoals het huurcontract toelaat, passen we de huurprijs aan aan de gezondheidsindex op de
-                            verjaardag van het contract, <t t-out="format_date(o.anniversary_date)"/>.
-                        </p>
-                        <table class="table table-sm mb-3">
-                            <tbody>
-                                <tr><td>Basishuur in het contract</td><td class="text-end"><t t-out="o.base_rent" t-options="money"/></td></tr>
-                                <tr><td>Aanvangsindex (<t t-out="format_date(o.start_index_month, date_format='MMMM y')"/>)</td><td class="text-end" t-out="'%.2f' % o.start_index"/></tr>
-                                <tr><td>Nieuw indexcijfer (<t t-out="format_date(o.new_index_month, date_format='MMMM y')"/>)</td><td class="text-end" t-out="'%.2f' % o.new_index"/></tr>
-                                <tr t-if="o.freeze_anniversary">
-                                    <td>Correctiefactor voor de indexstop van <t t-out="o.freeze_anniversary.year"/> (EPC-label <t t-out="o.epc_label"/>)</td>
-                                    <td class="text-end" t-out="'%.6f' % o.correction_factor"/>
-                                </tr>
-                                <tr><td>Huidige huur</td><td class="text-end"><t t-out="o.previous_rent" t-options="money"/></td></tr>
-                                <tr class="fw-bold"><td>Nieuwe huur per maand vanaf <t t-out="format_date(o.effective_date)"/></td><td class="text-end"><t t-out="o.new_rent" t-options="money"/></td></tr>
-                            </tbody>
-                        </table>
-                        <p class="small">
-                            Berekening: <t t-out="o.base_rent" t-options="money"/> × <t t-out="'%.2f' % o.new_index"/> / <t t-out="'%.2f' % o.start_index"/><t t-if="o.freeze_anniversary"> / <t t-out="'%.6f' % o.correction_factor"/></t>
-                            = <t t-out="o.new_rent" t-options="money"/>.
-                            <t t-if="o.freeze_anniversary">De correctiefactor houdt rekening met de beperkte indexering volgens het EPC-label tijdens de indexstop van 2022-2023; die gemiste indexering wordt niet ingehaald.</t>
-                        </p>
-                        <p t-if="o.contract_id.charges_amount">De maandelijkse lasten van <t t-out="o.contract_id.charges_amount" t-options="money"/> blijven ongewijzigd.</p>
-                        <p>Vanaf de huur van <t t-out="format_date(o.effective_date, date_format='MMMM y')"/> betaalt u het nieuwe bedrag op de gebruikelijke rekening.</p>
-                        <p>Met vriendelijke groeten,<br/><t t-out="company.name"/>, rentmeester</p>
-                    </div>
-                </t>
+                <t t-set="doc_lang" t-value="o.tenant_id.lang"/>
+                <t t-call="vme_rentmeester.report_indexation_letter_document" t-lang="o.tenant_id.lang"/>
             </t>
+        </t>
+    </template>
+
+    <!-- In the language of the recipient: see docs/dev/vertaling.md -->
+    <template id="report_indexation_letter_document">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <div t-if="o.state == 'draft'" class="text-danger fw-bold mb-3">CONCEPT - nog niet verstuurd</div>
+                <div class="row mb-4">
+                    <div class="col-6">
+                        <div>In naam van <strong t-out="o.landlord_id.name"/>, verhuurder</div>
+                        <div class="text-muted">Datum: <t t-out="format_date(o.request_date, lang=doc_lang)"/></div>
+                    </div>
+                    <div class="col-5 offset-1">
+                        <div t-foreach="o.contract_id.tenant_ids" t-as="tenant"><strong t-out="tenant.name"/></div>
+                        <div t-out="o.contract_id.property_address"/>
+                    </div>
+                </div>
+                <h4>Indexering van de huurprijs</h4>
+                <p>
+                    Betreft: huurcontract <strong t-out="o.contract_id.name"/>, ingegaan op
+                    <t t-out="format_date(o.contract_id.date_start, lang=doc_lang)"/>.
+                </p>
+                <p>
+                    Beste huurder,<br/>
+                    Zoals het huurcontract toelaat, passen we de huurprijs aan aan de gezondheidsindex op de
+                    verjaardag van het contract, <t t-out="format_date(o.anniversary_date, lang=doc_lang)"/>.
+                </p>
+                <table class="table table-sm mb-3">
+                    <tbody>
+                        <tr><td>Basishuur in het contract</td><td class="text-end"><t t-out="o.base_rent" t-options="money"/></td></tr>
+                        <tr><td>Aanvangsindex (<t t-out="format_date(o.start_index_month, date_format='MMMM y', lang=doc_lang)"/>)</td><td class="text-end" t-out="'%.2f' % o.start_index"/></tr>
+                        <tr><td>Nieuw indexcijfer (<t t-out="format_date(o.new_index_month, date_format='MMMM y', lang=doc_lang)"/>)</td><td class="text-end" t-out="'%.2f' % o.new_index"/></tr>
+                        <tr t-if="o.freeze_anniversary">
+                            <td>Correctiefactor voor de indexstop van <t t-out="o.freeze_anniversary.year"/> (EPC-label <t t-out="o.epc_label"/>)</td>
+                            <td class="text-end" t-out="'%.6f' % o.correction_factor"/>
+                        </tr>
+                        <tr><td>Huidige huur</td><td class="text-end"><t t-out="o.previous_rent" t-options="money"/></td></tr>
+                        <tr class="fw-bold"><td>Nieuwe huur per maand vanaf <t t-out="format_date(o.effective_date, lang=doc_lang)"/></td><td class="text-end"><t t-out="o.new_rent" t-options="money"/></td></tr>
+                    </tbody>
+                </table>
+                <p class="small">
+                    Berekening: <t t-out="o.base_rent" t-options="money"/> × <t t-out="'%.2f' % o.new_index"/> / <t t-out="'%.2f' % o.start_index"/><t t-if="o.freeze_anniversary"> / <t t-out="'%.6f' % o.correction_factor"/></t>
+                    = <t t-out="o.new_rent" t-options="money"/>.
+                    <t t-if="o.freeze_anniversary">De correctiefactor houdt rekening met de beperkte indexering volgens het EPC-label tijdens de indexstop van 2022-2023; die gemiste indexering wordt niet ingehaald.</t>
+                </p>
+                <p t-if="o.contract_id.charges_amount">De maandelijkse lasten van <t t-out="o.contract_id.charges_amount" t-options="money"/> blijven ongewijzigd.</p>
+                <p>Vanaf de huur van <t t-out="format_date(o.effective_date, date_format='MMMM y', lang=doc_lang)"/> betaalt u het nieuwe bedrag op de gebruikelijke rekening.</p>
+                <p>Met vriendelijke groeten,<br/><t t-out="company.name"/>, rentmeester</p>
+            </div>
         </t>
     </template>
 
@@ -80,61 +86,156 @@
             <t t-foreach="docs" t-as="o">
                 <t t-set="company" t-value="o.company_id"/>
                 <t t-set="money" t-value="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
-                <t t-call="web.external_layout">
-                    <div class="page">
-                        <div t-if="o.state == 'draft'" class="text-danger fw-bold mb-3">CONCEPT</div>
-                        <div class="row mb-4">
-                            <div class="col-6">
-                                <h3 class="mb-0">Afrekening van de lasten <t t-out="o.year"/></h3>
-                                <div class="text-muted">In naam van <t t-out="o.landlord_id.name"/>, verhuurder</div>
-                                <div class="text-muted"><t t-out="o.contract_id.property_address"/> (<t t-out="', '.join(o.contract_id.lot_ids.mapped('name'))"/>)</div>
-                            </div>
-                            <div class="col-5 offset-1">
-                                <div t-foreach="o.contract_id.tenant_ids" t-as="tenant"><strong t-out="tenant.name"/></div>
-                                <div class="text-muted">Huurperiode in <t t-out="o.year"/>: <t t-out="format_date(o.date_from)"/> tot <t t-out="format_date(o.date_to)"/></div>
-                            </div>
-                        </div>
-                        <p t-if="o.statement_incomplete" class="text-danger small">Voorlopig: de jaarafrekening van de VME is nog niet volledig.</p>
-                        <h5>Kosten uit de jaarafrekening van de VME <t t-out="o.association_id.name"/></h5>
-                        <table class="table table-sm small">
-                            <thead>
-                                <tr>
-                                    <th>Leverancier en omschrijving</th><th>Periode</th><th>Rubriek</th>
-                                    <th class="text-end">Kost kavel</th><th class="text-end">Tijdens de huur</th>
-                                    <th class="text-end">% huurder</th><th class="text-end">Huurder</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr t-foreach="o.line_ids" t-as="line">
-                                    <td><t t-out="line.supplier"/><br/><span class="text-muted" t-out="line.description"/></td>
-                                    <td><t t-out="format_date(line.period_start)"/> - <t t-out="format_date(line.period_end)"/></td>
-                                    <td t-out="line.category_id.name or 'Niet ingedeeld'"/>
-                                    <td class="text-end"><t t-out="line.owner_amount" t-options="money"/></td>
-                                    <td class="text-end"><t t-out="line.lease_amount" t-options="money"/></td>
-                                    <td class="text-end"><t t-out="'%g' % line.tenant_percent"/> %</td>
-                                    <td class="text-end"><t t-out="line.tenant_amount" t-options="money"/></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <h5>Per rubriek</h5>
-                        <table class="table table-sm mb-3">
-                            <tbody>
-                                <tr t-foreach="o._totals_per_category()" t-as="total">
-                                    <td t-out="total[0].name"/>
-                                    <td class="text-end"><t t-out="total[1]" t-options="money"/></td>
-                                </tr>
-                                <tr class="fw-bold"><td>Totaal ten laste van de huurder</td><td class="text-end"><t t-out="o.tenant_total" t-options="money"/></td></tr>
-                                <tr><td>Gefactureerde provisies lasten <t t-out="o.year"/></td><td class="text-end"><t t-out="-o.provisions" t-options="money"/></td></tr>
-                                <tr class="fw-bold">
-                                    <td><t t-if="o.balance &gt;= 0">Bij te betalen</t><t t-else="">Terug te krijgen</t></td>
-                                    <td class="text-end"><t t-out="abs(o.balance)" t-options="money"/></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <p class="small text-muted">De kosten volgen uit de jaarafrekening van de VME aan de verhuurder, voor de kavels van dit contract en de dagen dat de huur liep. De facturen liggen ter inzage bij de rentmeester. Reservekapitaal en kosten die het contract niet aan de huurder toewijst, blijven ten laste van de verhuurder.</p>
-                    </div>
-                </t>
+                <t t-set="doc_lang" t-value="o.tenant_id.lang"/>
+                <t t-call="vme_rentmeester.report_rent_settlement_document" t-lang="o.tenant_id.lang"/>
             </t>
+        </t>
+    </template>
+
+    <record id="action_report_rent_remittance" model="ir.actions.report">
+        <field name="name">Afrekening verhuurder</field>
+        <field name="model">vme.rent.remittance</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">vme_rentmeester.report_rent_remittance</field>
+        <field name="report_file">vme_rentmeester.report_rent_remittance</field>
+        <field name="print_report_name">'Afrekening verhuurder %s %s' % (object.month.strftime('%Y-%m'), object.landlord_id.name)</field>
+        <field name="binding_model_id" ref="model_vme_rent_remittance"/>
+    </record>
+
+    <template id="report_rent_remittance">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="company" t-value="o.company_id"/>
+                <t t-set="money" t-value="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                <t t-set="doc_lang" t-value="o.landlord_id.lang"/>
+                <t t-call="vme_rentmeester.report_rent_remittance_document" t-lang="o.landlord_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+    <!-- In the language of the recipient: see docs/dev/vertaling.md -->
+    <template id="report_rent_remittance_document">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <div t-if="o.state == 'draft'" class="text-danger fw-bold mb-3">CONCEPT - nog niet bevestigd</div>
+                <div class="row mb-4">
+                    <div class="col-6">
+                        <h3 class="mb-0">Afrekening huur <t t-out="format_date(o.month, date_format='MMMM y', lang=doc_lang)"/></h3>
+                        <div class="text-muted">Opgemaakt op <t t-out="format_date(o.fee_invoice_id.invoice_date or o.write_date.date(), lang=doc_lang)"/></div>
+                    </div>
+                    <div class="col-5 offset-1">
+                        <strong t-out="o.landlord_id.name"/>
+                        <div class="text-muted">Verhuurder</div>
+                    </div>
+                </div>
+                <t t-set="received" t-value="o.line_ids.filtered(lambda l: l.line_type in ('rent', 'charges', 'settlement'))"/>
+                <t t-set="costs" t-value="o.line_ids.filtered(lambda l: l.line_type == 'cost')"/>
+                <t t-set="fees" t-value="o.line_ids.filtered(lambda l: l.line_type == 'fee')"/>
+                <h5>Ontvangen van de huurders</h5>
+                <table class="table table-sm small">
+                    <thead><tr><th>Huurcontract</th><th>Factuur</th><th>Omschrijving</th><th class="text-end">Bedrag</th></tr></thead>
+                    <tbody>
+                        <tr t-foreach="received" t-as="line">
+                            <td t-out="line.contract_id.name"/>
+                            <td t-out="line.move_name"/>
+                            <td t-out="line.description"/>
+                            <td class="text-end"><t t-out="line.amount" t-options="money"/></td>
+                        </tr>
+                        <tr class="fw-bold"><td colspan="3">Totaal ontvangen</td><td class="text-end"><t t-out="o.received" t-options="money"/></td></tr>
+                    </tbody>
+                </table>
+                <t t-if="costs">
+                    <h5>Kosten die wij voor u betaalden</h5>
+                    <table class="table table-sm small">
+                        <thead><tr><th>Datum</th><th>Stuk</th><th>Omschrijving</th><th class="text-end">Bedrag</th></tr></thead>
+                        <tbody>
+                            <tr t-foreach="costs" t-as="line">
+                                <td t-out="format_date(line.date, lang=doc_lang)"/>
+                                <td t-out="line.move_name"/>
+                                <td t-out="line.description"/>
+                                <td class="text-end"><t t-out="-line.amount" t-options="money"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+                <h5>Overzicht</h5>
+                <table class="table table-sm mb-3">
+                    <tbody>
+                        <tr><td>Ontvangen huur en lasten</td><td class="text-end"><t t-out="o.received" t-options="money"/></td></tr>
+                        <tr t-if="costs"><td>Kosten voor uw rekening</td><td class="text-end"><t t-out="-o.costs" t-options="money"/></td></tr>
+                        <tr t-foreach="fees" t-as="line">
+                            <td>Ereloon rentmeester (<t t-out="line.description"/>)</td>
+                            <td class="text-end"><t t-out="-line.amount" t-options="money"/></td>
+                        </tr>
+                        <tr t-if="fees"><td>Btw op het ereloon</td><td class="text-end"><t t-out="-o.fee_tax" t-options="money"/></td></tr>
+                        <tr class="fw-bold">
+                            <td><t t-if="o.balance &gt;= 0">Door te storten</t><t t-else="">Saldo ten laste van de verhuurder, overgedragen</t></td>
+                            <td class="text-end"><t t-out="o.balance" t-options="money"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p t-if="o.partner_bank_id and o.balance &gt; 0">Het saldo wordt overgeschreven naar rekening <strong t-out="o.partner_bank_id.acc_number"/>.</p>
+                <p t-if="o.fee_invoice_id" class="small">Het ereloon staat op factuur <t t-out="o.fee_invoice_id.name"/> en is verrekend met deze doorstorting.</p>
+                <p class="small text-muted">De huur en lasten worden geïnd op de derdenrekening van <t t-out="company.name"/> en enkel voor u bewaard. De stukken liggen ter inzage.</p>
+            </div>
+        </t>
+    </template>
+
+    <!-- In the language of the recipient: see docs/dev/vertaling.md -->
+    <template id="report_rent_settlement_document">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <div t-if="o.state == 'draft'" class="text-danger fw-bold mb-3">CONCEPT</div>
+                <div class="row mb-4">
+                    <div class="col-6">
+                        <h3 class="mb-0">Afrekening van de lasten <t t-out="o.year"/></h3>
+                        <div class="text-muted">In naam van <t t-out="o.landlord_id.name"/>, verhuurder</div>
+                        <div class="text-muted"><t t-out="o.contract_id.property_address"/> (<t t-out="', '.join(o.contract_id.lot_ids.mapped('name'))"/>)</div>
+                    </div>
+                    <div class="col-5 offset-1">
+                        <div t-foreach="o.contract_id.tenant_ids" t-as="tenant"><strong t-out="tenant.name"/></div>
+                        <div class="text-muted">Huurperiode in <t t-out="o.year"/>: <t t-out="format_date(o.date_from, lang=doc_lang)"/> tot <t t-out="format_date(o.date_to, lang=doc_lang)"/></div>
+                    </div>
+                </div>
+                <p t-if="o.statement_incomplete" class="text-danger small">Voorlopig: de jaarafrekening van de VME is nog niet volledig.</p>
+                <h5>Kosten uit de jaarafrekening van de VME <t t-out="o.association_id.name"/></h5>
+                <table class="table table-sm small">
+                    <thead>
+                        <tr>
+                            <th>Leverancier en omschrijving</th><th>Periode</th><th>Rubriek</th>
+                            <th class="text-end">Kost kavel</th><th class="text-end">Tijdens de huur</th>
+                            <th class="text-end">% huurder</th><th class="text-end">Huurder</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="o.line_ids" t-as="line">
+                            <td><t t-out="line.supplier"/><br/><span class="text-muted" t-out="line.description"/></td>
+                            <td><t t-out="format_date(line.period_start, lang=doc_lang)"/> - <t t-out="format_date(line.period_end, lang=doc_lang)"/></td>
+                            <td t-out="line.category_id.name or 'Niet ingedeeld'"/>
+                            <td class="text-end"><t t-out="line.owner_amount" t-options="money"/></td>
+                            <td class="text-end"><t t-out="line.lease_amount" t-options="money"/></td>
+                            <td class="text-end"><t t-out="'%g' % line.tenant_percent"/> %</td>
+                            <td class="text-end"><t t-out="line.tenant_amount" t-options="money"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5>Per rubriek</h5>
+                <table class="table table-sm mb-3">
+                    <tbody>
+                        <tr t-foreach="o._totals_per_category()" t-as="total">
+                            <td t-out="total[0].name"/>
+                            <td class="text-end"><t t-out="total[1]" t-options="money"/></td>
+                        </tr>
+                        <tr class="fw-bold"><td>Totaal ten laste van de huurder</td><td class="text-end"><t t-out="o.tenant_total" t-options="money"/></td></tr>
+                        <tr><td>Gefactureerde provisies lasten <t t-out="o.year"/></td><td class="text-end"><t t-out="-o.provisions" t-options="money"/></td></tr>
+                        <tr class="fw-bold">
+                            <td><t t-if="o.balance &gt;= 0">Bij te betalen</t><t t-else="">Terug te krijgen</t></td>
+                            <td class="text-end"><t t-out="abs(o.balance)" t-options="money"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="small text-muted">De kosten volgen uit de jaarafrekening van de VME aan de verhuurder, voor de kavels van dit contract en de dagen dat de huur liep. De facturen liggen ter inzage bij de rentmeester. Reservekapitaal en kosten die het contract niet aan de huurder toewijst, blijven ten laste van de verhuurder.</p>
+            </div>
         </t>
     </template>
 </odoo>

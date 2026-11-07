@@ -105,6 +105,8 @@ class TestInstallations(TransactionCase):
         self.assertEqual((self.lift.open_remark_count, self.lift.overdue_remark_count), (2, 1))
         Remark = self.env["vme.inspection.remark"]
         self.assertEqual(Remark.search([("installation_id", "=", self.lift.id), ("is_overdue", "=", True)]), late)
+        self.assertEqual(Remark.search([("installation_id", "=", self.lift.id), ("is_overdue", "=", False)]), later)
+        self.assertEqual(Remark.search([("installation_id", "=", self.lift.id), ("is_overdue", "!=", True)]), later)
         late.state = "resolved"
         self.assertEqual(late.resolved_date, date(2026, 11, 5))
         self.assertFalse(late.is_overdue)

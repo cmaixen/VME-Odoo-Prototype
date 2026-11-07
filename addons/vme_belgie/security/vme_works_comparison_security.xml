@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Quote comparison: like vme.works, limited to the companies of the user; the auditor only reads. -->
+    <record id="rule_company_works_comparison" model="ir.rule">
+        <field name="name">VME: vme.works.comparison van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_works_comparison"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_auditor_read_works_comparison" model="ir.rule">
+        <field name="name">Commissaris: vme.works.comparison van zijn VME's</field>
+        <field name="model_id" ref="model_vme_works_comparison"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_company_works_comparison_column" model="ir.rule">
+        <field name="name">VME: vme.works.comparison.column van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_works_comparison_column"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_auditor_read_works_comparison_column" model="ir.rule">
+        <field name="name">Commissaris: vme.works.comparison.column van zijn VME's</field>
+        <field name="model_id" ref="model_vme_works_comparison_column"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_company_works_comparison_line" model="ir.rule">
+        <field name="name">VME: vme.works.comparison.line van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_works_comparison_line"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_auditor_read_works_comparison_line" model="ir.rule">
+        <field name="name">Commissaris: vme.works.comparison.line van zijn VME's</field>
+        <field name="model_id" ref="model_vme_works_comparison_line"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_auditor_no_write_works_comparison" model="ir.rule">
+        <field name="name">Commissaris: geen wijzigingen aan vme.works.comparison</field>
+        <field name="model_id" ref="model_vme_works_comparison"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_auditor_no_write_works_comparison_column" model="ir.rule">
+        <field name="name">Commissaris: geen wijzigingen aan vme.works.comparison.column</field>
+        <field name="model_id" ref="model_vme_works_comparison_column"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_auditor_no_write_works_comparison_line" model="ir.rule">
+        <field name="name">Commissaris: geen wijzigingen aan vme.works.comparison.line</field>
+        <field name="model_id" ref="model_vme_works_comparison_line"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+</odoo>

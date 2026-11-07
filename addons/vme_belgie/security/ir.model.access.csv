@@ -29,8 +29,12 @@ access_vme_collection_reminder_line_user,vme.collection.reminder.line user,model
 access_vme_bank_import_wizard_user,vme.bank.import.wizard user,model_vme_bank_import_wizard,base.group_user,1,1,1,1
 access_account_bank_statement_line_vme_invoice,account.bank.statement.line vme invoice,account.model_account_bank_statement_line,account.group_account_invoice,1,1,0,0
 access_vme_migration_system,vme.migration system,model_vme_migration,base.group_system,1,1,1,1
+access_vme_migration_proposal_system,vme.migration.proposal system,model_vme_migration_proposal,base.group_system,1,1,1,1
 access_vme_works_user,vme.works user,model_vme_works,base.group_user,1,1,1,0
 access_vme_works_quote_user,vme.works.quote user,model_vme_works_quote,base.group_user,1,1,1,1
+access_vme_works_comparison_user,vme.works.comparison user,model_vme_works_comparison,base.group_user,1,1,1,1
+access_vme_works_comparison_column_user,vme.works.comparison.column user,model_vme_works_comparison_column,base.group_user,1,1,1,1
+access_vme_works_comparison_line_user,vme.works.comparison.line user,model_vme_works_comparison_line,base.group_user,1,1,1,1
 access_vme_insurance_policy_user,vme.insurance.policy user,model_vme_insurance_policy,base.group_user,1,1,1,0
 access_vme_damage_claim_user,vme.damage.claim user,model_vme_damage_claim,base.group_user,1,1,1,0
 access_vme_document_folder_user,vme.document.folder user,model_vme_document_folder,base.group_user,1,1,1,1
@@ -66,3 +70,14 @@ access_vme_budget_analysis_user,vme.budget.analysis user,model_vme_budget_analys
 access_vme_capital_movement_user,vme.capital.movement user,model_vme_capital_movement,base.group_user,1,0,0,0
 access_vme_assembly_signature_user,vme.assembly.signature user,model_vme_assembly_signature,base.group_user,1,1,1,1
 access_vme_fiscal_closing_user,vme.fiscal.closing user,model_vme_fiscal_closing,base.group_user,1,1,1,0
+access_vme_financial_statements_wizard_user,vme.financial.statements.wizard user,model_vme_financial_statements_wizard,base.group_user,1,1,1,1
+access_vme_cycle_step_user,vme.cycle.step user,model_vme_cycle_step,base.group_user,1,1,1,1
+access_vme_management_agreement_user,vme.management.agreement user,model_vme_management_agreement,base.group_user,1,1,1,1
+access_vme_service_rate_user,vme.service.rate user,model_vme_service_rate,base.group_user,1,1,1,1
+access_vme_service_line_user,vme.service.line user,model_vme_service_line,base.group_user,1,1,1,1
+access_vme_syndic_mandate_user,vme.syndic.mandate user,model_vme_syndic_mandate,base.group_user,1,1,1,1
+access_vme_consumer_price_index_user,vme.consumer.price.index user,model_vme_consumer_price_index,base.group_user,1,0,0,0
+access_vme_consumer_price_index_system,vme.consumer.price.index system,model_vme_consumer_price_index,base.group_system,1,1,1,1
+access_vme_fee_invoice_wizard_user,vme.fee.invoice.wizard user,model_vme_fee_invoice_wizard,base.group_user,1,1,1,1
+access_vme_provision_call_run_user,vme.provision.call.run user,model_vme_provision_call_run,base.group_user,1,1,1,0
+access_vme_work_item_user,vme.work.item user,model_vme_work_item,base.group_user,1,1,1,1

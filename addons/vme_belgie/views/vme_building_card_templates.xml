@@ -64,7 +64,7 @@
                     <li t-foreach="signals" t-as="signal"><span class="fw-bold" t-out="signal['label']"/>: <t t-out="signal['message']"/></li>
                 </ul>
             </div>
-            <div t-else="" class="alert alert-success" role="status">Geen signalen: reservefonds, achterstallen, AV en keuringen zijn in orde.</div>
+            <div t-else="" class="alert alert-success" role="status">Geen signalen: reservefonds, achterstallen, AV, keuringen, verzekering en attesten zijn in orde.</div>
             <div class="row g-3">
                 <!-- Core data -->
                 <div class="col-lg-4">
@@ -250,6 +250,29 @@
                     </div>
                 </div>
 
+                <!-- Yearly cycle (step 28) -->
+                <div class="col-lg-6" t-if="cycle_steps is not None">
+                    <div class="card h-100">
+                        <div class="card-header fw-bold">Jaarcyclus</div>
+                        <div class="card-body">
+                            <p t-if="not cycle_steps" class="text-muted mb-0">Geen open stappen in de jaarcyclus.</p>
+                            <table t-else="" class="table table-sm o_vme_card_table mb-0">
+                                <thead><tr><th>Stap</th><th>Uiterlijk</th><th>Status</th></tr></thead>
+                                <tbody>
+                                    <tr t-foreach="cycle_steps" t-as="rec" t-att-class="'table-danger' if rec._is_late(today) else ''">
+                                        <td><t t-call="vme_belgie.card_link"><t t-set="record" t-value="rec"/><t t-set="label" t-value="False"/></t></td>
+                                        <td><t t-out="rec.date_deadline" t-options="{'widget': 'date'}"/></td>
+                                        <td>
+                                            <t t-if="rec._is_late(today)">Te laat</t>
+                                            <t t-else="" t-out="selection_label(rec, 'state')"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Inspections -->
                 <div class="col-lg-6">
                     <div class="card h-100">
@@ -272,6 +295,20 @@
                                     </tr>
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Insurance and certificates (vme_compliance_views.xml) -->
+                <div class="col-lg-12">
+                    <div class="card h-100">
+                        <div class="card-header fw-bold">Verzekering en attesten</div>
+                        <div class="card-body">
+                            <t t-call="vme_belgie.compliance_content">
+                                <t t-set="policies" t-value="compliance['policies']"/>
+                                <t t-set="insurance_signal" t-value="compliance['insurance_signal']"/>
+                                <t t-set="certificates" t-value="compliance['certificates']"/>
+                            </t>
                         </div>
                     </div>
                 </div>
@@ -478,6 +515,8 @@
     <!-- Portal: the owner sees the capitals and the budget against the costs up to today. -->
     <template id="portal_my_vme_detail_finances" name="Financiële toestand in het portaal" inherit_id="vme_belgie.portal_my_vme_detail">
         <xpath expr="//h4[text()='Provisies']" position="before">
+          <!-- Only for a current owner: a former owner keeps his own history, not today's figures. -->
+          <t t-if="ownerships.filtered(lambda o: not o.date_end or o.date_end &gt;= today)">
             <t t-set="finances" t-value="vme._get_portal_finances()"/>
             <t t-set="currency" t-value="finances['currency']"/>
             <h4>Financiële toestand van het gebouw</h4>
@@ -520,6 +559,7 @@
                     <p class="small text-muted mt-2 mb-0">Het budget tot vandaag is het jaarbudget verspreid over de dagen van het jaar. Uw eigen aandeel ziet u in de jaarafrekening.</p>
                 </div>
             </div>
+          </t>
         </xpath>
     </template>
 </odoo>

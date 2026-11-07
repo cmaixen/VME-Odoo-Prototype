@@ -1,7 +1,8 @@
 """Requests of owners and tenants (keys, badges, moves, ...): one intake, a fixed procedure per type.
 
 Nothing is sent by itself: the proof request, the reminder and the order to the locksmith are
-prepared as drafts on the request, and a staff member sends each one with a button.
+prepared as drafts on the request, and a staff member sends each one with a button. There is
+deliberately no hook or setting to send them automatically.
 """
 import base64
 import re
@@ -15,6 +16,7 @@ from odoo.fields import Command
 from odoo.tools import email_normalize, format_date
 
 from .vme_lot_contact import KEY_KINDS
+from .vme_access import check_not_auditor
 
 REQUEST_TYPE_CODES = [
     ("key", "Extra sleutel of badge"),
@@ -210,7 +212,7 @@ class VmeRequest(models.Model):
     @api.depends("lot_id", "request_date")
     def _compute_owner(self):
         for request in self:
-            request.owner_id = request.lot_id and request.lot_id._get_owner_on(request.request_date)
+            request.owner_id = request.lot_id._get_owner_on(request.request_date) if request.lot_id else False
 
     @api.depends("check_ids.done")
     def _compute_checks_progress(self):
@@ -294,11 +296,13 @@ class VmeRequest(models.Model):
 
     @api.model
     def create_from_intake(self, association_id, request_type, email, name="", lot_id=False, subject="", body="",
-                           channel="mail", reference="", summary="", proposed_reply="", attachments=None):
+                           channel="mail", reference="", summary="", proposed_reply="", attachments=None,
+                           requester_id=False, user_id=False):
         """Create a request from an incoming mail or a portal form and start its procedure.
 
-        Called over JSON-RPC by the AI assistant (ai/) and later by the owner portal. The requester
-        is recognised by the e-mail address; an unknown address becomes a new contact.
+        Called over JSON-RPC by the AI assistant (ai/) and by the owner portal. The requester
+        is recognised by the e-mail address; an unknown address becomes a new contact. The portal
+        passes the logged-in partner as ``requester_id`` and an internal ``user_id`` as responsible.
         ``attachments`` is a list of {"name", "datas" (base64), "mimetype"}; ``proposed_reply`` is the
         reply the AI assistant suggests, kept as an internal note. Returns the request id;
         a second call with the same ``reference`` returns the existing request.
@@ -315,7 +319,8 @@ class VmeRequest(models.Model):
         if lot and lot.association_id != vme:
             lot = self.env["vme.lot"]
         role, lot = self._identify_in(vme, email, lot)
-        partner = self._find_or_create_requester(vme, email, name, lot, role)
+        partner = self.env["res.partner"].browse(requester_id).exists() if requester_id else None
+        partner = partner or self._find_or_create_requester(vme, email, name, lot, role)
         text = f"{subject}\n{body}".lower()
         vals = {
             "association_id": vme.id,
@@ -327,6 +332,8 @@ class VmeRequest(models.Model):
             "source_reference": reference or False,
             "requester_id": partner.id,
         }
+        # Without a responsible from the caller: the case manager, not the user of the mail gateway or the AI.
+        vals["user_id"] = user_id or vme._vme_task_user().id
         if request_type == "key":
             vals["key_kind"] = next(
                 (kind for kind, words in KEY_KIND_WORDS if any(w in text for w in words)), "entrance_key")
@@ -513,10 +520,9 @@ class VmeRequest(models.Model):
         self._close_todos(self.env._("Geverifieerd."))
         self.write({"state": "in_progress", "verified_date": fields.Date.context_today(self)})
         self.message_post(body=self.env._("Geverifieerd: %s", reason))
+        # The order is only prepared: a staff member always sends it (CLAUDE.md, a human decides).
         if self.type_code == "key":
-            # Never sent by itself: a staff member checks the order and sends it (docs/beslissingen.md).
             self._prepare_order()
-
 
     def _prepare_order(self):
         """Order form for the locksmith as PDF plus a draft mail, ready to send with one click."""
@@ -560,6 +566,7 @@ class VmeRequest(models.Model):
 
     def action_send_order(self):
         """Send the prepared order to the locksmith of the VME: the one click of the staff member."""
+        check_not_auditor(self.env)  # the invoice for the owner is created as sudo
         today = fields.Date.context_today(self)
         for request in self:
             if not request.order_ready:
@@ -586,6 +593,7 @@ class VmeRequest(models.Model):
 
     def action_register_delivery(self):
         """Register the delivered keys in the lot's register and charge the owner privately."""
+        check_not_auditor(self.env)  # the invoice for the owner is created as sudo
         for request in self:
             if request.type_code != "key" or request.state != "ordered":
                 raise UserError(self.env._("Alleen een bestelde sleutel of badge kan geleverd worden."))

@@ -1,0 +1,10 @@
+code;naam;email;telefoon;straat;postcode;gemeente
+W01;Eigenaar Wilg A1;eigenaar.wilg.a1@example.com;;Wilgenlaan 21 bus A1;3000;Voorbeeldstad
+W02;Eigenaar Wilg A2;eigenaar.wilg.a2@example.com;;Wilgenlaan 21 bus A2;3000;Voorbeeldstad
+W03;Eigenaar Wilg A3;eigenaar.wilg.a3@example.com;;Wilgenlaan 21 bus A3;3000;Voorbeeldstad
+W04;Eigenaar Wilg A4;eigenaar.wilg.a4@example.com;;Wilgenlaan 21 bus A4;3000;Voorbeeldstad
+W05;Eigenaar Wilg B1;eigenaar.wilg.b1@example.com;;Wilgenlaan 21 bus B1;3000;Voorbeeldstad
+W06;Eigenaar Wilg B2;eigenaar.wilg.b2@example.com;;Wilgenlaan 21 bus B2;3000;Voorbeeldstad
+W07;Eigenaar Wilg B3;eigenaar.wilg.b3@example.com;;Wilgenlaan 21 bus B3;3000;Voorbeeldstad
+W08;Eigenaar Wilg B4;eigenaar.wilg.b4@example.com;;Wilgenlaan 21 bus B4;3000;Voorbeeldstad
+W09;Eigenaar Wilg G3;;;Voorbeeldweg 12;3000;Voorbeeldstad

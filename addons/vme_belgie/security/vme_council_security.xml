@@ -17,6 +17,18 @@
         <field name="implied_ids" eval="[Command.link(ref('account.group_account_readonly'))]"/>
     </record>
 
+    <!-- Staff who work on every VME of the syndic: each new VME company is added to their companies
+         (vme.association.create). Others only get the companies an administrator gives them. -->
+    <record id="group_vme_all_companies" model="res.groups">
+        <field name="name">Toegang tot alle VME's</field>
+        <field name="privilege_id" ref="res_groups_privilege_vme"/>
+        <field name="comment">Krijgt elke nieuwe VME automatisch bij zijn bedrijven. Zonder deze groep ziet een medewerker alleen de VME's die een beheerder hem toewijst.</field>
+    </record>
+
+    <record id="base.group_system" model="res.groups">
+        <field name="implied_ids" eval="[Command.link(ref('group_vme_all_companies'))]"/>
+    </record>
+
     <!-- Partners: only his own, the VME companies, the owners and suppliers of his VME's, and the
          syndic's staff (they follow the records, and the chatter reads its followers). -->
     <record id="rule_auditor_read_partner" model="ir.rule">
@@ -590,6 +602,467 @@
     <record id="rule_auditor_no_write_assembly_slot" model="ir.rule">
         <field name="name">Commissaris: vme.assembly.slot alleen lezen</field>
         <field name="model_id" ref="model_vme_assembly_slot"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <!-- Added in the access review (docs/dev/toegangsrechten.md): models of steps 14-24. -->
+    <record id="rule_auditor_read_works" model="ir.rule">
+        <field name="name">Commissaris: vme.works van zijn VME's</field>
+        <field name="model_id" ref="model_vme_works"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_auditor_read_works_quote" model="ir.rule">
+        <field name="name">Commissaris: vme.works.quote van zijn VME's</field>
+        <field name="model_id" ref="model_vme_works_quote"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_auditor_read_insurance_policy" model="ir.rule">
+        <field name="name">Commissaris: vme.insurance.policy van zijn VME's</field>
+        <field name="model_id" ref="model_vme_insurance_policy"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_auditor_read_damage_claim" model="ir.rule">
+        <field name="name">Commissaris: vme.damage.claim van zijn VME's</field>
+        <field name="model_id" ref="model_vme_damage_claim"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_auditor_read_document" model="ir.rule">
+        <field name="name">Commissaris: vme.document van zijn VME's</field>
+        <field name="model_id" ref="model_vme_document"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_auditor_read_address_request" model="ir.rule">
+        <field name="name">Commissaris: vme.address.request van zijn VME's</field>
+        <field name="model_id" ref="model_vme_address_request"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[('partner_id.vme_ownership_ids.company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_auditor_read_meter" model="ir.rule">
+        <field name="name">Commissaris: vme.meter van zijn VME's</field>
+        <field name="model_id" ref="model_vme_meter"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_auditor_read_meter_reading" model="ir.rule">
+        <field name="name">Commissaris: vme.meter.reading van zijn VME's</field>
+        <field name="model_id" ref="model_vme_meter_reading"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[('meter_id.company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_auditor_read_contract" model="ir.rule">
+        <field name="name">Commissaris: vme.contract van zijn VME's</field>
+        <field name="model_id" ref="model_vme_contract"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_auditor_read_contract_evaluation" model="ir.rule">
+        <field name="name">Commissaris: vme.contract.evaluation van zijn VME's</field>
+        <field name="model_id" ref="model_vme_contract_evaluation"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_auditor_read_lot_contact" model="ir.rule">
+        <field name="name">Commissaris: vme.lot.contact van zijn VME's</field>
+        <field name="model_id" ref="model_vme_lot_contact"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_auditor_read_lot_key" model="ir.rule">
+        <field name="name">Commissaris: vme.lot.key van zijn VME's</field>
+        <field name="model_id" ref="model_vme_lot_key"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_auditor_read_request" model="ir.rule">
+        <field name="name">Commissaris: vme.request van zijn VME's</field>
+        <field name="model_id" ref="model_vme_request"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_auditor_read_request_check" model="ir.rule">
+        <field name="name">Commissaris: vme.request.check van zijn VME's</field>
+        <field name="model_id" ref="model_vme_request_check"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[('request_id.company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_auditor_read_sepa_mandate" model="ir.rule">
+        <field name="name">Commissaris: vme.sepa.mandate van zijn VME's</field>
+        <field name="model_id" ref="model_vme_sepa_mandate"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_auditor_read_payment_batch" model="ir.rule">
+        <field name="name">Commissaris: vme.payment.batch van zijn VME's</field>
+        <field name="model_id" ref="model_vme_payment_batch"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_auditor_read_payment_batch_line" model="ir.rule">
+        <field name="name">Commissaris: vme.payment.batch.line van zijn VME's</field>
+        <field name="model_id" ref="model_vme_payment_batch_line"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_auditor_read_bill_ai_check" model="ir.rule">
+        <field name="name">Commissaris: vme.bill.ai.check van zijn VME's</field>
+        <field name="model_id" ref="model_vme_bill_ai_check"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[('move_id.company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_auditor_read_communication" model="ir.rule">
+        <field name="name">Commissaris: vme.communication van zijn VME's</field>
+        <field name="model_id" ref="model_vme_communication"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_auditor_read_communication_option" model="ir.rule">
+        <field name="name">Commissaris: vme.communication.option van zijn VME's</field>
+        <field name="model_id" ref="model_vme_communication_option"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[('communication_id.company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_auditor_read_communication_log" model="ir.rule">
+        <field name="name">Commissaris: vme.communication.log van zijn VME's</field>
+        <field name="model_id" ref="model_vme_communication_log"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_auditor_read_registered_mail" model="ir.rule">
+        <field name="name">Commissaris: vme.registered.mail van zijn VME's</field>
+        <field name="model_id" ref="model_vme_registered_mail"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_auditor_no_write_assembly_signature" model="ir.rule">
+        <field name="name">Commissaris: geen wijzigingen aan vme.assembly.signature</field>
+        <field name="model_id" ref="model_vme_assembly_signature"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_auditor_no_write_works" model="ir.rule">
+        <field name="name">Commissaris: geen wijzigingen aan vme.works</field>
+        <field name="model_id" ref="model_vme_works"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_auditor_no_write_works_quote" model="ir.rule">
+        <field name="name">Commissaris: geen wijzigingen aan vme.works.quote</field>
+        <field name="model_id" ref="model_vme_works_quote"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_auditor_no_write_insurance_policy" model="ir.rule">
+        <field name="name">Commissaris: geen wijzigingen aan vme.insurance.policy</field>
+        <field name="model_id" ref="model_vme_insurance_policy"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_auditor_no_write_damage_claim" model="ir.rule">
+        <field name="name">Commissaris: geen wijzigingen aan vme.damage.claim</field>
+        <field name="model_id" ref="model_vme_damage_claim"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_auditor_no_write_document" model="ir.rule">
+        <field name="name">Commissaris: geen wijzigingen aan vme.document</field>
+        <field name="model_id" ref="model_vme_document"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_auditor_no_write_address_request" model="ir.rule">
+        <field name="name">Commissaris: geen wijzigingen aan vme.address.request</field>
+        <field name="model_id" ref="model_vme_address_request"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_auditor_no_write_meter" model="ir.rule">
+        <field name="name">Commissaris: geen wijzigingen aan vme.meter</field>
+        <field name="model_id" ref="model_vme_meter"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_auditor_no_write_meter_reading" model="ir.rule">
+        <field name="name">Commissaris: geen wijzigingen aan vme.meter.reading</field>
+        <field name="model_id" ref="model_vme_meter_reading"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_auditor_no_write_contract" model="ir.rule">
+        <field name="name">Commissaris: geen wijzigingen aan vme.contract</field>
+        <field name="model_id" ref="model_vme_contract"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_auditor_no_write_contract_evaluation" model="ir.rule">
+        <field name="name">Commissaris: geen wijzigingen aan vme.contract.evaluation</field>
+        <field name="model_id" ref="model_vme_contract_evaluation"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_auditor_no_write_lot_contact" model="ir.rule">
+        <field name="name">Commissaris: geen wijzigingen aan vme.lot.contact</field>
+        <field name="model_id" ref="model_vme_lot_contact"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_auditor_no_write_lot_key" model="ir.rule">
+        <field name="name">Commissaris: geen wijzigingen aan vme.lot.key</field>
+        <field name="model_id" ref="model_vme_lot_key"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_auditor_no_write_request" model="ir.rule">
+        <field name="name">Commissaris: geen wijzigingen aan vme.request</field>
+        <field name="model_id" ref="model_vme_request"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_auditor_no_write_request_check" model="ir.rule">
+        <field name="name">Commissaris: geen wijzigingen aan vme.request.check</field>
+        <field name="model_id" ref="model_vme_request_check"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_auditor_no_write_sepa_mandate" model="ir.rule">
+        <field name="name">Commissaris: geen wijzigingen aan vme.sepa.mandate</field>
+        <field name="model_id" ref="model_vme_sepa_mandate"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_auditor_no_write_payment_batch" model="ir.rule">
+        <field name="name">Commissaris: geen wijzigingen aan vme.payment.batch</field>
+        <field name="model_id" ref="model_vme_payment_batch"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_auditor_no_write_payment_batch_line" model="ir.rule">
+        <field name="name">Commissaris: geen wijzigingen aan vme.payment.batch.line</field>
+        <field name="model_id" ref="model_vme_payment_batch_line"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_auditor_no_write_bill_ai_check" model="ir.rule">
+        <field name="name">Commissaris: geen wijzigingen aan vme.bill.ai.check</field>
+        <field name="model_id" ref="model_vme_bill_ai_check"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_auditor_no_write_communication" model="ir.rule">
+        <field name="name">Commissaris: geen wijzigingen aan vme.communication</field>
+        <field name="model_id" ref="model_vme_communication"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_auditor_no_write_communication_option" model="ir.rule">
+        <field name="name">Commissaris: geen wijzigingen aan vme.communication.option</field>
+        <field name="model_id" ref="model_vme_communication_option"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_auditor_no_write_communication_log" model="ir.rule">
+        <field name="name">Commissaris: geen wijzigingen aan vme.communication.log</field>
+        <field name="model_id" ref="model_vme_communication_log"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_auditor_no_write_registered_mail" model="ir.rule">
+        <field name="name">Commissaris: geen wijzigingen aan vme.registered.mail</field>
+        <field name="model_id" ref="model_vme_registered_mail"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_auditor_no_write_document_folder" model="ir.rule">
+        <field name="name">Commissaris: geen wijzigingen aan vme.document.folder</field>
+        <field name="model_id" ref="model_vme_document_folder"/>
         <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
         <field name="domain_force">[(0, '=', 1)]</field>
         <field name="perm_read" eval="False"/>

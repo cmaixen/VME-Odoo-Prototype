@@ -11,6 +11,7 @@
                     <button name="action_open_budget_analysis" type="object" string="Budgetopvolging"/>
                     <button name="action_open_capital_history" type="object" string="Verloop kapitalen"/>
                     <button name="action_open_annual_statement" type="object" string="Jaarafrekening"/>
+                    <button name="action_open_financial_statements" type="object" string="Balans en resultatenrekening"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
@@ -64,6 +65,7 @@
                 <field name="currency_id" column_invisible="1"/>
                 <field name="name"/>
                 <field name="city" optional="show"/>
+                <field name="manager_user_id" widget="many2one_avatar_user" optional="show"/>
                 <field name="lot_count" optional="show"/>
                 <field name="working_capital_balance"/>
                 <field name="reserve_capital_balance"/>
@@ -76,6 +78,8 @@
                 <field name="signal_arrears" widget="boolean_toggle" readonly="1" string="Achterstallen"/>
                 <field name="signal_assembly" widget="boolean_toggle" readonly="1" string="AV"/>
                 <field name="signal_inspection" widget="boolean_toggle" readonly="1" string="Keuring"/>
+                <field name="signal_insurance" widget="boolean_toggle" readonly="1" string="Verzekering"/>
+                <field name="signal_certificate" widget="boolean_toggle" readonly="1" string="Attest"/>
                 <field name="signal_count" optional="hide"/>
                 <button name="action_open_building_card" type="object" string="Gebouwkaart" icon="fa-id-card-o"/>
             </list>
@@ -90,16 +94,22 @@
             <search>
                 <field name="name"/>
                 <field name="city"/>
+                <field name="manager_user_id"/>
+                <filter name="my_vmes" string="Mijn VME's" domain="[('manager_user_id', '=', uid)]"/>
+                <separator/>
                 <filter name="with_signal" string="Met signalen" domain="[('signal_count', '>', 0)]"/>
                 <separator/>
                 <filter name="signal_reserve" string="Reservefonds onder 5%" domain="[('signal_reserve', '=', True)]"/>
                 <filter name="signal_arrears" string="Achterstallen boven de drempel" domain="[('signal_arrears', '=', True)]"/>
                 <filter name="signal_assembly" string="AV buiten de periode" domain="[('signal_assembly', '=', True)]"/>
                 <filter name="signal_inspection" string="Vervallen keuring" domain="[('signal_inspection', '=', True)]"/>
+                <filter name="signal_insurance" string="Brandverzekering vervalt of ontbreekt" domain="[('signal_insurance', '=', True)]"/>
+                <filter name="signal_certificate" string="Verplicht attest ontbreekt" domain="[('signal_certificate', '=', True)]"/>
                 <separator/>
                 <filter name="archived" string="Gearchiveerd" domain="[('active', '=', False)]"/>
                 <group>
                     <filter name="group_city" string="Gemeente" context="{'group_by': 'city'}"/>
+                    <filter name="group_manager" string="Dossierbeheerder" context="{'group_by': 'manager_user_id'}"/>
                 </group>
             </search>
         </field>

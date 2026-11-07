@@ -477,6 +477,17 @@ class VmeAssociation(models.Model):
         return action
 
 
+class VmeCycleStep(models.Model):
+    _inherit = "vme.cycle.step"
+
+    def _prepare_closing(self, today):
+        """Link the step "Boekjaar afsluiten" to the closing of the previous year (a draft dossier: it
+        only checks and prepares nothing), so that "Open" goes to it. The step is done once the year is
+        locked (`_cycle_fiscal_year_closed`), which `action_close` does."""
+        self._link(self.association_id.sudo()._get_fiscal_closing(self.year - 1))
+        return super()._prepare_closing(today)
+
+
 class AccountMove(models.Model):
     _inherit = "account.move"
 

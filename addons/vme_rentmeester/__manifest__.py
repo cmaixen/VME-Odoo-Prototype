@@ -1,7 +1,7 @@
 {
     "name": "VME België - Rentmeester",
-    "summary": "Huurcontracten, huurfacturen, indexering en afrekening van lasten aan huurders",
-    "version": "19.0.1.0.0",
+    "summary": "Huurcontracten, huurfacturen, indexering, afrekening aan huurders en doorstorting aan verhuurders",
+    "version": "19.0.1.1.0",
     "category": "Accounting",
     "author": "VME-prototype",
     "license": "LGPL-3",
@@ -10,8 +10,10 @@
     "depends": ["vme_belgie"],
     "data": [
         "security/ir.model.access.csv",
+        "security/rent_security.xml",
         "data/vme_rent_index_data.xml",
         "views/rent_contract_views.xml",
+        "views/rent_remittance_views.xml",
         "data/rent_data.xml",
         "data/help_menu.xml",
         "report/rent_reports.xml",

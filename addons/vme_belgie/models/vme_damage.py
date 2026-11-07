@@ -7,6 +7,8 @@ from odoo import api, fields, models
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools import format_date, html2plaintext
 
+from .vme_installation import DUE_STATES, _due_state
+
 # LEGAL-CHECK: art. 74 §1 wet 4 april 2014 betreffende de verzekeringen - the insured reports a
 # claim as soon as reasonably possible, and in any case within the term set in the policy.
 # Eight days is a common term in building insurance policies; editable per policy.
@@ -18,6 +20,12 @@ PRESCRIPTION_YEARS = 3
 EXPERT_FOLLOW_UP_DAYS = 14
 # Days before the declaration deadline at which a claim turns orange.
 WARNING_DAYS = 3
+# LEGAL-CHECK: art. 85 wet 4 april 2014 betreffende de verzekeringen - a policy of at most one
+# year renews tacitly unless a party gives notice at least three months before the due date.
+NOTICE_MONTHS = 3
+# Days before the due date of a policy at which the responsible user gets a task: in time to
+# check the policy before the notice deadline.
+RENEWAL_LEAD_DAYS = 120
 
 DAMAGE_TYPES = [
     ("water", "Waterschade"),
@@ -51,6 +59,7 @@ class VmeAssociation(models.Model):
 class VmeInsurancePolicy(models.Model):
     _name = "vme.insurance.policy"
     _description = "Verzekeringspolis"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "association_id, policy_type, id"
 
     name = fields.Char(string="Polis", required=True)
@@ -65,19 +74,107 @@ class VmeInsurancePolicy(models.Model):
     insurer_id = fields.Many2one("res.partner", string="Verzekeraar", required=True)
     broker_id = fields.Many2one("res.partner", string="Makelaar")
     policy_number = fields.Char(string="Polisnummer", required=True)
-    date_start = fields.Date(string="Begin")
-    date_end = fields.Date(string="Einde")
+    date_start = fields.Date(string="Begin lopende periode")
+    date_end = fields.Date(
+        string="Vervaldag", tracking=True,
+        help="Einde van de lopende periode. Zonder opzeg verlengt de polis meestal stilzwijgend met een jaar.")
+    tacit_renewal = fields.Boolean(string="Stilzwijgende verlenging", default=True)
+    notice_deadline = fields.Date(
+        string="Opzeggen uiterlijk", compute="_compute_notice_deadline", store=True,
+        help="Laatste dag om de polis op te zeggen tegen de vervaldag.")
+    due_state = fields.Selection(DUE_STATES, string="Status vervaldag", compute="_compute_due_state")
+    insured_value = fields.Monetary(
+        string="Verzekerde waarde", tracking=True, help="Waarde waarvoor het gebouw verzekerd is.")
+    valuation_basis = fields.Selection(
+        [("new_value", "Nieuwbouwwaarde"), ("expertise", "Expertise"), ("abex", "Geïndexeerd (ABEX)"),
+         ("unknown", "Niet gekend")],
+        string="Basis verzekerde waarde", default="unknown")
+    premium = fields.Monetary(string="Jaarpremie")
+    user_id = fields.Many2one(
+        "res.users", string="Verantwoordelijke", default=lambda self: self.env.user,
+        domain="[('share', '=', False)]")
+    # Due date for which a task was already created, so the cron never makes it twice.
+    activity_due_date = fields.Date(copy=False)
     deductible = fields.Monetary(string="Vrijstelling", help="Eigen risico per schadegeval.")
     declaration_days = fields.Integer(
         string="Aangifte binnen (dagen)", default=DEFAULT_DECLARATION_DAYS,
         help="Termijn uit de polis om een schade aan te geven bij de verzekeraar.")
     coverage = fields.Text(string="Dekking")
     claim_ids = fields.One2many("vme.damage.claim", "policy_id", string="Schadedossiers")
+    claim_count = fields.Integer(string="Aantal schadegevallen", compute="_compute_claim_count")
 
     @api.depends("name", "policy_number")
     def _compute_display_name(self):
         for policy in self:
             policy.display_name = f"{policy.name} ({policy.policy_number})" if policy.policy_number else policy.name
+
+    @api.depends("date_end")
+    def _compute_notice_deadline(self):
+        for policy in self:
+            policy.notice_deadline = policy.date_end and policy.date_end - relativedelta(months=NOTICE_MONTHS)
+
+    @api.depends("date_end")
+    def _compute_due_state(self):
+        today = fields.Date.context_today(self)
+        for policy in self:
+            policy.due_state = _due_state(policy.date_end, today)
+
+    @api.depends("claim_ids")
+    def _compute_claim_count(self):
+        for policy in self:
+            policy.claim_count = len(policy.claim_ids)
+
+    def action_open_claims(self):
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": self.env._("Schadedossiers %s", self.display_name),
+            "res_model": "vme.damage.claim",
+            "view_mode": "list,form",
+            "domain": [("policy_id", "=", self.id)],
+            "context": {"default_association_id": self.association_id.id, "default_policy_id": self.id},
+        }
+
+    def action_renewed(self):
+        """The staff member checked the renewal: the policy runs one more year. Nothing is sent."""
+        for policy in self:
+            if not policy.date_end:
+                raise UserError(self.env._("Vul eerst de vervaldag van %s in.", policy.display_name))
+            old_end = policy.date_end
+            policy.write({"date_start": old_end + timedelta(days=1), "date_end": old_end + relativedelta(years=1)})
+            policy.activity_ids.filtered(
+                lambda a: (a.summary or "").startswith(policy._renewal_task_prefix())
+            ).action_feedback(feedback=self.env._("Verlengd tot %s.", format_date(self.env, policy.date_end)))
+            policy.message_post(body=self.env._(
+                "Polis verlengd: nieuwe vervaldag %s.", format_date(self.env, policy.date_end)))
+        return True
+
+    def _renewal_task_prefix(self):
+        return self.env._("Verzekering nakijken")
+
+    @api.model
+    def _cron_schedule_policy_activities(self):
+        """One task per due date for policies due within RENEWAL_LEAD_DAYS days."""
+        today = fields.Date.context_today(self)
+        limit = today + relativedelta(days=RENEWAL_LEAD_DAYS)
+        todo = self.env.ref("mail.mail_activity_data_todo")
+        for policy in self.search([("date_end", "!=", False), ("date_end", "<=", limit)]):
+            if policy.activity_due_date == policy.date_end:
+                continue
+            deadline = policy.notice_deadline if policy.notice_deadline >= today else max(policy.date_end, today)
+            policy.activity_schedule(
+                activity_type_id=todo.id,
+                date_deadline=deadline,
+                summary=self.env._("%(prefix)s: %(policy)s vervalt op %(date)s",
+                                   prefix=policy._renewal_task_prefix(), policy=policy.name,
+                                   date=format_date(self.env, policy.date_end)),
+                note=self.env._(
+                    "Kijk de polis van %(vme)s na: verzekerde waarde, premie en dekking. Verlengen of opzeggen "
+                    "(opzeg uiterlijk %(notice)s). Na de verlenging: knop Verlengd.",
+                    vme=policy.association_id.name, notice=format_date(self.env, policy.notice_deadline)),
+                user_id=(policy.user_id or self.env.user).id,
+            )
+            policy.activity_due_date = policy.date_end
 
 
 class VmeDamageClaim(models.Model):

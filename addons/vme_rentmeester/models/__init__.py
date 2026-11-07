@@ -4,5 +4,9 @@ from . import rent_charge_category
 from . import rent_contract
 from . import rent_indexation
 from . import rent_settlement
+from . import rent_mandate
+from . import rent_remittance
 from . import account_move
+from . import vme_payment
 from . import vme_lot
+from . import res_partner

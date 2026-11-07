@@ -18,7 +18,9 @@ from . import vme_collection
 from . import vme_payment
 from . import account_bank_statement_line
 from . import vme_migration
+from . import vme_migration_ai
 from . import vme_works
+from . import vme_works_comparison
 from . import vme_damage
 from . import vme_document
 from . import vme_portal
@@ -33,4 +35,11 @@ from . import vme_budget_tracking
 from . import vme_building_card
 from . import res_partner_supplier_card
 from . import vme_assembly_online
+from . import vme_financial_statements
+from . import vme_portal_requests
+from . import vme_cycle
+from . import vme_syndic
+from . import vme_provision_call_run
+from . import vme_work_item
+from . import vme_compliance
 from . import vme_fiscal_closing

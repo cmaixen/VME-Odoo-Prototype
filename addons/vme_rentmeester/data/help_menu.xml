@@ -8,5 +8,14 @@
         <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/rentmeester.md"}</field>
     </record>
     <menuitem id="menu_vme_help_rent" name="Rentmeester: huur, indexering en afrekening" parent="vme_belgie.menu_vme_help" action="action_help_rent" sequence="140"/>
-    <menuitem id="menu_rent_help" name="Help" parent="menu_rent_root" action="action_help_rent" sequence="99"/>
+    <record id="action_help_rent_remittance" model="ir.actions.server">
+        <field name="name">Help: doorstorting aan de verhuurder</field>
+        <field name="model_id" ref="vme_belgie.model_vme_association"/>
+        <field name="state">code</field>
+        <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/doorstorting-verhuurder.md"}</field>
+    </record>
+    <menuitem id="menu_vme_help_rent_remittance" name="Rentmeester: huur doorstorten aan de verhuurder" parent="vme_belgie.menu_vme_help" action="action_help_rent_remittance" sequence="141"/>
+    <menuitem id="menu_rent_help_top" name="Help" parent="menu_rent_root" sequence="99"/>
+    <menuitem id="menu_rent_help" name="Huur, indexering en afrekening" parent="menu_rent_help_top" action="action_help_rent" sequence="10"/>
+    <menuitem id="menu_rent_help_remittance" name="Doorstorting aan de verhuurder" parent="menu_rent_help_top" action="action_help_rent_remittance" sequence="20"/>
 </odoo>

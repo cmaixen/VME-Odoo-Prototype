@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_financial_statements" model="ir.actions.report">
+        <field name="name">Balans en resultatenrekening</field>
+        <field name="model">vme.financial.statements.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">vme_belgie.report_financial_statements</field>
+        <field name="report_file">vme_belgie.report_financial_statements</field>
+        <field name="print_report_name">'Balans en resultatenrekening %s %s' % (object.association_id.name, object.year)</field>
+    </record>
+
+    <!-- Rows of one table: heading with its amounts, the accounts below it in small print. -->
+    <template id="financial_statements_rows">
+        <t t-foreach="rows" t-as="row">
+            <tr>
+                <td class="text-nowrap" style="width: 4em;" t-out="row['code']"/>
+                <td t-out="row['name']"/>
+                <td class="text-end text-nowrap"><t t-out="row['amount']" t-options="money"/></td>
+                <td class="text-end text-nowrap text-muted"><t t-out="row['previous']" t-options="money"/></td>
+            </tr>
+            <tr t-if="show_details" t-foreach="row['details']" t-as="detail" class="small text-muted">
+                <td/>
+                <td class="ps-3" t-out="detail['label']"/>
+                <td class="text-end text-nowrap"><t t-out="detail['amount']" t-options="money"/></td>
+                <td class="text-end text-nowrap"><t t-out="detail['previous']" t-options="money"/></td>
+            </tr>
+        </t>
+    </template>
+
+    <template id="financial_statements_head">
+        <thead>
+            <tr>
+                <th colspan="2" t-out="title"/>
+                <th class="text-end" style="width: 9em;" t-out="label_current"/>
+                <th class="text-end text-muted" style="width: 9em;" t-out="label_previous"/>
+            </tr>
+        </thead>
+    </template>
+
+    <!-- The content: used in the PDF and as preview in the screen. -->
+    <template id="financial_statements_body">
+        <t t-foreach="statements" t-as="data">
+            <t t-set="currency" t-value="data['currency']"/>
+            <t t-set="money" t-value="{'widget': 'monetary', 'display_currency': currency}"/>
+            <t t-set="show_details" t-value="True"/>
+
+            <div t-if="not data['balance_ok'] or not data['carry_ok'] or data['unclassified']" class="alert alert-warning">
+                <div t-if="not data['balance_ok']">Controle: de balans sluit niet (activa en passiva verschillen).</div>
+                <div t-if="not data['carry_ok']">Controle: de over te dragen middelen verschillen van de balans.</div>
+                <div t-if="data['unclassified']">Er staan rekeningen op "Niet ingedeeld": die horen niet in het rekeningstelsel van een VME. Kijk ze na in de boekhouding.</div>
+            </div>
+            <div t-else="" class="alert alert-success">
+                Controle: de balans sluit, en de over te dragen middelen van de resultatenrekening zijn gelijk aan die op de balans.
+            </div>
+
+            <h4 class="mt-3">Balans op <t t-out="format_date(data['date'], lang=doc_lang)"/></h4>
+            <p class="small text-muted">Ingedeeld volgens het minimumrekeningstelsel voor verenigingen van mede-eigenaars (KB 12 juli 2012). Vergelijking met <t t-out="format_date(data['previous_date'], lang=doc_lang)"/>.</p>
+            <table class="table table-sm mb-2">
+                <t t-call="vme_belgie.financial_statements_head">
+                    <t t-set="title">Activa</t>
+                    <t t-set="label_current" t-value="data['year']"/>
+                    <t t-set="label_previous" t-value="data['previous_year']"/>
+                </t>
+                <tbody>
+                    <t t-call="vme_belgie.financial_statements_rows"><t t-set="rows" t-value="data['assets']"/></t>
+                    <tr class="fw-bold border-top">
+                        <td colspan="2">Totaal activa</td>
+                        <td class="text-end text-nowrap"><t t-out="data['assets_total']['amount']" t-options="money"/></td>
+                        <td class="text-end text-nowrap"><t t-out="data['assets_total']['previous']" t-options="money"/></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="table table-sm mb-4">
+                <t t-call="vme_belgie.financial_statements_head">
+                    <t t-set="title">Passiva</t>
+                    <t t-set="label_current" t-value="data['year']"/>
+                    <t t-set="label_previous" t-value="data['previous_year']"/>
+                </t>
+                <tbody>
+                    <t t-call="vme_belgie.financial_statements_rows"><t t-set="rows" t-value="data['liabilities']"/></t>
+                    <tr class="fw-bold border-top">
+                        <td colspan="2">Totaal passiva</td>
+                        <td class="text-end text-nowrap"><t t-out="data['liabilities_total']['amount']" t-options="money"/></td>
+                        <td class="text-end text-nowrap"><t t-out="data['liabilities_total']['previous']" t-options="money"/></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h4 style="page-break-before: always;">Resultatenrekening <t t-out="data['year']"/></h4>
+            <p class="small text-muted">Van 1 januari tot 31 december <t t-out="data['year']"/>, met <t t-out="data['previous_year']"/> ter vergelijking. Een VME maakt geen winst: wat overblijft, wordt overgedragen naar het volgende boekjaar.</p>
+            <table class="table table-sm mb-2">
+                <t t-call="vme_belgie.financial_statements_head">
+                    <t t-set="title">Kosten</t>
+                    <t t-set="label_current" t-value="data['year']"/>
+                    <t t-set="label_previous" t-value="data['previous_year']"/>
+                </t>
+                <tbody>
+                    <t t-call="vme_belgie.financial_statements_rows"><t t-set="rows" t-value="data['costs']"/></t>
+                    <tr class="fw-bold border-top">
+                        <td colspan="2">Totaal kosten</td>
+                        <td class="text-end text-nowrap"><t t-out="data['costs_total']['amount']" t-options="money"/></td>
+                        <td class="text-end text-nowrap"><t t-out="data['costs_total']['previous']" t-options="money"/></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="table table-sm mb-2">
+                <t t-call="vme_belgie.financial_statements_head">
+                    <t t-set="title">Opbrengsten</t>
+                    <t t-set="label_current" t-value="data['year']"/>
+                    <t t-set="label_previous" t-value="data['previous_year']"/>
+                </t>
+                <tbody>
+                    <t t-call="vme_belgie.financial_statements_rows"><t t-set="rows" t-value="data['income']"/></t>
+                    <tr class="fw-bold border-top">
+                        <td colspan="2">Totaal opbrengsten</td>
+                        <td class="text-end text-nowrap"><t t-out="data['income_total']['amount']" t-options="money"/></td>
+                        <td class="text-end text-nowrap"><t t-out="data['income_total']['previous']" t-options="money"/></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="table table-sm mb-4">
+                <tbody>
+                    <tr class="fw-bold">
+                        <td style="width: 4em;">693</td>
+                        <td>Over te dragen middelen (opbrengsten min kosten)</td>
+                        <td class="text-end text-nowrap" style="width: 9em;"><t t-out="data['result']['amount']" t-options="money"/></td>
+                        <td class="text-end text-nowrap" style="width: 9em;"><t t-out="data['result']['previous']" t-options="money"/></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h5>Over te dragen middelen per fonds (<t t-out="data['year']"/>)</h5>
+            <t t-set="carry" t-value="data['carry']"/>
+            <table class="table table-sm mb-2">
+                <thead>
+                    <tr>
+                        <th/>
+                        <th class="text-end">Reservekapitaal</th>
+                        <th class="text-end">Werkkapitaal</th>
+                        <th class="text-end">Totaal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- One row per kind, with the label as text in the template so it gets translated. -->
+                    <t t-foreach="['opening', 'advances', 'other_income', 'costs']" t-as="kind">
+                        <tr>
+                            <td t-if="kind == 'opening'">Overgedragen van <t t-out="data['previous_year']"/></td>
+                            <td t-elif="kind == 'advances'">Voorschotten (700 en 701)</td>
+                            <td t-elif="kind == 'other_income'">Andere opbrengsten</td>
+                            <td t-else="">Kosten ten laste van het fonds</td>
+                            <t t-foreach="['reserve', 'working', 'total']" t-as="fund">
+                                <td class="text-end text-nowrap">
+                                    <t t-out="-carry[fund][kind]['amount'] if kind == 'costs' else carry[fund][kind]['amount']" t-options="money"/>
+                                </td>
+                            </t>
+                        </tr>
+                    </t>
+                    <tr class="fw-bold border-top">
+                        <td>Over te dragen naar <t t-out="data['year'] + 1"/> (489)</td>
+                        <td class="text-end text-nowrap"><t t-out="carry['reserve']['closing']['amount']" t-options="money"/></td>
+                        <td class="text-end text-nowrap"><t t-out="carry['working']['closing']['amount']" t-options="money"/></td>
+                        <td class="text-end text-nowrap"><t t-out="carry['total']['closing']['amount']" t-options="money"/></td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="small text-muted">Werken die met het reservekapitaal betaald worden, staan bij de kosten (meestal 611) en worden afgetrokken van het reservekapitaal. Btw op leveranciersfacturen is een kost: de VME is niet btw-plichtig.</p>
+        </t>
+    </template>
+
+    <template id="report_financial_statements">
+        <t t-call="web.html_container">
+            <t t-foreach="statements" t-as="data">
+                <t t-set="company" t-value="data['company']"/>
+                <t t-set="o" t-value="data['vme']"/>
+                <t t-set="doc_lang" t-value="company.partner_id.lang"/>
+                <t t-call="vme_belgie.report_financial_statements_document" t-lang="company.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+    <!-- In the language of the recipient (the VME): see docs/dev/vertaling.md -->
+    <template id="report_financial_statements_document">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <h2 class="mb-0">Balans en resultatenrekening <t t-out="data['year']"/></h2>
+                <div class="text-muted mb-3">
+                    VME <t t-out="data['vme'].name"/>
+                    <t t-if="data['vme'].kbo_number"> · KBO <t t-out="data['vme'].kbo_number"/></t>
+                </div>
+                <t t-call="vme_belgie.financial_statements_body">
+                    <t t-set="statements" t-value="[data]"/>
+                </t>
+            </div>
+        </t>
+    </template>
+</odoo>

@@ -185,7 +185,7 @@ class VmeSaleFile(models.Model):
                 continue
             sale.information_html = self.env["ir.qweb"]._render(
                 "vme_belgie.notary_information_body",
-                {"info": sale._origin._get_notary_information(), "format_date": lambda d: format_date(self.env, d)},
+                {"info": sale._origin._get_notary_information(), "format_date": lambda d, lang=False: format_date(self.env, d, lang_code=lang)},
             )
 
     @api.constrains("lot_ids", "association_id")
@@ -295,9 +295,17 @@ class VmeSaleFile(models.Model):
             ("date", ">=", on_date.replace(year=on_date.year - ASSEMBLY_YEARS)), ("date", "<=", on_date),
         ], order="date desc")
 
+        # LEGAL-CHECK: art. 3.94 §1 BW en Vlaamse verkoopplicht (Materialendecreet, Energiebesluit) -
+        # the notary needs the asbestos certificate and EPC of the common parts and the
+        # post-intervention file; a missing certificate is stated explicitly.
+        lang = sale.notary_id.lang or company.partner_id.lang
+        certificates = vme.with_context(lang=lang)._get_certificate_status(on_date)
+
         return {
             "sale": sale,
             "vme": vme,
+            "certificates": certificates,
+            "insurance": vme._building_policies(),
             "currency": currency,
             "date": on_date,
             "lots": lots,
@@ -307,7 +315,7 @@ class VmeSaleFile(models.Model):
             "reserve_share": lot_share(general, reserve_balance),
             "statement": statement,
             "arrears": [{"move": m, "due": m.invoice_date_due, "amount": m.amount_residual,
-                         "fund": dict(m._fields["vme_fund"].selection).get(m.vme_fund)} for m in arrears],
+                         "fund": m.vme_fund} for m in arrears],
             "arrears_total": currency.round(sum(arrears.mapped("amount_residual"))),
             "works": [{"item": item, "amount": item.works_amount,
                        "share": lot_share(item.works_key_id, item.works_amount)} for item in works],

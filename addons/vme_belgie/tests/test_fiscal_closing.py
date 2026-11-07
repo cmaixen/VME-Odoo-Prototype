@@ -275,6 +275,11 @@ class TestFiscalClosingDemo(TransactionCase):
         cls.env.flush_all()
         cls.env.cr.execute("ANALYZE account_move, account_move_line, account_partial_reconcile, res_partner")
         cls.env["vme.association"].with_user(admin)._load_demo_history()
+        # Again after the history: with the statistics of the demo data alone, Odoo's query for the
+        # reconciled payments of the posted settlement (_compute_reconciled_payment_ids) ran for hours.
+        cls.env.flush_all()
+        cls.env.cr.execute("ANALYZE account_move, account_move_line, account_partial_reconcile, account_payment, "
+                           "account_account, res_partner")
         cls.vmes = cls.env["vme.association"].search([("name", "in", ("Residentie Linde", "Hof ter Beuken", "Kaaihuis"))])
 
     def test_settle_demo_year(self):

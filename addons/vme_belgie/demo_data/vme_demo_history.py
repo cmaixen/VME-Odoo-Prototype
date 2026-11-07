@@ -93,18 +93,23 @@ class VmeAssociation(models.Model):
         self._demo_history_meter_readings(vmes)
         self._demo_history_bills(vmes)
         self._load_demo_collection()
+        self._load_demo_syndic_history()
+        self._load_demo_cycle()
+        self._load_demo_worklist()
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
                 "title": self.env._("Demohistoriek geladen"),
-                "message": self.env._("Provisies, betalingen, leveranciersfacturen en invorderingen van %s.", HISTORY_YEAR),
+                "message": self.env._("Provisies, betalingen, leveranciersfacturen, invorderingen en jaarcyclus van %s.", HISTORY_YEAR),
                 "type": "success",
                 "next": self.env["ir.actions.act_window"]._for_xml_id("vme_belgie.vme_annual_statement_wizard_action"),
             },
         }
 
-    def _demo_history_provisions(self, vmes, journals):
+    def _demo_history_provisions(self, vmes, journals, unpaid=None):
+        """Provision calls 1-4 of the history year, paid except the calls in unpaid (owner name -> numbers)."""
+        unpaid = UNPAID_CALLS if unpaid is None else unpaid
         for number, call_date in enumerate(CALL_DATES, start=1):
             self.env["vme.provision.call.wizard"].create({
                 "association_ids": [Command.set(vmes.ids)],
@@ -121,7 +126,7 @@ class VmeAssociation(models.Model):
                 for fund in ("working", "reserve"):
                     invoices = call.invoice_ids.filtered(
                         lambda m, f=fund, n=call.number: m.vme_fund == f
-                        and n not in UNPAID_CALLS.get(m.partner_id.name, set())
+                        and n not in unpaid.get(m.partner_id.name, set())
                     )
                     if not invoices:
                         continue

@@ -144,6 +144,14 @@ class TestRequests(TransactionCase):
         self.assertEqual(len(request.check_ids), 3)
         self.assertTrue(request.name.startswith("AANV/2026/"))
 
+    def test_request_without_lot(self):
+        request = self.Request.create({
+            "association_id": self.vme.id, "request_type_id": self.env.ref("vme_belgie.request_type_key").id,
+            "title": "Vraag zonder kavel", "requester_id": self.owner.id,
+        })
+        self.assertFalse(request.owner_id)
+        self.assertFalse(self._intake("onbekend.zonder.kavel@example.com").owner_id)
+
     def test_same_mail_makes_one_request(self):
         first = self._intake("eigenaar.a1@example.com", reference="badge-a1@example.com")
         second = self._intake("eigenaar.a1@example.com", reference="badge-a1@example.com")
@@ -192,12 +200,14 @@ class TestRequests(TransactionCase):
         with self.assertRaises(UserError):
             request.action_send_order()
 
-    def test_order_waits_for_a_click(self):
-        # After verification the order is ready, but only a staff member sends it.
+    def test_order_never_leaves_by_itself(self):
+        # A verified owner: the order is ready as a draft, with a task, but only a click sends it.
         request = self._intake("eigenaar.a1@example.com")
         self.assertTrue(request.order_ready)
         self.assertEqual(request.state, "in_progress")
+        self.assertFalse(request.order_sent_date)
         self.assertFalse(self._sent_messages(request))
+        self.assertTrue(request.activity_ids.filtered(lambda a: a.summary.startswith("Bestelling slotenmaker")))
 
     def test_no_locksmith_gives_a_task(self):
         self.vme.locksmith_partner_id = False

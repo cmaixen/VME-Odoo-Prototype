@@ -12,6 +12,7 @@ from . import test_sale_file
 from . import test_collection
 from . import test_bank_statements
 from . import test_migration
+from . import test_migration_ai
 from . import test_works
 from . import test_damage
 from . import test_portal
@@ -25,3 +26,13 @@ from . import test_communication
 from . import test_building_card
 from . import test_assembly_online
 from . import test_fiscal_closing
+from . import test_financial_statements
+from . import test_portal_requests
+from . import test_access_rules
+from . import test_cycle
+from . import test_syndic
+from . import test_translation
+from . import test_scale_data
+from . import test_work_items
+from . import test_compliance
+from . import test_works_comparison

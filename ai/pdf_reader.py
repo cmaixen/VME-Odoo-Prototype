@@ -9,7 +9,7 @@ import base64
 import json
 import re
 
-from classifier import MODEL, RefusalError, build_context
+from classifier import RefusalError, build_context, fallback_options, model_for
 from pdf_text import extract_text
 
 # Same codes as READING_FIELDS in addons/vme_belgie/models/account_move_ai.py.
@@ -117,13 +117,15 @@ def pdf_block(pdf_bytes):
 
 
 class _ClaudeBase:
-    def __init__(self, client=None, model=MODEL):
+    task = None  # key in classifier.MODELS
+
+    def __init__(self, client=None, model=None):
         if client is None:
             import anthropic  # only needed in this mode
 
             client = anthropic.Anthropic()  # reads ANTHROPIC_API_KEY
         self.client = client
-        self.model = model
+        self.model = model or model_for(self.task)
 
     def _ask(self, system, pdf_bytes, instruction, schema, name):
         response = self.client.beta.messages.create(
@@ -132,9 +134,7 @@ class _ClaudeBase:
             system=system,
             messages=[{"role": "user", "content": [pdf_block(pdf_bytes), {"type": "text", "text": instruction}]}],
             output_config={"effort": "medium", "format": {"type": "json_schema", "schema": schema}},
-            # If a safety classifier declines, the API retries on a suitable fallback model.
-            betas=["server-side-fallback-2026-07-01"],
-            fallbacks="default",
+            **fallback_options(self.model),
         )
         if response.stop_reason == "refusal":
             raise RefusalError(f"Het taalmodel weigerde {name}.")
@@ -145,6 +145,8 @@ class _ClaudeBase:
 
 
 class ClaudeInvoiceReader(_ClaudeBase):
+    task = "invoice"
+
     def read(self, pdf_bytes, name="factuur.pdf"):
         """{field code: {"value", "confidence"}} and the model that read it."""
         data, model = self._ask(INVOICE_PROMPT, pdf_bytes, "Lees deze factuur.", INVOICE_SCHEMA, name)
@@ -152,7 +154,9 @@ class ClaudeInvoiceReader(_ClaudeBase):
 
 
 class ClaudeDocumentClassifier(_ClaudeBase):
-    def __init__(self, vmes, client=None, model=MODEL):
+    task = "document"
+
+    def __init__(self, vmes, client=None, model=None):
         super().__init__(client, model)
         self.vmes = vmes
         self.system = [{

@@ -1,6 +1,6 @@
 # Werken, offertes en schadegevallen (stap 14)
 
-Code: `models/vme_works.py`, `models/vme_damage.py`, `views/vme_works_views.xml`, `views/vme_damage_views.xml`, demodata in `demo_data/vme_demo_works.py`, tests in `tests/test_works.py` en `tests/test_damage.py`. Kennisbank: [werken](../kb/werken.md) en [schadegevallen](../kb/schadegevallen.md).
+Code: `models/vme_works.py`, `models/vme_damage.py`, `views/vme_works_views.xml`, `views/vme_damage_views.xml`, demodata in `demo_data/vme_demo_works.py`, tests in `tests/test_works.py` en `tests/test_damage.py`. Kennisbank: [werken](../kb/werken.md) en [schadegevallen](../kb/schadegevallen.md). De offertevergelijking met AI staat apart in [offertes-vergelijken.md](offertes-vergelijken.md).
 
 ## Datamodel
 

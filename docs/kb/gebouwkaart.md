@@ -21,7 +21,8 @@ De gebouwkaart toont:
 
 | Blok | Wat u ziet |
 | --- | --- |
-| Signalen | Wat niet in orde is: reservefonds onder 5%, achterstallen boven de drempel, AV buiten de periode, vervallen keuring |
+| Signalen | Wat niet in orde is: reservefonds onder 5%, achterstallen boven de drempel, AV buiten de periode, vervallen keuring, een stap van de [jaarcyclus](jaarcyclus.md) die te laat is |
+| Jaarcyclus | De open stappen van het jaar met hun uiterste datum, als de jaarcyclus aanstaat |
 | Kerngegevens | Adres, KBO-nummer, kavels en eigenaars, de twee bankrekeningen, de periode van de gewone AV, de volgende AV, de raad en de commissaris |
 | Werk- en reservekapitaal | De stand vandaag en het verloop per jaar: wat opgevraagd werd en wat ervan gebruikt werd. Onder de stand ziet u wat er volgens de bankafschriften en de geregistreerde betalingen op elke rekening staat |
 | Budget tegenover werkelijk | Per rekening en per verdeelsleutel: het budget van het jaar, het budget tot vandaag, de werkelijke kosten en het verschil |

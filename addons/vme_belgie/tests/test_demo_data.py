@@ -1,5 +1,7 @@
 from datetime import date
 
+from freezegun import freeze_time
+
 from odoo.exceptions import UserError
 from odoo.tests import TransactionCase, tagged
 
@@ -136,8 +138,9 @@ class TestDemoData(TransactionCase):
         self.assertIn("gevelwerken", info["legal_proceedings"])
 
     def test_demo_works_and_damage_linde(self):
-        works = self.env["vme.works"].search([("association_id", "=", self.linde.id)])
-        self.assertEqual(works.name, "Renovatie plat dak blok A")
+        works = self.env["vme.works"].search([
+            ("association_id", "=", self.linde.id), ("name", "=", "Renovatie plat dak blok A")])
+        self.assertEqual(len(works), 1)
         self.assertEqual((works.budget, works.financing, works.state), (38000, "reserve", "awarded"))
         self.assertEqual(len(works.quote_ids), 3)
         self.assertEqual(works.contractor_id.name, "Dakrenovatie Fictief NV")
@@ -150,6 +153,18 @@ class TestDemoData(TransactionCase):
         self.assertEqual(claim.policy_id.insurer_id.name, "Verzekeringen Voorbeeld NV")
         self.assertEqual(claim.mail_reference, "lek-a4-20261102@example.com")
         self.assertEqual(len(self.env["vme.insurance.policy"].search([])), 3)
+
+    def test_demo_facade_quotes_linde(self):
+        """Three quote PDFs to compare, the third amount entered without VAT (the comparison flags it)."""
+        works = self.env["vme.works"].search([
+            ("association_id", "=", self.linde.id), ("name", "=", "Gevelrenovatie voor- en achtergevel")])
+        self.assertEqual((works.state, works.key_id.key_type), ("quotes", "general"))
+        self.assertFalse(works.activity_ids)
+        self.assertEqual(works.quote_ids.mapped("amount"), [36941, 44000, 48548])
+        self.assertTrue(all(q.attachment_ids.raw.startswith(b"%PDF") for q in works.quote_ids))
+        self.assertFalse(works.comparison_ids)
+        comparison = self.env["vme.works.comparison"].browse(works.action_compare_quotes()["res_id"])
+        self.assertEqual((comparison.state, comparison.column_count), ("to_read", 3))
     def test_council_and_auditors(self):
         beuken = self.vmes.filtered(lambda v: v.name == "Hof ter Beuken")
         self.assertTrue(beuken.council_required)
@@ -188,3 +203,56 @@ class TestDemoData(TransactionCase):
         self.assertNotIn("assembly", signals["Residentie Linde"])
         self.assertIn("inspection", signals["Residentie Linde"])
         self.assertEqual(self.linde.arrears_signal_threshold, 250)
+        # Insurance and certificates: the fire insurance of Kaaihuis is due on 1 December 2026 and
+        # Hof ter Beuken (built 1978) has no asbestos certificate of the common parts.
+        self.assertIn("insurance", signals["Kaaihuis"])
+        self.assertNotIn("insurance", signals["Residentie Linde"] | signals["Hof ter Beuken"])
+        self.assertIn("certificate", signals["Hof ter Beuken"])
+        self.assertNotIn("certificate", signals["Residentie Linde"] | signals["Kaaihuis"])
+        beuken = self.vmes.filtered(lambda v: v.name == "Hof ter Beuken")
+        self.assertIn("Asbestattest gemene delen laten opmaken", beuken.activity_ids.mapped("summary"))
+        kaai = self.vmes.filtered(lambda v: v.name == "Kaaihuis")
+        self.assertEqual(kaai.insurance_policy_ids.date_end, date(2026, 12, 1))
+        self.assertTrue(kaai.insurance_policy_ids.activity_ids)
+
+    def test_demo_case_managers(self):
+        # Step 29: the demo login manages Linde and Hof ter Beuken, his colleague Kaaihuis; open tasks follow.
+        admin = self.env.ref("base.user_admin")
+        staff = self.env["res.users"].search([("login", "=", "medewerker.voorbeeld@example.com")])
+        managers = {vme.name: vme.manager_user_id for vme in self.vmes}
+        self.assertEqual(managers, {"Residentie Linde": admin, "Hof ter Beuken": admin, "Kaaihuis": staff})
+        kaai = self.vmes.filtered(lambda v: v.name == "Kaaihuis")
+        tasks = self.env["mail.activity"].search([("res_model", "=", "vme.contract"), ("res_id", "in", self.env[
+            "vme.contract"].search([("association_id", "=", kaai.id)]).ids)])
+        self.assertEqual(tasks.user_id, staff if tasks else self.env["res.users"])
+
+    def test_demo_portal_request_and_survey(self):
+        # Step 27: A1 filed a request in the portal and answered the survey on charging points there.
+        request = self.env["vme.request"].search([("association_id", "=", self.linde.id), ("channel", "=", "portal")])
+        self.assertEqual(request.requester_id.name, "Eigenaar Linde A1")
+        self.assertEqual(request.state, "in_progress")
+        survey = self.env["vme.communication"].search([("association_id", "=", self.linde.id), ("kind", "=", "survey")])
+        self.assertEqual(survey.state, "sent")
+        self.assertFalse(survey.log_ids.mail_id, "the demo survey queues no mails")
+        answered = survey.log_ids.filtered("answer_option_id")
+        self.assertEqual(len(answered), 3)
+        self.assertEqual(answered.filtered(lambda log: log.answer_channel == "portal").partner_id.name, "Eigenaar Linde A1")
+        tenant = self.env["res.partner"].search([("name", "=", "Huurder Linde A6")])
+        self.assertTrue(tenant.user_ids.share)
+        self.assertEqual(tenant._vme_portal_request_lots().name, "A6")
+
+    @freeze_time(date(2026, 11, 5))
+    def test_demo_syndic(self):
+        office = self.env["res.company"].search([("is_syndic_office", "=", True)])
+        self.assertEqual(office.name, "Syndicus Voorbeeld BV")
+        agreements = self.env["vme.management.agreement"].search([])
+        self.assertEqual(sorted(agreements.mapped("association_id.name")), sorted(self.vmes.mapped("name")))
+        mandates = {m.association_id.name: m for m in self.env["vme.syndic.mandate"].search([])}
+        self.assertEqual(mandates["Residentie Linde"].renewal_assembly_year, 2027)
+        self.assertEqual(mandates["Residentie Linde"].renewal_state, "plan")
+        self.assertEqual(mandates["Hof ter Beuken"].renewal_state, "ok")
+        self.assertEqual(mandates["Kaaihuis"].posting_state, "late")
+        services = {(s.association_id.name, s.service_type) for s in self.env["vme.service.line"].search([])}
+        self.assertEqual(services, {("Residentie Linde", "damage_claim"), ("Hof ter Beuken", "extra_meeting"),
+                                    ("Kaaihuis", "registered_mail")})
+

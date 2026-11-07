@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Name, logo, language and main menu of the product website (models/website.py). -->
+    <function model="website" name="_vme_setup_product_website"/>
+</odoo>

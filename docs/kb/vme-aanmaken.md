@@ -12,6 +12,7 @@ Een VME is de vereniging van mede-eigenaars van één gebouw. In het platform kr
 
 2. Klik op **Nieuw**.
 3. Vul de naam, het KBO-nummer en het adres in. Kies bij **Land** voor België.
+   Bij **Dossierbeheerder** staat uzelf: wie de VME opvolgt, krijgt haar taken en ziet haar werk in [Mijn werk vandaag](mijn-werk-vandaag.md). Kies een collega als die het gebouw beheert.
 4. Klik op het wolkje (opslaan).
 
 ![Een nieuwe VME invullen](img/vme-nieuw.png)

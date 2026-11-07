@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_syndic_posting" model="ir.actions.report">
+        <field name="name">Aanplakking aanstelling syndicus</field>
+        <field name="model">vme.syndic.mandate</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">vme_belgie.report_syndic_posting</field>
+        <field name="report_file">vme_belgie.report_syndic_posting</field>
+        <field name="print_report_name">'Aanplakking syndicus %s' % object.association_id.name</field>
+        <field name="binding_model_id" ref="model_vme_syndic_mandate"/>
+    </record>
+
+    <!-- LEGAL-CHECK: art. 3.89 §2 BW - which data the extract must contain is not yet validated. -->
+    <template id="report_syndic_posting">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="mandate">
+                <t t-set="info" t-value="mandate._posting_values()"/>
+                <t t-call="vme_belgie.report_syndic_posting_document" t-lang="mandate.company_id.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+    <!-- In the language of the VME (posted at the entrance): see docs/dev/vertaling.md -->
+    <template id="report_syndic_posting_document">
+        <t t-call="web.basic_layout">
+            <div class="page" style="font-size: 16pt;">
+                <h1 class="text-center mb-4">Aanstelling van de syndicus</h1>
+                <h3 class="text-center mb-5" t-out="mandate.association_id.name"/>
+                <p class="text-center mb-5">
+                    <t t-out="mandate.association_id.street"/>, <t t-out="mandate.association_id.zip"/>
+                    <t t-out="mandate.association_id.city"/>
+                    <t t-if="mandate.association_id.kbo_number"> - KBO <t t-out="mandate.association_id.kbo_number"/></t>
+                </p>
+                <table class="table table-borderless">
+                    <tr><th style="width: 35%">Syndicus</th><td t-out="info['syndic']"/></tr>
+                    <tr><th>Adres</th><td t-out="info['address']"/></tr>
+                    <tr t-if="info['kbo']"><th>Ondernemingsnummer</th><td t-out="info['kbo']"/></tr>
+                    <tr><th>Mandaat</th>
+                        <td>van <span t-field="mandate.date_start"/> tot <span t-field="mandate.date_end"/></td></tr>
+                    <tr t-if="info['appointment']"><th>Benoemd door</th><td t-out="info['appointment']"/></tr>
+                    <tr t-if="info['email']"><th>E-mail</th><td t-out="info['email']"/></tr>
+                    <tr t-if="info['phone']"><th>Telefoon</th><td t-out="info['phone']"/></tr>
+                </table>
+                <p class="mt-5">
+                    De documenten van de vereniging van mede-eigenaars kunnen eigenaars inkijken in het
+                    eigenaarsportaal of op afspraak op het kantoor van de syndicus.
+                </p>
+                <p class="text-muted mt-5" style="font-size: 10pt;">
+                    Aangeplakt aan de ingang van het gebouw volgens artikel 3.89, §2 van het Burgerlijk Wetboek.
+                </p>
+            </div>
+        </t>
+    </template>
+</odoo>

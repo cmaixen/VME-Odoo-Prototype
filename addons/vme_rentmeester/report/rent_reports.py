@@ -14,7 +14,9 @@ class VmeRentReportMixin(models.AbstractModel):
             "doc_ids": docids,
             "doc_model": self._report_model,
             "docs": self.env[self._report_model].browse(docids),
-            "format_date": lambda value, date_format=False: format_date(self.env, value, date_format=date_format),
+            # lang: the language of the recipient (doc_lang in the template)
+            "format_date": lambda value, date_format=False, lang=False: format_date(
+                self.env, value, lang_code=lang, date_format=date_format),
         }
 
 
@@ -30,3 +32,10 @@ class ReportRentSettlement(models.AbstractModel):
     _inherit = "vme.rent.report.mixin"
     _description = "Afrekening lasten huurder"
     _report_model = "vme.rent.settlement"
+
+
+class ReportRentRemittance(models.AbstractModel):
+    _name = "report.vme_rentmeester.report_rent_remittance"
+    _inherit = "vme.rent.report.mixin"
+    _description = "Afrekening verhuurder"
+    _report_model = "vme.rent.remittance"

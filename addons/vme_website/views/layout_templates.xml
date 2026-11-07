@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- One "Inloggen" button with two routes. Where someone lands after logging in is decided
+         by controllers/main.py on the type of user, not by the route they picked. -->
+    <template id="user_sign_in" name="Inloggen: medewerker of eigenaar" inherit_id="portal.user_sign_in">
+        <xpath expr="//li" position="replace">
+            <li groups="base.group_public" t-attf-class="#{_item_class} dropdown o_no_autohide_item">
+                <a href="/inloggen" t-attf-class="#{_link_class} dropdown-toggle" data-bs-toggle="dropdown"
+                   role="button" aria-expanded="false">Inloggen</a>
+                <div class="dropdown-menu dropdown-menu-end o_vme_login_menu" style="min-width: 17rem;">
+                    <a class="dropdown-item py-2" href="/web/login?redirect=/odoo/action-vme_belgie.vme_association_action">
+                        <i class="fa fa-briefcase fa-fw me-1"/> Medewerker van de syndicus
+                        <small>Naar de beheeromgeving</small>
+                    </a>
+                    <a class="dropdown-item py-2" href="/web/login?redirect=/my">
+                        <i class="fa fa-home fa-fw me-1"/> Eigenaar of huurder
+                        <small>Naar het eigenaarsportaal</small>
+                    </a>
+                </div>
+            </li>
+        </xpath>
+    </template>
+
+    <!-- Header: no search bar or phone number, and a call to action that leads to our own form. -->
+    <record id="website.header_search_box" model="ir.ui.view">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="website.header_text_element" model="ir.ui.view">
+        <field name="active" eval="False"/>
+    </record>
+    <template id="header_call_to_action" name="Header: demo aanvragen" inherit_id="website.header_call_to_action">
+        <xpath expr="//a[hasclass('btn_cta')]" position="replace">
+            <a t-if="request.env.user._is_public()" href="/prijzen#demo" class="oe_unremovable btn btn-primary btn_cta">Demo aanvragen</a>
+        </xpath>
+    </template>
+
+    <template id="footer_copyright" name="Copyright Quotis" inherit_id="website.footer_copyright_company_name" priority="20">
+        <xpath expr="//span[hasclass('o_footer_copyright_name')]" position="replace">
+            <span class="o_footer_copyright_name me-2 small">Copyright © Quotis (werktitel, prototype)</span>
+        </xpath>
+    </template>
+
+    <!-- Short explanation above Odoo's login form, depending on the chosen route. -->
+    <template id="login_route_hint" name="Inloggen: uitleg per route" inherit_id="web.login">
+        <xpath expr="//div[hasclass('field-login')]" position="before">
+            <t t-set="vme_redirect" t-value="request.params.get('redirect') or ''"/>
+            <div t-if="vme_redirect.startswith('/odoo')" class="alert alert-light border small mb-3">
+                <strong>Medewerker van de syndicus.</strong> U komt na het inloggen in de app VME.
+            </div>
+            <div t-elif="vme_redirect.startswith('/my')" class="alert alert-light border small mb-3">
+                <strong>Eigenaar of huurder.</strong> U komt na het inloggen in uw eigenaarsportaal.
+                Nog geen login? Die krijgt u van uw syndicus.
+            </div>
+        </xpath>
+    </template>
+
+    <template id="footer" name="Footer Quotis" inherit_id="website.footer_custom">
+        <xpath expr="//div[@id='footer']/section" position="replace">
+            <section class="s_text_block pt40 pb16" data-snippet="s_text_block" data-name="Container">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-4 pt24 pb24">
+                            <h5>Quotis</h5>
+                            <p>Software voor syndici van Belgische VME's, op Odoo Community.</p>
+                            <p class="o_vme_human small">Een mens beslist altijd: brieven, rappels, betalingen en antwoorden staan klaar als concept, en uw medewerker verstuurt ze.</p>
+                        </div>
+                        <div class="col-lg-2 offset-lg-1 pt24 pb24">
+                            <h5>Product</h5>
+                            <ul class="list-unstyled">
+                                <li><a href="/functies">Functies</a></li>
+                                <li><a href="/voor-eigenaars">Voor eigenaars</a></li>
+                                <li><a href="/prijzen">Prijzen</a></li>
+                                <li><a href="/inloggen">Inloggen</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-lg-4 offset-lg-1 pt24 pb24">
+                            <h5>Contact</h5>
+                            <ul class="list-unstyled">
+                                <li><i class="fa fa-map-marker fa-fw me-2"/>Voorbeeldstraat 1, 2000 Antwerpen</li>
+                                <li><i class="fa fa-envelope fa-fw me-2"/><a href="mailto:info@quotis.example">info@quotis.example</a></li>
+                                <li><i class="fa fa-comment fa-fw me-2"/><a href="/prijzen#demo">Demo aanvragen</a></li>
+                            </ul>
+                            <p class="small opacity-75">Prototype met fictieve gegevens. De Belgische regels in het prototype zijn nog niet juridisch nagekeken.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </xpath>
+    </template>
+</odoo>

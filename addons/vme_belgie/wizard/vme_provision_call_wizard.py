@@ -10,7 +10,9 @@ from odoo.tools import formatLang
 from ..models.account_chart_template import VME_FUND_ACCOUNTS
 from ..models.allocation_tools import largest_remainder
 
-FUND_LABELS = {"working": "Werkkapitaal", "reserve": "Reservekapitaal"}
+# From this many VMEs on, the calls are made in the background: Odoo needs two to three seconds per
+# VME, and a web request may not last much longer than a minute (docs/dev/schaal.md).
+BACKGROUND_THRESHOLD = 20
 
 
 class VmeProvisionCallWizard(models.TransientModel):
@@ -60,18 +62,9 @@ class VmeProvisionCallWizard(models.TransientModel):
 
     def action_create_calls(self):
         self.ensure_one()
-        invoices = self.env["account.move"]
-        skipped = []
-        for vme in self.association_ids:
-            budget = self._get_budget(vme)
-            if not budget:
-                skipped.append(vme.name)
-                continue
-            vme_invoices = self._create_call(vme, budget)
-            if self.post_invoices:
-                # Post within the VME's own company: the user may have another company selected.
-                vme_invoices.with_company(vme.company_id).action_post()
-            invoices |= vme_invoices
+        if len(self.association_ids) > BACKGROUND_THRESHOLD:
+            return self._queue_calls()
+        invoices, skipped = self._create_calls(self.association_ids)
         if not invoices:
             raise UserError(self.env._("Er zijn geen provisieoproepen gemaakt: geen budget voor %s.", ", ".join(skipped)))
         # The provision call overview spans all VMEs; an invoice list would only show the
@@ -86,6 +79,38 @@ class VmeProvisionCallWizard(models.TransientModel):
             })
         return action
 
+    def _create_calls(self, vmes):
+        """Create (and post) the call for these VMEs. Returns the invoices and the names of VMEs without budget."""
+        invoices = self.env["account.move"]
+        skipped = []
+        for vme in vmes:
+            budget = self._get_budget(vme)
+            if not budget:
+                skipped.append(vme.name)
+                continue
+            vme_invoices = self._create_call(vme, budget)
+            if self.post_invoices:
+                # Post within the VME's own company: the user may have another company selected.
+                vme_invoices.with_company(vme.company_id).action_post()
+            invoices |= vme_invoices
+        return invoices, skipped
+
+    def _queue_calls(self):
+        """Large selections are made in the background, VME per VME (docs/dev/schaal.md)."""
+        run = self.env["vme.provision.call.run"].create({
+            "year": self.year, "number": self.number, "invoice_date": self.invoice_date,
+            "date_due": self.date_due, "post_invoices": self.post_invoices,
+            "association_ids": [Command.set(self.association_ids._origin.ids)],
+        })
+        run._trigger()
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": "vme.provision.call.run",
+            "res_id": run.id,
+            "view_mode": "form",
+            "target": "current",
+        }
+
     def _create_call(self, vme, budget):
         calls = int(budget.calls_per_year)
         if not 1 <= self.number <= calls:
@@ -99,7 +124,7 @@ class VmeProvisionCallWizard(models.TransientModel):
                 number=self.number, year=self.year, vme=vme.name,
             ))
         key = vme.key_ids.filtered(lambda k: k.key_type == "general")[:1]
-        if not key or not key.line_ids:
+        if not key or not any(key.line_ids.mapped("shares")):
             raise UserError(self.env._("%s heeft geen algemene verdeelsleutel.", vme.name))
 
         company = vme.company_id
@@ -150,10 +175,13 @@ class VmeProvisionCallWizard(models.TransientModel):
             for key_line, amount in zip(key_lines, lot_amounts):
                 if not amount:
                     continue
+                # The line text goes to the owner: write it in the owner's language.
+                owner_env = self.with_context(lang=owners[key_line].lang).env
+                fund_label = owner_env._("Werkkapitaal") if fund == "working" else owner_env._("Reservekapitaal")
                 lines_by_owner.setdefault(owners[key_line], []).append(Command.create({
-                    "name": self.env._(
+                    "name": owner_env._(
                         "%(fund)s oproep %(number)s/%(calls)s %(year)s - kavel %(lot)s (%(shares)s/%(total)s)",
-                        fund=FUND_LABELS[fund], number=self.number, calls=calls, year=self.year,
+                        fund=fund_label, number=self.number, calls=calls, year=self.year,
                         lot=key_line.lot_id.name, shares=f"{key_line.shares:g}", total=f"{key.total_shares:g}",
                     ),
                     "quantity": 1,

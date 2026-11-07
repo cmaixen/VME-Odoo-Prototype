@@ -26,6 +26,9 @@
                             invisible="state != 'draft'"/>
                     <button name="action_dry_run" type="object" string="Proefrun opnieuw"
                             invisible="state != 'checked'"/>
+                    <button name="action_accept_certain" type="object" string="Zekere regels aanvaarden"
+                            invisible="state == 'done' or proposal_pending_count == proposal_uncertain_count"
+                            confirm="Alle regels die de AI zeker las, worden aanvaard. Heb je ze nagekeken naast hun fragment? Onzekere regels moet je één voor één nakijken."/>
                     <button name="action_import" type="object" string="Importeren" class="btn-primary"
                             invisible="state != 'checked' or error_count"
                             confirm="De VME, haar kavels, eigenaars, sleutels, leveranciers en de openingsboeking worden nu aangemaakt. Doorgaan?"/>
@@ -53,19 +56,229 @@
                         <group>
                             <field name="error_count" invisible="state == 'draft'" decoration-danger="error_count"/>
                             <field name="warning_count" invisible="state == 'draft'" decoration-warning="warning_count"/>
+                            <field name="ai_state" widget="badge" invisible="ai_state == 'none'"
+                                   decoration-warning="ai_state == 'to_read'" decoration-success="ai_state == 'read'"/>
+                            <field name="ai_model" invisible="not ai_model"/>
+                            <field name="proposal_pending_count" invisible="not proposal_ids" decoration-warning="proposal_pending_count"/>
+                            <field name="proposal_uncertain_count" invisible="not proposal_ids" decoration-danger="proposal_uncertain_count"/>
+                            <field name="proposal_ids" invisible="1"/>
                             <field name="association_id" invisible="1"/>
                             <field name="opening_move_id" invisible="1"/>
                         </group>
                     </group>
+                    <separator string="Exportbestanden"/>
                     <field name="attachment_ids" widget="many2many_binary" readonly="state == 'done'"/>
                     <div class="text-muted" invisible="state != 'draft'">
                         Voeg de exportbestanden toe (de CSV-bestanden, één Excel-bestand of een zip) en de PDF's van
                         de oudere jaren. Klik daarna op <strong>Proefrun</strong>: die controleert alles en schrijft nog niets weg.
                     </div>
-                    <separator string="Rapport" invisible="state == 'draft'"/>
-                    <field name="report_html" invisible="state == 'draft'" nolabel="1"/>
+                    <separator string="Basisakte en notulen"/>
+                    <field name="document_ids" widget="many2many_binary" readonly="state == 'done'"/>
+                    <div class="text-muted" invisible="document_ids or state == 'done'">
+                        Neem je een gebouw over van een andere syndicus? Voeg de basisakte (ook een scan) en de notulen
+                        van de laatste algemene vergaderingen toe. De AI stelt dan de kavels, de aandelen, de sleutels en
+                        wat de notulen openlaten voor. Jij kijkt elke regel na naast het fragment uit het document.
+                    </div>
+                    <div class="alert alert-warning" role="alert" invisible="ai_state != 'to_read'">
+                        De documenten wachten op de AI-lezing. Die maakt een voorstel; er wordt nog niets aangemaakt.
+                    </div>
+                    <div class="alert alert-info" role="alert" invisible="not proposal_pending_count">
+                        Kijk elke regel na naast het fragment: klik op een regel om het fragment te zien en de waarde te
+                        verbeteren, en kies <strong>Aanvaarden</strong> of <strong>Weigeren</strong>. Rode regels zijn
+                        onzeker gelezen: lees ze na in het document. Pas als alle regels nagekeken zijn, kun je importeren.
+                    </div>
+                    <notebook>
+                        <page string="VME" name="proposal_vme" invisible="not proposal_ids">
+                            <field name="proposal_vme_ids" context="{'default_kind': 'vme'}" readonly="state == 'done'">
+                                <list delete="0" decoration-danger="uncertain and state == 'proposed'" decoration-muted="state == 'rejected'">
+                                    <field name="sequence" string="Nr."/>
+                                    <field name="vme_field"/>
+                                    <field name="value"/>
+                                    <field name="source_name" optional="hide"/>
+                                    <field name="page"/>
+                                    <field name="state" widget="badge" decoration-success="state == 'accepted'" decoration-warning="state == 'proposed'"/>
+                                    <button name="action_accept" type="object" icon="fa-check" title="Aanvaarden" invisible="state == 'accepted'"/>
+                                    <button name="action_reject" type="object" icon="fa-times" title="Weigeren" invisible="state == 'rejected'"/>
+                                    <button name="action_open_source" type="object" icon="fa-file-pdf-o" title="Document openen" invisible="not attachment_id"/>
+                                    <field name="fragment" optional="show"/>
+                                    <field name="confidence" widget="badge" decoration-danger="confidence == 'low'" decoration-warning="confidence == 'medium'"/>
+                                    <field name="note" optional="hide"/>
+                                    <field name="uncertain" column_invisible="1"/>
+                                    <field name="attachment_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Kavels" name="proposal_lots" invisible="not proposal_ids">
+                            <field name="proposal_lot_ids" context="{'default_kind': 'lot'}" readonly="state == 'done'">
+                                <list delete="0" decoration-danger="uncertain and state == 'proposed'" decoration-muted="state == 'rejected'">
+                                    <field name="sequence" string="Nr."/>
+                                    <field name="lot_name"/>
+                                    <field name="lot_type"/>
+                                    <field name="floor"/>
+                                    <field name="source_name" optional="hide"/>
+                                    <field name="page"/>
+                                    <field name="state" widget="badge" decoration-success="state == 'accepted'" decoration-warning="state == 'proposed'"/>
+                                    <button name="action_accept" type="object" icon="fa-check" title="Aanvaarden" invisible="state == 'accepted'"/>
+                                    <button name="action_reject" type="object" icon="fa-times" title="Weigeren" invisible="state == 'rejected'"/>
+                                    <button name="action_open_source" type="object" icon="fa-file-pdf-o" title="Document openen" invisible="not attachment_id"/>
+                                    <field name="fragment" optional="show"/>
+                                    <field name="confidence" widget="badge" decoration-danger="confidence == 'low'" decoration-warning="confidence == 'medium'"/>
+                                    <field name="uncertain" column_invisible="1"/>
+                                    <field name="attachment_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Aandelen en sleutels" name="proposal_shares" invisible="not proposal_ids">
+                            <field name="proposal_share_ids" context="{'default_kind': 'share'}" readonly="state == 'done'">
+                                <list delete="0" decoration-danger="uncertain and state == 'proposed'" decoration-muted="state == 'rejected'">
+                                    <field name="sequence" string="Nr."/>
+                                    <field name="key_name"/>
+                                    <field name="key_type" optional="hide"/>
+                                    <field name="lot_name"/>
+                                    <field name="value" string="Aandeel"/>
+                                    <field name="key_total" optional="hide"/>
+                                    <field name="majority" optional="hide"/>
+                                    <field name="source_name" optional="hide"/>
+                                    <field name="page"/>
+                                    <field name="state" widget="badge" decoration-success="state == 'accepted'" decoration-warning="state == 'proposed'"/>
+                                    <button name="action_accept" type="object" icon="fa-check" title="Aanvaarden" invisible="state == 'accepted'"/>
+                                    <button name="action_reject" type="object" icon="fa-times" title="Weigeren" invisible="state == 'rejected'"/>
+                                    <button name="action_open_source" type="object" icon="fa-file-pdf-o" title="Document openen" invisible="not attachment_id"/>
+                                    <field name="fragment" optional="show"/>
+                                    <field name="confidence" widget="badge" decoration-danger="confidence == 'low'" decoration-warning="confidence == 'medium'"/>
+                                    <field name="note" optional="hide"/>
+                                    <field name="uncertain" column_invisible="1"/>
+                                    <field name="attachment_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Uit de notulen" name="proposal_minutes" invisible="not proposal_ids">
+                            <separator string="Beslissingen die nog uitgevoerd moeten worden"/>
+                            <field name="proposal_works_ids" context="{'default_kind': 'works'}" readonly="state == 'done'">
+                                <list delete="0" decoration-danger="uncertain and state == 'proposed'" decoration-muted="state == 'rejected'">
+                                    <field name="sequence" string="Nr."/>
+                                    <field name="description"/>
+                                    <field name="amount"/>
+                                    <field name="financing"/>
+                                    <field name="key_name"/>
+                                    <field name="date" string="AV"/>
+                                    <field name="page"/>
+                                    <field name="state" widget="badge" decoration-success="state == 'accepted'" decoration-warning="state == 'proposed'"/>
+                                    <button name="action_accept" type="object" icon="fa-check" title="Aanvaarden" invisible="state == 'accepted'"/>
+                                    <button name="action_reject" type="object" icon="fa-times" title="Weigeren" invisible="state == 'rejected'"/>
+                                    <button name="action_open_source" type="object" icon="fa-file-pdf-o" title="Document openen" invisible="not attachment_id"/>
+                                    <field name="source_name" optional="hide"/>
+                                    <field name="confidence" widget="badge" decoration-danger="confidence == 'low'" decoration-warning="confidence == 'medium'"/>
+                                    <field name="uncertain" column_invisible="1"/>
+                                    <field name="attachment_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                            <separator string="Lopende procedures"/>
+                            <field name="proposal_procedure_ids" context="{'default_kind': 'procedure'}" readonly="state == 'done'">
+                                <list delete="0" decoration-danger="uncertain and state == 'proposed'" decoration-muted="state == 'rejected'">
+                                    <field name="sequence" string="Nr."/>
+                                    <field name="counterparty"/>
+                                    <field name="description"/>
+                                    <field name="date" string="AV"/>
+                                    <field name="page"/>
+                                    <field name="state" widget="badge" decoration-success="state == 'accepted'" decoration-warning="state == 'proposed'"/>
+                                    <button name="action_accept" type="object" icon="fa-check" title="Aanvaarden" invisible="state == 'accepted'"/>
+                                    <button name="action_reject" type="object" icon="fa-times" title="Weigeren" invisible="state == 'rejected'"/>
+                                    <button name="action_open_source" type="object" icon="fa-file-pdf-o" title="Document openen" invisible="not attachment_id"/>
+                                    <field name="source_name" optional="hide"/>
+                                    <field name="confidence" widget="badge" decoration-danger="confidence == 'low'" decoration-warning="confidence == 'medium'"/>
+                                    <field name="uncertain" column_invisible="1"/>
+                                    <field name="attachment_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                            <separator string="Mandaten"/>
+                            <field name="proposal_mandate_ids" context="{'default_kind': 'mandate'}" readonly="state == 'done'">
+                                <list delete="0" decoration-danger="uncertain and state == 'proposed'" decoration-muted="state == 'rejected'">
+                                    <field name="sequence" string="Nr."/>
+                                    <field name="person"/>
+                                    <field name="role"/>
+                                    <field name="date" string="Begin"/>
+                                    <field name="date_end"/>
+                                    <field name="page"/>
+                                    <field name="state" widget="badge" decoration-success="state == 'accepted'" decoration-warning="state == 'proposed'"/>
+                                    <button name="action_accept" type="object" icon="fa-check" title="Aanvaarden" invisible="state == 'accepted'"/>
+                                    <button name="action_reject" type="object" icon="fa-times" title="Weigeren" invisible="state == 'rejected'"/>
+                                    <button name="action_open_source" type="object" icon="fa-file-pdf-o" title="Document openen" invisible="not attachment_id"/>
+                                    <field name="source_name" optional="hide"/>
+                                    <field name="confidence" widget="badge" decoration-danger="confidence == 'low'" decoration-warning="confidence == 'medium'"/>
+                                    <field name="uncertain" column_invisible="1"/>
+                                    <field name="attachment_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Rapport" name="report" invisible="state == 'draft'">
+                            <field name="report_html" nolabel="1"/>
+                        </page>
+                    </notebook>
                 </sheet>
                 <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="vme_migration_proposal_view_form" model="ir.ui.view">
+        <field name="name">vme.migration.proposal.form</field>
+        <field name="model">vme.migration.proposal</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_accept" type="object" string="Aanvaarden" class="btn-primary" invisible="state == 'accepted'"/>
+                    <button name="action_reject" type="object" string="Weigeren" invisible="state == 'rejected'"/>
+                    <button name="action_reset" type="object" string="Opnieuw nakijken" invisible="state == 'proposed' or origin != 'ai'"/>
+                    <button name="action_open_source" type="object" string="Document openen" icon="fa-file-pdf-o" invisible="not attachment_id"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-danger" role="alert" invisible="not uncertain">
+                        <strong>Onzeker gelezen.</strong> Lees deze waarde na in het document voor je ze aanvaardt.
+                        <field name="note" readonly="1" class="d-block"/>
+                    </div>
+                    <group>
+                        <group string="Voorstel">
+                            <field name="kind" readonly="origin == 'ai'"/>
+                            <field name="vme_field" invisible="kind != 'vme'" required="kind == 'vme'"/>
+                            <field name="value" invisible="kind != 'vme'"/>
+                            <field name="lot_name" invisible="kind not in ('lot', 'share')" required="kind in ('lot', 'share')"/>
+                            <field name="lot_type" invisible="kind != 'lot'"/>
+                            <field name="floor" invisible="kind != 'lot'"/>
+                            <field name="key_name" invisible="kind not in ('share', 'works')" required="kind == 'share'"/>
+                            <field name="key_type" invisible="kind != 'share'"/>
+                            <field name="value" string="Aandeel" invisible="kind != 'share'"/>
+                            <field name="key_total" invisible="kind != 'share'"/>
+                            <field name="majority" invisible="kind != 'share'"/>
+                            <field name="description" invisible="kind not in ('works', 'procedure')" required="kind in ('works', 'procedure')"/>
+                            <field name="amount" invisible="kind != 'works'"/>
+                            <field name="financing" invisible="kind != 'works'"/>
+                            <field name="counterparty" invisible="kind != 'procedure'"/>
+                            <field name="status_text" invisible="kind != 'procedure'"/>
+                            <field name="person" invisible="kind != 'mandate'" required="kind == 'mandate'"/>
+                            <field name="role" invisible="kind != 'mandate'"/>
+                            <field name="date" invisible="kind not in ('works', 'procedure', 'mandate')"/>
+                            <field name="date_end" invisible="kind != 'mandate'"/>
+                        </group>
+                        <group string="Bron">
+                            <field name="origin"/>
+                            <field name="source_name" invisible="not attachment_id"/>
+                            <field name="attachment_id" invisible="1"/>
+                            <field name="page" invisible="not page"/>
+                            <field name="confidence" widget="badge" invisible="not confidence"
+                                   decoration-danger="confidence == 'low'" decoration-warning="confidence == 'medium'"/>
+                            <field name="edited" invisible="not edited"/>
+                            <field name="uncertain" invisible="1"/>
+                        </group>
+                    </group>
+                    <div invisible="not fragment">
+                        <label for="fragment" string="Fragment uit het document"/>
+                        <blockquote class="border-start border-3 border-primary ps-3 fst-italic">
+                            <field name="fragment" nolabel="1"/>
+                        </blockquote>
+                    </div>
+                </sheet>
             </form>
         </field>
     </record>
@@ -76,7 +289,9 @@
         <field name="view_mode">list,form</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">Nog geen overstap</p>
-            <p>Neem een VME over uit een ander syndicuspakket: laad de exportbestanden op, doe een proefrun en importeer.</p>
+            <p>Neem een VME over uit een ander syndicuspakket: laad de exportbestanden op, doe een proefrun en importeer.
+                Neem je een gebouw over van een andere syndicus, voeg dan ook de basisakte en de notulen toe: de AI stelt
+                kavels, aandelen en sleutels voor.</p>
         </field>
     </record>
 

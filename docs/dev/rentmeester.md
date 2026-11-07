@@ -11,7 +11,7 @@ De huur hoort bij de verhuurder, niet bij de VME. `vme_belgie` modelleert de ver
 - Een `res.company` met `is_rent_management = True` is het rentmeesterkantoor. Nieuwe contracten krijgen die company als standaard (`_default_company`), anders `env.company`.
 - Huurfacturen, afrekeningsfacturen en betalingen leven in die company. Een company per verhuurder zou honderden boekhoudingen (en rekeningstelsels) geven voor particulieren die zelf geen boekhouding voeren.
 - Elke verhuurder krijgt een analytische rekening in het plan **Verhuurders** (`vme_rentmeester.analytic_plan_landlords`), aangemaakt bij het contract (`_landlord_analytic_account`). Elke huurfactuurlijn krijgt `analytic_distribution = {verhuurder: 100}`.
-- De lijnen staan op rekening **489100 Huur en lasten voor rekening van verhuurders** (passief, `res.company._rent_account()` maakt ze aan als ze ontbreekt): de huur is geen omzet van het kantoor maar geld dat het doorstort. Het ereloon van de rentmeester en de doorstorting aan de verhuurder zitten nog niet in het prototype.
+- De lijnen staan op rekening **489100 Huur en lasten voor rekening van verhuurders** (passief, `res.company._rent_account()` maakt ze aan als ze ontbreekt): de huur is geen omzet van het kantoor maar geld dat het doorstort. Het ereloon van de rentmeester en de doorstorting aan de verhuurder staan in [Doorstorting en ereloon](#doorstorting-en-ereloon-stap-25b).
 
 ## Datamodel
 
@@ -23,8 +23,12 @@ De huur hoort bij de verhuurder, niet bij de VME. `vme_belgie` modelleert de ver
 | `vme.rent.index` | Gezondheidsindex per maand (basis 2013 = 100), door een beheerder bijgewerkt. |
 | `vme.rent.indexation` | Eén indexering per verjaardag: indexcijfers, correctiefactor, oude en nieuwe huur, ingangsdatum; concept → bevestigd. De bedragen worden bij het aanmaken vastgezet (`_prepare_amounts`) en alleen met **Herberekenen** opnieuw berekend. |
 | `vme.rent.settlement` (+ `.line`) | Afrekening per contract en jaar: regels per factuur en rubriek, totalen, provisies, saldo, factuur. |
-| `account.move` | `rent_contract_id`, `rent_period` (eerste dag van de huurmaand), `rent_landlord_id`. |
-| `account.move.line` | `rent_line_type`: `rent`, `charges` of `settlement`. |
+| `vme.rent.mandate` | Beheermandaat per verhuurder en kantoor: `fee_type` (`percent`/`fixed`), `fee_percent`, `fee_on_charges`, `fee_amount` (per maand), `fee_tax_id` (21 % diensten), `partner_bank_id`, datums; geen overlap per verhuurder. |
+| `vme.rent.remittance` (+ `.line`) | Doorstorting per verhuurder, kantoor en maand: regels `rent`/`charges`/`settlement`/`cost`/`fee`, totalen, `balance`, `fee_invoice_id`, `payout_move_id`, `offset_move_id`, `payment_status` (berekend). |
+| `account.move` | `rent_contract_id` (op een leveranciersfactuur: kost voor de verhuurder), `rent_period` (eerste dag van de huurmaand), `rent_landlord_id`, `rent_remittance_id`. |
+| `account.move.line` | `rent_line_type`: `rent`, `charges`, `settlement`, `cost`, `fee` of `remittance`. |
+| `vme.payment.batch` | `rent_company_id` naast `association_id`; `company_id` berekend uit een van beide (uitbreiding in `vme_rentmeester/models/vme_payment.py`). |
+| `res.company` | `is_rent_management`, `rent_bank_id` (derdenrekening). |
 | `vme.lot` | `rent_contract_ids`, `current_tenant_ids` (berekend, getoond op het kavelformulier). |
 
 ## Rekenregels
@@ -75,6 +79,31 @@ Een forfait wordt nooit afgerekend (`UserError`). Is de jaarafrekening niet voll
 - Uiterste opzegdatum: kortlopend 3 maanden, negen jaar 6 maanden (verhuurder) vóór de einddatum, telkens de laatste dag van de maand vóór de termijn begint.
 - Einde na opzeg: de termijn begint de eerste dag van de maand na de opzeg.
 
+## Doorstorting en ereloon (stap 25b)
+
+Gebruikersuitleg: [`docs/kb/doorstorting-verhuurder.md`](../kb/doorstorting-verhuurder.md).
+
+**Berekening** (`vme.rent.remittance._recompute_lines`, zuivere functies in `models/remittance_rules.py`):
+
+- *Ontvangen*: per geboekte huur- of afrekeningsfactuur (ook creditnota's) van de contracten van de verhuurder in het kantoor, met factuurdatum tot het einde van de maand: `amount_total − amount_residual` min wat al in een **bevestigde** doorstorting zat. Een gedeeltelijke betaling wordt naar verhouding over huur en lasten verdeeld (`split_received`); een afrekeningsfactuur telt als `settlement`.
+- *Kosten*: geboekte leveranciersfacturen (en creditnota's) in het kantoor met `rent_contract_id`, nog niet in een bevestigde doorstorting, bedrag met btw.
+- *Ereloon*: per mandaat van de contracten in de regels. `percent`: percentage × huur (+ lasten en afrekeningen als `fee_on_charges`). `fixed`: bedrag × `months_to_charge` (maanden sinds de laatste bevestigde doorstorting met een ereloonregel van dat mandaat, of sinds het begin van het mandaat). Btw via `tax.compute_all`.
+- *Saldo* = ontvangen − kosten − ereloon met btw. Negatief: `action_confirm` weigert, `action_carry_over` zet de doorstorting op `cancel` en de volgende neemt alles mee.
+
+**Boekingen bij `action_confirm`** (datum = vandaag, of `rent_remittance_date` in de context voor de demohistoriek):
+
+| Stuk | Soort | Regels |
+| --- | --- | --- |
+| Ereloonfactuur | `out_invoice` aan de verhuurder | 700100 Erelonen rentmeester (`_rent_fee_account`), btw 21 %, analytisch verhuurder |
+| Doorstortingsstuk | `in_invoice` van de verhuurder, `partner_bank_id` uit het mandaat | 489100: + ontvangen per regel, − kosten; analytisch verhuurder |
+| Verrekening | `entry` in het diversendagboek | 440 verhuurder debet / 400 verhuurder credit voor het ereloon; afgeletterd met beide stukken |
+
+Na de verrekening is de ereloonfactuur betaald en staat het doorstortingsstuk open voor precies het saldo. 489100 per verhuurder staat dan op het nog niet betaalde deel van de huur (de test `test_confirm_books_fee_payout_and_offset` controleert dat).
+
+**Betaling.** `vme.payment.batch` (stap 20) wordt in `models/vme_payment.py` uitgebreid: `association_id` is niet meer verplicht, `rent_company_id` wijst naar het kantoor, `company_id` is een opgeslagen compute (`related=None` met een expliciete comodel, anders faalt het laden). Voor een batch van het kantoor geven `_bank()` de derdenrekening, `_vme_party()` de naam van het kantoor, `_transfer_proposal()` de goedgekeurde doorstortingsstukken en `_build_transfer_file()` het kantoor als initiator. `_check_transfer_lines` van stap 20 blijft gelden: goedgekeurd, niet betaald, bevestigde rekening van verhuurder én kantoor. De goedkeuring is de bestaande `action_vme_approve`: `_vme_is_approvable` geldt ook voor een doorstortingsstuk, `_vme_second_approval_required` is daar `False`.
+
+**Uitbreidingen.** Tweede goedkeurder en drempel per kantoor; terugkoppeling van de bank (stap 12) voor de derdenrekening; een maandelijkse cron die de concepten klaarzet; e-mail van afrekening en ereloonfactuur in één bericht.
+
 ## Crons (alleen concepten en taken)
 
 | Cron | Wat |
@@ -84,14 +113,15 @@ Een forfait wordt nooit afgerekend (`UserError`). Is de jaarafrekening niet voll
 
 ## Rapporten
 
-`report/rent_reports.xml` met `report/rent_reports.py`: **Indexatiebrief** (`vme.rent.indexation`) en **Afrekening lasten huurder** (`vme.rent.settlement`). De rapportmodellen geven `format_date` mee (met optioneel `date_format`, bv. `'MMMM y'`).
+`report/rent_reports.xml` met `report/rent_reports.py`: **Indexatiebrief** (`vme.rent.indexation`), **Afrekening lasten huurder** (`vme.rent.settlement`) en **Afrekening verhuurder** (`vme.rent.remittance`). De rapportmodellen geven `format_date` mee (met optioneel `date_format`, bv. `'MMMM y'`).
 
 ## Demo
 
 `demo_data/rent_demo.py` breidt `_load_demo_data` en `_load_demo_history` van `vme.association` uit:
 
 - **Demodata**: company **Rentmeester Voorbeeld BV** (rekeningstelsel bij de commit, zoals bij een VME), drie contracten (Linde A2+G2, Linde A7, Beuken B23) met hun bevestigde indexeringen, een conceptindexering voor Linde A2 op 1 november 2026 en de taken rond de demodatum (5 november 2026), los van de echte datum (`_demo_reminders`).
-- **Demohistoriek**: de schoonmaakfirma aan de rubriek schoonmaak koppelen, huurfacturen januari–oktober 2026 boeken en betalen (behalve oktober van Linde A7).
+- **Demodata** (stap 25b): derdenrekening van het kantoor en rekeningen van de drie verhuurders (`fake_iban(3001, 3011–3013)`, bevestigd als de gebruiker dat mag) en drie beheermandaten: Linde A2 7 % op de huur, Linde A7 6 % op huur en lasten, Beuken B23 vast 65 € per maand. De btw van het mandaat wordt in een precommit ingevuld, na het rekeningstelsel van het kantoor.
+- **Demohistoriek**: de schoonmaakfirma aan de rubriek schoonmaak koppelen, huurfacturen januari–oktober 2026 boeken en betalen (behalve oktober van Linde A7); een kost van 242 € voor de verhuurder van Linde A2 (september); doorstortingen januari–september bevestigd, goedgekeurd en betaald (betaling geboekt op de 5de van de volgende maand); oktober als concept voor de demo.
 
 De indextabel (`data/vme_rent_index_data.xml`, januari 2015 – oktober 2026) is fictief maar realistisch en staat in `noupdate`.
 
@@ -105,11 +135,13 @@ docker compose run --rm odoo odoo -d vme_test -u vme_belgie,vme_rentmeester --te
 | --- | --- |
 | `tests/test_indexation.py` | Formule en indexmaanden, indexstop per gewest (Vlaanderen, Brussel, Wallonië) met handberekende bedragen, venstergrenzen, contract na de stop, terugwerkende kracht, gewest uit postcode, opzegdatums; op een contract: opeenvolgende indexeringen, ontbrekend indexcijfer, mondeling of uitgesloten contract, waarborg per gewest. |
 | `tests/test_settlement.py` | Afrekening per factuur en rubriek (handberekend), aansluiting op de jaarafrekening, percentage per contract, conceptfactuur en creditnota, forfait, einde huur midden in het jaar, huurfacturen (pro rata, na indexering, geen dubbele, ook met een andere company geselecteerd), opzeg, rapporten. |
-| `tests/test_demo.py` | De drie demo-contracten, conceptindexering, opzegtaak en de indexstop van Beuken B23. |
+| `tests/test_remittance.py` | Rekenregels (percentage, vast bedrag × maanden, btw, verdeling van een gedeeltelijke betaling); doorstorting met de hand nagerekend; alleen ontvangen tot het einde van de maand; boekingen en verrekening, 489100 op nul; geen dubbele opname; negatief saldo overdragen met twee maanden vast ereloon; betaalbatch met en zonder bevestigde rekening en gevalideerd SEPA-bestand; batch hoort bij VME of kantoor; rapport. |
+| `tests/test_demo.py` | De drie demo-contracten, conceptindexering, opzegtaak, de indexstop van Beuken B23 en de beheermandaten met bevestigde rekeningen. |
 
 ## Uitbreidingspunten en wat ontbreekt
 
-- **Doorstorting aan de verhuurder** en het **ereloon van de rentmeester**: een afrekening per verhuurder uit de analytische rekening (geïnde huur min ereloon en kosten).
+- **Huurders in het portaal (stap 27):** `res.partner._vme_portal_tenant_lots()` (`models/res_partner.py`) voegt de kavels van de huurcontracten van de partner toe; of het contract vandaag loopt, beslist `vme.lot._get_tenants_on`. Zo kan een huurder met een login een aanvraag indienen voor zijn kavel, ook zonder `vme.lot.contact`.
+
 - **Registratie** van het contract, **plaatsbeschrijving** en **huurwaarborg** als eigen dossiers; nu alleen velden en een taak.
 - **Opzeg met reden** door de verhuurder in een contract van negen jaar (eigen gebruik, werken, zonder reden met vergoeding) en de tussentijdse termijnen van drie jaar: niet gemodelleerd.
 - **Daling van de index**: de huur daalt mee; een minimumclausule in het contract is niet voorzien.
