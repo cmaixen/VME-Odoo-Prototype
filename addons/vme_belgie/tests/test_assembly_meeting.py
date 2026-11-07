@@ -241,6 +241,24 @@ class TestAssemblyMeeting(TransactionCase):
         action = self.assembly.with_context(vme_today=date(2027, 3, 10)).action_create_convocations()
         self.assertEqual(action["params"]["type"], "warning")
 
+    def test_every_convocation_must_leave_on_time(self):
+        """B-D2: the first convocation on time does not cover the others (deadline 5 March 2027)."""
+        first, second = self.env["vme.assembly.convocation"].create([
+            {"assembly_id": self.assembly.id, "partner_id": owner.id, "lot_names": "L"} for owner in self.owners[:2]])
+        first.write({"state": "sent", "sent_date": date(2027, 3, 1)})
+        self.assembly.convocation_sent_date = date(2027, 3, 1)
+        on_time = self.assembly.with_context(vme_today=date(2027, 3, 4))
+        self.assertNotEqual(on_time.warning_level, "danger")
+        after = self.assembly.with_context(vme_today=date(2027, 3, 6))
+        self.assertEqual(after.warning_level, "danger")
+        self.assertIn("nog niet verstuurd", after.warning)
+        self.assertIn(second.partner_id.name, after.warning)
+        second.write({"state": "sent", "sent_date": date(2027, 3, 6)})
+        after.invalidate_recordset(["warning", "warning_level"])
+        self.assertEqual(after.warning_level, "danger")
+        self.assertIn("vertrokken na", after.warning)
+        self.assertNotIn(first.partner_id.name, after.warning)
+
     def test_convocation_needs_a_date(self):
         unplanned = self.env["vme.assembly"].create({"association_id": self.vme.id, "year": 2028})
         with self.assertRaises(UserError):

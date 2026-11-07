@@ -94,6 +94,26 @@ class VmeAssembly(models.Model):
             }) for index, (title, majority) in enumerate(agenda, start=1)]
         return assemblies
 
+    def _get_warning(self, today):
+        message, level = super()._get_warning(today)
+        if level == "danger" or self.state in ("held", "cancelled") or not self.convocation_deadline:
+            return message, level
+        # LEGAL-CHECK: art. 3.87 §3 BW - every co-owner is convened at least fifteen days before the
+        # meeting, not only the first one whose convocation left.
+        late = self.convocation_ids.filtered(lambda c: c.state == "sent" and c.sent_date > self.convocation_deadline)
+        if late:
+            return self.env._(
+                "%(count)s oproeping(en) vertrokken na %(deadline)s: %(owners)s.", count=len(late),
+                deadline=format_date(self.env, self.convocation_deadline),
+                owners=", ".join(late.partner_id.mapped("name"))), "danger"
+        unsent = self.convocation_ids.filtered(lambda c: c.state == "draft")
+        if unsent and today > self.convocation_deadline:
+            return self.env._(
+                "%(count)s oproeping(en) nog niet verstuurd, uiterlijk was %(deadline)s: %(owners)s.",
+                count=len(unsent), deadline=format_date(self.env, self.convocation_deadline),
+                owners=", ".join(unsent.partner_id.mapped("name"))), "danger"
+        return message, level
+
     @api.depends("convocation_ids")
     def _compute_convocation_count(self):
         for assembly in self:

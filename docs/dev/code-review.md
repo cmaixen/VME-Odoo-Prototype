@@ -153,9 +153,10 @@ Elke fix staat in een eigen commit, met een test waar dat kan.
 
 ### Wettelijke logica
 
-**B-D2. Een oproeping geldt als "op tijd" zodra de eerste verstuurd is** ⏳
+**B-D2. Een oproeping geldt als "op tijd" zodra de eerste verstuurd is** ✅
 - **Waar:** `models/vme_assembly_meeting.py:520-524`
 - **Probleem:** `convocation_sent_date` wordt gezet bij de eerste oproeping die vertrekt. Komen de andere te laat, dan verschijnt er geen waarschuwing. `# LEGAL-CHECK: art. 3.87 §3 BW` (15 dagen, voor elke eigenaar).
+- **Herstel (uitgevoerd):** `vme.assembly._get_warning` kijkt nu ook naar elke oproeping: een oproeping die na de uiterste dag vertrok, of een concept na die dag, geeft "Te laat" met de namen van de eigenaars. `convocation_sent_date` blijft de eerste verzending. Test: `test_every_convocation_must_leave_on_time`.
 
 **B-D3. Oproepingen gaan zonder schriftelijk akkoord per e-mail of gewone brief** ⏳ (grotere herwerking)
 - **Waar:**
