@@ -77,14 +77,12 @@ Elke fix staat in een eigen commit, met een test waar dat kan.
   - Een huurder die zijn e-mailadres in /my/account verandert in dat van de eigenaar, krijgt een sleutelaanvraag die meteen als "geverifieerd" staat, en de bestelling bij de slotenmaker staat klaar.
 - **Herstel (uitgevoerd):** de rol komt nu uit de partner zelf (`_identify_partner_in`, met `_get_owner_on()` en `_get_tenants_on()`), ook in `create_from_intake` als het portaal `requester_id` meegeeft. Test: `test_tenant_with_owner_email_stays_tenant`. De mail-intake herkent een onbekende afzender nog altijd aan het adres; zie B-S4.
 
-**B-S2. Medewerkers kunnen een elektronische handtekening of een online stem vervalsen** ⏳
+**B-S2. Medewerkers kunnen een elektronische handtekening of een online stem vervalsen** ✅
 - **Waar:**
   - `security/ir.model.access.csv`: `vme.assembly.signature` en `vme.assembly.vote` staan op 1111 voor `base.group_user`;
   - `models/vme_assembly_online.py:351-354` en `:387-390`.
 - **Probleem:** via RPC kan een medewerker een handtekening op `signed` zetten met een willekeurige naam en IP-adres, of een stem aanmaken met `source="online"`. Het auditspoor van de digitale AV is dan geen bewijs meer.
-- **Herstel:**
-  - Forceer `state="pending"` bij het aanmaken.
-  - Laat de velden van de handtekening en de bronnen online en schriftelijk alleen toe met een contextvlag die `_portal_sign` en `_portal_cast_votes` zetten.
+- **Herstel (uitgevoerd):** `create` en `write` weigeren zonder superuser de auditvelden van de handtekening en een stem met bron online of schriftelijk. `_portal_sign` en `_portal_cast_votes` schrijven als superuser. Geen contextvlag, want die kan een RPC-aanroep zelf meegeven. Tests: `test_staff_cannot_forge_an_online_vote`, `test_staff_cannot_sign_for_an_owner`.
 
 **B-S4. Bij de mail-intake wordt de eigenaar alleen herkend aan het afzenderadres** ⏳
 - **Waar:** `models/vme_request.py:279-292`, `:412-413`

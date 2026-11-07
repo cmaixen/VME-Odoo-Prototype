@@ -65,6 +65,8 @@ Een stem met bron `online` of `written` is definitief: `write` en `unlink` op `v
 
 `_portal_sign(partner, naam, ip, user_agent)` controleert de ondertekenaar, de status, en herberekent de hash van de bewaarde PDF op het moment van tekenen: verschilt die van `document_sha256`, dan weigert het. Een getekende handtekening is onveranderlijk (`write` en `unlink` weigeren).
 
+Alleen `_portal_sign` en `_portal_cast_votes` schrijven het auditspoor, en ze doen dat als superuser. Zonder superuser weigeren `create` en `write` de velden van de handtekening (`state` anders dan `pending`, `signed_at`, `signed_name`, `ip_address`, `user_agent`) en een stem met bron `online` of `written` of met `cast_at`, `voter_partner_id` of `ip_address`. Zo kan een medewerker via RPC geen handtekening of online stem namaken; een contextvlag zou dat niet tegenhouden, want die geeft een RPC-aanroep zelf mee.
+
 Dit is een eenvoudige elektronische handtekening (eIDAS art. 3, 10°), geen gekwalificeerde. Het IP-adres is wat Odoo ziet: achter een reverse proxy moet `proxy_mode` aan staan, anders is het het adres van de proxy (in Docker de gateway).
 
 ## Portaal
@@ -95,7 +97,7 @@ De concept-mail (`action_open_composer`) en de PDF van de oproeping vermelden de
 `tests/test_assembly_online.py`:
 
 - `TestAssemblyOnlineVoting`: link, concept-uitnodiging met de link, aanmelden en quorum, stemmen alleen bij open stemming, regels van stap 11, volmachthouder voor twee, geen dubbele stem met volmacht, sluiten, definitieve stem, zaalstemmen naast het portaal, schriftelijk vooraf, buitengewone AV en de partiële unieke index;
-- `TestAssemblyMinutesSignature`: ondertekenaars en hash, hash ook met `bin_size` in de context, auditspoor (naam, tijdstip, IP, browser, hash), één keer en alleen voor jezelf, onveranderlijk na tekenen, gewijzigde PDF maakt ongeldig, opnieuw klaarzetten met en zonder wijziging;
+- `TestAssemblyMinutesSignature`: ondertekenaars en hash, hash ook met `bin_size` in de context, auditspoor (naam, tijdstip, IP, browser, hash), één keer en alleen voor jezelf, onveranderlijk na tekenen, een medewerker kan niet in de plaats tekenen, gewijzigde PDF maakt ongeldig, opnieuw klaarzetten met en zonder wijziging;
 - `TestAssemblyOnlinePortal` (`HttpCase`): pagina voor de eigenaar, 404 voor een vreemde, link per AV naar de login.
 
 In tests rendert Odoo de notulen als HTML; de hash is dan stabiel. Met wkhtmltopdf verschilt elke rendering (aanmaakdatum in de PDF), dus opnieuw klaarzetten maakt in de echte omgeving altijd nieuwe aanvragen.
