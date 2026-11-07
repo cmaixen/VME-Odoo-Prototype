@@ -157,7 +157,7 @@ In de map van het project, met Docker (OrbStack) aan.
 
 *Als er iets misgaat:* toont **Mijn account** alleen "Adressen" en "Verbinding & Beveiliging", herlaad de pagina. Is de sessie verlopen, log opnieuw in op `a1.localhost`.
 
-## Extra vijf minuten (op vraag)
+## Extra blokken (op vraag)
 
 Doe deze blokken na stap 8; ze veranderen niets aan de bedragen van het scenario hierboven, behalve blok A en D.
 
