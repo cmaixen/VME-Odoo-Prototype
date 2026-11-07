@@ -101,14 +101,10 @@ Elke fix staat in een eigen commit, met een test waar dat kan.
 - **Probleem:** een eigenaar die tussen het voorstel en het bestand per overschrijving betaalt, wordt toch voor het volle bedrag geïnd.
 - **Herstel:** vergelijk in beide bestanden `line.amount` met het huidige `amount_residual` en weiger als het niet meer klopt. Klein, maar het raakt de betaalflow; daarom niet in deze review uitgevoerd.
 
-**B-F4. De basis voor de minimale reserve van 5% telt ook lasten mee die niet gewoon zijn** ⏳
+**B-F4. De basis voor de minimale reserve van 5% telt ook lasten mee die niet gewoon zijn** ✅
 - **Waar:** `models/vme_budget.py:86-92`
 - **Probleem:** de basis bevat werken die uit het reservekapitaal betaald zijn (`vme_reserve_move_id`) en privékosten van aanvragen (`vme_request_id`). Een jaar met grote werken verhoogt zo het wettelijke minimum van het jaar erna, en blokkeert de cyclusstap "budget".
-- **Herstel:**
-  - Twee voorwaarden toevoegen aan het domein.
-  - `docs/dev/rekenregels.md` en de bestaande test bijwerken.
-  - `tools/legal_checks.py` opnieuw draaien.
-  - Het getal verandert bewust, dus eerst afstemmen. `# LEGAL-CHECK: art. 3.86 §3 BW`.
+- **Herstel (uitgevoerd):** het domein van `_get_previous_year_charges_by_budget` sluit `vme_reserve_move_id` en `vme_request_id` uit, met `# LEGAL-CHECK: art. 3.86 §3 BW`. `docs/dev/rekenregels.md` en `legal-checks.md` zijn bijgewerkt. Test: `test_reserve_minimum_counts_only_ordinary_charges`. Het minimum daalt in een jaar na grote werken; dat is de bedoeling.
 
 **B-F7. Nergens `check_company`** ⏳
 - **Voorbeelden:**

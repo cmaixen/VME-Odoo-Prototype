@@ -77,7 +77,7 @@ Voorbeeld (uit `test_consumption.py`): 1000 euro, 30% vast, A1 600/1000 en 100 e
 
 `vme.budget._compute_reserve_check` (`# LEGAL-CHECK: art. 3.86 §3 BW`):
 
-- Lasten vorig jaar = som van `amount_total_signed` (inclusief btw) van geboekte leveranciersfacturen en -creditnota's van de company met factuurdatum in jaar − 1.
+- Lasten vorig jaar = som van `amount_total_signed` (inclusief btw) van geboekte leveranciersfacturen en -creditnota's van de company met factuurdatum in jaar − 1. Alleen de gewone lasten: facturen die uit het reservekapitaal betaald zijn (`vme_reserve_move_id`) en privékosten van een aanvraag (`vme_request_id`) tellen niet mee.
 - Zijn die nul (nieuwe VME of demo zonder historiek), dan wordt het werkkapitaalbudget als schatting gebruikt en is `previous_year_charges_estimated` waar.
 - Minimum = lasten × `RESERVE_MINIMUM_RATE` (0,05).
 - Waarschuwing als de jaarbijdrage lager is en `reserve_exception_by_general_assembly` niet aanstaat. Het is een waarschuwing, geen blokkering.
