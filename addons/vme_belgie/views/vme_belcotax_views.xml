@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Supplier: 281.50-liable with a category -->
+    <record id="res_partner_view_form_belcotax" model="ir.ui.view">
+        <field name="name">res.partner.form.vme.belcotax</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Fiche 281.50" name="vme_belcotax" invisible="parent_id" groups="account.group_account_invoice">
+                    <group>
+                        <group>
+                            <field name="vme_belcotax_liable"/>
+                            <field name="vme_belcotax_category" invisible="not vme_belcotax_liable"
+                                   required="vme_belcotax_liable"/>
+                            <field name="vme_belcotax_profession" invisible="not vme_belcotax_liable"/>
+                            <field name="vme_national_number" invisible="not vme_belcotax_liable or is_company"/>
+                        </group>
+                        <div class="text-muted">
+                            Wat de VME op de facturen van een 281.50-plichtige leverancier betaalt, komt in het
+                            overzicht onder VME &gt; Fiches 281.50. Voor een bedrijf komt het ondernemingsnummer uit het
+                            veld KBO of btw-nummer.
+                        </div>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="vme_belcotax_statement_view_list" model="ir.ui.view">
+        <field name="name">vme.belcotax.statement.list</field>
+        <field name="model">vme.belcotax.statement</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'filed'">
+                <field name="association_id"/>
+                <field name="year" options="{'enable_formatting': false}"/>
+                <field name="fiche_count"/>
+                <field name="total_amount" sum="Totaal"/>
+                <field name="warning_count" decoration-warning="warning_count"/>
+                <field name="deadline"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'"
+                       decoration-success="state == 'filed'" decoration-warning="state == 'checked'"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vme_belcotax_statement_view_form" model="ir.ui.view">
+        <field name="name">vme.belcotax.statement.form</field>
+        <field name="model">vme.belcotax.statement</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_compute" type="object" string="Opnieuw berekenen"
+                            invisible="not id or state == 'filed'"/>
+                    <button name="action_mark_checked" type="object" string="Nagekeken" class="btn-primary"
+                            invisible="not id or state != 'draft'"/>
+                    <button name="action_download_xml" type="object" string="XML voor Belcotax downloaden"
+                            class="btn-primary" invisible="state == 'draft'"/>
+                    <button name="action_mark_filed" type="object" string="Opgeladen in Belcotax"
+                            invisible="state != 'checked'"
+                            confirm="Hebt u het bestand zelf opgeladen in Belcotax-on-web?"/>
+                    <button name="action_back_to_draft" type="object" string="Terug naar nakijken"
+                            invisible="state == 'draft'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <div class="alert alert-warning" role="alert" invisible="not warning_count">
+                        <field name="warning_count" readonly="1"/> verkrijger(s) met ontbrekende of twijfelachtige
+                        gegevens. Vul ze aan op de leverancier en bereken opnieuw, of verbeter ze hieronder. Het bestand
+                        kan toch gemaakt worden, maar Belcotax-on-web weigert een fiche zonder identificatie.
+                    </div>
+                    <div class="alert alert-info" role="alert" invisible="state != 'checked'">
+                        Download het bestand en laad het zelf op in Belcotax-on-web. Odoo dient niets in.
+                        Het XML-formaat is nog te valideren tegen de brochure van de FOD Financiën.
+                    </div>
+                    <group>
+                        <group>
+                            <field name="association_id" readonly="id"/>
+                            <field name="year" options="{'enable_formatting': false}" readonly="id"/>
+                            <field name="deadline"/>
+                            <field name="threshold"/>
+                        </group>
+                        <group>
+                            <field name="fiche_count"/>
+                            <field name="total_amount"/>
+                            <field name="checked_by_id" invisible="not checked_by_id"/>
+                            <field name="checked_date" invisible="not checked_date"/>
+                            <field name="filed_date" invisible="state != 'filed'"/>
+                            <field name="xml_file" filename="xml_filename" invisible="not xml_file"/>
+                            <field name="xml_filename" invisible="1"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <field name="line_ids" readonly="state != 'draft'">
+                        <list editable="bottom" decoration-muted="below_threshold"
+                              decoration-warning="warning and not below_threshold">
+                            <field name="name"/>
+                            <field name="street" optional="show"/>
+                            <field name="zip" optional="hide"/>
+                            <field name="city" optional="hide"/>
+                            <field name="country_id" optional="hide"/>
+                            <field name="is_company" optional="hide"/>
+                            <field name="national_number" optional="show" readonly="is_company"/>
+                            <field name="kbo" optional="show" readonly="not is_company"/>
+                            <field name="profession" optional="show"/>
+                            <field name="amount_commission" optional="hide"/>
+                            <field name="amount_fees" optional="show"/>
+                            <field name="amount_benefits" optional="hide"/>
+                            <field name="amount_expenses" optional="hide"/>
+                            <field name="amount_total" sum="Totaal"/>
+                            <field name="below_threshold" optional="show"/>
+                            <field name="warning" optional="show"/>
+                            <field name="bill_ids" widget="many2many_tags" optional="hide"/>
+                            <field name="partner_id" optional="hide"/>
+                            <field name="currency_id" column_invisible="1"/>
+                        </list>
+                    </field>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="vme_belcotax_statement_view_search" model="ir.ui.view">
+        <field name="name">vme.belcotax.statement.search</field>
+        <field name="model">vme.belcotax.statement</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="association_id"/>
+                <field name="year"/>
+                <filter name="to_do" string="Nog niet opgeladen" domain="[('state', '!=', 'filed')]"/>
+                <filter name="group_year" string="Inkomstenjaar" context="{'group_by': 'year'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="vme_belcotax_statement_action" model="ir.actions.act_window">
+        <field name="name">Fiches 281.50</field>
+        <field name="res_model">vme.belcotax.statement</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Maak per VME en inkomstenjaar het overzicht van de fiches 281.50</p>
+            <p>Duid eerst op de leverancier aan dat hij 281.50-plichtig is (tab Fiche 281.50).</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_vme_belcotax" name="Fiches 281.50" parent="menu_vme_root" action="vme_belcotax_statement_action"
+              sequence="50"/>
+</odoo>

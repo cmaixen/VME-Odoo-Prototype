@@ -163,6 +163,9 @@ Je opent de kennisbank ook vanuit Odoo: in de app **VME** staat bovenaan het men
 
 ### Taal
 
+### Fiscaal
+
+44. [De fiches 281.50 van een VME maken (Belcotax-on-web)](fiches-281-50.md)
 
 ## Zo is het platform opgebouwd
 

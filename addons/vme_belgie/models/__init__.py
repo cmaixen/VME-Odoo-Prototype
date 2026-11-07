@@ -44,3 +44,4 @@ from . import vme_work_item
 from . import vme_compliance
 from . import vme_fiscal_closing
 from . import partner_autocomplete
+from . import vme_belcotax

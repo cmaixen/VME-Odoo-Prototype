@@ -96,6 +96,7 @@ class VmeAssociation(models.Model):
         self._load_demo_syndic_history()
         self._load_demo_cycle()
         self._load_demo_worklist()
+        self._load_demo_belcotax()
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",

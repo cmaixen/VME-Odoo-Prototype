@@ -39,3 +39,4 @@ from . import test_works_comparison
 from . import test_check_company
 from . import test_partner_autocomplete
 from . import test_handover
+from . import test_belcotax

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Fiches 281.50: per company, the auditor only reads those of his own VMEs. -->
+    <record id="rule_company_belcotax_statement" model="ir.rule">
+        <field name="name">VME: vme.belcotax.statement van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_belcotax_statement"/>
+        <field name="domain_force">[('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_auditor_read_belcotax_statement" model="ir.rule">
+        <field name="name">Commissaris: vme.belcotax.statement van zijn VME's</field>
+        <field name="model_id" ref="model_vme_belcotax_statement"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_auditor_no_write_belcotax_statement" model="ir.rule">
+        <field name="name">Commissaris: vme.belcotax.statement alleen lezen</field>
+        <field name="model_id" ref="model_vme_belcotax_statement"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_company_belcotax_line" model="ir.rule">
+        <field name="name">VME: vme.belcotax.line van de companies van de gebruiker</field>
+        <field name="model_id" ref="model_vme_belcotax_line"/>
+        <field name="domain_force">[('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_auditor_read_belcotax_line" model="ir.rule">
+        <field name="name">Commissaris: vme.belcotax.line van zijn VME's</field>
+        <field name="model_id" ref="model_vme_belcotax_line"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_auditor_no_write_belcotax_line" model="ir.rule">
+        <field name="name">Commissaris: vme.belcotax.line alleen lezen</field>
+        <field name="model_id" ref="model_vme_belcotax_line"/>
+        <field name="groups" eval="[Command.link(ref('group_vme_auditor'))]"/>
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+</odoo>

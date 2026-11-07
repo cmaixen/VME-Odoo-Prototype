@@ -170,7 +170,7 @@ class TestAnnualStatementDemo(TransactionCase):
         bills = self.env["account.move"].search([
             ("company_id", "=", self.linde.company_id.id), ("move_type", "=", "in_invoice"), ("state", "=", "posted"),
         ])
-        self.assertEqual(len(bills), 7)  # 2 lift, 3 cleaning, 1 insurance, 1 electricity (UBL)
+        self.assertEqual(len(bills), 8)  # 2 lift, 3 cleaning, 1 insurance, 1 electricity (UBL), 1 advice (281.50)
         self.assertTrue(self.data["is_complete"])
         self.assertAlmostEqual(self.data["allocated_total"], sum(bills.mapped("amount_total")), places=2)
         self.assertAlmostEqual(sum(st["cost_total"] for st in self.data["statements"]), self.data["bills_total"], places=2)

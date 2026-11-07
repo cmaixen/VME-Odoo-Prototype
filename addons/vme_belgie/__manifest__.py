@@ -83,6 +83,8 @@
         "views/vme_work_item_views.xml",
         "wizard/vme_handover_wizard_views.xml",
         "report/vme_handover_reports.xml",
+        "security/vme_belcotax_security.xml",
+        "views/vme_belcotax_views.xml",
     ],
     "installable": True,
     "application": True,

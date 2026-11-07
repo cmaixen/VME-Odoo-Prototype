@@ -82,3 +82,5 @@ access_vme_fee_invoice_wizard_user,vme.fee.invoice.wizard user,model_vme_fee_inv
 access_vme_provision_call_run_user,vme.provision.call.run user,model_vme_provision_call_run,base.group_user,1,1,1,0
 access_vme_work_item_user,vme.work.item user,model_vme_work_item,base.group_user,1,1,1,1
 access_vme_handover_wizard_user,vme.handover.wizard user,model_vme_handover_wizard,base.group_user,1,1,1,1
+access_vme_belcotax_statement_user,vme.belcotax.statement user,model_vme_belcotax_statement,base.group_user,1,1,1,1
+access_vme_belcotax_line_user,vme.belcotax.line user,model_vme_belcotax_line,base.group_user,1,1,1,1
