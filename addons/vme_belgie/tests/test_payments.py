@@ -347,6 +347,30 @@ class TestPayments(TransactionCase):
         batch.action_mark_sent()
         self.assertTrue(self.mandate.first_collection_done)
 
+    def _pay(self, move, amount):
+        self.env["account.payment.register"].with_company(self.vme.company_id).with_context(
+            active_model="account.move", active_ids=move.ids,
+        ).create({"journal_id": self.vme._ensure_fund_bank_journals()[self.vme]["working"].id, "amount": amount}
+                 ).action_create_payments()
+
+    def test_file_refused_when_paid_since_the_proposal(self):
+        # The owner pays 200 by transfer between the proposal and the file: no collection of 500.
+        batch = self.env["vme.payment.batch"].browse(self.call.action_create_direct_debit_batch()["res_id"])
+        working = self.inv[self.owner_a1, "working"]
+        self._pay(working, 200)
+        with self.assertRaisesRegex(UserError, "open"):
+            batch.action_generate_file()
+        batch.line_ids.filtered(lambda l: l.move_id == working).amount = 300
+        batch.action_generate_file()
+        self.assertEqual(batch.state, "generated")
+
+    def test_transfer_refused_when_paid_since_the_proposal(self):
+        self._approve(self.small)
+        batch = self._transfer_batch()
+        self._pay(self.small, 100)
+        with self.assertRaisesRegex(UserError, "open|betaald"):
+            batch.action_generate_file()
+
     def test_pre_notification_term(self):
         batch = self.env["vme.payment.batch"].create({
             "association_id": self.vme.id, "batch_type": "direct_debit", "provision_call_id": self.call.id,

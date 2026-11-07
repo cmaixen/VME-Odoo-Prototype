@@ -49,7 +49,7 @@ draft (Concept) --SEPA-bestand maken--> generated (Bestand klaar) --Opgeladen in
 
 **Voorstel domiciliëringen** (`_direct_debit_proposal`): open provisies van de oproep van eigenaars met een actief mandaat bij die VME.
 
-**Bestand maken**: vlak vóór het bestand worden goedkeuring, `allow_out_payment` van de rekening van de VME en van elke leverancier, en de vooraankondiging (inningsdatum ≥ datum oproep + 14 dagen) opnieuw gecontroleerd. Daarna `validate()` tegen de XSD. Een domiciliëringsbestand krijgt één `PmtInf` per fondsrekening en per sequentietype (`FRST` bij de eerste inning op een mandaat, daarna `RCUR`; `first_collection_done` wordt gezet bij **Opgeladen in de bank**).
+**Bestand maken**: vlak vóór het bestand worden goedkeuring, `allow_out_payment` van de rekening van de VME en van elke leverancier, en de vooraankondiging (inningsdatum ≥ datum oproep + 14 dagen) opnieuw gecontroleerd. `_check_still_open` weigert ook een lijn met een hoger bedrag dan wat nu nog open staat: wie intussen (deels) betaalde, wordt niet nog eens voor het volle bedrag geïnd of betaald. Daarna `validate()` tegen de XSD. Een domiciliëringsbestand krijgt één `PmtInf` per fondsrekening en per sequentietype (`FRST` bij de eerste inning op een mandaat, daarna `RCUR`; `first_collection_done` wordt gezet bij **Opgeladen in de bank**).
 
 ### Waarom geen `account.payment`
 

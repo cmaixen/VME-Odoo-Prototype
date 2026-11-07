@@ -91,15 +91,15 @@ Elke fix staat in een eigen commit, met een test waar dat kan.
 
 ### Geld en boekhouding
 
-**B-F2. Hetzelfde bankbestand kan twee keer ingelezen worden** ⏳
+**B-F2. Hetzelfde bankbestand kan twee keer ingelezen worden** ✅
 - **Waar:** `wizard/vme_bank_import_wizard.py:45-49`
 - **Probleem:** dubbels worden herkend aan de naam van het afschrift, en die naam is vertaald ("van" wordt "du" in `fr.po`). Een Franstalige medewerker leest zo een tweede afschrift in, en de lijnen worden opnieuw afgepunt.
-- **Herstel:** herken dubbels aan dagboek, afschriftnummer en datum, niet aan de getoonde naam.
+- **Herstel (uitgevoerd):** een nieuw veld `vme_import_key` (formaat, nummer en datum) op `account.bank.statement`. Dubbels worden herkend aan dagboek en sleutel, of aan de oude naam voor afschriften van vóór het veld. Test: uitbreiding van `test_import_routes_each_account_to_its_fund_journal`.
 
-**B-F3. SEPA-bestanden controleren niet opnieuw of de factuur nog openstaat voor hetzelfde bedrag** ⏳
+**B-F3. SEPA-bestanden controleren niet opnieuw of de factuur nog openstaat voor hetzelfde bedrag** ✅
 - **Waar:** `models/vme_payment.py:502-531` (domiciliëring) en `:476-486` (overschrijving)
 - **Probleem:** een eigenaar die tussen het voorstel en het bestand per overschrijving betaalt, wordt toch voor het volle bedrag geïnd.
-- **Herstel:** vergelijk in beide bestanden `line.amount` met het huidige `amount_residual` en weiger als het niet meer klopt. Klein, maar het raakt de betaalflow; daarom niet in deze review uitgevoerd.
+- **Herstel (uitgevoerd):** `vme.payment.batch.line._check_still_open` weigert in beide bestanden een bedrag boven het huidige `amount_residual`. Tests: `test_file_refused_when_paid_since_the_proposal`, `test_transfer_refused_when_paid_since_the_proposal`.
 
 **B-F4. De basis voor de minimale reserve van 5% telt ook lasten mee die niet gewoon zijn** ✅
 - **Waar:** `models/vme_budget.py:86-92`

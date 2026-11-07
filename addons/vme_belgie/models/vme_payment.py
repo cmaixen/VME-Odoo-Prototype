@@ -479,6 +479,7 @@ class VmePaymentBatch(models.Model):
                 raise UserError(self.env._("%s is niet (volledig) goedgekeurd.", bill.name))
             if bill.payment_state not in ("not_paid", "partial"):
                 raise UserError(self.env._("%s is al betaald: haal de factuur uit de batch.", bill.name))
+            line._check_still_open()
             if not line.partner_bank_id.allow_out_payment:
                 raise UserError(self.env._(
                     "De rekening %(account)s van %(supplier)s is niet bevestigd. Een gebruiker met het recht om "
@@ -513,6 +514,7 @@ class VmePaymentBatch(models.Model):
             mandate = line.mandate_id
             if mandate.state != "active":
                 raise UserError(self.env._("Het mandaat van %s is ingetrokken.", line.partner_id.name))
+            line._check_still_open()
             fund = line.move_id.vme_fund or "working"
             sequence_type = "RCUR" if mandate.first_collection_done else "FRST"
             key = (fund, sequence_type)
@@ -610,6 +612,16 @@ class VmePaymentBatchLine(models.Model):
         for line in self:
             if line.amount <= 0:
                 raise ValidationError(self.env._("Het bedrag van een betaling moet groter zijn dan nul."))
+
+    def _check_still_open(self):
+        """Right before the file: the invoice may have been paid (in part) since the proposal."""
+        for line in self:
+            move = line.move_id
+            if move.currency_id.compare_amounts(line.amount, move.amount_residual) > 0:
+                raise UserError(self.env._(
+                    "Op %(invoice)s staat nog %(open)s open, niet %(amount)s: er is intussen betaald. "
+                    "Pas het bedrag aan of haal de factuur uit de batch.", invoice=move.name,
+                    open=move.currency_id.format(move.amount_residual), amount=move.currency_id.format(line.amount)))
 
     def unlink(self):
         if any(line.batch_id.state != "draft" for line in self):
