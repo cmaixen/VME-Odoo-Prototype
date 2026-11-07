@@ -211,6 +211,20 @@ class VmeInstallation(models.Model):
                 )
                 installation.activity_risk_analysis_due_date = installation.next_risk_analysis_date
 
+    def _close_done_inspection_activity(self):
+        """Mark the "Keuring plannen" task done once a new inspection moved the due date past it."""
+        todo = self.env.ref("mail.mail_activity_data_todo")
+        for installation in self.filtered("activity_inspection_due_date"):
+            due = installation.activity_inspection_due_date
+            if installation.next_inspection_date and installation.next_inspection_date <= due:
+                continue
+            installation.activity_ids.filtered(
+                lambda a: a.activity_type_id == todo and a.date_deadline == due
+            ).action_feedback(feedback=self.env._(
+                "Keuring geregistreerd; volgende keuring: %s.",
+                format_date(self.env, installation.next_inspection_date)))
+            installation.activity_inspection_due_date = False
+
     def _register_inspection_from_bill(self, move):
         """Record an inspection for a posted bill of this installation's inspection body (once per bill)."""
         self.ensure_one()
@@ -261,6 +275,12 @@ class VmeInspection(models.Model):
     _unique_move = models.Constraint(
         "UNIQUE (move_id)", "Deze factuur is al aan een keuringsverslag gekoppeld."
     )
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        inspections = super().create(vals_list)
+        inspections.installation_id._close_done_inspection_activity()
+        return inspections
 
     @api.depends("installation_id.name", "kind", "date")
     def _compute_display_name(self):

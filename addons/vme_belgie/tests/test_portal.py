@@ -221,6 +221,15 @@ class TestPortalRoutes(PortalFixture, HttpCase):
         # Odoo's own address forms send owners to the request form.
         self.assertTrue(self.url_open("/my/account").url.endswith("/my/vme/address"))
 
+    def test_home_counters_only_requested_keys(self):
+        # Odoo's script on /my sets a counter on the page for every key it gets back and stops
+        # at the first key without one: then the tile "Mijn mede-eigendom" never appeared.
+        self.authenticate(self.owner.email, PASSWORD)
+        counters = ["vme_count", "bill_count"]
+        result = self.make_jsonrpc_request("/my/counters", {"counters": counters})
+        self.assertLessEqual(set(result), set(counters))
+        self.assertEqual(result["vme_count"], 1)
+
     def test_seller_after_sale(self):
         self.authenticate(self.seller.email, PASSWORD)
         self.assertEqual(self.url_open(f"/my/vme/document/{self.doc_a2_before.id}").status_code, 200)

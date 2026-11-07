@@ -44,6 +44,8 @@ Een nieuwe eigenaar ziet dus de oudere documenten van het gebouw (basisakte, not
 | `/my/vme/survey/<log_id>` | Een bevraging beantwoorden (stap 27) |
 | `/av/<code>`, `/my/vme/assembly/<id>` | Online deelnemen, stemmen en notulen ondertekenen (stap 24, zie [digitale-av.md](digitale-av.md)) |
 
+`/my/counters` (Odoo's script voor de tellers op `/my`) mag alleen tellers teruggeven die op de pagina staan: bij een andere sleutel stopt het script en verschijnt geen enkele tegel. `vme_owner` (om Odoo's factuurtegel te verbergen) wordt daarom alleen bij het opbouwen van `/my` gezet.
+
 De PDF van een provisie is Odoo's eigen factuurroute (`move.get_portal_url(report_type="pdf")`), met het toegangstoken van de factuur: de portaalgebruiker heeft geen toegang tot de company van de VME, het token volstaat.
 
 ## Adreswijziging

@@ -330,6 +330,14 @@ class AccountMove(models.Model):
             ))
 
     def _extend_with_attachments(self, files_data, new=False):
+        # A bill by mail is read in with the company of the mail gateway user, not of the VME:
+        # Odoo's substitute PDF for a UBL without PDF then showed that company in its header.
+        # The decoder was already bound to that environment while grouping the attachments: drop it,
+        # so Odoo looks it up again with the company of the VME.
+        if len(self.company_id) == 1 and self.env.company != self.company_id:
+            self = self.with_company(self.company_id)
+            for file_data in files_data:
+                file_data.pop("decoder_info", None)
         res = super()._extend_with_attachments(files_data, new)
         # Peppol/UBL invoices state the period they cover; standard Odoo ignores it.
         for file_data in files_data:

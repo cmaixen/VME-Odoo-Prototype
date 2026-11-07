@@ -49,7 +49,7 @@
         <field name="arch" type="xml">
             <field name="country_id" position="after">
                 <field name="region"/>
-                <field name="construction_year" options="{'format': false}"/>
+                <field name="construction_year" options="{'enable_formatting': false}"/>
             </field>
             <xpath expr="//notebook" position="inside">
                 <page string="Verzekering en attesten" name="compliance" invisible="not id">

@@ -104,7 +104,8 @@
                     </t>
                     <t t-else="">
                         <p>
-                            <strong><span t-field="assembly.datetime_start"/></strong>
+                            <strong><span t-field="assembly.datetime_start" t-options="{'tz_name': 'Europe/Brussels', 'format': 'EEEE d MMMM yyyy'}"/>
+                                om <span t-field="assembly.datetime_start" t-options="{'tz_name': 'Europe/Brussels', 'format': 'HH:mm'}"/></strong>
                             <t t-if="assembly.location"> · <t t-out="assembly.location"/></t>
                             <span t-if="assembly.state == 'proposed'" class="badge text-bg-warning ms-2">voorlopig</span>
                         </p>

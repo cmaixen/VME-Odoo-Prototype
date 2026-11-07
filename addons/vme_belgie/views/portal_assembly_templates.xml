@@ -37,7 +37,7 @@
             <t t-set="breadcrumbs_searchbar" t-value="False"/>
             <h3 class="mt-3" t-out="assembly.name"/>
             <p class="text-muted">
-                <span t-field="assembly.datetime_start" t-options="{'tz': 'Europe/Brussels', 'format': 'EEEE d MMMM yyyy'}"/> om <span t-field="assembly.datetime_start" t-options="{'tz': 'Europe/Brussels', 'format': 'HH:mm'}"/>
+                <span t-field="assembly.datetime_start" t-options="{'tz_name': 'Europe/Brussels', 'format': 'EEEE d MMMM yyyy'}"/> om <span t-field="assembly.datetime_start" t-options="{'tz_name': 'Europe/Brussels', 'format': 'HH:mm'}"/>
                 <t t-if="assembly.slot_id.location_type == 'room'"> · <t t-out="assembly.slot_id.room_id.name"/></t>
                 · <span t-field="assembly.meeting_mode"/>
                 <span t-if="assembly.state == 'held'" class="badge text-bg-secondary ms-2">Gehouden</span>
@@ -54,7 +54,7 @@
                             Die stemt voor u. Wilt u toch zelf deelnemen, neem dan contact op met de syndicus.</p>
                     </t>
                     <t t-elif="attendee and attendee.attendance == 'present' and attendee.attendance_mode == 'online'">
-                        <p>U bent online aanwezig sinds <span t-field="attendee.checked_in_at" t-options="{'tz': 'Europe/Brussels', 'format': 'HH:mm'}"/>.</p>
+                        <p>U bent online aanwezig sinds <span t-field="attendee.checked_in_at" t-options="{'tz_name': 'Europe/Brussels', 'format': 'HH:mm'}"/>.</p>
                         <a t-if="assembly.video_url" class="btn btn-success" t-att-href="assembly.video_url" target="_blank" rel="noopener">Naar de videovergadering</a>
                     </t>
                     <t t-elif="assembly.meeting_mode == 'in_person'">
@@ -111,7 +111,7 @@
                             <li t-foreach="voted_mine" t-as="voted">
                                 <t t-set="vote" t-value="votes[(item.id, voted.id)]"/>
                                 ✓ <t t-out="voted.partner_id.name"/>: <strong t-field="vote.vote"/>
-                                <span class="small text-muted">(<span t-field="vote.source"/>, <span t-field="vote.cast_at" t-options="{'tz': 'Europe/Brussels', 'format': 'd/MM HH:mm'}"/>)</span>
+                                <span class="small text-muted">(<span t-field="vote.source"/>, <span t-field="vote.cast_at" t-options="{'tz_name': 'Europe/Brussels', 'format': 'd/MM HH:mm'}"/>)</span>
                             </li>
                         </ul>
                         <form t-if="open_rights" t-attf-action="/my/vme/assembly/#{assembly.id}/vote" method="post">
@@ -154,7 +154,7 @@
                     </p>
                     <t t-if="signature.state == 'signed'">
                         <p class="mb-0 text-success">U ondertekende deze notulen als <span t-field="signature.role"/> op
-                            <span t-field="signature.signed_at" t-options="{'tz': 'Europe/Brussels'}"/>.</p>
+                            <span t-field="signature.signed_at" t-options="{'tz_name': 'Europe/Brussels'}"/>.</p>
                     </t>
                     <form t-else="" t-attf-action="/my/vme/assembly/#{assembly.id}/sign" method="post" style="max-width: 32rem;">
                         <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>

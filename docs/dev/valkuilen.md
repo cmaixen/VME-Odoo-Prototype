@@ -138,9 +138,21 @@ Sinds er buitengewone AV's zijn, kan een VME meer dan één AV per jaar hebben. 
 - **Documenten van een ander bedrijf zijn onzichtbaar, ook in een One2many.** Zonder `sudo()` telde het dossier 0 afrekeningsdocumenten als bovenaan een ander bedrijf stond. "Opnieuw voorbereiden" had dan alles dubbel geboekt.
 - **Rekeningcodes hangen van het bedrijf af.** `account.code` is `False` buiten het bedrijf van de rekening. In tests lees je de code daarom `with_company`.
 
+## Demorepetitie (november 2026)
+
+Gevonden bij het doorlopen van `docs/demo.md` op een verse database:
+
+- **Eigenaarsportaal zonder tegels.** `/my/counters` geeft alles terug wat `_prepare_home_portal_values` invult. Odoo's script zet voor elke sleutel een teller op de pagina en stopt met een fout bij een sleutel zonder teller (`vme_owner`): de tegel "Mijn mede-eigendom" verscheen nooit en het laadicoon bleef draaien. Zet een sleutel die geen teller is alleen bij het opbouwen van `/my` (`counters` leeg); test in `test_portal.py`.
+- **Dialoog "Configureer de lay-out van je document" bij de eerste PDF.** Odoo opent die wizard in plaats van het rapport zolang de company geen `external_report_layout_id` heeft, en elke VME is een company. "Negeren" sluit hem zonder PDF. Elke company krijgt nu de standaardlay-out (`models/res_company.py`, ook bij elke upgrade via `data/bill_aliases.xml`).
+- **"My Company, Verenigde Staten" bovenaan de PDF van een factuur per mail.** Bij een UBL zonder PDF maakt Odoo zelf een PDF, met de company uit de omgeving. Die omgeving is die van de mailgebruiker, en Odoo bindt de decoder al bij het groeperen van de bijlagen. `account.move._extend_with_attachments` schakelt naar de company van de factuur en gooit `decoder_info` weg, zodat Odoo hem opnieuw opzoekt. Niet te testen in een unittest: in testmodus maakt Odoo geen PDF.
+- **Taak "Keuring plannen" bleef staan na de keuring.** De cron maakte een taak per vervaldatum, maar niets vinkte ze af. Een nieuw keuringsverslag dat de vervaldatum voorbij die taak schuift, sluit ze nu af (`vme.inspection.create`).
+- **`options="{'format': false}"` doet niets meer in Odoo 19:** het jaartal toonde als "1.995". De optie heet `enable_formatting`.
+- **`t-options="{'tz': ...}"` wordt genegeerd.** Odoo's datetime-veld in QWeb kent alleen `tz_name`. In het portaal (zonder tijdzone in de context) toonde een AV van 19:00 als 18:00; in de oproeping hing het uur af van de tijdzone van wie afdrukte. Alle templates gebruiken nu `tz_name`.
+- **Parallelle testservers op `localhost` loggen elkaar uit.** Een cookie geldt voor de hostnaam, niet voor de poort. Gebruik per server een eigen naam, bv. `http://demo.localhost:8679`.
+
 ## Bekende problemen (nog open)
 
-- Geen op dit moment.
+- **De `.pot` van `vme_belgie` loopt achter.** Een export na de merges van november 2026 voegt ruim 2.000 regels toe (offertes, overname, verzekering, werkbak); die termen staan dus ook niet in `fr.po`. Bijwerken volgens [vertaling.md](vertaling.md#nieuwe-termen-bijwerken), samen met de nieuwe teksten van de demorepetitie.
 
 ## Parallel gebouwde stappen samenvoegen
 

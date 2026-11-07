@@ -1,16 +1,16 @@
-# Demoscenario: tien minuten voor een syndicus
+# Demoscenario: tien minuten, van mail tot jaarafrekening
 
-Een rondgang langs het werk van een syndicus, op de fictieve demo. Het verhaal: het is 5 november 2026. Er komt een factuur binnen, er moet een factuur zonder regel verdeeld worden, de jaarafrekening 2026 staat klaar, de provisies voor 2027 moeten de deur uit, er vervalt een keuring, het AV-seizoen 2027 moet gepland worden en een eigenaar meldt een lek.
+Eén verhaal voor een pilotsyndicus of een investeerder. Het is begin november 2026 bij een syndicus met drie fictieve gebouwen. Een eigenaar meldt een lek, een leverancier mailt een factuur, er liggen offertes voor de gevel, de provisies en de AV's van 2027 moeten klaar, en aan het eind ziet de eigenaar zijn jaarafrekening in het portaal. Rode draad: **de software zet alles klaar, een mens beslist.**
 
-Elke stap is nagekeken op een verse database met demodata en demohistoriek.
+Elke stap is nagekeken op een verse database met demodata en demohistoriek (7 november 2026). De bedragen hieronder gelden voor die volgorde.
 
 > Alle gebouwen, eigenaars, bedragen en rekeningnummers zijn verzonnen. De Belgische regels zijn nog niet juridisch nagekeken.
 
-## Vooraf (niet in de tien minuten)
+## Vooraf (ongeveer 15 minuten, niet in de tien minuten)
 
-Draai dit ongeveer 15 minuten voor de demo, in de map van het project. Docker (OrbStack) moet draaien.
+In de map van het project, met Docker (OrbStack) aan.
 
-1. **Verse database** (ongeveer 3 minuten):
+1. **Verse database** (ongeveer 2 minuten):
 
    ```bash
    docker compose stop odoo
@@ -21,310 +21,193 @@ Draai dit ongeveer 15 minuten voor de demo, in de map van het project. Docker (O
    docker compose up -d odoo
    ```
 
-2. **Python-omgeving voor de scripts in `ai/`** (eenmalig; Python 3.10 of nieuwer, bv. `python3.12`):
+2. **Python voor de scripts in `ai/`** (eenmalig, Python 3.10 of nieuwer):
 
    ```bash
    cd ai && python3.12 -m venv .venv && .venv/bin/pip install -r requirements.txt && cd ..
    ```
 
-   Met een Anthropic-API-sleutel in `ai/.env` schrijft de AI-assistent echte antwoorden met Claude; zonder sleutel gebruikt u `--mock` (vaste sjablonen met plaatshouders zoals `[datum]`). De offertevergelijking (`offertes.py`) valt zonder sleutel vanzelf terug op haar testmodus.
+   Met een Anthropic-API-sleutel in `ai/.env` leest Claude de mails en offertes; zonder sleutel gebruikt u `--mock` of `--offline` (vaste antwoorden, zonder netwerk).
 
-3. **Inloggen**: open http://localhost:8069 (de productwebsite), klik op **Inloggen > Medewerker van de syndicus** en log in met `admin` / `admin`, in een browservenster op volledig scherm. U komt meteen in de app VME. Werkt de eerste login na het opbouwen niet ("400 Bad Request"), herlaad de pagina en log opnieuw in.
+3. **De mails van eigenaars laten lezen** (ongeveer een minuut met Claude, een seconde met `--mock`):
 
-4. **Zet bovenaan rechts het bedrijf op Residentie Linde** (bedrijvenkiezer). De schermen van de app VME tonen altijd alle VME's; de facturen ziet u per bedrijf.
+   ```bash
+   cd ai && .venv/bin/python assistant.py && cd ..
+   ```
 
-5. **Optioneel, om wachten te vermijden:** maak de oproepingen van de AV vooraf aan (stap 7). Dat duurt ongeveer een minuut, omdat Odoo per eigenaar twee PDF's maakt.
+   Acht mails worden aanvragen of taken op de juiste VME. Live draaien duurt te lang voor de demo.
+
+4. **De offertes voor de gevel laten vergelijken** (ongeveer 15 seconden): log in (stap 6), open **VME > Werken en schade > Werkdossiers > Gevelrenovatie voor- en achtergevel** en klik op **Offertes vergelijken**. Dan:
+
+   ```bash
+   cd ai && .venv/bin/python offertes.py && cd ..
+   ```
+
+5. **Twee browservensters op volledig scherm.**
+   - Venster 1, de syndicus: http://localhost:8069, **Inloggen > Medewerker van de syndicus**, `admin` / `admin`. Kies rechtsboven het bedrijf **Residentie Linde** (de leveranciersfacturen staan per bedrijf; de schermen van de app VME tonen altijd alle VME's).
+   - Venster 2, de eigenaar: een privévenster op **http://a1.localhost:8069** (een eigen hostnaam, zodat de twee sessies elkaar niet uitloggen). Log in met `eigenaar.linde.a1@example.com` / `portaal-demo` en laat **Mijn account** open staan.
+   - Geeft de eerste login na het opbouwen "400 Bad Request", herlaad dan en log opnieuw in.
+
+6. **Een terminal** in de map `ai`, met `.venv/bin/python facturen_mailgate.py --inbox demo_inbox` al getypt maar nog niet uitgevoerd.
 
 ## Het scenario
 
 | # | Minuut | Wat | Waar |
 | --- | --- | --- | --- |
-| 1 | 0:00 | Het gebouw | VME > VME's |
-| 2 | 1:00 | Een factuur komt binnen per mail en verdeelt zichzelf | terminal + Facturatie |
-| 3 | 3:00 | Een factuur zonder regel zelf verdelen | Facturatie |
-| 4 | 4:00 | De jaarafrekening 2026 | VME > Jaarafrekening |
-| 5 | 5:30 | Provisieoproep 2027 voor alle VME's | VME > Provisieoproepen |
-| 6 | 6:30 | Keuringen en opmerkingen | VME > Keuringen |
-| 7 | 7:30 | Het AV-seizoen 2027 plannen | VME > Algemene vergaderingen |
-| 8 | 8:30 | Een mail van een eigenaar, een voorgesteld antwoord | terminal + VME |
+| 1 | 0:00 | Uw dag in één lijst | VME > Mijn werk vandaag |
+| 2 | 1:00 | Een eigenaar mailt een lek | Aanvraag van Linde A4 |
+| 3 | 2:30 | Een leverancier mailt een factuur | terminal + Facturatie |
+| 4 | 4:30 | Drie offertes, door de AI naast elkaar gelegd | VME > Werken en schade |
+| 5 | 5:30 | Provisies 2027 voor alle gebouwen | VME > Provisieoproepen |
+| 6 | 6:30 | De AV's van 2027 plannen | VME > Algemene vergaderingen |
+| 7 | 7:30 | De jaarafrekening 2026 | Residentie Linde > Jaarafrekening |
+| 8 | 9:00 | De eigenaar ziet zijn afrekening | portaal (venster 2) |
 
-### 1. Het gebouw (1 minuut)
+### 1. Uw dag in één lijst (1 minuut)
 
-- **VME > VME's**: drie gebouwen, elk een eigen bedrijf met eigen boekhouding, KBO-nummer en twee bankrekeningen (werk- en reservekapitaal).
-- Open **Residentie Linde**: 20 kavels, 12 eigenaars, twee verdeelsleutels.
-- Tabblad **Kavels**: A5 en G5 zijn op 1 juli 2026 verkocht. Open A5 om de verkoper (tot 30/06) en de koper (vanaf 01/07) te tonen.
-- **Verdeelsleutels**: de algemene sleutel telt exact op tot 1.000; een sleutel die niet klopt kan niet opgeslagen worden.
+1. **VME > Mijn werk vandaag**: wat te laat is, vandaag of deze week vervalt, over alle gebouwen, gegroepeerd per urgentie.
+2. Wijs aan:
+   - **Vandaag**: *Defect of schade doorsturen naar een schadedossier, AANV/2026/0003 Dringend: waterlek in het plafond van mijn badkamer*. Die mail kwam vannacht binnen.
+   - **Deze week**: *Keuring plannen: Lift blok A* (12 november). Onthoud die voor stap 3.
+   - Overal **Concept**: rappels, bestellingen en AI-antwoorden die op een klik wachten.
 
-> Boodschap: "Uw basisakte zit erin, en het systeem weet op elke dag wie eigenaar is."
+> Zeg: "Uw dag begint met één lijst over al uw gebouwen, en alles wat naar buiten moet, staat klaar als concept."
 
-### 2. Een factuur komt binnen per mail (2 minuten)
+*Als er iets misgaat:* de lijst is leeg of kort? Haal de filter **Mijn werk** weg (`admin` is dossierbeheerder van Linde en Hof ter Beuken, niet van Kaaihuis). Staat AANV/2026/0003 er niet, dan is stap 3 van "Vooraf" overgeslagen: draai `assistant.py --mock` (een seconde) en herlaad.
 
-1. In een terminal: de Keuringsdienst mailt de factuur voor de liftinspectie naar het factuuradres van Residentie Linde.
+### 2. Een eigenaar mailt een lek (1,5 minuut)
+
+1. Klik op **Openen** bij AANV/2026/0003.
+2. Toon de aanvraag: VME **Residentie Linde**, kavel **A4**, soort **Defect of schade**, kanaal **E-mail**, en de oorspronkelijke mail eronder. Niemand heeft iets overgetikt.
+3. Rechts in de historiek: **Voorgesteld antwoord van de AI-assistent (niet verstuurd)**, met wat de eigenaar intussen kan doen en wie de schade draagt.
+4. Bovenaan de geplande taak *Defect of schade doorsturen naar een schadedossier*: de vaste procedure loopt verder, maar de medewerker kijkt het antwoord na en verstuurt het zelf.
+
+> Zeg: "De AI leest de mail, vindt het gebouw en de kavel en schrijft een antwoord; uw medewerker beslist en verstuurt."
+
+*Als er iets misgaat:* zonder API-sleutel komt het antwoord uit `--mock`, met plaatshouders zoals `[kavel erboven]`. Zeg dat erbij: de medewerker vult ze in.
+
+### 3. Een leverancier mailt een factuur (2 minuten)
+
+1. In de terminal, druk op Enter: de Keuringsdienst mailt de factuur van de liftinspectie naar het factuuradres van Residentie Linde.
 
    ```bash
-   cd ai && .venv/bin/python facturen_mailgate.py --inbox demo_inbox
+   .venv/bin/python facturen_mailgate.py --inbox demo_inbox
    ```
 
-   Uitvoer: *Residentie Linde: conceptfactuur KD-2026-1105 van Keuringsdienst Voorbeeld vzw, 217.80 EUR, sleutel: Liftsleutel*.
+   Uitvoer: *Residentie Linde: conceptfactuur KD-2026-1105 van Keuringsdienst Voorbeeld vzw, 217.80 EUR, ... sleutel: Liftsleutel*.
+2. In venster 1: **Facturatie > Leveranciers > Leveranciersfacturen**, open de conceptfactuur **KD-2026-1105**. Leverancier, bedrag en btw komen uit de Peppol-e-factuur in bijlage; de **Verdeelsleutel** *Liftsleutel* vulde de verdeelregel voor deze leverancier in.
+3. Klik op **Bevestigen**. De slimme knop **Verdeling** toont 12 eigenaars: alleen de appartementen, want garages gebruiken de lift niet.
+4. Scroll naar de historiek: *Automatisch verdeeld over 12 eigenaars* en *Keuring van Lift blok A geregistreerd ... volgende keuring: 05/05/2027*.
+5. **VME > Mijn werk vandaag**: de taak *Keuring plannen: Lift blok A* is weg.
 
-2. In Odoo: **Facturatie > Leveranciers > Facturen**, open de conceptfactuur **KD-2026-1105**.
-   - Leverancier, bedrag en btw komen uit de Peppol-e-factuur in bijlage; niemand heeft iets overgetikt.
-   - **Verdeelsleutel**: *Liftsleutel*, ingevuld door de verdeelregel voor deze leverancier.
-3. Klik op **Bevestigen**.
-   - De slimme knop **Verdeling** toont 12 eigenaars: alleen de appartementen, want garages gebruiken de lift niet.
-   - In de historiek: *"Automatisch verdeeld over 12 eigenaars"* en *"Keuring van Lift blok A geregistreerd op 05/11/2026 … volgende keuring: 05/05/2027"*.
-4. **VME > Keuringen**: de lift stond oranje (vervalt 12 november) en staat nu groen.
+> Zeg: "Eén mail van een leverancier: geboekt, verdeeld over de juiste eigenaars, en uw keuringsagenda is bijgewerkt. U klikte één keer."
 
-> Boodschap: "Eén mail van een leverancier: geboekt, verdeeld over de juiste eigenaars, en uw keuringsagenda is bijgewerkt."
+*Als er iets misgaat:* geen conceptfactuur? Staat het bedrijf rechtsboven op Residentie Linde? De mail kan maar één keer per database (Odoo herkent haar Message-ID); een tweede keer gebeurt er niets. Plan B: importeer `addons/vme_belgie/demo_data/facturen/` via **Upload** in de lijst van leveranciersfacturen.
 
-### 3. Een factuur zonder regel zelf verdelen (1 minuut)
+### 4. Drie offertes, door de AI naast elkaar gelegd (1 minuut)
 
-1. **Facturatie > Leveranciers > Facturen > Nieuw** (bedrijf Residentie Linde).
-2. Leverancier **Brandbeveiliging Voorbeeld BV**, factuurdatum vandaag, kostperiode 01/01/2026 tot 31/12/2026, lijn *Jaarlijks onderhoud brandblussers 2026*, 350 € (21% btw).
-3. Kies in de lijn de **Verdeelsleutel** *Algemene sleutel* en klik op **Verdeel over eigenaars**: 423,50 € over 13 eigenaars; de verkoper en de koper van A5 krijgen elk hun dagen.
-4. Ga terug naar de factuur en klik op **Bevestigen**.
+1. **VME > Werken en schade > Offertevergelijkingen**, open *Offertevergelijking Gevelrenovatie voor- en achtergevel* (status **Concept**).
+2. De **aandachtspunten** in het geel: het btw-tarief verschilt (6% tegenover 21%), het werkdossier vermeldt 44.000 € voor Bouwonderneming Denkbeeld terwijl de offerte 53.240 € incl. btw zegt, de stelling ontbreekt bij Renovatiebedrijf Voorbeeld.
+3. In de **tabel**: klik op een paginanummer **(p. 2)**; de offerte opent op die bladzijde.
+4. Benadruk: de samenvatting is neutraal, zonder aanbeveling. **Goedkeuren** en **Voor de AV** zijn de klik van de syndicus.
 
-> Boodschap: "Geen Excel meer: één klik, tot op de cent, ook bij een verkoop midden in het jaar."
+> Zeg: "Een avond offertes naast elkaar leggen wordt tien minuten nakijken, met de bron bij elk getal. De AV kiest; wij zetten de feiten klaar."
 
-### 4. De jaarafrekening 2026 (1,5 minuut)
+*Als er iets misgaat:* staat de vergelijking op **Wacht op AI**, draai `.venv/bin/python offertes.py --offline` (direct, zonder netwerk) en herlaad. Klik in het werkdossier niet opnieuw op **Offertes vergelijken**: dat zet een klaargezette vergelijking terug op "Wacht op AI".
 
-1. **VME > Jaarafrekening**, VME *Residentie Linde*, jaar *2026*.
-2. Bovenaan staat de **controle** in het groen: de som van alle aandelen is gelijk aan de geboekte kosten (19.240,30 € na stap 2 en 3).
-3. In de tabel: eigenaar A1 krijgt 515,64 € terug, A3 heeft nog 432 € open staan, en de verkoper en de koper van A5 hebben elk hun eigen afrekening.
-4. Klik op **Afdrukken (PDF)** en toon één pagina: kosten per sleutel, provisies, saldo, reservekapitaal apart, detail per factuur.
-5. Kies daarna *Hof ter Beuken*: daar betalen de grote verbruikers bij en krijgen de kleine geld terug, door de gasfactuur van de centrale verwarming. Die is verdeeld op verbruik (30% vast, 70% volgens de kostenverdelers): onder de verwarmingssleutel staat per eigenaar zijn verbruik.
-6. Open de VME *Residentie Linde* en klik op **Balans en resultatenrekening**, boekjaar *2026*: de balans sluit (groene controle), de kosten staan per rubriek van het wettelijke rekeningstelsel, en wat overblijft, gaat per fonds naar 2027. Toon de PDF; de commissaris van de rekeningen kan hetzelfde openen voor zijn VME.
+### 5. Provisies 2027 voor alle gebouwen (1 minuut)
 
-> Boodschap: "De afrekening die u nu een week kost, staat klaar zodra de laatste factuur geboekt is."
+1. **VME > Provisieoproepen > Nieuwe provisieoproep**. VME's: alle drie. Budgetjaar *2027*, oproep *1*; laat de datums staan.
+2. Het voorbeeld toont per VME werk- en reservekapitaal, en bij **Hof ter Beuken** de waarschuwing dat het reservekapitaal onder de wettelijke 5% van de lasten van vorig jaar zit.
+3. **Maak provisieoproepen**: 82 facturen in een paar seconden, per eigenaar één voor werkkapitaal en één voor reservekapitaal, elk met de eigen bankrekening en een gestructureerde mededeling.
 
-### Extra: het boekjaar afsluiten (1 minuut)
+> Zeg: "Uw kwartaaloproep voor tweehonderd gebouwen is één wizard, en de 5%-regel bewaakt zichzelf."
 
-1. Open **Residentie Linde** en klik op **Boekjaar afsluiten**. Kies het boekjaar *2026*. Eén controle staat in het rood: de ereloonfactuur van de syndicus voor september staat nog in concept. Klik op de link eronder, **Bevestig** de factuur (ze wordt meteen verdeeld) en ga terug. Nu is alles groen; alleen "het boekjaar loopt nog" is oranje.
-2. **Afrekening voorbereiden**: 13 concept-creditnota's, samen 4.334,51 €. A1 krijgt 474,62 € terug. Bij A3 blijft de onbetaalde oproep een eigen factuur, en de verkoper en de koper van A5 krijgen elk hun deel.
-3. **Resultaat en overdracht**: werkkapitaal 0,00 € na de afrekening, reservekapitaal 2.400,00 € naar 2027, niets terugbetaald.
-4. Benadruk: alles is een concept. **Alles bevestigen** boekt, maar verstuurt niets. **Boekjaar afsluiten** (alleen voor een beheerder) vergrendelt 2026. Doe dat in de demo niet, of heropen meteen: anders komen de facturen van de andere stappen in 2027 terecht.
+*Als er iets misgaat:* een melding over onbevestigde bankrekeningen betekent dat de demodata niet als `admin` geladen is; bouw de database opnieuw op.
 
-(Na stap 2 en 3 van het scenario liggen de bedragen iets anders, want er zijn dan twee facturen meer.)
-
-### 5. Provisieoproep 2027 (1 minuut)
-
-1. **VME > Provisieoproepen > Nieuwe provisieoproep**.
-2. VME's: alle drie. Budgetjaar *2027*, oproep *1*, factuurdatum 15/12/2026, vervaldatum 15/01/2027.
-3. Het voorbeeld toont per VME de bedragen en bij **Hof ter Beuken** de waarschuwing dat het reservefonds onder de wettelijke 5% zit.
-4. **Maak provisieoproepen**: 82 facturen, per eigenaar één voor werkkapitaal en één voor reservekapitaal, elk met de eigen bankrekening en een gestructureerde mededeling.
-
-> Boodschap: "Uw kwartaaloproep voor 200 VME's: één wizard, en de 5%-regel bewaakt zichzelf."
-
-### 6. Keuringen en opmerkingen (1 minuut)
-
-1. **VME > Keuringen > Installaties en vervaldata**: rood = vervallen (brandblussers Residentie Linde), oranje = binnen 30 dagen (rookluiken Hof ter Beuken), blauw = binnen 60 dagen.
-2. Klik rechtsboven op het **kalendericoon** voor dezelfde vervaldata in een kalender.
-3. **VME > Keuringen > Opmerkingen keuringen**, filter **Over termijn**: *"Noodverlichting in de liftkooi werkt niet"* (ernstig, termijn 31/08/2026) staat in het rood.
-4. Het activiteitenicoon bovenaan toont de taken die Odoo zelf maakte voor keuringen die binnen 60 dagen vervallen.
-
-> Boodschap: "Geen vergeten keuring meer, en elke opmerking uit een liftverslag wordt opgevolgd tot ze opgelost is."
-
-### 7. Het AV-seizoen 2027 plannen (1 minuut)
+### 6. De AV's van 2027 plannen (1 minuut)
 
 1. **VME > Algemene vergaderingen > AV-planner**, jaar *2027*, **Indeling voorstellen**.
-2. Resultaat: Residentie Linde op 17 maart, Kaaihuis op 23 maart, Hof ter Beuken op 20 april. Linde en Kaaihuis wilden allebei 17 maart, maar die zaal heeft plaats voor één AV: Linde krijgt voorrang omdat haar periode op 18 maart afloopt.
-3. Open de AV van Residentie Linde en klik op **Bevestigen**: de afspraak staat in de agenda van de medewerker (knop **Agenda**).
-4. **Oproepingen aanmaken** (of toon de vooraf aangemaakte): twaalf concepten, met per eigenaar de quotiteiten, een volmachtformulier en de jaarafrekening in bijlage. A5 gaat naar de nieuwe eigenaar. Er wordt niets automatisch verstuurd.
-5. Optioneel: **VME > Algemene vergaderingen > Register van beslissingen** toont de beslissingen van de AV 2026.
+2. Resultaat: Residentie Linde op 17 maart, Kaaihuis op 23 maart, Hof ter Beuken op 20 april, elk binnen de wettelijke periode van vijftien dagen en zonder dubbel geboekte zaal of medewerker. Alles staat op **Voorgesteld**; bevestigen doet de medewerker.
+3. Vertel erbij (zonder te klikken): de eigenaars stemmen thuis mee in een hybride AV en ondertekenen de notulen in het portaal. Dat kan getoond worden in de extra vijf minuten.
 
-> Boodschap: "Uw AV-seizoen in één voorstel, binnen elke wettelijke periode, zonder dubbele boekingen."
+> Zeg: "Uw AV-seizoen in één voorstel, binnen elke wettelijke termijn, en wie niet kan komen, stemt online."
 
-### 8. Een mail van een eigenaar (1,5 minuut)
+*Als er iets misgaat:* een datum die afwijkt, komt van een eerdere proef op deze database; vink **Voorstellen opnieuw indelen** aan.
 
-1. In de terminal: de AI-assistent leest de mails van eigenaars.
+### 7. De jaarafrekening 2026 (1,5 minuut)
 
-   ```bash
-   cd ai && .venv/bin/python assistant.py          # met API-sleutel (Claude)
-   cd ai && .venv/bin/python assistant.py --mock   # zonder API-sleutel
-   ```
+1. **VME > VME's > Residentie Linde**, knop **Jaarafrekening** (jaar 2026).
+2. Bovenaan de **controle** in het groen: de som van alle aandelen (18.816,80 €) is gelijk aan de geboekte kosten, inclusief de liftfactuur van daarnet.
+3. In de tabel: Eigenaar Linde A1 krijgt 547,83 € terug, A3 heeft nog 432 € provisies open staan, en de verkoper en de koper van A5 (verkocht op 1 juli) hebben elk hun eigen afrekening, pro rata hun dagen.
+4. **Afdrukken (PDF)** en toon één pagina: kosten per sleutel, provisies, saldo, reservekapitaal apart, detail per factuur.
 
-   Per mail toont hij de VME, de kavel, het onderwerp en de urgentie.
-2. In Odoo: open **Residentie Linde**. Bij **Geplande activiteiten** staat *"AI-voorstel: Lek of waterschade (A4)"* voor vandaag. Klik op het **i**-icoontje voor de oorspronkelijke mail en het conceptantwoord.
-3. Benadruk: de assistent verstuurt nooit zelf iets. De medewerker kijkt het antwoord na, vult de plaatshouders in en verstuurt het.
+> Zeg: "De afrekening die u nu een week kost, staat klaar zodra de laatste factuur geboekt is, tot op de cent en ook bij een verkoop midden in het jaar."
 
-> Boodschap: "Uw inbox gesorteerd per gebouw en kavel, met een antwoord klaar om na te kijken."
+*Als er iets misgaat:* een oranje controle noemt de factuur die nog niet verdeeld is; open ze en klik **Verdeel over eigenaars**. Komt de PDF als download in plaats van in een tabblad, open hem uit de downloads van de browser.
 
-### Extra: een badge aanvragen, eigenaar of huurder (1,5 minuut)
+### 8. De eigenaar ziet zijn afrekening (1 minuut)
 
-Na stap 8 staan er ook drie aanvragen in **VME > Aanvragen**, naast de sleutel voor Beuken B3 die de demohistoriek al klaarzette.
+1. Venster 2 (Eigenaar Linde A1): herlaad **Mijn account** en klik op **Mijn mede-eigendom**, dan **Residentie Linde**.
+2. Toon kort: zijn kavels A1 en G1, de volgende AV met de agenda, de stand van werk- en reservekapitaal, de provisies van 2026 en de nieuwe oproep van 2027 (stap 5), en de documenten van het gebouw.
+3. Klik op **Jaarafrekening 2026 voorlopig**: *Saldo in uw voordeel 547,83 €*, en onderaan in de facturen *Keuringsdienst Voorbeeld vzw, KD-2026-1105*, zijn aandeel 7,84 €: de mail van de leverancier van zeven minuten geleden.
+4. Vertel erbij: hij ziet nooit een ander gebouw of een andere kavel, en de verkoper van A5 ziet niets meer van na de verkoop.
 
-1. **Eigenaar Linde A4** vraagt een extra badge: meteen geverifieerd. Toon het tabblad **Berichten** (de bestelling aan Slotenmaker Voorbeeld BV, met het sleutelcertificaat) en de bestelbon in bijlage. Klik op **Bestelling versturen**, vul een nummer in (bv. BA-L-101) en klik op **Levering registreren**: de badge staat in het register van A4 en de eigenaar krijgt een factuur van 25 euro.
-2. **Huurder Linde A6** vraagt een sleutel zonder bewijs: de aanvraag wacht op de toestemming van de eigenaar en het huurcontract. **Bewijs goedkeuren** weigert; **Bewijs opvragen** stuurt de vraag en plant een herinnering na 7 dagen.
-3. **Huurder Beuken B12** stuurde de toestemming en het huurcontract mee: ze staan in het tabblad **Bewijs**. Vink beide aan en klik op **Bewijs goedkeuren**: de bestelling staat klaar.
-4. Optioneel: het verkoopdossier van Linde A3 toont in het antwoord aan de notaris de uitgereikte sleutels en badges.
+> Zeg: "Van de mail van de leverancier tot de afrekening bij de eigenaar: niemand heeft iets overgetikt, en niets is vertrokken zonder een klik van uw medewerker."
 
-> Boodschap: "De vaste procedures lopen vanzelf, maar niets vertrekt zonder uw klik."
+*Als er iets misgaat:* toont **Mijn account** alleen "Adressen" en "Verbinding & Beveiliging", herlaad de pagina. Is de sessie verlopen, log opnieuw in op `a1.localhost`.
 
-### Extra: een verkoop, de notaris vraagt inlichtingen (1 minuut)
+## Extra vijf minuten (op vraag)
 
-1. **VME > Verkoopdossiers**: het dossier *Verkoop A3, G3 Residentie Linde* staat oranje. Notariskantoor Voorbeeld vroeg op 28 oktober inlichtingen; het antwoord moet er binnen 15 dagen zijn, dus uiterlijk op 12 november.
-2. Open het dossier. Het tabblad **Antwoord aan de notaris** toont het antwoord, samengesteld uit de boekhouding en de AV:
-   - het reservekapitaal en het aandeel van A3 en G3,
-   - de onbetaalde vierde provisie van A3 (475,20 euro),
-   - het aandeel in de dakwerken die de AV van maart besliste (2.736 euro op 38.000 euro),
-   - de lopende procedures.
-3. Klik op **Antwoord eerste vraag (PDF)**: de PDF komt in de chatter en de taak is afgevinkt. Doorsturen naar de notaris doet de medewerker zelf.
-4. Vertel erbij: bij de akte klikt de syndicus op **Akte verleden**, en vanaf dan gaan kosten en provisies naar de koper. Odoo zet dan ook een concept-welkomstbrief voor de koper klaar (knop **Welkomstbrief**).
+Doe deze blokken na stap 8; ze veranderen niets aan de bedragen van het scenario hierboven, behalve blok A en D.
 
-> Boodschap: "Een vraag van de notaris is twee minuten werk in plaats van een half uur zoeken, en de termijn ontsnapt u niet."
+### A. Een factuur zonder regel zelf verdelen (1 minuut)
 
-### Extra: het kantoor van de syndicus (1 minuut)
+1. **Facturatie > Leveranciers > Leveranciersfacturen > Nieuw** (bedrijf Residentie Linde). Leverancier **Brandbeveiliging Voorbeeld BV** (kies de fictieve bovenaan, niet een resultaat van "Zoek wereldwijd"), factuurdatum vandaag, kostperiode 01/01/2026 tot 31/12/2026, lijn *Jaarlijks onderhoud brandblussers 2026*, 350 € met 21% btw.
+2. Kies in de lijn de **Verdeelsleutel** *Algemene sleutel* en klik op **Verdeel over eigenaars**: 423,50 € over 13 eigenaars; de verkoper en de koper van A5 krijgen elk hun dagen.
+3. Terug naar de factuur, **Bevestigen**. De jaarafrekening wordt 19.240,30 €; A1 krijgt dan 515,64 € terug.
 
-1. **VME > Syndicus > Beheerovereenkomsten**: Residentie Linde rekent 14 euro per kavel per maand aan, geïndexeerd met de consumptieprijsindex; het tarief van vandaag staat ernaast.
-2. **VME > Syndicus > Prestaties**: de aangifte van de waterschade van A4 staat klaar om te factureren. Beantwoord de notaris in het verkoopdossier van A3 (zie hieronder) en er komt een prestatie bij.
-3. **VME > Syndicus > Ereloonfacturen**: de facturen van het derde kwartaal zijn bevestigd. Open die van Residentie Linde en klik op **Factuur in de VME**: in Linde wacht de leveranciersfactuur als concept op goedkeuring, met de algemene sleutel en de rekening "Andere erelonen".
-4. **VME > Syndicus > Mandaten**: het mandaat in Linde loopt tot 11 maart 2027 en staat oranje (herbenoeming op de AV van maart 2027). Plan de AV's van 2027 (stap 7): het agendapunt staat er vanzelf op. In Kaaihuis is de aanstelling nooit aangeplakt: **Aanplakbrief maken** zet de PDF bij de documenten.
+> Zeg: "Geen Excel meer: btw is voor de VME een kost, en de verdeling klopt tot op de cent."
 
-> Boodschap: "Uw eigen omzet en uw mandaat in hetzelfde platform, en geen prestatie die u vergeet aan te rekenen."
+### B. Een gebouw overnemen met de basisakte (2 minuten)
 
-### Extra: werken en een schadegeval (1 minuut)
-
-1. **VME > Werken en schade > Werkdossiers**: *Renovatie plat dak blok A* van Residentie Linde, aan beslissing 2026/06 van de AV. Toon het tabblad **Offertes**: drie offertes naast het budget van 38.000 euro, gegund aan de goedkoopste (36.450 euro). De oranje melding toont dat het reservekapitaal niet volstaat.
-2. Optioneel: kies rechtsboven Residentie Linde, upload `addons/vme_belgie/demo_data/facturen/voorschot_dakwerken_residentie_linde_2026-11.xml` bij de leveranciersfacturen en bevestig: de factuur hangt aan het dossier, is verdeeld en ten laste van het reservekapitaal geboekt.
-3. **Schadedossiers**: *Waterschade badkamer A4*, uit de mail van A4 (zie stap 8), aangegeven bij de verzekeraar op 3 november, expertise op 12 november.
-
-> Boodschap: "Van AV-beslissing tot oplevering in één dossier, en geen aangiftetermijn die ontsnapt."
-### Extra: brandverzekering en verplichte attesten (1 minuut)
-
-1. **VME > Portefeuille**: Kaaihuis heeft het signaal **Brandverzekering vervalt of ontbreekt** (vervaldag 1 december 2026), Hof ter Beuken het signaal **Verplicht attest ontbreekt** (geen asbestattest, bouwjaar 1978).
-2. Open Hof ter Beuken, tabblad **Verzekering en attesten**: het asbestattest staat in het rood, het EPC en de elektrische keuring zijn in orde. De taak *Asbestattest gemene delen laten opmaken* staat klaar.
-3. Klik **Asbestattest toevoegen**, kies een PDF en sla op: het attest is tien jaar geldig, de taak is afgevinkt en het signaal is weg.
-4. Open de polis van Kaaihuis (**VME > Werken en schade > Verzekeringspolissen**): vervaldag, opzegdatum, verzekerde waarde en schadegevallen. **Verlengd** schuift de vervaldag een jaar op; er gaat niets naar de verzekeraar.
-5. In een verkoopdossier toont het voorbeeld van de inlichtingen aan de notaris nu ook de attesten (een ontbrekend attest staat er uitdrukkelijk) en de brandverzekering.
-
-> Boodschap: "Geen polis die stilzwijgend verloopt zonder dat iemand ze nakeek, en de notaris krijgt meteen de attesten van de gemene delen."
-
-
-### Extra: drie offertes vergelijken met de AI (1,5 minuut)
-
-1. **VME > Werken en schade > Werkdossiers**: *Gevelrenovatie voor- en achtergevel* van Residentie Linde. Tabblad **Offertes**: drie aannemers, elk met hun PDF. Open er één: drie pagina's, elke aannemer met een andere opbouw.
-2. Klik op **Offertes vergelijken**: de vergelijking staat op **Wacht op AI**.
-3. In een terminal, in de map `ai`: `.venv/bin/python offertes.py` (met sleutel in `ai/.env` leest Claude de PDF's; zonder sleutel of met `--offline` de vaste testmodus, zonder netwerk). Het script meldt "Concept klaar" en de aandachtspunten.
-4. Herlaad de vergelijking. Toon de **tabel**: de stelling in het rood bij Renovatiebedrijf Voorbeeld ("niet inbegrepen", p. 2), 21% btw in het geel bij Bouwonderneming Denkbeeld. Klik op een **(p. 2)**: de offerte opent op die pagina.
-5. Toon de **aandachtspunten**: het btw-tarief verschilt, en in het werkdossier staat 44.000 euro voor Denkbeeld terwijl de offerte 53.240 euro incl. btw vermeldt. De **samenvatting** somt verschillen op, zonder aanbeveling.
-6. Kies **Voor de AV** (bv. een AV van 2027 als die al bestaat), klik op **PDF bekijken** (CONCEPT bovenaan) en dan op **Goedkeuren**: de PDF staat bij het werkdossier en gaat mee met de oproepingen van die AV. Er vertrekt niets.
-
-> Boodschap: "Een avond offertes naast elkaar leggen wordt tien minuten nakijken, met de bron bij elk getal. De AV kiest; wij zetten de feiten klaar."
-### Extra: de website en de knop Inloggen (1 minuut)
-
-Doe dit vóór u inlogt, of in een privévenster.
-
-1. Open http://localhost:8069: de productwebsite (werktitel **Quotis**) met de sterke punten, **Functies**, **Voor eigenaars** en **Prijzen**. Alles is fictief: geen echte klanten of getuigenissen.
-2. Klik op **Inloggen**: één knop met twee routes, **Medewerker van de syndicus** en **Eigenaar of huurder**.
-3. Kies bewust **Medewerker van de syndicus** en log in als eigenaar (`eigenaar.linde.a1@example.com`, `portaal-demo`): u komt toch in het eigenaarsportaal, nooit in de beheeromgeving.
-4. Optioneel: **Prijzen > Demo aanvragen** maakt een lead in **CRM**, zonder mail naar de bezoeker.
-
-> Boodschap: "Eén adres voor uw kantoor en uw eigenaars; het platform weet wie waar hoort."
-
-### Extra: het eigenaarsportaal (1 minuut)
-
-1. Open een privévenster (of een tweede browser) op http://localhost:8069, klik op **Inloggen > Eigenaar of huurder** en log in als eigenaar: `eigenaar.linde.a1@example.com`, wachtwoord `portaal-demo`. Zo blijft de sessie van de syndicus open.
-2. **Mijn mede-eigendom > Residentie Linde**: zijn kavels A1 en G1, de provisies van 2026 met de betaalstatus en een PDF per oproep, de voorlopige jaarafrekening 2026, en de documenten van het gebouw en van A1.
-3. Vertel erbij: de verkoper van A5 (`eigenaar.linde.a5@example.com`) ziet niets meer van na de verkoop, en een eigenaar ziet nooit een ander gebouw of een andere kavel.
-4. **Adres wijzigen**: de aanvraag van A1 wacht al op goedkeuring. Terug als syndicus: **VME > Eigenaars > Adreswijzigingen > Goedkeuren**.
-5. **Mijn aanvragen**: A1 vroeg in het portaal een attest van de betaalde provisies ("In behandeling"). Bij **Bevragingen** heeft hij al geantwoord op de laadpalen. Log in als `huurder.linde.a6@example.com` (eigen hostnaam, bv. `http://huurder.localhost:8069`), klik **Nieuwe aanvraag**, kies een badge voor A6: de aanvraag wacht op bewijs; laad een PDF op bij **Bewijs bezorgen**. Als syndicus: **VME > Aanvragen**, kanaal Portaal, met de taak "Bewijs uit het portaal nakijken". De verzending *Interesse in een laadpaal in Residentie Linde?* toont per eigenaar het antwoord en of het via het portaal kwam.
-
-> Boodschap: "Eigenaars vinden hun documenten en hun saldo zelf, en het register van eigenaars blijft juist."
-### Extra: een hybride AV met online stemmen en ondertekenen (2 minuten)
-
-Gebruik drie hostnamen, zodat de sessies elkaar niet uitloggen: `http://localhost:8069` voor de syndicus, `http://a1.localhost:8069` en `http://a6.localhost:8069` voor de eigenaars (wachtwoord `portaal-demo`).
-
-1. **VME > Algemene vergaderingen**, open **Buitengewone AV 2026 Residentie Linde: Laadpalen in de garage** (19 november, hybride). Tabblad **Online**: de link per AV en de videolink. A7 gaf volmacht aan A1.
-2. Als A6 (`eigenaar.linde.a6@example.com`): **Mijn mede-eigendom > Residentie Linde > Online deelnemen en stemmen**. Stem vooraf schriftelijk over de schilderwerken.
-3. Als syndicus: **Online onthaal openen**. Als A1 en A6: **Ik ben aanwezig (online)**; de videolink verschijnt.
-4. Als syndicus: bij de laadpalen **Stemming openen**. A1 stemt in één formulier voor zichzelf en voor A7; A6 stemt ook. Toon bij **Stemmen** dat de online stemmen alleen-lezen zijn, met tijdstip en stemmer.
-5. **Stemming sluiten**: in het portaal zien de eigenaars de uitslag. Sluit of handel de andere punten af, en klik **Gehouden** en **Notulen ter ondertekening**.
-6. A1 en A6 ondertekenen in het portaal. Tabblad **Ondertekening**: naam, tijdstip, IP-adres en SHA-256 van de PDF per ondertekenaar.
-
-Zijn er te weinig aanwezigen voor het quorum, zet dan enkele eigenaars op "Aanwezig" in de aanwezigheidslijst (in de zaal). De AV kan maar één keer doorlopen worden: voor een nieuwe demo de database opnieuw aanmaken.
-
-> Boodschap: "Thuis meestemmen met dezelfde regels als in de zaal, en notulen die bewijsbaar ongewijzigd ondertekend zijn, zonder Enterprise-licentie."
-
-### Extra: de commissaris van de rekeningen kijkt mee (1 minuut)
-
-1. Open Residentie Linde, tabblad **Raad en commissaris**: eigenaar Linde A2 is commissaris sinds de AV van 10 maart, met een eigen login. Hof ter Beuken heeft 24 appartementen en dus een raad (B1 voorzitter, B6 en B11).
-2. Meld je in een privévenster aan als `eigenaar.linde.a2@example.com` (wachtwoord: `DEMO_AUDITOR_PASSWORD` in `demo_data/vme_demo_data.py`). In **VME > Commissaris** ziet hij de facturen, provisies en bankbewegingen van Linde, en niets van de andere gebouwen. Knoppen om iets te wijzigen zijn er niet.
-3. **VME > Raad en commissaris > Lopende dossiers**: de verkoop van A3, de invordering, de keuringsopmerkingen en de dakwerken uit de AV, met hun termijnen.
-4. In **Mijn mandaten en verslag** drukt hij het sjabloon voor zijn verslag aan de AV af, met de cijfers van 2026 al ingevuld.
-
-> Boodschap: "De commissaris kijkt zelf na, wanneer het hem past, zonder dat u mappen moet kopiëren."
-### Extra: een gebouw overnemen met de basisakte en de notulen (2 minuten)
-
-Het verkoopargument: een overname kost een syndicus dagen overtypen. Het gebouw is de verzonnen **Residentie Wilg**; alles staat in `addons/vme_belgie/demo_data/migratie/`. Voor een vlotte demo kunt u stap 1 en 2 vooraf doen.
+Doe stap 1 en 2 vooraf; ze duren samen een minuut.
 
 1. **VME > Configuratie > Overstap uit ander pakket > Nieuw.** Bij **Exportbestanden** de vier CSV-bestanden uit `addons/vme_belgie/demo_data/migratie/residentie-wilg/`; bij **Basisakte en notulen** `basisakte-scan.pdf`, `notulen-av-2025.pdf` en `notulen-av-2026.pdf` uit `residentie-wilg-documenten/`. Opslaan.
-2. In de terminal: `cd ai && .venv/bin/python overname.py --mock` (zonder sleutel, altijd hetzelfde resultaat) of `.venv/bin/python overname.py` (Claude leest de scan zelf).
-3. Herlaad de overstap. Toon het berichtenoverzicht: 61 regels, 2 onzeker. Tabblad **Aandelen en sleutels**: elke regel met bladzijde en de tabelrij uit de akte. A2 en B3 zijn rood.
-4. Klik op A2: het fragment toont "1?0", de AI zegt "Onleesbaar". **Document openen** toont de vlek op blz. 2. Typ 110 en klik **Aanvaarden**.
-5. **Zekere regels aanvaarden** (bevestigen). B3 blijft staan: aanvaard die met het vinkje.
-6. Tabblad **Uit de notulen**: de dakwerken van 2025 (48.500 euro, nog niet gegund), de garagepoort met haar eigen sleutel (4/5), twee procedures en drie mandaten.
-7. **Proefrun**: geen fouten, één waarschuwing voor B3 ("onzeker gelezen en aanvaard zonder verbetering"). **Importeren**: de VME met haar sleutels, twee werkdossiers in voorbereiding, de raad en de commissaris, en een taak per procedure.
+2. Terminal: `.venv/bin/python overname.py --mock` (altijd hetzelfde resultaat) of zonder `--mock` (Claude leest de scan).
+3. In de demo: herlaad de overstap. *61 regels, 2 onzeker.* Tabblad **Aandelen en sleutels**: elke regel met bladzijde en fragment uit de akte; A2 en B3 zijn rood.
+4. Klik op A2: het fragment toont "1?0", de AI zegt "Onleesbaar". **Document openen** toont de vlek op blz. 2. Typ 110 en **Aanvaarden**.
+5. **Zekere regels aanvaarden**, B3 apart aanvaarden, **Proefrun**, **Importeren**: de VME met haar sleutels, twee werkdossiers uit de notulen, de raad en de commissaris.
 
-Wil je de controle tonen: aanvaard A2 zonder waarde. De proefrun zegt dat de algemene delen optellen tot 890 in plaats van 1000.
+> Zeg: "De AI leest de akte; uw medewerker kijkt elke regel na naast de bron, en het systeem telt alles na."
 
-> Boodschap: "De AI leest de akte en de notulen; uw medewerker kijkt elke regel na naast de bron, en het systeem telt alles na."
+### C. Een hybride AV: online stemmen en ondertekenen (2 minuten)
 
-### Extra: een waterafsluiting in blok A (1 minuut)
+Gebruik naast venster 2 een tweede eigenaar op een eigen hostnaam: `http://a6.localhost:8069`, `eigenaar.linde.a6@example.com` / `portaal-demo`. Dit kan maar één keer per database.
 
-1. **VME > Communicatie > Verzendingen > Nieuw**: VME Residentie Linde, sjabloon **Waterafsluiting**, ontvangers "Eigenaars van een blok", blok `A`.
-2. **Ontvangers ophalen**: twaalf eigenaars, één bericht per eigenaar (ook wie een garage heeft), A4 en A9 per brief omdat ze papier vroegen, A5 naar de nieuwe eigenaar.
-3. **Bevestigen en versturen**: de e-mails gaan in de wachtrij, de twee brieven staan samen in één PDF. Elke eigenaar ziet het in zijn communicatielog.
-4. Vertel erbij: een ingebrekestelling gaat met **Aangetekend versturen** in het verzendregister met haar PDF en volgnummer; sms en elektronisch aangetekend zijn voorzien met een simulatie.
+1. Venster 1: **VME > Algemene vergaderingen > AV's**, open **Buitengewone AV 2026 Residentie Linde: Laadpalen in de garage** (19 november, hybride). Tabblad **Online**: A7 gaf volmacht aan A1. Klik **Online onthaal openen**.
+2. A1 en A6: **Mijn mede-eigendom > Residentie Linde > Online deelnemen en stemmen**, **Ik ben aanwezig (online)**.
+3. Syndicus: bij de laadpalen **Stemming openen**. A1 stemt in één formulier voor zichzelf en voor A7. **Stemming sluiten**: de eigenaars zien de uitslag.
+4. **Gehouden** en **Notulen ter ondertekening**; A1 ondertekent in het portaal. Tabblad **Ondertekening**: naam, tijdstip, IP-adres en vingerafdruk (SHA-256) van de PDF.
 
-> Boodschap: "Eén plaats voor alles wat een eigenaar van u kreeg, en niets vertrekt zonder dat u het bevestigt."
-### Extra: de rentmeester, indexatiebrief en afrekening aan de huurder (1,5 minuut)
+Te weinig aanwezigen voor het quorum? Zet enkele eigenaars op "Aanwezig" in de aanwezigheidslijst.
 
-Kies rechtsboven ook het bedrijf **Rentmeester Voorbeeld BV**, anders blijven de huurfacturen verborgen.
+> Zeg: "Thuis meestemmen met dezelfde regels als in de zaal, en notulen die bewijsbaar ongewijzigd ondertekend zijn."
 
-1. **Rentmeester > Huurcontracten**: drie verhuurde appartementen. Het contract van *Linde A7* heeft een taak: de uiterste opzegdatum van het kortlopende contract is 30 november.
-2. Open **Rentmeester > Indexeringen** en de conceptindexering van *Linde A2* op 1 november 2026. Toon de berekening: met EPC-label E werd in 2022 niet geïndexeerd, de correctiefactor 1,090092 houdt die gemiste indexering eruit. Nieuwe huur 939,90 euro.
-3. Klik op **Indexatiebrief (PDF)**: een concept, nog niet verstuurd. Klik op **Bevestigen**.
-4. Open het contract *Linde A2* en klik op **Afrekening lasten**, jaar 2026, **Berekenen**: per factuur uit de jaarafrekening van de VME het deel van de huurder (schoonmaak, lift en elektriciteit wel, brandverzekering niet), min 900 euro provisies.
-5. **Afrekening (PDF)** en **Conceptfactuur maken**.
+### D. Het boekjaar afsluiten (1 minuut)
 
-> Boodschap: "De jaarafrekening van de VME is meteen de basis voor de afrekening aan de huurder, zonder overtikken."
+1. Open **Residentie Linde** en klik op **Boekjaar afsluiten**. Kies het boekjaar *2026*. De controles tonen wat nog ontbreekt, bv. een factuur in concept; klik op de link, **Bevestig** de factuur en ga terug. Alleen "het boekjaar loopt nog" blijft oranje.
+2. **Afrekening voorbereiden**: per eigenaar een concept-factuur of -creditnota. Bij A3 blijft de onbetaalde oproep een eigen factuur, en de verkoper en de koper van A5 krijgen elk hun deel.
+3. **Resultaat en overdracht**: werkkapitaal 0,00 € na de afrekening, het reservekapitaal gaat naar 2027.
+4. Benadruk: alles is een concept. **Alles bevestigen** boekt, maar verstuurt niets. **Boekjaar afsluiten** (alleen voor een beheerder) vergrendelt 2026. Doe dat in de demo niet, of heropen meteen: anders komen nieuwe facturen in 2027 terecht.
 
-### Extra: de huur doorstorten aan de verhuurder (1 minuut)
+Op een verse database zonder het scenario hierboven waren het 13 concept-creditnota's, samen 4.334,51 €. Na stap 3 en blok A liggen de bedragen anders.
 
-1. **Rentmeester > Doorstortingen**: januari tot september zijn doorgestort; oktober staat klaar als concept, per verhuurder. *Linde A7* betaalde oktober niet, dus die huur zit er niet in.
-2. Open de doorstorting van oktober voor de verhuurder van *Linde A2*: ontvangen huur en lasten, ereloon 7 % op de huur met 21 % btw, saldo. Klik op **Afrekening (PDF)**.
-3. **Bevestigen** (ereloonfactuur, doorstortingsstuk en verrekening worden geboekt, niets verstuurd), **Goedkeuren voor betaling**, **Betaalbatch maken**.
-4. In de betaalbatch: **SEPA-bestand maken**. Vertel erbij: het bestand gaat pas naar de bank als iemand het daar oplaadt, en een niet-bevestigde rekening van de verhuurder komt er nooit in.
+> Zeg: "De afrekening wordt geboekt met één klik van uw medewerker, en het jaar gaat dicht zonder dat er iets vertrekt."
 
-> Boodschap: "Elke maand per verhuurder één klik: afrekening, ereloonfactuur en overschrijving, en niets vertrekt zonder uw handtekening in de bank."
+### E. Een mail van een eigenaar in Outlook (2 minuten)
 
-### Extra: de jaarcyclus, waar staat elke VME? (1,5 minuut)
-
-1. **VME > Portefeuille**: de kolom **Volgende stap** toont per VME waar ze staat in haar jaar. **Hof ter Beuken** heeft het signaal **Jaarcyclus** aan.
-2. **VME > Jaarcyclus** (gegroepeerd per VME):
-   - **Hof ter Beuken**, overgenomen op 5 april 2026: agenda, oproeping en AV van 2026 in het rood. De vorige syndicus plande de AV niet; de stappen erna (notulen, goedgekeurd budget) wachten.
-   - **Residentie Linde**: alles van 2026 is afgerond; **AV 2027 plannen** is klaargezet (blauw). Open de stap: de AV-planner stelt 17 maart 2027 voor. **Open concept** en **Bevestigen** doet de syndicus zelf.
-   - **Kaaihuis**, overgenomen op 1 oktober: de oproep van het vierde kwartaal is afgerond, de AV 2027 wordt klaargezet vanaf 10 november.
-3. Open bij Linde **Provisieoproep 1/4 2027** en klik op **Nu klaarzetten**: twee conceptfacturen per eigenaar staan klaar, niets is geboekt. Het activiteitenicoon toont de taak "nakijken en boeken".
-
-> Boodschap: "Uw jaar per gebouw loopt vanzelf: elke stap staat op tijd klaar als concept, u kijkt na en klikt. En u ziet in één lijst welk gebouw achterloopt."
-
-Doe deze extra **na** stap 5 (de provisieoproep 1 van 2027 met de hand) of sla stap 5 over: een oproep die al bestaat, wordt door de jaarcyclus hergebruikt en niet een tweede keer gemaakt. Wie de AV-planner (stap 7) na deze extra draait met **Voorstellen opnieuw indelen**, krijgt hetzelfde voorstel voor Linde.
-
-### Extra: mijn werk vandaag, over alle gebouwen (1 minuut)
-
-1. **VME > Mijn werk vandaag**: één lijst met wat te laat is, vandaag of deze week vervalt, gegroepeerd per urgentie en per VME. De filter **Mijn werk** staat aan: `admin` is dossierbeheerder van Residentie Linde en Hof ter Beuken.
-   - **Te laat**: de AV 2026 van Hof ter Beuken, de agenda en oproeping ervan, en de keuring van de brandblussers van Linde.
-   - **Vandaag**: het AI-antwoord voor Linde A8, de bestelling van een sleutel voor Beuken B3 en de herinneringen voor Linde A3 en Beuken B7, allemaal concepten die op een klik wachten.
-   - **Deze week**: het antwoord aan de notaris voor Linde A3 (uiterlijk 12 november) en de keuring van de lift van blok A.
-2. Klik op **Openen** bij de bestelling: de aanvraag van B3 opent met de bestelbon in bijlage. Niets is verstuurd; **Bestelling versturen** is de klik van de medewerker.
-3. Haal de filter **Mijn werk** weg en groepeer per **Verantwoordelijke**: collega **Medewerker Voorbeeld** beheert Kaaihuis, met een AI-antwoord voor K3.
-
-> Boodschap: "Uw dag begint met één lijst over al uw gebouwen: wat te laat is, wat vandaag moet, en wat klaarstaat voor uw klik."
-
-### Extra: een mail van een eigenaar in Outlook (2 minuten)
-
-Na stap 8: de AI-assistent heeft de mails al gelezen. Nu ziet de medewerker hetzelfde zonder Odoo te openen, in het paneel naast de mail.
+De AI-assistent heeft de mails al gelezen (stap 3 van "Vooraf"). Nu ziet de medewerker hetzelfde zonder Odoo te openen, in het paneel naast de mail.
 
 **Zonder Outlook (browservoorbeeld, altijd mogelijk):**
 
@@ -337,18 +220,40 @@ Na stap 8: de AI-assistent heeft de mails al gelezen. Nu ziet de medewerker hetz
 
 **Met echte Outlook (vooraf voorbereiden):** start https met `docker compose --profile outlook up -d`, vertrouw het certificaat en zet het adres `https://localhost:8443` in **VME > Configuratie > Outlook-invoegtoepassing** (zie `docs/dev/outlook.md`). Download het manifest en voeg het toe in Outlook op het web (**Apps > Mijn invoegtoepassingen > Aangepaste invoegtoepassing toevoegen > Toevoegen vanuit bestand**). Zet uw eigen testadres tijdelijk op een fictieve eigenaar (bv. Eigenaar Linde A4), **alleen in uw lokale database**, nooit in git of de demodata, en stuur uzelf de lekmail. Het paneel herkent u dan als eigenaar van A4.
 
-> Boodschap: "Uw medewerkers blijven in Outlook en zien bij elke mail het gebouw, de kavel en wat er openstaat, met een antwoord klaar om na te kijken. Verzenden blijft hun klik."
+> Zeg: "Uw medewerkers blijven in Outlook en zien bij elke mail het gebouw, de kavel en wat er openstaat, met een antwoord klaar om na te kijken. Verzenden blijft hun klik."
+
+## Op vraag tonen
+
+Elk onderwerp heeft een artikel in **VME > Help** met de stappen en een voorbeeld uit de demodata.
+
+| Vraag | Waar in Odoo | Kennisbank |
+| --- | --- | --- |
+| "Hoe zie ik al mijn gebouwen?" | VME > Portefeuille, VME > Jaarcyclus | `docs/kb/gebouwkaart.md`, `docs/kb/jaarcyclus.md` |
+| "En de keuringen?" | VME > Keuringen > Installaties en vervaldata | `docs/kb/keuringen.md` |
+| "Een verkoop, de notaris?" | VME > Verkoopdossiers, *Verkoop A3, G3 Residentie Linde* | `docs/kb/verkoop-notaris.md` |
+| "Sleutels en badges?" | VME > Aanvragen (AANV/2026/0006 en 0007 uit de mails) | `docs/kb/aanvragen-sleutels-badges.md` |
+| "Werken en schade?" | VME > Werken en schade > Werkdossiers en Schadedossiers | `docs/kb/werken.md`, `docs/kb/schadegevallen.md` |
+| "Brandverzekering en attesten?" | Hof ter Beuken, tabblad Verzekering en attesten | `docs/kb/verzekeringen-en-attesten.md` |
+| "Mijn eigen ereloon en mandaat?" | VME > Syndicus | `docs/kb/ereloon-en-mandaat.md` |
+| "De commissaris van de rekeningen?" | Residentie Linde, tabblad Raad en commissaris | `docs/kb/raad-en-commissaris.md` |
+| "Balans en resultatenrekening?" | Residentie Linde, knop Balans en resultatenrekening | `docs/kb/balans-en-resultatenrekening.md` |
+| "Brieven en mails aan eigenaars?" | VME > Communicatie > Verzendingen | `docs/kb/communicatie.md` |
+| "Huur en rentmeesterij?" | Rentmeester (bedrijf Rentmeester Voorbeeld BV aanvinken) | `docs/kb/rentmeester.md`, `docs/kb/doorstorting-verhuurder.md` |
+| "En als we van syndicus wisselen?" | Residentie Linde, knop Overdracht aan nieuwe syndicus | `docs/kb/overdracht-syndicus.md` |
+| "De fiches 281.50 voor Belcotax?" | VME > Fiches 281.50 | `docs/kb/fiches-281-50.md` |
+| "De website?" | http://localhost:8069 in een privévenster | `docs/kb/website-en-inloggen.md` |
 
 ## Na de demo
 
-- De demo is daarna niet meer "vers": de factuur, de provisieoproep 2027, de AV-planning, de AI-taken en aanvragen en eventueel het antwoord aan de notaris staan erin. Bouw de database opnieuw op met de commando's hierboven voor een volgende demo.
-- Stap 2 kan maar één keer per database: Odoo herkent de mail aan haar Message-ID en verwerkt ze geen tweede keer.
-- Lever **niet** de mails in `ai/facturen_inbox/` aan op een demo met historiek: die elektriciteitsfacturen zitten al in de historiek en zouden dubbel geboekt worden. Ze zijn bedoeld voor een demo zonder historiek.
+- De database is niet meer vers: de factuur, de provisieoproep 2027, de AV-planning en de AI-aanvragen staan erin. Bouw ze opnieuw op voor een volgende demo.
+- Stap 3 kan maar één keer per database (Message-ID); blok C ook maar één keer.
+- Lever **niet** de mails in `ai/facturen_inbox/` aan op een demo met historiek: die elektriciteitsfacturen zitten al in de historiek en zouden dubbel geboekt worden.
 
-## Bekende aandachtspunten tijdens de demo
+## Bekende aandachtspunten
 
-- **Oproepingen aanmaken duurt ongeveer een minuut** voor 12 eigenaars (twee PDF's per eigenaar). Maak ze vooraf aan of vertel er intussen iets bij. Voor honderden VME's moet dit later sneller.
-- **"Zoek wereldwijd" bij het kiezen van een leverancier** toont echte Belgische bedrijven uit Odoo's eigen bedrijvengegevens. Kies altijd de fictieve leverancier bovenaan de lijst.
-- **De demodatums liggen vast rond 5 november 2026.** Wie de demo veel later toont, ziet meer keuringen in het rood.
-- **De jaarcyclus draait elke nacht op de echte datum.** Vanaf 10 november zet hij ook de AV 2027 van Kaaihuis klaar, vanaf 18 december de provisieoproep 1 van 2027 als concept. Voor een demo op een latere datum bouwt u de database opnieuw op.
-- **"Your logo"** bovenaan de PDF is Odoo's plaatshouder zolang er geen logo van de syndicus is.
+- **De demodatums liggen vast rond 5 november 2026.** Op een latere dag staat meer in "Te laat" (bv. het AI-antwoord voor A8) en meer keuringen in het rood. De jaarcyclus draait elke nacht op de echte datum: vanaf 10 november zet hij de AV 2027 van Kaaihuis klaar, vanaf 18 december de provisieoproep 1 van 2027. Bouw de database dan opnieuw op.
+- **"Zoek wereldwijd" bij een leverancier** toont echte Belgische bedrijven uit Odoo's bedrijvengegevens. Kies altijd de fictieve leverancier bovenaan.
+- **"Your logo"** bovenaan de PDF's is Odoo's plaatshouder zolang de syndicus geen logo opgeladen heeft.
+- **"My Company"** in de bedrijvenkiezer is Odoo's eigen startbedrijf; het hoort niet bij de demo. Kies Residentie Linde.
+- **Een paar Odoo-knoppen zijn nog Engels** (bv. "Journal Items" op een factuur): dat zijn vertalingen van Odoo zelf.
+- **Oproepingen van een AV aanmaken duurt ongeveer een minuut** voor twaalf eigenaars (twee PDF's per eigenaar); daarom zit dat niet in het scenario.

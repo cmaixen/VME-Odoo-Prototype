@@ -75,7 +75,7 @@
                 <field name="arrears_amount"/>
                 <field name="arrears_signal_threshold" optional="hide"/>
                 <field name="signal_reserve" widget="boolean_toggle" readonly="1" string="Reserve &lt; 5%"/>
-                <field name="signal_arrears" widget="boolean_toggle" readonly="1" string="Achterstallen"/>
+                <field name="signal_arrears" widget="boolean_toggle" readonly="1" string="Achterstal &gt; drempel"/>
                 <field name="signal_assembly" widget="boolean_toggle" readonly="1" string="AV"/>
                 <field name="signal_inspection" widget="boolean_toggle" readonly="1" string="Keuring"/>
                 <field name="signal_insurance" widget="boolean_toggle" readonly="1" string="Verzekering"/>

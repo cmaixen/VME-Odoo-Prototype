@@ -48,7 +48,7 @@
                             <field name="date_start"/>
                             <field name="date_end"/>
                             <field name="assembly_item_id" options="{'no_create': True}"/>
-                            <field name="audit_year" invisible="role != 'auditor'" options="{'format': false}"/>
+                            <field name="audit_year" invisible="role != 'auditor'" options="{'enable_formatting': false}"/>
                             <field name="user_id" invisible="role != 'auditor'"/>
                             <field name="is_current" invisible="1"/>
                         </group>
