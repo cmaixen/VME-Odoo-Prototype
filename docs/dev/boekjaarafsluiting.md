@@ -108,3 +108,7 @@ Zo verandert een afgesloten jaar niet meer, en telt een late factuur mee in het 
 - Verrekenen met de volgende provisieoproep in plaats van een creditnota (nu met de hand via "openstaand tegoed").
 - Een PDF van het afsluitdossier (resultaat en overdracht) voor de AV.
 - De 693-boeking van het KB als echte boeking, als de boekhouder dat vraagt. Stap 26 en deze afsluiting moeten dan samen aangepast worden.
+
+## Beveiliging
+
+Status, `closed_by_id`, `closed_on`, `lock_date_before` en de bewaarde overdracht schrijft alleen de code van de knoppen, als superuser (`PROTECTED_FIELDS`); een gewone `write` of `create` met die velden geeft een `AccessError`. Afsluiten bewaart de vergrendeling van daarvoor in `lock_date_before`; heropenen zet die terug, maar alleen als de vergrendeling nog op 31 december van dat jaar staat. Een oudere afsluiting zonder `lock_date_before` valt terug op het einde van een afgesloten vorig jaar.
