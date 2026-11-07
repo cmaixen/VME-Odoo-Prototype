@@ -27,7 +27,7 @@ Statussen: `new` → `waiting_proof` → `in_progress` → `ordered` (alleen `ke
 4. Bij `key` raadt `KEY_KIND_WORDS` de soort uit onderwerp en tekst; standaard de veiligheidssleutel van de inkom.
 5. De aanvraag wordt aangemaakt met context `vme_request_defer_start`, de mail komt met bijlagen als notitie in de chatter (de bijlagen ook in `proof_attachment_ids`), het voorgestelde antwoord van de AI als tweede notitie, en pas dan start `_start_procedure()`. Zo leest de chatter in de juiste volgorde.
 
-Een manuele aanvraag start de procedure in `create()`; de rol komt dan uit het e-mailadres van de gekozen aanvrager.
+Een manuele aanvraag start de procedure in `create()`. De rol (`_compute_requester_role`) komt altijd uit de partner zelf (`_identify_partner_in`: eigenaar of huurder van de kavel op de datum van de aanvraag), nooit uit zijn e-mailadres: een portaalgebruiker kan dat adres zelf wijzigen. Alleen een mail zonder gekende partner wordt eerst aan het afzenderadres herkend (`_identify_in`), en de aanvrager wordt dan de eigenaar of huurder van die kavel.
 
 ## Verificatie en berichten
 

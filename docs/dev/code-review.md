@@ -70,12 +70,12 @@ Elke fix staat in een eigen commit, met een test waar dat kan.
 
 ### Veiligheid
 
-**B-S1. Een huurder kan zich in het portaal als eigenaar voordoen** ⏳
+**B-S1. Een huurder kan zich in het portaal als eigenaar voordoen** ✅
 - **Waar:** `models/vme_portal_requests.py:85-90`; `models/vme_request.py:279-292`, `:320-322`, `:412-413`
 - **Probleem:**
   - De rol (eigenaar, huurder of onbekend) volgt uit een vergelijking van `partner.email` met het e-mailadres van de eigenaar, niet uit de ingelogde partner.
   - Een huurder die zijn e-mailadres in /my/account verandert in dat van de eigenaar, krijgt een sleutelaanvraag die meteen als "geverifieerd" staat, en de bestelling bij de slotenmaker staat klaar.
-- **Herstel:** bepaal de rol uit `requester_id` met `lot._get_owner_on()` en `_get_tenants_on()`. Ongeveer tien regels, plus een test. Nog na te gaan in de browser: of Odoo 19 een huurder in het portaal zijn e-mailadres laat wijzigen.
+- **Herstel (uitgevoerd):** de rol komt nu uit de partner zelf (`_identify_partner_in`, met `_get_owner_on()` en `_get_tenants_on()`), ook in `create_from_intake` als het portaal `requester_id` meegeeft. Test: `test_tenant_with_owner_email_stays_tenant`. De mail-intake herkent een onbekende afzender nog altijd aan het adres; zie B-S4.
 
 **B-S2. Medewerkers kunnen een elektronische handtekening of een online stem vervalsen** ⏳
 - **Waar:**
