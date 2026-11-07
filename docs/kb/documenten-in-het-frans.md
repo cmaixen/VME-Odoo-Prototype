@@ -25,7 +25,7 @@ Staat het Frans nog niet in de lijst, dan moet een beheerder het eerst activeren
 | Indexatiebrief, afrekening lasten (rentmeester) | de huurder |
 | Afrekening aan de verhuurder en de ereloonfactuur van de rentmeester | de verhuurder |
 | Bestelbon | de leverancier |
-| Notulen, verslag van de commissaris, lopende dossiers, balans en resultatenrekening, aanplakbrief van de syndicus, ereloonfactuur van de syndicus | de VME (taal van de VME-company) |
+| Notulen, verslag van de commissaris, lopende dossiers, balans en resultatenrekening, aanplakbrief van de syndicus, ereloonfactuur van de syndicus, de documenten van het overdrachtspakket voor een nieuwe syndicus | de VME (taal van de VME-company) |
 
 ## Voorbeeld uit de demo
 
