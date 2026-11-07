@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>VME-dossier</title>
+</head>
+<body>
+    <!-- Browser preview (?demo=1): a list of the fictitious demo mails instead of Outlook. -->
+    <div id="demo-bar" hidden>
+        <label for="demo-mail" data-t="demo.pick"></label>
+        <select id="demo-mail"></select>
+        <p class="muted" data-t="demo.note"></p>
+    </div>
+    <main id="app">
+        <p class="muted" data-t="loading"></p>
+    </main>
+    <!-- Outlook loads office.js from Microsoft; the preview uses a small stand-in (demo_office.js). -->
+    <script>
+        (function () {
+            // Odoo serves static files with a week of browser cache: load the pane's own small files fresh
+            // so an upgrade reaches Outlook at once (the manifest adds ?v=<module version> to this page).
+            // office.js stays Microsoft's hosted copy.
+            var params = new URLSearchParams(window.location.search);
+            var demo = params.get("demo") === "1";
+            var version = "?v=" + Date.now();
+            var css = document.createElement("link");
+            css.rel = "stylesheet";
+            css.href = "taskpane.css" + version;
+            document.head.appendChild(css);
+            var scripts = demo
+                ? ["demo_office.js" + version, "taskpane.js" + version]
+                : ["https://appsforoffice.microsoft.com/lib/1/hosted/office.js", "taskpane.js" + version];
+            window.VME_ASSET_VERSION = version;
+            (function next(index) {
+                if (index >= scripts.length) return;
+                var script = document.createElement("script");
+                script.src = scripts[index];
+                script.onload = function () { next(index + 1); };
+                document.body.appendChild(script);
+            })(0);
+        })();
+    </script>
+</body>
+</html>

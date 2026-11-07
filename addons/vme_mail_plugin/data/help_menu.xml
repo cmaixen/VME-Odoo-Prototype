@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Same pattern as vme_belgie/data/help_menu.xml: the knowledge base URL is a system parameter. -->
+    <record id="action_help_outlook" model="ir.actions.server">
+        <field name="name">Help: Outlook-invoegtoepassing</field>
+        <field name="model_id" ref="vme_belgie.model_vme_association"/>
+        <field name="state">code</field>
+        <field name="code">action = {"type": "ir.actions.act_url", "target": "new", "url": env["ir.config_parameter"].sudo().get_param("vme_belgie.help_url", "").rstrip("/") + "/outlook-invoegtoepassing.md"}</field>
+    </record>
+    <menuitem id="menu_vme_help_outlook" name="Mails in Outlook koppelen" parent="vme_belgie.menu_vme_help" action="action_help_outlook" sequence="157"/>
+</odoo>

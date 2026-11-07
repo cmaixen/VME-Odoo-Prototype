@@ -1,0 +1,204 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0-20261102\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-07 09:25+0000\n"
+"PO-Revision-Date: 2026-11-07 09:25+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: vme_mail_plugin
+#: model:ir.model.fields,field_description:vme_mail_plugin.field_vme_mail_plugin_setup__base_url
+msgid "Adres van Odoo voor Outlook"
+msgstr "Adresse d'Odoo pour Outlook"
+
+#. module: vme_mail_plugin
+#: model:ir.model.fields,field_description:vme_mail_plugin.field_vme_mail_plugin_setup__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: vme_mail_plugin
+#: model:ir.model.fields,field_description:vme_mail_plugin.field_vme_mail_plugin_setup__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: vme_mail_plugin
+#. odoo-python
+#: code:addons/vme_mail_plugin/models/vme_mail_context.py:0
+msgid "Datum: %s"
+msgstr "Date : %s"
+
+#. module: vme_mail_plugin
+#: model:ir.model.fields,field_description:vme_mail_plugin.field_vme_mail_context__display_name model:ir.model.fields,field_description:vme_mail_plugin.field_vme_mail_plugin_setup__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: vme_mail_plugin
+#. odoo-python
+#: code:addons/vme_mail_plugin/models/vme_mail_context.py:0
+msgid "Dit dossier bestaat niet meer."
+msgstr "Ce dossier n'existe plus."
+
+#. module: vme_mail_plugin
+#: model_terms:ir.ui.view,arch_db:vme_mail_plugin.vme_mail_plugin_setup_view_form
+msgid "Download het manifest met de knop hieronder. Het bevat het adres van deze Odoo."
+msgstr "Téléchargez le manifeste avec le bouton ci-dessous. Il contient l'adresse de cet Odoo."
+
+#. module: vme_mail_plugin
+#. odoo-python
+#: code:addons/vme_mail_plugin/models/vme_mail_context.py:0
+msgid "Een mail kan alleen bij een VME, aanvraag of schadedossier bewaard worden."
+msgstr "Un e-mail ne peut être classé que dans une ACP, une demande ou un dossier de sinistre."
+
+#. module: vme_mail_plugin
+#: model:ir.model.fields,field_description:vme_mail_plugin.field_vme_mail_plugin_setup__effective_url
+msgid "Gebruikt adres"
+msgstr "Adresse utilisée"
+
+#. module: vme_mail_plugin
+#: model:ir.actions.server,name:vme_mail_plugin.action_help_outlook
+msgid "Help: Outlook-invoegtoepassing"
+msgstr "Aide : complément Outlook"
+
+#. module: vme_mail_plugin
+#: model:ir.model.fields,field_description:vme_mail_plugin.field_vme_mail_context__id model:ir.model.fields,field_description:vme_mail_plugin.field_vme_mail_plugin_setup__id
+msgid "ID"
+msgstr "ID"
+
+#. module: vme_mail_plugin
+#: model_terms:ir.ui.view,arch_db:vme_mail_plugin.vme_mail_plugin_setup_view_form
+msgid "Installeren in Outlook"
+msgstr "Installer dans Outlook"
+
+#. module: vme_mail_plugin
+#: model:ir.model.fields,field_description:vme_mail_plugin.field_vme_mail_plugin_setup__is_https
+msgid "Is Https"
+msgstr "Est en https"
+
+#. module: vme_mail_plugin
+#: model:ir.model.fields,field_description:vme_mail_plugin.field_vme_mail_plugin_setup__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: vme_mail_plugin
+#: model:ir.model.fields,field_description:vme_mail_plugin.field_vme_mail_plugin_setup__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: vme_mail_plugin
+#. odoo-python
+#: code:addons/vme_mail_plugin/models/vme_mail_context.py:0
+msgid "Mail bewaard vanuit Outlook"
+msgstr "E-mail classé depuis Outlook"
+
+#. module: vme_mail_plugin
+#: model:ir.model,name:vme_mail_plugin.model_vme_mail_context
+msgid "Mail in Outlook gekoppeld aan VME en kavel"
+msgstr "E-mail dans Outlook lié à l'ACP et au lot"
+
+#. module: vme_mail_plugin
+#: model:ir.ui.menu,name:vme_mail_plugin.menu_vme_help_outlook
+msgid "Mails in Outlook koppelen"
+msgstr "Lier les e-mails dans Outlook"
+
+#. module: vme_mail_plugin
+#: model:ir.model.fields,field_description:vme_mail_plugin.field_vme_mail_plugin_setup__manifest_url
+msgid "Manifest"
+msgstr "Manifeste"
+
+#. module: vme_mail_plugin
+#: model_terms:ir.ui.view,arch_db:vme_mail_plugin.vme_mail_plugin_setup_view_form
+msgid "Manifest downloaden"
+msgstr "Télécharger le manifeste"
+
+#. module: vme_mail_plugin
+#: model_terms:ir.ui.view,arch_db:vme_mail_plugin.vme_mail_plugin_setup_view_form
+msgid ""
+"Met de invoegtoepassing ziet een medewerker in Outlook bij elke mail de VME, de kavel en wat er\n"
+"                    openstaat, met het voorstel van de AI-assistent. Er vertrekt nooit iets vanzelf: \"Antwoord invoegen\"\n"
+"                    opent het antwoordvenster van Outlook en de medewerker drukt zelf op Verzenden."
+msgstr ""
+"Avec le complément, un collaborateur voit dans Outlook, pour chaque e-mail, l'ACP, le lot et ce qui est\n"
+"                    en cours, avec la proposition de l'assistant IA. Rien ne part automatiquement : « Insérer la réponse »\n"
+"                    ouvre la fenêtre de réponse d'Outlook et le collaborateur clique lui-même sur Envoyer."
+
+#. module: vme_mail_plugin
+#. odoo-python
+#: code:addons/vme_mail_plugin/models/vme_mail_context.py:0
+msgid "Onderwerp: %s"
+msgstr "Objet : %s"
+
+#. module: vme_mail_plugin
+#: model_terms:ir.ui.view,arch_db:vme_mail_plugin.vme_mail_plugin_setup_view_form
+msgid ""
+"Open Outlook op het web: <b>Apps</b> (of Invoegtoepassingen) &gt; <b>Mijn invoegtoepassingen</b>\n"
+"                        &gt; <b>Aangepaste invoegtoepassing toevoegen</b> &gt; <b>Toevoegen vanuit bestand</b>, en kies het manifest."
+msgstr ""
+"Ouvrez Outlook sur le web : <b>Applications</b> (ou Compléments) &gt; <b>Mes compléments</b>\n"
+"                        &gt; <b>Ajouter un complément personnalisé</b> &gt; <b>Ajouter à partir d'un fichier</b>, et choisissez le manifeste."
+
+#. module: vme_mail_plugin
+#: model_terms:ir.ui.view,arch_db:vme_mail_plugin.vme_mail_plugin_setup_view_form
+msgid ""
+"Open een mail en klik op <b>VME-dossier</b>. De eerste keer klikt u op <b>Verbinden met Odoo</b>\n"
+"                        en staat u de toegang toe."
+msgstr ""
+"Ouvrez un e-mail et cliquez sur <b>VME-dossier</b>. La première fois, cliquez sur <b>Verbinden met Odoo</b>\n"
+"                        (se connecter à Odoo) et autorisez l'accès."
+
+#. module: vme_mail_plugin
+#: model_terms:ir.ui.view,arch_db:vme_mail_plugin.vme_mail_plugin_setup_view_form
+msgid ""
+"Outlook laadt een invoegtoepassing alleen over https. Vul hieronder het https-adres in\n"
+"                    (lokaal: https://localhost:8443, zie de handleiding)."
+msgstr ""
+"Outlook ne charge un complément qu'en https. Indiquez ci-dessous l'adresse https\n"
+"                    (en local : https://localhost:8443, voir le manuel)."
+
+#. module: vme_mail_plugin
+#: model:ir.model.fields,help:vme_mail_plugin.field_vme_mail_plugin_setup__base_url
+msgid "Outlook laadt invoegtoepassingen alleen over https. Leeg: het gewone adres van Odoo (web.base.url)."
+msgstr "Outlook ne charge les compléments qu'en https. Vide : l'adresse habituelle d'Odoo (web.base.url)."
+
+#. module: vme_mail_plugin
+#: model:ir.actions.act_window,name:vme_mail_plugin.vme_mail_plugin_setup_action model:ir.ui.menu,name:vme_mail_plugin.menu_vme_mail_plugin_setup model_terms:ir.ui.view,arch_db:vme_mail_plugin.vme_mail_plugin_setup_view_form
+msgid "Outlook-invoegtoepassing"
+msgstr "Complément Outlook"
+
+#. module: vme_mail_plugin
+#: model:ir.model,name:vme_mail_plugin.model_vme_mail_plugin_setup
+msgid "Outlook-invoegtoepassing instellen"
+msgstr "Configurer le complément Outlook"
+
+#. module: vme_mail_plugin
+#. odoo-python
+#: code:addons/vme_mail_plugin/models/vme_mail_context.py:0
+msgid "Re: %s"
+msgstr "Re : %s"
+
+#. module: vme_mail_plugin
+#: model_terms:ir.ui.view,arch_db:vme_mail_plugin.vme_mail_plugin_setup_view_form
+msgid "Sluiten"
+msgstr "Fermer"
+
+#. module: vme_mail_plugin
+#. odoo-python
+#: code:addons/vme_mail_plugin/models/vme_mail_context.py:0
+msgid "Van: %s"
+msgstr "De : %s"
+
+#. module: vme_mail_plugin
+#: model:ir.model.fields,field_description:vme_mail_plugin.field_vme_mail_plugin_setup__preview_url model_terms:ir.ui.view,arch_db:vme_mail_plugin.vme_mail_plugin_setup_view_form
+msgid "Voorbeeld in de browser"
+msgstr "Aperçu dans le navigateur"
+
+#. module: vme_mail_plugin
+#: model_terms:ir.ui.view,arch_db:vme_mail_plugin.vme_mail_plugin_setup_view_form
+msgid "https://syndicus.example.com"
+msgstr "https://syndicus.example.com"

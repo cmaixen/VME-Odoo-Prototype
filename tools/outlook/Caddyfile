@@ -1,0 +1,6 @@
+# HTTPS in front of Odoo for the Outlook add-in (docker compose --profile outlook up -d).
+# "tls internal": Caddy makes its own local certificate authority; trust it once (docs/dev/outlook.md).
+https://localhost:8443 {
+	tls internal
+	reverse_proxy odoo:8069
+}

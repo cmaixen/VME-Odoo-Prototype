@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="vme_mail_plugin_setup_view_form" model="ir.ui.view">
+        <field name="name">vme.mail.plugin.setup.form</field>
+        <field name="model">vme.mail.plugin.setup</field>
+        <field name="arch" type="xml">
+            <form string="Outlook-invoegtoepassing">
+                <div class="alert alert-info" role="alert">
+                    Met de invoegtoepassing ziet een medewerker in Outlook bij elke mail de VME, de kavel en wat er
+                    openstaat, met het voorstel van de AI-assistent. Er vertrekt nooit iets vanzelf: "Antwoord invoegen"
+                    opent het antwoordvenster van Outlook en de medewerker drukt zelf op Verzenden.
+                </div>
+                <div class="alert alert-warning" role="alert" invisible="is_https">
+                    Outlook laadt een invoegtoepassing alleen over https. Vul hieronder het https-adres in
+                    (lokaal: https://localhost:8443, zie de handleiding).
+                </div>
+                <group>
+                    <field name="base_url" placeholder="https://syndicus.example.com"/>
+                    <field name="effective_url" widget="url"/>
+                    <field name="manifest_url"/>
+                    <field name="is_https" invisible="1"/>
+                </group>
+                <h3>Installeren in Outlook</h3>
+                <ol>
+                    <li>Download het manifest met de knop hieronder. Het bevat het adres van deze Odoo.</li>
+                    <li>Open Outlook op het web: <b>Apps</b> (of Invoegtoepassingen) &gt; <b>Mijn invoegtoepassingen</b>
+                        &gt; <b>Aangepaste invoegtoepassing toevoegen</b> &gt; <b>Toevoegen vanuit bestand</b>, en kies het manifest.</li>
+                    <li>Open een mail en klik op <b>VME-dossier</b>. De eerste keer klikt u op <b>Verbinden met Odoo</b>
+                        en staat u de toegang toe.</li>
+                </ol>
+                <footer>
+                    <button name="action_download_manifest" type="object" string="Manifest downloaden" class="btn-primary"/>
+                    <button name="action_open_preview" type="object" string="Voorbeeld in de browser" class="btn-secondary"/>
+                    <button string="Sluiten" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="vme_mail_plugin_setup_action" model="ir.actions.act_window">
+        <field name="name">Outlook-invoegtoepassing</field>
+        <field name="res_model">vme.mail.plugin.setup</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_vme_mail_plugin_setup" name="Outlook-invoegtoepassing" parent="vme_belgie.menu_vme_configuration"
+              action="vme_mail_plugin_setup_action" sequence="80"/>
+</odoo>
