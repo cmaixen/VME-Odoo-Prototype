@@ -80,6 +80,7 @@ class TestAssemblyOnlineVoting(OnlineAssemblyFixture, TransactionCase):
 
     def test_invitation_with_online_link_is_a_draft(self):
         self.item.allow_advance_vote = True
+        self.owners[0].write({"email": "online.uitnodiging@example.com", "vme_convocation_consent_date": date(2025, 1, 1)})
         convocation = self.env["vme.assembly.convocation"].create({
             "assembly_id": self.assembly.id, "partner_id": self.owners[0].id, "lot_names": "L1", "shares": 300})
         action = convocation.action_open_composer()

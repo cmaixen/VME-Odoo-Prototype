@@ -112,9 +112,13 @@
                 <field name="lot_names"/>
                 <field name="shares"/>
                 <field name="email"/>
+                <field name="channel" readonly="state != 'draft'"/>
                 <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-success="state == 'sent'"/>
                 <field name="sent_date"/>
-                <button name="action_open_composer" type="object" string="Versturen" icon="fa-envelope" invisible="state != 'draft'"/>
+                <button name="action_open_composer" type="object" string="Versturen" icon="fa-envelope"
+                        invisible="state != 'draft' or channel != 'email'"/>
+                <button name="action_send_registered" type="object" string="Aangetekend" icon="fa-file-text-o"
+                        invisible="state != 'draft' or channel != 'registered'"/>
             </list>
         </field>
     </record>
@@ -125,9 +129,12 @@
         <field name="arch" type="xml">
             <form create="0">
                 <header>
-                    <button name="action_open_composer" type="object" string="Versturen" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_open_composer" type="object" string="Versturen" class="btn-primary"
+                            invisible="state != 'draft' or channel != 'email'"/>
+                    <button name="action_send_registered" type="object" string="Aangetekend versturen" class="btn-primary"
+                            invisible="state != 'draft' or channel != 'registered'"
+                            help="Zet de oproeping in het register van aangetekende zendingen. Geef ze daarna af bij de post."/>
                     <button name="action_print" type="object" string="Afdrukken"/>
-                    <button name="action_mark_sent" type="object" string="Per post verstuurd" invisible="state != 'draft'"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
@@ -136,17 +143,20 @@
                             <field name="assembly_id" readonly="1"/>
                             <field name="partner_id" readonly="1"/>
                             <field name="email"/>
+                            <field name="channel" readonly="state != 'draft'"/>
                         </group>
                         <group>
                             <field name="lot_names" readonly="1"/>
                             <field name="shares" readonly="1"/>
                             <field name="sent_date"/>
+                            <field name="registered_mail_id" invisible="not registered_mail_id"/>
                         </group>
                     </group>
                     <field name="attachment_ids" widget="many2many_binary"/>
                     <div class="text-muted">
                         Niets wordt automatisch verstuurd: "Versturen" opent een e-mail met de oproeping, het
-                        volmachtformulier en de jaarafrekening, die u nakijkt en zelf verstuurt.
+                        volmachtformulier en de jaarafrekening, die u nakijkt en zelf verstuurt. Zonder schriftelijk
+                        akkoord van de eigenaar voor e-mail gaat de oproeping aangetekend.
                     </div>
                 </sheet>
                 <chatter/>

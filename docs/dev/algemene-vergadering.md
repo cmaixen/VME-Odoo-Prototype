@@ -16,7 +16,7 @@ vme.assembly ─┬─< vme.assembly.item ──< vme.assembly.vote >── vme.
 | `vme.assembly.item` | Agendapunt met `majority` (`none`, `absolute`, `two_thirds`, `four_fifths`, `unanimous`). Opgeslagen compute `votes_for/against/abstain` en `outcome`. Erft `mail.thread` en `mail.activity.mixin` voor de opvolgtaak. `decision_number` vormt het register. |
 | `vme.assembly.attendee` | Eén lijn per eigenaar op de datum van de AV, met de som van de quotiteiten van zijn kavels in de **algemene** sleutel. `attendance`: absent/present/represented, `proxy_holder_id` (elke partner). |
 | `vme.assembly.vote` | Stem per (agendapunt, aanwezige); uniek. Standaard `for`. |
-| `vme.assembly.convocation` | Concept-oproeping per eigenaar; erft `mail.thread`. Status `draft` → `sent`. |
+| `vme.assembly.convocation` | Concept-oproeping per eigenaar; erft `mail.thread`. Status `draft` → `sent`. `channel` (`email` of `registered`, in `vme_communication.py`): e-mail alleen met `res.partner.vme_convocation_consent_date` en een e-mailadres. |
 
 De quotiteiten worden bij het aanmaken van de aanwezigheidslijst vastgezet, zodat een latere verkoop of sleutelwijziging de notulen niet verandert.
 
@@ -40,6 +40,8 @@ Stemmen worden in honderdsten van een quotiteit geteld (`_units`, integer), zoda
 2. de bestaande jaarafrekening (`action_report_annual_statement`) van `jaar − 1` voor die eigenaar, via een tijdelijke `vme.annual.statement.wizard`, alleen als er gegevens zijn.
 
 Er wordt niets verstuurd. `action_open_composer` opent `mail.compose.message` met de bijlagen en context `mark_convocation_as_sent`; de override van `message_post` zet de oproeping dan op `sent` en vult `convocation_sent_date` van de AV (patroon van `mark_so_as_sent` in `sale`). Een notificatie waarschuwt als de oproepingstermijn (art. 3.87 §3) al voorbij is.
+
+Zonder schriftelijk akkoord weigert `action_open_composer` en gebruikt de medewerker `action_send_registered`: een kopie van de oproeping-PDF gaat met `vme.registered.mail._create_for` in het verzendregister (status `prepared`), de loglijn krijgt kanaal `registered` en de oproeping `registered_mail_id`. `_left_on()` geeft de dag waarop de oproeping vertrok: `sent_date`, of voor een aangetekende de `deposit_date` van de registerlijn. De waarschuwing per oproeping (B-D2) gebruikt die dag.
 
 Elke PDF kost een wkhtmltopdf-run (ongeveer 2 seconden): voor een VME met 12 eigenaars en jaarafrekeningen duurt het aanmaken dus bijna een minuut. In tests rendert Odoo HTML, dus daar is het snel.
 

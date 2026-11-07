@@ -100,13 +100,13 @@ class VmeAssembly(models.Model):
             return message, level
         # LEGAL-CHECK: art. 3.87 §3 BW - every co-owner is convened at least fifteen days before the
         # meeting, not only the first one whose convocation left.
-        late = self.convocation_ids.filtered(lambda c: c.state == "sent" and c.sent_date > self.convocation_deadline)
+        late = self.convocation_ids.filtered(lambda c: c._left_on() and c._left_on() > self.convocation_deadline)
         if late:
             return self.env._(
                 "%(count)s oproeping(en) vertrokken na %(deadline)s: %(owners)s.", count=len(late),
                 deadline=format_date(self.env, self.convocation_deadline),
                 owners=", ".join(late.partner_id.mapped("name"))), "danger"
-        unsent = self.convocation_ids.filtered(lambda c: c.state == "draft")
+        unsent = self.convocation_ids.filtered(lambda c: not c._left_on())
         if unsent and today > self.convocation_deadline:
             return self.env._(
                 "%(count)s oproeping(en) nog niet verstuurd, uiterlijk was %(deadline)s: %(owners)s.",
@@ -505,6 +505,11 @@ class VmeAssemblyConvocation(models.Model):
                     "mimetype": "application/pdf",
                 })
             convocation.attachment_ids = [fields.Command.set(attachments.ids)]
+
+    def _left_on(self):
+        """Day the convocation left the office, False while it has not."""
+        self.ensure_one()
+        return self.sent_date if self.state == "sent" else False
 
     def action_open_composer(self):
         """Open the mail composer with the documents; the employee checks and sends it."""

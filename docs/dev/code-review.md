@@ -158,7 +158,7 @@ Elke fix staat in een eigen commit, met een test waar dat kan.
 - **Probleem:** `convocation_sent_date` wordt gezet bij de eerste oproeping die vertrekt. Komen de andere te laat, dan verschijnt er geen waarschuwing. `# LEGAL-CHECK: art. 3.87 §3 BW` (15 dagen, voor elke eigenaar).
 - **Herstel (uitgevoerd):** `vme.assembly._get_warning` kijkt nu ook naar elke oproeping: een oproeping die na de uiterste dag vertrok, of een concept na die dag, geeft "Te laat" met de namen van de eigenaars. `convocation_sent_date` blijft de eerste verzending. Test: `test_every_convocation_must_leave_on_time`.
 
-**B-D3. Oproepingen gaan zonder schriftelijk akkoord per e-mail of gewone brief** ⏳ (grotere herwerking)
+**B-D3. Oproepingen gaan zonder schriftelijk akkoord per e-mail of gewone brief** ✅
 - **Waar:**
   - `models/vme_communication.py:53-56` (standaard "email"), `:643`, `:651`;
   - de composer in `vme_assembly_meeting.py:468`.
@@ -167,6 +167,7 @@ Elke fix staat in een eigen commit, met een test waar dat kan.
   - een veld voor het akkoord, met de datum;
   - zonder akkoord gaat de oproeping via `vme.registered.mail`;
   - tests en documentatie.
+- **Uitgevoerd:** `res.partner.vme_convocation_consent_date` en `vme.assembly.convocation.channel`. Zonder akkoord weigert **Versturen** en zet **Aangetekend versturen** de oproeping in het verzendregister; de knop **Per post verstuurd** is weg. Een aangetekende oproeping telt pas als vertrokken bij de afgifte bij de post (`_left_on`). In de demo hebben de eigenaars met e-mail een akkoord, die op papier niet. Test: `test_convocation_without_consent_goes_registered`. Nog na te kijken: of het akkoord per VME moet gelden in plaats van per persoon.
 
 ### Performance bij 200 VME's
 

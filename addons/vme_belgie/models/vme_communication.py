@@ -54,6 +54,12 @@ class ResPartner(models.Model):
         [("email", "E-mail"), ("paper", "Papier (brief per post)")],
         string="Voorkeur communicatie", default="email",
         help="Mededelingen gaan per e-mail, tenzij deze persoon papier vraagt of geen e-mailadres heeft.")
+    # LEGAL-CHECK: art. 3.87 §3 BW - the convocation to the general assembly goes by registered letter,
+    # unless the co-owner agreed individually and in writing to receive it by another means.
+    vme_convocation_consent_date = fields.Date(
+        string="Akkoord oproeping per e-mail",
+        help="Datum waarop deze eigenaar schriftelijk akkoord gaf om oproepingen tot de algemene vergadering "
+             "per e-mail te krijgen. Leeg: de oproeping gaat aangetekend.")
     vme_communication_log_ids = fields.One2many("vme.communication.log", "partner_id", string="Communicatielog")
     vme_communication_count = fields.Integer(string="Communicatie", compute="_compute_vme_communication_count")
 
@@ -635,21 +641,82 @@ class VmeSaleFile(models.Model):
 class VmeAssemblyConvocation(models.Model):
     _inherit = "vme.assembly.convocation"
 
+    # LEGAL-CHECK: art. 3.87 §3 BW - by registered letter, unless the co-owner agreed in writing to e-mail.
+    channel = fields.Selection(
+        [("email", "E-mail"), ("registered", "Aangetekend")], string="Verzending",
+        compute="_compute_channel", store=True, readonly=False,
+        help="Per e-mail alleen als de eigenaar schriftelijk akkoord gaf (veld Akkoord oproeping per e-mail op "
+             "de contactpersoon); anders aangetekend.")
+    registered_mail_id = fields.Many2one("vme.registered.mail", string="Aangetekende zending", readonly=True,
+                                         copy=False)
+
+    @api.depends("partner_id.email", "partner_id.vme_convocation_consent_date")
+    def _compute_channel(self):
+        for convocation in self:
+            if convocation.state == "draft" or not convocation.channel:
+                convocation.channel = "email" if convocation._email_allowed() else "registered"
+
+    def _email_allowed(self):
+        self.ensure_one()
+        return bool(self.partner_id.email and self.partner_id.vme_convocation_consent_date)
+
     @api.model_create_multi
     def create(self, vals_list):
         convocations = super().create(vals_list)
         self.env["vme.communication.log"]._log_records(
             convocations, "partner_id",
             subject=lambda c: self.env._("Oproeping AV %(year)s", year=c.assembly_id.year),
-            channel=lambda c: "email" if c.partner_id.email and c.partner_id.vme_communication_preference != "paper" else "letter",
+            channel=lambda c: c.channel,
             lot_names=lambda c: c.lot_names,
         )
         return convocations
 
+    def _left_on(self):
+        # A registered letter leaves when it is handed to the post, not when it is prepared.
+        if self.registered_mail_id:
+            return self.registered_mail_id.deposit_date
+        return super()._left_on()
+
+    def action_open_composer(self):
+        self.ensure_one()
+        if self.channel != "email" or not self._email_allowed():
+            raise UserError(self.env._(
+                "%s gaf geen schriftelijk akkoord voor oproepingen per e-mail (of heeft geen e-mailadres). "
+                "Verstuur de oproeping aangetekend.", self.partner_id.name))
+        return super().action_open_composer()
+
+    def action_send_registered(self):
+        """Put the convocation in the register of registered mail; the employee hands it to the post."""
+        check_not_auditor(self.env)  # the register is written as sudo
+        Log = self.env["vme.communication.log"]
+        for convocation in self.filtered(lambda c: c.state == "draft"):
+            if not convocation.attachment_ids:
+                raise UserError(self.env._("De oproeping van %s heeft nog geen pdf.", convocation.partner_id.name))
+            subject = self.env._("Oproeping AV %(year)s", year=convocation.assembly_id.year)
+            log = Log._get_for_records(convocation)[:1] or Log._log_records(
+                convocation, "partner_id", subject=subject, channel="registered", lot_names=lambda c: c.lot_names)
+            log.channel = "registered"
+            # The register keeps its own copy of the convocation (the first PDF); the annual statement goes in
+            # the same envelope.
+            letter = convocation.attachment_ids.sorted("id")[:1].sudo().copy()
+            registered = self.env["vme.registered.mail"]._create_for(log, letter, subject)
+            log.registered_mail_id = registered
+            convocation.write({"channel": "registered", "registered_mail_id": registered.id})
+        self.with_context(vme_convocation_registered=True).action_mark_sent()
+        if len(self) == 1:
+            return {"type": "ir.actions.act_window", "res_model": "vme.registered.mail",
+                    "res_id": self.registered_mail_id.id, "view_mode": "form", "views": [(False, "form")]}
+        return True
+
     def action_mark_sent(self):
         result = super().action_mark_sent()
-        # Sent through the mail composer, or marked as sent by post.
-        channel = "email" if self.env.context.get("mark_convocation_as_sent") else "letter"
+        # Sent through the mail composer, as a registered letter, or marked as sent by post.
+        if self.env.context.get("mark_convocation_as_sent"):
+            channel = "email"
+        elif self.env.context.get("vme_convocation_registered"):
+            channel = "registered"
+        else:
+            channel = "letter"
         self.env["vme.communication.log"]._get_for_records(self).write({
             "state": "sent", "sent_date": fields.Date.context_today(self), "channel": channel})
         return result

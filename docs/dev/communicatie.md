@@ -109,7 +109,7 @@ Zo zou een koppeling werken (niet gebouwd):
 
 ## LEGAL-CHECK-punten
 
-- `art. 3.87 §3 BW` (in `_resolve_channel`): oproeping per aangetekende brief, tenzij de eigenaar individueel, uitdrukkelijk en schriftelijk instemt met een ander middel. De oproepingen van stap 11 houden we buiten de voorkeur "e-mail": een veld voor dat akkoord is een uitbreiding voor later.
+- `art. 3.87 §3 BW` (in `_resolve_channel`): oproeping per aangetekende brief, tenzij de eigenaar individueel, uitdrukkelijk en schriftelijk instemt met een ander middel. Het akkoord staat op de contactpersoon (`vme_convocation_consent_date`); de oproeping kiest daarmee `channel` `email` of `registered` (zie `docs/dev/algemene-vergadering.md`). Het akkoord geldt per persoon, niet per VME.
 - `art. 5.231 BW` (in `VmeCollectionReminder.action_mark_sent`): de ingebrekestelling aangetekend.
 - `eIDAS art. 43-44, art. XII.25 §3 WER` (veld `provider`): geldigheid van elektronisch aangetekend.
 

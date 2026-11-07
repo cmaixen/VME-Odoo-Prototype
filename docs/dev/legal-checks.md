@@ -3,7 +3,7 @@
 Automatisch gemaakt door `python3 tools/legal_checks.py`; niet met de hand bewerken.
 Elke rij is een wettelijke regel in de code die nog juridisch gevalideerd moet worden.
 
-Aantal punten: 147.
+Aantal punten: 149.
 
 ## Per bron
 
@@ -20,7 +20,7 @@ Aantal punten: 147.
 - **KB nr. 20 van 20 juli 1970, tabel A, rubriek XXXI**: [vme_works_comparison.py:60](../../addons/vme_belgie/models/vme_works_comparison.py#L60)
 - **NBN S21-050**: [vme_installation.py:22](../../addons/vme_belgie/models/vme_installation.py#L22)
 - **SEPA Core Direct Debit Rulebook (EPC)**: [vme_payment.py:22](../../addons/vme_belgie/models/vme_payment.py#L22)
-- **Verordening (EU) 910/2014 (eIDAS) art. 43-44 en art. XII.25 §3 WER**: [vme_communication.py:518](../../addons/vme_belgie/models/vme_communication.py#L518)
+- **Verordening (EU) 910/2014 (eIDAS) art. 43-44 en art. XII.25 §3 WER**: [vme_communication.py:524](../../addons/vme_belgie/models/vme_communication.py#L524)
 - **Vlaams Energiebesluit**: [vme_compliance.py:49](../../addons/vme_belgie/models/vme_compliance.py#L49)
 - **Vlaams Energiebesluit, EPC gemeenschappelijke delen**: [vme_compliance.py:30](../../addons/vme_belgie/models/vme_compliance.py#L30)
 - **Vlaams Materialendecreet**: [vme_compliance.py:41](../../addons/vme_belgie/models/vme_compliance.py#L41)
@@ -41,11 +41,11 @@ Aantal punten: 147.
 - **art. 3.85 §1 BW**: [vme_key.py:34](../../addons/vme_belgie/models/vme_key.py#L34), [vme_key.py:92](../../addons/vme_belgie/models/vme_key.py#L92), [vme_migration.py:809](../../addons/vme_belgie/models/vme_migration.py#L809)
 - **art. 3.86 §3 BW**: [vme_annual_statement.py:46](../../addons/vme_belgie/models/vme_annual_statement.py#L46), [vme_budget.py:5](../../addons/vme_belgie/models/vme_budget.py#L5), [vme_budget.py:93](../../addons/vme_belgie/models/vme_budget.py#L93), [vme_building_card.py:224](../../addons/vme_belgie/models/vme_building_card.py#L224), [vme_cycle.py:233](../../addons/vme_belgie/models/vme_cycle.py#L233), [vme_fiscal_closing.py:343](../../addons/vme_belgie/models/vme_fiscal_closing.py#L343), [vme_migration.py:509](../../addons/vme_belgie/models/vme_migration.py#L509), [vme_handover_reports.xml:226](../../addons/vme_belgie/report/vme_handover_reports.xml#L226)
 - **art. 3.86 §3 BW en KB 12 juli 2012 (minimum chart of accounts)**: [vme_works.py:453](../../addons/vme_belgie/models/vme_works.py#L453)
-- **art. 3.87 §1 BW**: [vme_assembly_meeting.py:530](../../addons/vme_belgie/models/vme_assembly_meeting.py#L530), [vme_assembly_online.py:17](../../addons/vme_belgie/models/vme_assembly_online.py#L17), [vme_assembly_online.py:235](../../addons/vme_belgie/models/vme_assembly_online.py#L235), [vme_assembly_online.py:303](../../addons/vme_belgie/models/vme_assembly_online.py#L303)
+- **art. 3.87 §1 BW**: [vme_assembly_meeting.py:535](../../addons/vme_belgie/models/vme_assembly_meeting.py#L535), [vme_assembly_online.py:17](../../addons/vme_belgie/models/vme_assembly_online.py#L17), [vme_assembly_online.py:235](../../addons/vme_belgie/models/vme_assembly_online.py#L235), [vme_assembly_online.py:303](../../addons/vme_belgie/models/vme_assembly_online.py#L303)
 - **art. 3.87 §10 BW**: [vme_assembly_meeting.py:269](../../addons/vme_belgie/models/vme_assembly_meeting.py#L269), [vme_assembly_online.py:198](../../addons/vme_belgie/models/vme_assembly_online.py#L198)
 - **art. 3.87 §12 BW**: [vme_cycle.py:41](../../addons/vme_belgie/models/vme_cycle.py#L41)
 - **art. 3.87 §2 BW**: [vme_assembly.py:13](../../addons/vme_belgie/models/vme_assembly.py#L13), [vme_assembly.py:38](../../addons/vme_belgie/models/vme_assembly.py#L38), [vme_assembly.py:247](../../addons/vme_belgie/models/vme_assembly.py#L247), [vme_building_card.py:277](../../addons/vme_belgie/models/vme_building_card.py#L277), [vme_cycle.py:482](../../addons/vme_belgie/models/vme_cycle.py#L482)
-- **art. 3.87 §3 BW**: [vme_assembly.py:17](../../addons/vme_belgie/models/vme_assembly.py#L17), [vme_assembly.py:42](../../addons/vme_belgie/models/vme_assembly.py#L42), [vme_assembly.py:234](../../addons/vme_belgie/models/vme_assembly.py#L234), [vme_assembly_meeting.py:101](../../addons/vme_belgie/models/vme_assembly_meeting.py#L101), [vme_assembly_meeting.py:205](../../addons/vme_belgie/models/vme_assembly_meeting.py#L205), [vme_communication.py:251](../../addons/vme_belgie/models/vme_communication.py#L251), [vme_cycle.py:468](../../addons/vme_belgie/models/vme_cycle.py#L468)
+- **art. 3.87 §3 BW**: [vme_assembly.py:17](../../addons/vme_belgie/models/vme_assembly.py#L17), [vme_assembly.py:42](../../addons/vme_belgie/models/vme_assembly.py#L42), [vme_assembly.py:234](../../addons/vme_belgie/models/vme_assembly.py#L234), [vme_assembly_meeting.py:101](../../addons/vme_belgie/models/vme_assembly_meeting.py#L101), [vme_assembly_meeting.py:205](../../addons/vme_belgie/models/vme_assembly_meeting.py#L205), [vme_communication.py:57](../../addons/vme_belgie/models/vme_communication.py#L57), [vme_communication.py:257](../../addons/vme_belgie/models/vme_communication.py#L257), [vme_communication.py:644](../../addons/vme_belgie/models/vme_communication.py#L644), [vme_cycle.py:468](../../addons/vme_belgie/models/vme_cycle.py#L468)
 - **art. 3.87 §5 BW**: [vme_assembly_meeting.py:69](../../addons/vme_belgie/models/vme_assembly_meeting.py#L69), [vme_assembly_meeting.py:146](../../addons/vme_belgie/models/vme_assembly_meeting.py#L146)
 - **art. 3.87 §6 BW**: [vme_assembly_meeting.py:159](../../addons/vme_belgie/models/vme_assembly_meeting.py#L159), [vme_assembly_meeting.py:322](../../addons/vme_belgie/models/vme_assembly_meeting.py#L322)
 - **art. 3.87 §6-7 BW**: [vme_assembly_online.py:298](../../addons/vme_belgie/models/vme_assembly_online.py#L298)
@@ -79,7 +79,7 @@ Aantal punten: 147.
 - **art. 37 Vlaams Woninghuurdecreet**: [rent_rules.py:80](../../addons/vme_rentmeester/models/rent_rules.py#L80)
 - **art. 37/2 Arbeidsovereenkomstenwet 3 juli 1978**: [vme_contract.py:34](../../addons/vme_belgie/models/vme_contract.py#L34)
 - **art. 45 §1 WBTW**: [account_chart_template.py:57](../../addons/vme_belgie/models/account_chart_template.py#L57)
-- **art. 5.231 BW**: [vme_communication.py:668](../../addons/vme_belgie/models/vme_communication.py#L668)
+- **art. 5.231 BW**: [vme_communication.py:735](../../addons/vme_belgie/models/vme_communication.py#L735)
 - **art. 5.250 e.v. BW (schuldvergelijking)**: [rent_remittance.py:388](../../addons/vme_rentmeester/models/rent_remittance.py#L388)
 - **art. 57 WIB 92 and art. 30 KB/WIB 92**: [vme_belcotax.py:31](../../addons/vme_belgie/models/vme_belcotax.py#L31)
 - **art. 57, 1° WIB 92**: [vme_belcotax.py:16](../../addons/vme_belgie/models/vme_belcotax.py#L16), [vme_belcotax.py:116](../../addons/vme_belgie/models/vme_belcotax.py#L116)
@@ -125,7 +125,7 @@ Aantal punten: 147.
 | [addons/vme_belgie/models/vme_assembly_meeting.py](../../addons/vme_belgie/models/vme_assembly_meeting.py#L322) | 322 | art. 3.87 §6 BW | nobody votes with more votes than all other present or represented co-owners together. |
 | [addons/vme_belgie/models/vme_assembly_meeting.py](../../addons/vme_belgie/models/vme_assembly_meeting.py#L339) | 339 | art. 3.88 §3 BW | unanimity of the votes of all co-owners. Every owner votes for, so the cap of art. 3.87 §6 on the counted votes plays no role here. |
 | [addons/vme_belgie/models/vme_assembly_meeting.py](../../addons/vme_belgie/models/vme_assembly_meeting.py#L424) | 424 | art. 3.87 §7 BW | more than three proxies only up to 10% of all votes. |
-| [addons/vme_belgie/models/vme_assembly_meeting.py](../../addons/vme_belgie/models/vme_assembly_meeting.py#L530) | 530 | art. 3.87 §1 BW | the convocation states how to take part at a distance. |
+| [addons/vme_belgie/models/vme_assembly_meeting.py](../../addons/vme_belgie/models/vme_assembly_meeting.py#L535) | 535 | art. 3.87 §1 BW | the convocation states how to take part at a distance. |
 | [addons/vme_belgie/models/vme_assembly_online.py](../../addons/vme_belgie/models/vme_assembly_online.py#L17) | 17 | art. 3.87 §1 BW | co-owners may take part in the general assembly at a distance (electronically) when the convocation provides for it; they count as present for quorum and votes. |
 | [addons/vme_belgie/models/vme_assembly_online.py](../../addons/vme_belgie/models/vme_assembly_online.py#L146) | 146 | art. 3.87 §7 BW | the proxy holder votes for the co-owners who gave a proxy. |
 | [addons/vme_belgie/models/vme_assembly_online.py](../../addons/vme_belgie/models/vme_assembly_online.py#L198) | 198 | art. 3.87 §10 BW | the minutes are signed at the end of the meeting by the chair, the secretary and the co-owners still present (in the room or online). Owners who only voted in writing beforehand were not at the meeting. |
@@ -151,9 +151,11 @@ Aantal punten: 147.
 | [addons/vme_belgie/models/vme_collection.py](../../addons/vme_belgie/models/vme_collection.py#L145) | 145 | art. XIX.4 §1 WER | at most the legal interest rate plus 8 percentage points. |
 | [addons/vme_belgie/models/vme_collection.py](../../addons/vme_belgie/models/vme_collection.py#L435) | 435 | art. XIX.2 §1 WER | the first reminder is free; interest and damages only run from the end of a term of at least 14 days after it was sent. Check whether interest may run from the due date instead when the reglement van mede-eigendom says so. |
 | [addons/vme_belgie/models/vme_collection.py](../../addons/vme_belgie/models/vme_collection.py#L473) | 473 | reglement van mede-eigendom (art. 3.85 BW) | simple interest per year of 365 days. |
-| [addons/vme_belgie/models/vme_communication.py](../../addons/vme_belgie/models/vme_communication.py#L251) | 251 | art. 3.87 §3 BW | convocations go by registered letter unless the owner agreed individually and in writing to another means; registered and letter ignore the preference. |
-| [addons/vme_belgie/models/vme_communication.py](../../addons/vme_belgie/models/vme_communication.py#L518) | 518 | Verordening (EU) 910/2014 (eIDAS) art. 43-44 en art. XII.25 §3 WER | an electronic registered delivery by a qualified provider counts as a registered letter; whether that also holds for a formal notice (ingebrekestelling, art. 5.231 BW) and for a convocation to the general assembly (art. 3.87 §3 BW) still has to be confirmed by a lawyer. |
-| [addons/vme_belgie/models/vme_communication.py](../../addons/vme_belgie/models/vme_communication.py#L668) | 668 | art. 5.231 BW | the formal notice (level 3) is sent by registered letter. |
+| [addons/vme_belgie/models/vme_communication.py](../../addons/vme_belgie/models/vme_communication.py#L57) | 57 | art. 3.87 §3 BW | the convocation to the general assembly goes by registered letter, unless the co-owner agreed individually and in writing to receive it by another means. |
+| [addons/vme_belgie/models/vme_communication.py](../../addons/vme_belgie/models/vme_communication.py#L257) | 257 | art. 3.87 §3 BW | convocations go by registered letter unless the owner agreed individually and in writing to another means; registered and letter ignore the preference. |
+| [addons/vme_belgie/models/vme_communication.py](../../addons/vme_belgie/models/vme_communication.py#L524) | 524 | Verordening (EU) 910/2014 (eIDAS) art. 43-44 en art. XII.25 §3 WER | an electronic registered delivery by a qualified provider counts as a registered letter; whether that also holds for a formal notice (ingebrekestelling, art. 5.231 BW) and for a convocation to the general assembly (art. 3.87 §3 BW) still has to be confirmed by a lawyer. |
+| [addons/vme_belgie/models/vme_communication.py](../../addons/vme_belgie/models/vme_communication.py#L644) | 644 | art. 3.87 §3 BW | by registered letter, unless the co-owner agreed in writing to e-mail. |
+| [addons/vme_belgie/models/vme_communication.py](../../addons/vme_belgie/models/vme_communication.py#L735) | 735 | art. 5.231 BW | the formal notice (level 3) is sent by registered letter. |
 | [addons/vme_belgie/models/vme_compliance.py](../../addons/vme_belgie/models/vme_compliance.py#L24) | 24 | Vlaams Materialendecreet en VLAREMA (OVAM) | an asbestos certificate is valid for ten years, shorter when the building changes. |
 | [addons/vme_belgie/models/vme_compliance.py](../../addons/vme_belgie/models/vme_compliance.py#L27) | 27 | KB 25 januari 2001 tijdelijke of mobiele bouwplaatsen, nu codex welzijn op het | werk boek V titel 2 - the post-intervention file has no end date; it is completed after works. |
 | [addons/vme_belgie/models/vme_compliance.py](../../addons/vme_belgie/models/vme_compliance.py#L30) | 30 | Vlaams Energiebesluit, EPC gemeenschappelijke delen | valid for ten years. |
