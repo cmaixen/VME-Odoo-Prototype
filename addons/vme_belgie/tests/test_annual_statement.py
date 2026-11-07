@@ -87,6 +87,22 @@ class TestAnnualStatementSmall(TransactionCase):
         self.assertEqual((b["working"]["invoiced"], b["working"]["paid"], b["working"]["open"], b["balance"]),
                          (240.0, 240.0, 0.0, 160.0))
 
+    def test_partial_credit_note_is_not_paid(self):
+        unpaid = self.env["account.move"].search([
+            ("vme_provision_call_id.association_id", "=", self.vme.id), ("partner_id", "=", self.owner_b.id),
+            ("vme_fund", "=", "working"), ("vme_provision_call_id.number", "=", 2),
+        ])
+        refund = unpaid._reverse_moves()
+        refund.invoice_line_ids[1:].unlink()
+        refund.invoice_line_ids.price_unit = 100.0
+        refund.action_post()
+        (unpaid | refund).line_ids.filtered(lambda l: l.account_id.account_type == "asset_receivable").reconcile()
+        self.assertEqual(unpaid.amount_residual, 140.0)
+        _data, b = self._statement(self.owner_b)
+        # 100 of the open call is credited, not paid: asked 480 - 100, paid still 240, 140 open.
+        self.assertEqual((b["working"]["invoiced"], b["working"]["paid"], b["working"]["open"], b["balance"]),
+                         (380.0, 240.0, 140.0, 160.0))
+
     def test_reserve_capital_is_not_settled(self):
         _data, a = self._statement(self.owner_a)
         self.assertEqual((a["reserve"]["invoiced"], a["reserve"]["paid"]), (120.0, 120.0))

@@ -87,7 +87,7 @@ Voorbeeld (uit `test_consumption.py`): 1000 euro, 30% vast, A1 600/1000 en 100 e
 `vme.association._get_annual_statement(year, partners=None)` (alles als `sudo`):
 
 - **Kosten**: kostenverdelingen van geboekte leveranciersfacturen met factuurdatum in het jaar.
-- **Provisies**: geboekte facturen van provisieoproepen met budgetjaar = het jaar van de afrekening (niet de factuurdatum); per fonds gefactureerd, betaald (`amount_total − amount_residual`) en open. Een oproep die met een creditnota volledig tegengeboekt is (`payment_state = reversed`), telt niet mee: hij was nooit verschuldigd. Een gedeeltelijke creditnota telt nog als betaald (open punt in `code-review.md`, K-F1).
+- **Provisies**: geboekte facturen van provisieoproepen met budgetjaar = het jaar van de afrekening (niet de factuurdatum); per fonds gefactureerd (`amount_total` min wat met een creditnota afgepunt is, `_credited_amount`), betaald (gefactureerd − `amount_residual`) en open. Een oproep die met een creditnota volledig tegengeboekt is (`payment_state = reversed`), telt niet mee: hij was nooit verschuldigd. Een gedeeltelijke creditnota verlaagt het gefactureerde bedrag, niet het betaalde.
 - **Eigenaars**: iedereen met kosten of provisies in het jaar (of de opgegeven partners).
 - **Saldo** = aandeel in de kosten − betaalde provisies werkkapitaal. Open provisies worden niet verrekend, reservekapitaal nooit.
 - **Per sleutel**: totale kosten van de VME, de quotiteiten van de eigenaar (`"70 + 6"` voor twee kavels) en zijn aandeel.

@@ -49,7 +49,7 @@ Elke fix staat in een eigen commit, met een test waar dat kan.
 
 ## Kritiek
 
-### K-F1. Jaarafrekening telt een tegengeboekte provisie als betaald ✅ (deels)
+### K-F1. Jaarafrekening telt een tegengeboekte provisie als betaald ✅
 - **Waar:** `addons/vme_belgie/models/vme_annual_statement.py:42-46` en `:96-105`
 - **Probleem:**
   - Betaald wordt berekend als "gefactureerd min openstaand".
@@ -58,7 +58,7 @@ Elke fix staat in een eigen commit, met een test waar dat kan.
 - **Risico:** het saldo van de eigenaar daalt met een provisie die hij nooit betaald heeft. Het portaal toont hetzelfde.
 - **Herstel:**
   - Uitgevoerd: volledig tegengeboekte facturen tellen niet meer mee.
-  - Voorstel ⏳: een gedeeltelijke creditnota is nog altijd fout. Neem "betaald" uit de echte afpunting met betalingen (`matched_credit_ids`, zonder `out_refund`), in plaats van uit het openstaande saldo.
+  - Uitgevoerd (tweede ronde): een gedeeltelijke creditnota verlaagt nu het gefactureerde bedrag, niet het betaalde. Het deel dat met een `out_refund` afgepunt is (`matched_credit_ids`), gaat af van "gefactureerd". Test: `test_partial_credit_note_is_not_paid`.
 
 ### K-D1. Aanvraag zonder kavel crasht bij opslaan ✅
 - **Waar:** `addons/vme_belgie/models/vme_request.py:215`
