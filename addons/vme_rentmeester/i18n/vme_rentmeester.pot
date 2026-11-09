@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 19.0-20261102\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-07 19:25+0000\n"
-"PO-Revision-Date: 2026-11-07 19:25+0000\n"
+"POT-Creation-Date: 2026-11-09 15:02+0000\n"
+"PO-Revision-Date: 2026-11-09 15:02+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -388,6 +388,11 @@ msgstr ""
 msgid ""
 "Begin van de kostenrekeningen van deze rubriek, gescheiden door komma's (bv."
 " 612, 6125)."
+msgstr ""
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_contract__user_id
+msgid "Beheerder"
 msgstr ""
 
 #. module: vme_rentmeester
@@ -1792,8 +1797,21 @@ msgstr ""
 
 #. module: vme_rentmeester
 #. odoo-python
+#: code:addons/vme_rentmeester/models/res_company.py:0
+msgid "Kies als derdenrekening een rekening van %s zelf."
+msgstr ""
+
+#. module: vme_rentmeester
+#. odoo-python
 #: code:addons/vme_rentmeester/models/rent_remittance.py:0
 msgid "Kies doorstortingen van één kantoor."
+msgstr ""
+
+#. module: vme_rentmeester
+#. odoo-python
+#: code:addons/vme_rentmeester/models/rent_mandate.py:0
+#: code:addons/vme_rentmeester/models/rent_remittance.py:0
+msgid "Kies een rekening van de verhuurder %s zelf."
 msgstr ""
 
 #. module: vme_rentmeester
@@ -1869,6 +1887,13 @@ msgstr ""
 #. module: vme_rentmeester
 #: model:ir.model.fields,field_description:vme_rentmeester.field_vme_rent_charge_category__account_prefixes
 msgid "Kostenrekeningen"
+msgstr ""
+
+#. module: vme_rentmeester
+#: model:ir.model.fields,help:vme_rentmeester.field_vme_rent_contract__user_id
+msgid ""
+"Krijgt de taken van de dagelijkse controle: opzegtermijn, indexering en "
+"einde huur."
 msgstr ""
 
 #. module: vme_rentmeester
