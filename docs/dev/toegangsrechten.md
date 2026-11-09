@@ -35,7 +35,8 @@ Rollenmodel van `vme_belgie` en `vme_rentmeester`, de bevindingen van de review 
 3. **Knoppen die met sudo schrijven.** Record rules gelden niet voor wat een methode met `sudo()` doet. Zo'n knop roept bovenaan `check_not_auditor(self.env)` aan (`models/vme_access.py`).
 4. **Lezen met sudo begint bij een leesbaar record.** Rapporten en berekeningen die met sudo lezen (gebouwkaart, notarisinformatie, verslag van de commissaris, leverancierskaart) starten bij een record dat de gebruiker zelf mag lezen, of roepen eerst `check_access("read")` aan. Een wizard is een transient model zonder regels. Wie er een vreemd record in kan zetten, moet dus eerst gecontroleerd worden, zoals in `vme.annual.statement.wizard._get_statement`. Ook **Mijn werk vandaag** (`vme.work.item`, transient) zoekt eerst de VME's met de regels van de gebruiker en leest pas daarna met sudo binnen die VME's; de regel `rule_user_work_item` toont elke gebruiker alleen zijn eigen lijst.
 5. **Portaal.** Portaalgebruikers hebben geen ACL op de VME-modellen. Elke route start bij `request.env.user.partner_id` en gaat via de helpers in `models/vme_portal.py`, `vme_document._portal_domain_for` en `vme_assembly_online`. Wat niet van de eigenaar is, geeft 404.
-6. **Nieuwe companies.** `vme.association.create()` (en de demo van het rentmeesterkantoor) koppelt de nieuwe company aan `_vme_all_companies_users()`: de leden van `group_vme_all_companies` en de huidige gebruiker, nooit de commissaris.
+6. **Koppelingen tussen VME's.** Record rules beschermen het lezen, niet een koppeling die via import, RPC of sudo gelegd wordt. Modellen met een company krijgen daarom `_check_company_auto = True` en `check_company=True` op hun Many2one's naar records met een company (rekeningen, sleutels, kavels, polissen, facturen, installaties, AV's). Bankrekeningen hebben geen company: daar staat een constraint op de partner. Tests: `tests/test_check_company.py` en `vme_rentmeester/tests/test_check_company_rent.py`.
+7. **Nieuwe companies.** `vme.association.create()` (en de demo van het rentmeesterkantoor) koppelt de nieuwe company aan `_vme_all_companies_users()`: de leden van `group_vme_all_companies` en de huidige gebruiker, nooit de commissaris.
 
 ## Bevindingen van de review (november 2026)
 
@@ -51,6 +52,7 @@ Nagekeken zonder lek: het portaal (eigendommen, documenten, provisies, afrekenin
 Bewust zo gelaten:
 - **Partners zijn gedeeld.** Een medewerker met een deel van de VME's ziet de contactkaarten van eigenaars uit andere VME's in de contactenlijst, maar niet hun eigendommen, provisies of documenten. Afscherming van partners per VME vraagt een eigen regel op `res.partner` en raakt Odoo's eigen schermen; dat is voor later.
 - **De bedrijvenkiezer filtert de VME-lijsten niet**, de boekhouding wel (Odoo-standaard).
+- **Het overdrachtspakket vraagt geen boekhoudrechten (C-D1).** Een VME-medewerker zonder boekhoudgroep maakt het pakket voor een VME van zijn companies: `vme.handover.wizard` roept `check_access("read")` op de VME aan (de company-regel) en leest daarna met sudo, alleen binnen die VME of haar company. Een VME buiten zijn companies geeft een AccessError, de commissaris wordt geweigerd (`check_not_auditor`). Het zip-bestand blijft als bijlage op de VME staan, leesbaar voor de medewerkers van die VME. Tests: `test_staff_without_accounting_rights`, `test_auditor_cannot_build_a_package`.
 
 ## Niets vertrekt vanzelf (review november 2026)
 
