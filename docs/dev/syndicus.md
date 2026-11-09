@@ -19,11 +19,11 @@ klantfacturen (`out_invoice`) in die company, met klant = `vme.association.partn
 | --- | --- |
 | `vme.management.agreement` | Beheerovereenkomst: VME, `syndic_company_id`, begin/einde, `fee_basis` (`lot`/`vme`), `fee_amount` per maand zonder btw, `billing_period` (`month`/`quarter`), `indexation` (`none`/`cpi`/`percent`), `index_base_month`, `index_base_value`, `index_percent`, `index_rates`, `rate_ids`. Geen overlap per VME (constraint). |
 | `vme.service.rate` | Prijslijst per overeenkomst, één regel per `service_type`. `create` van de overeenkomst vult `DEFAULT_RATES`. |
-| `vme.service.line` | Prestatie: VME, overeenkomst (compute op datum), soort, datum, aantal, `price_unit` (compute uit prijslijst × indexfactor, aanpasbaar), bron (`res_model`, `res_id`, `source_name`), `recharge_partner_id`, `no_charge`, `invoice_line_id`, `state` (compute: `invoiced` als de factuurlijn bestaat en niet geannuleerd is). Unieke index op (bron, soort). |
+| `vme.service.line` | Prestatie: VME, overeenkomst (compute op datum), soort, datum, aantal, `price_unit` (compute uit prijslijst × indexfactor, aanpasbaar), bron (`res_model`, `res_id`, `source_name`), `recharge_partner_id`, `recharge_invoice_id` (concept-doorrekening in de VME), `no_charge`, `invoice_line_id`, `state` (compute: `invoiced` als de factuurlijn bestaat en niet geannuleerd is). Unieke index op (bron, soort). |
 | `vme.consumer.price.index` | Consumptieprijsindex per maand (aparte tabel: de rentmeester gebruikt de gezondheidsindex, en `vme_belgie` hangt niet af van `vme_rentmeester`). Gedeeld door alle VME's: medewerkers lezen, alleen de beheerder (`base.group_system`) wijzigt. |
 | `vme.syndic.mandate` | Mandaat: VME, syndicus (partner), begin, einde (standaard +3 jaar −1 dag), `appointment_item_id`, `previous_mandate_id`, opgeslagen `renewal_assembly_year` en `renewal_period_start`, niet-opgeslagen `renewal_state`/`renewal_text`/`renewal_item_id`/`posting_state` (met `search`), `posting_deadline`, `posted_date`, `posting_document_id`. Bewust niet `vme.mandate`: dat is de raad en de commissaris (stap 16). |
 | `account.move` | `vme_fee_agreement_id`, `vme_fee_bill_id` (op de klantfactuur), `vme_fee_invoice_id` (op de leveranciersfactuur). |
-| `account.move.line` | `vme_service_line_id`. |
+| `account.move.line` | `vme_service_line_id`, `vme_recharge_partner_id` (lijn ten laste van één persoon, niet verdeeld). |
 | `vme.association` | `management_agreement_ids`, `syndic_mandate_ids`, `service_line_ids`, computes `current_agreement_id`, `current_syndic_mandate_id`, `syndic_renewal_state/text`; `_get_management_agreement_on(day)` en `_get_syndic_mandate_on(day)`. |
 
 ## Indexering
@@ -68,6 +68,9 @@ De overschrijvingen staan onderaan `vme_syndic.py`; het bestand wordt als laatst
   de VME met dezelfde lijnen, btw `attn_VAT-IN-V82-21-S`, rekening en sleutel uit de verdeelregel van het kantoor.
   Is de leveranciersfactuur al bevestigd, dan alleen een bericht. De leveranciersfactuur blijft altijd concept: de
   bestaande `_vme_auto_distribute` verdeelt ze pas als een mens ze bevestigt.
+- Een lijn van een prestatie met `recharge_partner_id` (het verkoopdossier) komt op 416100 zonder sleutel, met
+  `vme_recharge_partner_id`, en wordt niet verdeeld; de VME rekent ze door met een eigen conceptfactuur. Zie
+  [verkoop-notaris.md](verkoop-notaris.md#kosten-van-de-inlichtingen-doorrekenen-aan-de-verkoper).
 - `agreement._ensure_fee_rule()` (bij `create` en vóór elke leveranciersfactuur): verdeelregel kantoor → eerste
   algemene sleutel, rekening `a61329` (613290 "Andere erelonen"). Bij een nieuwe VME bestaat het rekeningstelsel pas
   na de commit; daarom zet de tweede aanroep de rekening alsnog.
@@ -119,6 +122,5 @@ De leveranciersfacturen in de VME's blijven concept: de kosten en de jaarafreken
 
 ## Open punten
 
-- Doorrekenen van de kosten van het verkoopdossier aan de verkoper (nu alleen `recharge_partner_id`).
 - Garages aan een ander tarief dan appartementen (nu telt elke kavel even zwaar).
 - Btw-regime van het kantoor (nu altijd 21%) en de niet-aftrekbare btw van de VME (stap 26).

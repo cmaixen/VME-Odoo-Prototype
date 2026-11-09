@@ -1,6 +1,6 @@
 # Verkoop en inlichtingen aan de notaris (stap 9)
 
-Code: `models/vme_sale_file.py`, rapport `report/vme_sale_file_report.py` en `.xml`, views `views/vme_sale_file_views.xml`, tests `tests/test_sale_file.py` en `test_demo_sale_linde_a3` in `test_demo_data.py`. Demo: `_load_demo_sale` in `demo_data/vme_demo_data.py`.
+Code: `models/vme_sale_file.py` (doorrekening aan de verkoper in `models/vme_syndic.py`), rapport `report/vme_sale_file_report.py` en `.xml`, views `views/vme_sale_file_views.xml`, tests `tests/test_sale_file.py` en `test_demo_sale_linde_a3` in `test_demo_data.py`. Demo: `_load_demo_sale` in `demo_data/vme_demo_data.py`.
 
 ## Datamodel
 
@@ -44,6 +44,34 @@ Voor elke kavel: de eigendom die vóór de aktedatum begon en erover loopt, moet
 
 Sinds stap 19 gaan de actieve sleutels en badges die op naam van de verkoper staan naar de koper (`vme.lot.key._transfer_to`), met een bericht per registerlijn; het chatterbericht van de akte somt ze op. Sleutels van een huurder blijven bij de huurder.
 
+## Kosten van de inlichtingen doorrekenen aan de verkoper
+
+Code in `models/vme_syndic.py` (het verkoopdossier is daar al uitgebreid voor de prestatie van de syndicus, zie
+[syndicus.md](syndicus.md)). `LEGAL-CHECK` art. 3.94 §1 BW: de kosten van de inlichtingen zijn voor de verkoper.
+
+- `vme.sale.file._answer("first")` registreert de prestatie `sale_file` met `recharge_partner_id = seller_id`.
+  `_register_from_source` roept daarna `vme.service.line._prepare_recharge_invoice()` op als er een
+  `recharge_partner_id` en een bedrag is (een ontbrekend indexcijfer geeft prijs 0: dan geen factuur, en de knop
+  **Doorrekening klaarzetten** op de prestatie doet het later).
+- `_prepare_recharge_invoice()` maakt een concept-`out_invoice` in de company van de VME aan de verkoper: één lijn
+  op 416100 (`vme.request._private_charge_account`, zoals de privé-aanrekening van een sleutel, zie
+  [aanvragen.md](aanvragen.md)), zonder btw, met `price_unit = _recharge_amount()` = prijs × aantal met de
+  aankoop-btw van de VME (`attn_VAT-IN-V82-21-S` via `compute_all`), dus btw inbegrepen; `vme_fund = "working"`.
+  De factuur staat in `vme.service.line.recharge_invoice_id`; berichten in de chatter van factuur en bron. Blijft
+  een concept: bevestigen en versturen doet een medewerker. Een bevestigde doorrekening weigert ze te herschrijven.
+- `vme.service.line.write`: wijzigt prijs, aantal, naam of partner terwijl de factuur concept is, dan wordt ze
+  herschreven; `no_charge` of een lege partner annuleert het concept.
+- `account.move._vme_prepare_fee_bill`: een lijn van de ereloonfactuur met `vme_service_line_id.recharge_partner_id`
+  komt in de leveranciersfactuur van de VME op 416100, zonder sleutel en met `account.move.line.vme_recharge_partner_id`.
+  Dezelfde btw als de andere lijnen; omdat de aankoop-btw van een VME op de rekening van de lijn komt
+  (`_vme_make_purchase_vat_non_deductible`), staat op 416100 hetzelfde bedrag als op de doorrekening. Na beide
+  facturen is 416100 nul.
+- `account.move._vme_distributable_lines` laat lijnen met `vme_recharge_partner_id` weg; `_vme_auto_distribute`
+  slaat een factuur zonder te verdelen lijnen over (bericht "Niet verdeeld: … ten laste van …").
+- Jaarafrekening (`_get_annual_statement`): `bills_total` en het totaal per factuur trekken die lijnen af
+  (`_private_total`), en een factuur met alleen zulke lijnen is geen "niet verdeelde factuur".
+- `vme.sale.file.recharge_invoice_id` (niet opgeslagen, via de prestatie) en de knop **Doorrekening verkoper**.
+
 ## Tests
 
 `TestSaleFile` (freezegun op 5 november 2026) bouwt een VME met A1 (500) en G1 (100) van de verkoper en A2 (400) van een andere eigenaar, twee provisieoproepen, betalingen en een gehouden AV met twee werken. Getest: termijnen en taken, de oranje en rode signalen, elke sectie van het antwoord (alleen eigen achterstallen, uitgevoerde werken vallen weg, eigen sleutel voor werken), het beantwoorden, het rapport, en de akte inclusief een provisieoproep 2027 die naar de koper gaat.
@@ -53,3 +81,6 @@ Sinds stap 19 gaan de actieve sleutels en badges die op naam van de verkoper sta
 - Een kavel heeft in het prototype één eigenaar tegelijk (zie `vme.ownership._check_no_overlap`); mede-eigendom, vruchtgebruik en naakte eigendom ontbreken nog.
 - Het antwoord rekent met vandaag; een antwoord "op de datum van de vraag" kan via `on_date`, maar zit niet in de schermen.
 - Het werkkapitaal wordt niet tussen verkoper en koper verrekend: dat doet de jaarafrekening, per dag.
+- De doorrekening volgt de prijs van de prestatie, niet de lijn van een al bevestigde ereloonfactuur: wijzigt het
+  kantoor de prijs op de ereloonfactuur zelf, dan moet de medewerker de doorrekening mee aanpassen.
+- Alleen de eerste vraag geeft een prestatie en een doorrekening; de tweede vraag niet.

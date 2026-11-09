@@ -15,6 +15,11 @@ def _credited_amount(invoices):
     )
 
 
+def _private_total(bill):
+    """Lines of a vendor bill borne by one person and recharged to him (see vme_syndic.py): not distributed."""
+    return sum(bill.invoice_line_ids.filtered("vme_recharge_partner_id").mapped("price_total"))
+
+
 class VmeAssociation(models.Model):
     _inherit = "vme.association"
 
@@ -102,7 +107,7 @@ class VmeAssociation(models.Model):
                     "description": move.ref or move.name,
                     "period": (move.vme_period_start, move.vme_period_end),
                     "keys": ", ".join(move_allocations.key_id.mapped("name")),
-                    "total": move.amount_total,
+                    "total": move.amount_total - _private_total(move),
                     "partial_days": days[0] if len(days) == 1 and days[0] < period_days else False,
                     "period_days": period_days,
                     "amount": currency.round(sum(move_allocations.mapped("amount"))),
@@ -146,8 +151,11 @@ class VmeAssociation(models.Model):
                 "reserve_works_total": currency.round(sum(w["amount"] for w in reserve_works)),
             })
 
-        undistributed = bills.filtered(lambda m: not m.vme_allocation_ids)
-        bills_total = currency.round(-sum(bills.mapped("amount_total_signed")))
+        # A bill whose lines are all borne by one person (e.g. the seller) has nothing to distribute.
+        undistributed = bills.filtered(lambda m: not m.vme_allocation_ids and m._vme_distributable_lines())
+        bills_total = currency.round(-sum(bills.mapped("amount_total_signed"))
+                                     - sum(_private_total(m) * (-1 if m.move_type == "in_refund" else 1)
+                                           for m in bills))
         allocated_total = currency.round(sum((allocations | reserve_allocations).mapped("amount")))
         return {
             "vme": vme,

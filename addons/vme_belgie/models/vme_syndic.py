@@ -15,6 +15,9 @@ from odoo.exceptions import UserError, ValidationError
 from odoo.fields import Command
 from odoo.tools import format_date
 
+from .vme_access import check_not_auditor
+from .vme_request import PRIVATE_INVOICE_DUE_DAYS
+
 SERVICE_TYPES = [
     ("extraordinary_assembly", "Buitengewone AV"),
     ("sale_file", "Verkoopdossier en inlichtingen notaris"),
@@ -441,6 +444,9 @@ class VmeServiceLine(models.Model):
     recharge_partner_id = fields.Many2one(
         "res.partner", string="Door te rekenen aan",
         help="Wie de kost uiteindelijk draagt, bv. de verkoper bij de inlichtingen aan de notaris.")
+    recharge_invoice_id = fields.Many2one(
+        "account.move", string="Doorrekening", readonly=True, copy=False, ondelete="set null", index="btree_not_null",
+        help="Factuur van de VME aan wie de kost draagt; ze blijft een concept tot een medewerker ze bevestigt.")
     no_charge = fields.Boolean(string="Niet aanrekenen")
     invoice_line_id = fields.Many2one("account.move.line", string="Factuurlijn", readonly=True, copy=False,
                                       ondelete="set null", index=True)
@@ -529,7 +535,109 @@ class VmeServiceLine(models.Model):
         source.message_post(body=self.env._(
             "Prestatie van de syndicus geregistreerd: %(name)s (%(amount)s, zonder btw), te factureren met het "
             "volgende ereloon.", name=name, amount=f"€ {line.amount:.2f}"))
+        if recharge_partner and line.amount:
+            line._prepare_recharge_invoice()
         return line
+
+    def write(self, vals):
+        result = super().write(vals)
+        if {"quantity", "price_unit", "recharge_partner_id", "no_charge", "name"} & set(vals):
+            drafts = self.filtered(lambda line: line.recharge_invoice_id.state == "draft")
+            for line in drafts:
+                if line.no_charge or not line.recharge_partner_id:
+                    line.recharge_invoice_id.sudo().button_cancel()
+                else:
+                    line._prepare_recharge_invoice()
+        return result
+
+    def _recharge_amount(self):
+        """What the VME pays for this service: the price with the VAT of the office, a cost for the VME."""
+        self.ensure_one()
+        company = self.company_id
+        tax = self.env["vme.management.agreement"]._chart_ref(company, VME_PURCHASE_TAX)
+        if not tax:
+            return company.currency_id.round(self.amount)
+        return tax.compute_all(self.price_unit, company.currency_id, self.quantity)["total_included"]
+
+    def _prepare_recharge_invoice(self):
+        """Draft invoice of the VME to the partner who bears the cost; a staff member confirms and sends it.
+
+        One line on 416100 "Door te rekenen privékosten", like the private invoice of a request: the line of
+        this service on the vendor bill of the office goes on the same account, so the cost never reaches
+        the distribution over the owners.
+        """
+        Move = self.env["account.move"].sudo()
+        for line in self:
+            if not line.recharge_partner_id:
+                raise UserError(self.env._("Vul in aan wie de prestatie %s doorgerekend wordt.", line.name))
+            if line.no_charge:
+                raise UserError(self.env._("De prestatie %s wordt niet aangerekend.", line.name))
+            invoice = line.recharge_invoice_id
+            if invoice and invoice.state == "posted":
+                raise UserError(self.env._(
+                    "De doorrekening %s is al bevestigd; pas ze aan met een creditnota.", invoice.name))
+            company = line.company_id
+            journal = self.env["account.journal"].sudo().search(
+                [("company_id", "=", company.id), ("type", "=", "sale")], limit=1)
+            if not journal:
+                raise UserError(self.env._("Het rekeningstelsel van %s is niet volledig.", line.association_id.name))
+            partner = line.recharge_partner_id
+            label = line.with_context(lang=partner.lang or self.env.lang)._recharge_label()
+            vals = {
+                "partner_id": partner.id,
+                "invoice_date": line.date,
+                "invoice_date_due": line.date + timedelta(days=PRIVATE_INVOICE_DUE_DAYS),
+                "ref": line.source_name or line.name,
+                "invoice_line_ids": [Command.clear(), Command.create({
+                    "name": label,
+                    "quantity": 1,
+                    "price_unit": line._recharge_amount(),
+                    "account_id": self.env["vme.request"]._private_charge_account(company).id,
+                    "tax_ids": [Command.clear()],
+                })],
+            }
+            if invoice and invoice.state == "draft":
+                invoice.with_company(company).write(vals)
+                continue
+            invoice = Move.with_company(company).create({
+                **vals,
+                "move_type": "out_invoice",
+                "company_id": company.id,
+                "journal_id": journal.id,
+                # Paid to the working capital account, like the other income of the VME.
+                "vme_fund": "working",
+            })
+            line.sudo().recharge_invoice_id = invoice
+            message = self.env._(
+                "Doorrekening aan %(partner)s klaargezet als concept (%(amount)s). Kijk ze na, bevestig ze en "
+                "verstuur ze aan %(partner)s.", partner=partner.name, amount=f"€ {invoice.amount_total:.2f}")
+            invoice.message_post(body=message)
+            source = line.res_model and self.env[line.res_model].browse(line.res_id).exists()
+            if source and hasattr(source, "message_post"):
+                source.message_post(body=message)
+        return True
+
+    def _recharge_label(self):
+        self.ensure_one()
+        kind = dict(self._fields["service_type"]._description_selection(self.env))[self.service_type]
+        lots = ""
+        if self.res_model == "vme.sale.file":
+            sale = self.env["vme.sale.file"].sudo().browse(self.res_id)
+            lots = ", ".join(sale.lot_ids.mapped("name"))
+        return self.env._(
+            "%(kind)s %(vme)s%(lots)s (%(date)s), btw inbegrepen", kind=kind, vme=self.association_id.name,
+            lots=lots and self.env._(", kavel %s", lots), date=format_date(self.env, self.date))
+
+    def action_prepare_recharge_invoice(self):
+        check_not_auditor(self.env)  # the invoice is created as sudo
+        self._prepare_recharge_invoice()
+        return self[:1].action_open_recharge_invoice() if len(self) == 1 else True
+
+    def action_open_recharge_invoice(self):
+        self.ensure_one()
+        invoice = self.recharge_invoice_id
+        return {"type": "ir.actions.act_window", "res_model": "account.move", "res_id": invoice.id,
+                "view_mode": "form", "context": {"allowed_company_ids": invoice.company_id.ids}}
 
     def action_open_source(self):
         self.ensure_one()
@@ -568,14 +676,26 @@ class AccountMove(models.Model):
             agreement._ensure_fee_rule()
             rule = self.env["vme.distribution.rule"].sudo()._find_rule(vme_company, agreement.syndic_partner_id)
             tax = agreement._chart_ref(vme_company, VME_PURCHASE_TAX)
-            line_vals = [{
-                "name": line.name,
-                "quantity": line.quantity,
-                "price_unit": line.price_unit,
-                "tax_ids": [Command.set(tax.ids)],
-                **({"account_id": rule.account_id.id} if rule.account_id else {}),
-                **({"vme_key_id": rule.key_id.id} if rule.key_id else {}),
-            } for line in invoice.invoice_line_ids.filtered(lambda l: l.display_type == "product")]
+            private_account = self.env["vme.request"]._private_charge_account(vme_company)
+            line_vals = []
+            for line in invoice.invoice_line_ids.filtered(lambda l: l.display_type == "product"):
+                vals = {
+                    "name": line.name,
+                    "quantity": line.quantity,
+                    "price_unit": line.price_unit,
+                    "tax_ids": [Command.set(tax.ids)],
+                }
+                recharge_partner = line.vme_service_line_id.recharge_partner_id
+                if recharge_partner:
+                    # Borne by one person (e.g. the seller): on 416100 with the invoice to that person, not
+                    # distributed over the owners.
+                    vals.update({"account_id": private_account.id, "vme_recharge_partner_id": recharge_partner.id})
+                else:
+                    vals.update({
+                        **({"account_id": rule.account_id.id} if rule.account_id else {}),
+                        **({"vme_key_id": rule.key_id.id} if rule.key_id else {}),
+                    })
+                line_vals.append(vals)
             vals = {
                 "partner_id": agreement.syndic_partner_id.id,
                 "invoice_date": invoice.invoice_date,
@@ -597,6 +717,19 @@ class AccountMove(models.Model):
             invoice.message_post(body=self.env._(
                 "Leveranciersfactuur in %s klaargezet als concept.", agreement.association_id.name))
 
+    def _vme_distributable_lines(self):
+        # A line borne by one person is charged to that person with the recharge invoice of the service.
+        return super()._vme_distributable_lines().filtered(lambda line: not line.vme_recharge_partner_id)
+
+    def _vme_auto_distribute(self):
+        private = self.filtered(lambda m: not m._vme_distributable_lines()
+                                and m.invoice_line_ids.filtered("vme_recharge_partner_id"))
+        for move in private:
+            move.message_post(body=self.env._(
+                "Niet verdeeld: deze kosten zijn ten laste van %s.",
+                ", ".join(move.invoice_line_ids.vme_recharge_partner_id.mapped("name"))))
+        return super(AccountMove, self - private)._vme_auto_distribute()
+
     def action_open_vme_fee_bill(self):
         self.ensure_one()
         move = self.vme_fee_bill_id or self.vme_fee_invoice_id
@@ -608,6 +741,15 @@ class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
 
     vme_service_line_id = fields.Many2one("vme.service.line", string="Prestatie", copy=False, index="btree_not_null")
+    vme_recharge_partner_id = fields.Many2one(
+        "res.partner", string="Ten laste van", copy=False,
+        help="Deze lijn wordt niet verdeeld over de eigenaars: de VME rekent ze door aan deze persoon.")
+
+    def _compute_vme_key_id(self):
+        # A line borne by one person gets no key from the distribution rule: it is not distributed.
+        private = self.filtered("vme_recharge_partner_id")
+        private.vme_key_id = False
+        super(AccountMoveLine, self - private)._compute_vme_key_id()
 
 
 class VmeSyndicMandate(models.Model):
@@ -961,12 +1103,29 @@ def _vme_env(record):
 class VmeSaleFile(models.Model):
     _inherit = "vme.sale.file"
 
+    recharge_invoice_id = fields.Many2one("account.move", string="Doorrekening verkoper",
+                                          compute="_compute_recharge_invoice_id")
+
+    def _compute_recharge_invoice_id(self):
+        lines = self.env["vme.service.line"].sudo().search([
+            ("res_model", "=", self._name), ("res_id", "in", self.ids), ("service_type", "=", "sale_file")])
+        invoices = {line.res_id: line.recharge_invoice_id for line in lines}
+        for sale in self:
+            sale.recharge_invoice_id = invoices.get(sale.id, self.env["account.move"])
+
+    def action_open_recharge_invoice(self):
+        self.ensure_one()
+        invoice = self.sudo().recharge_invoice_id
+        return {"type": "ir.actions.act_window", "res_model": "account.move", "res_id": invoice.id,
+                "view_mode": "form", "context": {"allowed_company_ids": invoice.company_id.ids}}
+
     def _answer(self, which):
         result = super()._answer(which)
         if which == "first":
             for sale in self:
                 # LEGAL-CHECK: art. 3.94 §1 BW - the costs of the information to the notary are borne by
-                # the selling co-owner; the VME pays the syndic and recharges the seller (not automated yet).
+                # the selling co-owner; the VME pays the syndic and recharges the seller with a draft invoice
+                # that a staff member confirms and sends.
                 self.env["vme.service.line"]._register_from_source(
                     sale, "sale_file", sale.first_answer_date,
                     _vme_env(sale)._("Verkoopdossier %s", sale.name), recharge_partner=sale.seller_id)

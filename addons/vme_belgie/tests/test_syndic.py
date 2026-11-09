@@ -118,6 +118,63 @@ class TestSyndic(TransactionCase):
         line = self.vme.service_line_ids
         self.assertEqual(line.service_type, "sale_file")
         self.assertEqual(line.recharge_partner_id, self.owners[0])
+        # The VME recharges what it pays the office (price with 21% VAT, a cost for the VME) to the seller.
+        invoice = line.recharge_invoice_id
+        self.assertEqual((invoice.move_type, invoice.state, invoice.company_id, invoice.partner_id),
+                         ("out_invoice", "draft", self.vme.company_id, self.owners[0]))
+        self.assertEqual(line.price_unit, 236.39)  # 225 x 1.0506
+        self.assertAlmostEqual(invoice.amount_total, 286.03)  # 236.39 x 1.21
+        self.assertFalse(invoice.invoice_line_ids.tax_ids)
+        self.assertEqual(invoice.invoice_line_ids.account_id.with_company(self.vme.company_id).code, "416100")
+        self.assertEqual(invoice.vme_fund, "working")
+        self.assertIn("kavel A1", invoice.invoice_line_ids.name)
+        self.assertEqual(sale.recharge_invoice_id, invoice)
+        # A changed price follows on the draft; nothing is confirmed or sent by itself.
+        line.price_unit = 200.0
+        self.assertAlmostEqual(invoice.amount_total, 242.0)
+        self.assertEqual(invoice.state, "draft")
+        self.assertFalse(invoice.message_ids.filtered(lambda m: m.message_type == "email"))
+        line.no_charge = True
+        self.assertEqual(invoice.state, "cancel")
+
+    def test_sale_file_cost_is_not_distributed_over_the_owners(self):
+        with freeze_time(date(2026, 8, 10)):
+            sale = self.env["vme.sale.file"].create({
+                "association_id": self.vme.id, "lot_ids": [Command.set(self.lots[:1].ids)],
+                "first_request_date": date(2026, 8, 3)})
+            with patch.object(type(sale), "_render_answer", return_value=b"%PDF-1.4"):
+                sale.action_answer_first()
+        service = self.vme.service_line_ids
+        recharge = service.recharge_invoice_id
+        invoice = self.agreement._create_fee_invoice(date(2026, 7, 1), date(2026, 9, 30))
+        self.assertEqual(service.invoice_id, invoice)
+        invoice.action_post()
+        bill = invoice.vme_fee_bill_id
+        private = bill.invoice_line_ids.filtered("vme_recharge_partner_id")
+        self.assertEqual(private.vme_recharge_partner_id, self.owners[0])
+        self.assertEqual(private.account_id.with_company(self.vme.company_id).code, "416100")
+        self.assertFalse(private.vme_key_id)
+        self.assertAlmostEqual(private.price_total, recharge.amount_total)
+        # A person confirms the bill: only the fixed fee is split over the four owners.
+        bill.action_post()
+        self.assertEqual(len(bill.vme_allocation_ids.partner_id), 4)
+        self.assertFalse(bill.vme_allocation_ids.filtered(lambda a: a.move_line_id == private))
+        self.assertAlmostEqual(sum(bill.vme_allocation_ids.mapped("amount")),
+                               bill.amount_total - private.price_total)
+        statement = self.vme._get_annual_statement(2026)
+        self.assertTrue(statement["is_complete"])
+        self.assertAlmostEqual(statement["statements"][0]["bills"][0]["total"],
+                               bill.amount_total - private.price_total)
+        # Once the recharge is confirmed too, 416100 is zero: the cost never reaches the VME.
+        recharge.action_post()
+        lines = self.env["account.move.line"].search([
+            ("company_id", "=", self.vme.company_id.id), ("parent_state", "=", "posted"),
+            ("account_id", "=", private.account_id.id)])
+        # The non-deductible VAT of the bill is its own journal item on 416100 too.
+        self.assertEqual(lines.move_id, bill | recharge)
+        self.assertAlmostEqual(sum(lines.mapped("balance")), 0.0)
+        with self.assertRaisesRegex(UserError, "al bevestigd"):
+            service.action_prepare_recharge_invoice()
 
     def test_service_from_extraordinary_assembly_and_second_meeting(self):
         extraordinary, second = self.env["vme.assembly"].create([
