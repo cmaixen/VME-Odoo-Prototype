@@ -11,6 +11,7 @@ Nothing in here sends anything: every outward action in the scenario stays a dra
 """
 import argparse
 import html
+import json
 import os
 import subprocess
 import sys
@@ -35,12 +36,32 @@ OWNER_PASSWORD = "portaal-demo"
 class Recorder:
     """One page with slow, visible actions: the pointer glides to an element before each click."""
 
-    def __init__(self, page, speed, shots_dir=None):
+    def __init__(self, page, speed, shots_dir=None, voice=None):
         self.page = page
         self.speed = speed
         self.shots_dir = shots_dir
         self.shot_no = 0
         self.label = ""
+        # Voice-over (voice.py): caption -> clip. The recording waits for each clip to finish
+        # before the next caption, and the timeline tells make_video.py where to put the clips.
+        self.voice = voice or {}
+        self.timeline = []
+        self.t0 = time.time()
+        self.voice_until = 0.0
+
+    def wait_voice(self, extra=0.0):
+        rest = self.voice_until + extra - time.time()
+        if rest > 0:
+            self.page.wait_for_timeout(int(rest * 1000))
+
+    def speak(self, key):
+        """Start the clip of `key` now (in video time), if there is one."""
+        clip = self.voice.get(key)
+        if clip:
+            now = time.time()
+            self.timeline.append({"t": round(now - self.t0, 3), "key": key, "file": clip["file"],
+                                  "duration": clip["duration"]})
+            self.voice_until = now + clip["duration"] + 0.35
 
     # -- timing and captions -------------------------------------------------------------
     def hold(self, seconds, shot=None):
@@ -55,6 +76,7 @@ class Recorder:
     def chapter(self, label):
         """A new step: the band shows only its title, so the last sentence of the previous step
         does not come back from sessionStorage after the next page load."""
+        self.wait_voice(0.3)
         self.label = label
         self.page.evaluate("(c) => { try { sessionStorage.setItem('vmeCaption', c); } catch (e) {} "
                            "window.__vmeSetCaption && window.__vmeSetCaption(c); }",
@@ -63,7 +85,10 @@ class Recorder:
     def say(self, text, seconds=0, shot=None):
         """Caption band: the step in small capitals, then the sentence (the "Zeg:" line or a hint)."""
         content = f'<span class="step">{html.escape(self.label)}</span>{html.escape(text)}' if text else ""
+        if text:
+            self.wait_voice()  # let the previous sentence finish before the caption changes
         self.page.evaluate("(c) => window.__vmeSetCaption && window.__vmeSetCaption(c)", content)
+        self.speak(text)
         if seconds:
             self.hold(seconds, shot or self.label.split(" ")[0])
 
@@ -153,7 +178,7 @@ CARD_CSS = """
 """
 
 
-def title_card(rec, title, subtitle, lines, footer, seconds):
+def title_card(rec, title, subtitle, lines, footer, seconds, voice=None):
     body = "".join(f"<p>{html.escape(line)}</p>" for line in lines)
     rec.page.set_content(
         f"<html><head><style>{CARD_CSS}</style></head><body><h1>{html.escape(title)}</h1>"
@@ -162,7 +187,11 @@ def title_card(rec, title, subtitle, lines, footer, seconds):
     rec.ensure_overlay()
     rec.say("")
     rec.page.mouse.move(1900, 1070)
+    rec.hold(0.6)
+    if voice:
+        rec.speak(voice)
     rec.hold(seconds, "titel")
+    rec.wait_voice(0.5)
 
 
 def terminal_page(rec, command, output_lines):
@@ -233,6 +262,12 @@ def login_state(browser, login, password, path):
     context.close()
 
 
+def load_voice():
+    """The clips of voice.py, if they were generated; without them the video is silent."""
+    manifest = ROOT / "build/demo_video/voice/manifest.json"
+    return json.loads(manifest.read_text()) if manifest.exists() else {}
+
+
 def new_segment(browser, args, name, state):
     options = {"viewport": SIZE, "storage_state": str(state), "locale": "nl-BE", "timezone_id": "Europe/Brussels",
                "accept_downloads": True}
@@ -242,7 +277,8 @@ def new_segment(browser, args, name, state):
     context.add_init_script(OVERLAY)
     page = context.new_page()
     page.set_default_timeout(20000)
-    return context, Recorder(page, args.speed, args.out if args.shots else None)
+    voice = None if args.shots else load_voice()
+    return context, Recorder(page, args.speed, args.out if args.shots else None, voice)
 
 
 def run_ai(*cmd):
@@ -637,6 +673,9 @@ def main():
                 for step in steps:
                     print(f"[{name}] {step.__name__}", flush=True)
                     step(rec)
+                rec.wait_voice(0.8)
+                if not args.shots:
+                    (args.out / name / "timeline.json").write_text(json.dumps(rec.timeline, indent=1))
             except Exception:
                 rec.page.screenshot(path=str(args.out / f"ERROR_{name}.png"))
                 raise
@@ -650,19 +689,19 @@ def intro(rec):
     title_card(rec, "Quotis", "Een syndicusplatform op Odoo: van mail tot jaarafrekening",
                ["Drie fictieve gebouwen · begin november 2026",
                 "De software zet alles klaar, een mens beslist."],
-               "Prototype. Alle gebouwen, eigenaars, bedragen en rekeningnummers zijn verzonnen.", 6)
+               "Prototype. Alle gebouwen, eigenaars, bedragen en rekeningnummers zijn verzonnen.", 6, "#intro")
 
 
 def extras_card(rec):
     title_card(rec, "Twee extra's", "Het boekjaar afsluiten · Een mail van een eigenaar in Outlook",
-               [], "Prototype met fictieve data.", 3)
+               [], "Prototype met fictieve data.", 3, "#extras")
 
 
 def outro(rec):
     title_card(rec, "Quotis", "De software zet alles klaar, een mens beslist.",
                ["Niets vertrekt zonder een klik van uw medewerker."],
                "Prototype op Odoo 19 Community. Alle data is verzonnen; de Belgische regels zijn nog niet "
-               "juridisch nagekeken.", 5)
+               "juridisch nagekeken.", 5, "#outro")
 
 
 if __name__ == "__main__":
