@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 19.0-20261102\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-07 19:27+0000\n"
+"POT-Creation-Date: 2026-11-09 15:02+0000\n"
 "PO-Revision-Date: 2026-11-06 08:33+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -166,6 +166,20 @@ msgid ""
 "%(count)s openstaande provisies van dit bedrag (%(how)s): voorstel is de oudste."
 msgstr ""
 "%(count)s provisions ouvertes de ce montant (%(how)s) : la plus ancienne est proposée."
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_assembly_meeting.py:0
+msgid ""
+"%(count)s oproeping(en) nog niet verstuurd, uiterlijk was %(deadline)s: %(owners)s."
+msgstr ""
+"%(count)s convocation(s) pas encore envoyée(s), le délai était le %(deadline)s : %(owners)s."
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_assembly_meeting.py:0
+msgid "%(count)s oproeping(en) vertrokken na %(deadline)s: %(owners)s."
+msgstr "%(count)s convocation(s) partie(s) après le %(deadline)s : %(owners)s."
 
 #. module: vme_belgie
 #. odoo-python
@@ -539,6 +553,14 @@ msgstr "%s documents dans les archives"
 #: code:addons/vme_belgie/wizard/vme_meter_import_wizard.py:0
 msgid "%s fout(en): verbeter het bestand en controleer opnieuw."
 msgstr "%s erreur(s) : corrigez le fichier et vérifiez à nouveau."
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_communication.py:0
+msgid ""
+"%s gaf geen schriftelijk akkoord voor oproepingen per e-mail (of heeft geen e-mailadres). Verstuur de oproeping aangetekend."
+msgstr ""
+"%s n'a pas donné d'accord écrit pour recevoir les convocations par e-mail (ou n'a pas d'adresse e-mail). Envoyez la convocation par recommandé."
 
 #. module: vme_belgie
 #. odoo-python
@@ -1812,20 +1834,24 @@ msgid "Aangerekende kosten"
 msgstr "Frais imputés"
 
 #. module: vme_belgie
+#: model:ir.model.fields.selection,name:vme_belgie.selection__vme_assembly_convocation__channel__registered
 #: model:ir.model.fields.selection,name:vme_belgie.selection__vme_communication__channel__registered
 #: model:ir.model.fields.selection,name:vme_belgie.selection__vme_communication_log__channel__registered
 #: model:ir.model.fields.selection,name:vme_belgie.selection__vme_communication_template__channel__registered
+#: model_terms:ir.ui.view,arch_db:vme_belgie.vme_assembly_convocation_view_list
 #: model_terms:ir.ui.view,arch_db:vme_belgie.vme_communication_log_view_search
 msgid "Aangetekend"
 msgstr "Recommandé"
 
 #. module: vme_belgie
+#: model_terms:ir.ui.view,arch_db:vme_belgie.vme_assembly_convocation_view_form
 #: model_terms:ir.ui.view,arch_db:vme_belgie.vme_collection_reminder_view_form_communication
 msgid "Aangetekend versturen"
 msgstr "Envoyer par recommandé"
 
 #. module: vme_belgie
 #: model:ir.model,name:vme_belgie.model_vme_registered_mail
+#: model:ir.model.fields,field_description:vme_belgie.field_vme_assembly_convocation__registered_mail_id
 #: model:ir.model.fields,field_description:vme_belgie.field_vme_collection_reminder__registered_mail_id
 #: model:ir.model.fields,field_description:vme_belgie.field_vme_communication_log__registered_mail_id
 #: model:ir.model.fields.selection,name:vme_belgie.selection__vme_service_line__service_type__registered_mail
@@ -2741,6 +2767,12 @@ msgid "Agendapunt staat klaar."
 msgstr "Le point de l'ordre du jour est prêt."
 
 #. module: vme_belgie
+#: model:ir.model.fields,field_description:vme_belgie.field_res_partner__vme_convocation_consent_date
+#: model:ir.model.fields,field_description:vme_belgie.field_res_users__vme_convocation_consent_date
+msgid "Akkoord oproeping per e-mail"
+msgstr "Accord convocation par e-mail"
+
+#. module: vme_belgie
 #: model:ir.model.fields.selection,name:vme_belgie.selection__vme_sale_file__state__done
 #: model_terms:ir.ui.view,arch_db:vme_belgie.vme_sale_file_view_form
 msgid "Akte verleden"
@@ -3025,8 +3057,10 @@ msgstr "Seules les factures fournisseurs d'une ACP sont approuvées pour paiemen
 #. module: vme_belgie
 #: model:ir.model.fields,help:vme_belgie.field_res_partner__vme_national_number
 #: model:ir.model.fields,help:vme_belgie.field_res_users__vme_national_number
-msgid "Alleen voor een natuurlijke persoon die een fiche 281.50 krijgt."
-msgstr "Uniquement pour une personne physique qui reçoit une fiche 281.50."
+msgid ""
+"Alleen voor een natuurlijke persoon die een fiche 281.50 krijgt. Een zelfstandige met een vrij beroep heeft daarnaast een ondernemingsnummer: vul het in bij btw-nummer of KBO."
+msgstr ""
+"Uniquement pour une personne physique qui reçoit une fiche 281.50. Un indépendant exerçant une profession libérale a en outre un numéro d'entreprise : indiquez-le dans le numéro de TVA ou BCE."
 
 #. module: vme_belgie
 #. odoo-python
@@ -3863,6 +3897,11 @@ msgid "Bestand klaar"
 msgstr "Fichier prêt"
 
 #. module: vme_belgie
+#: model_terms:ir.ui.view,arch_db:vme_belgie.vme_belcotax_statement_view_form
+msgid "Bestand voor Belcotax downloaden"
+msgstr "Télécharger le fichier pour Belcotax"
+
+#. module: vme_belgie
 #: model:ir.model.fields,field_description:vme_belgie.field_vme_bank_import_wizard__filename
 #: model:ir.model.fields,field_description:vme_belgie.field_vme_document__filename
 #: model:ir.model.fields,field_description:vme_belgie.field_vme_meter_import_wizard__filename
@@ -4552,6 +4591,14 @@ msgid "Boekjaar %s heropend."
 msgstr "Exercice %s rouvert."
 
 #. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_fiscal_closing.py:0
+msgid ""
+"Boekjaar %s heropend; de vergrendeling van de boekhouding is niet gewijzigd, want ze werd intussen verlegd."
+msgstr ""
+"Exercice %s rouvert ; le verrouillage de la comptabilité n'a pas été modifié, car il a été déplacé entre-temps."
+
+#. module: vme_belgie
 #: model:ir.model.fields.selection,name:vme_belgie.selection__vme_cycle_step__code__closing
 #: model_terms:ir.ui.view,arch_db:vme_belgie.vme_association_view_form_fiscal_closing
 #: model_terms:ir.ui.view,arch_db:vme_belgie.vme_fiscal_closing_view_form
@@ -4700,6 +4747,7 @@ msgid "Btw (%)"
 msgstr "TVA (%)"
 
 #. module: vme_belgie
+#: model:ir.model.fields,field_description:vme_belgie.field_vme_belcotax_line__vat
 #: model_terms:ir.ui.view,arch_db:vme_belgie.supplier_card_content
 msgid "Btw-nummer"
 msgstr "Numéro de TVA"
@@ -5570,6 +5618,14 @@ msgid "Datum van de verhuis of begin van de huur."
 msgstr "Date du déménagement ou du début de la location."
 
 #. module: vme_belgie
+#: model:ir.model.fields,help:vme_belgie.field_res_partner__vme_convocation_consent_date
+#: model:ir.model.fields,help:vme_belgie.field_res_users__vme_convocation_consent_date
+msgid ""
+"Datum waarop deze eigenaar schriftelijk akkoord gaf om oproepingen tot de algemene vergadering per e-mail te krijgen. Leeg: de oproeping gaat aangetekend."
+msgstr ""
+"Date à laquelle ce propriétaire a donné son accord écrit pour recevoir par e-mail les convocations à l'assemblée générale. Vide : la convocation part par recommandé."
+
+#. module: vme_belgie
 #: model_terms:ir.ui.view,arch_db:vme_belgie.report_notary_information_document
 msgid "Datum:"
 msgstr "Date :"
@@ -5703,6 +5759,13 @@ msgstr "Les copropriétaires présents"
 #: code:addons/vme_belgie/models/vme_fiscal_closing.py:0
 msgid "De afrekening per eigenaar is nog niet voorbereid."
 msgstr "Le décompte par propriétaire n'est pas encore préparé."
+
+#. module: vme_belgie
+#: model:ir.model.fields,help:vme_belgie.field_vme_request__proof_sender_confirmed
+msgid ""
+"De afzender van een mail kan vervalst zijn. Bevestigd via een antwoord op de bewijsvraag, telefonisch of in het portaal."
+msgstr ""
+"L'expéditeur d'un e-mail peut être falsifié. Confirmé par une réponse à la question de vérification, par téléphone ou dans le portail."
 
 #. module: vme_belgie
 #. odoo-python
@@ -6122,6 +6185,12 @@ msgstr ""
 
 #. module: vme_belgie
 #. odoo-python
+#: code:addons/vme_belgie/models/vme_communication.py:0
+msgid "De oproeping van %s heeft nog geen pdf."
+msgstr "La convocation de %s n'a pas encore de PDF."
+
+#. module: vme_belgie
+#. odoo-python
 #: code:addons/vme_belgie/models/vme_assembly.py:0
 msgid "De oproeping vertrok te laat (%(sent)s, uiterlijk %(deadline)s)."
 msgstr "La convocation est partie trop tard (%(sent)s, au plus tard %(deadline)s)."
@@ -6302,6 +6371,12 @@ msgid ""
 "De stand van teller %(meter)s daalt van %(old)s op %(old_date)s naar %(new)s op %(date)s."
 msgstr ""
 "Le relevé du compteur %(meter)s baisse de %(old)s au %(old_date)s à %(new)s au %(date)s."
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_belcotax.py:0
+msgid "De status van een overzicht 281.50 wijzigt alleen via de knoppen."
+msgstr "Le statut d'un relevé 281.50 ne change que via les boutons."
 
 #. module: vme_belgie
 #. odoo-python
@@ -6906,6 +6981,12 @@ msgstr "Ce mandat a déjà été renouvelé."
 
 #. module: vme_belgie
 #. odoo-python
+#: code:addons/vme_belgie/models/vme_belcotax.py:0
+msgid "Dit overzicht is al opgeladen. Zet het eerst terug naar concept."
+msgstr "Ce relevé a déjà été déposé. Remettez-le d'abord en brouillon."
+
+#. module: vme_belgie
+#. odoo-python
 #: code:addons/vme_belgie/models/vme_financial_statements.py:0
 msgid "Diverse schulden"
 msgstr "Dettes diverses"
@@ -7110,10 +7191,12 @@ msgstr "Dossiers"
 #: model_terms:ir.ui.view,arch_db:vme_belgie.vme_belcotax_statement_view_form
 msgid ""
 "Download het bestand en laad het zelf op in Belcotax-on-web. Odoo dient niets in.\n"
-"                        Het XML-formaat is nog te valideren tegen de brochure van de FOD Financiën."
+"                        Het bestand volgt de schema's van de FOD Financiën; doe vóór het eerste echte gebruik\n"
+"                        een proefupload."
 msgstr ""
 "Téléchargez le fichier et chargez-le vous-même dans Belcotax-on-web. Odoo n'introduit rien.\n"
-"                        Le format XML doit encore être validé par rapport à la brochure du SPF Finances."
+"                        Le fichier suit les schémas du SPF Finances ; faites un dépôt de test\n"
+"                        avant la première utilisation réelle."
 
 #. module: vme_belgie
 #: model_terms:ir.ui.view,arch_db:vme_belgie.vme_assembly_view_search
@@ -7153,6 +7236,7 @@ msgstr "Durée par AG (heures)"
 #: model:ir.model.fields,field_description:vme_belgie.field_vme_communication_log__mail_id
 #: model:ir.model.fields,field_description:vme_belgie.field_vme_ownership__email
 #: model:ir.model.fields.selection,name:vme_belgie.selection__res_partner__vme_communication_preference__email
+#: model:ir.model.fields.selection,name:vme_belgie.selection__vme_assembly_convocation__channel__email
 #: model:ir.model.fields.selection,name:vme_belgie.selection__vme_communication_log__channel__email
 #: model:ir.model.fields.selection,name:vme_belgie.selection__vme_damage_claim__source__mail
 #: model:ir.model.fields.selection,name:vme_belgie.selection__vme_request__channel__mail
@@ -7182,6 +7266,12 @@ msgstr "PEB des parties communes"
 #: model_terms:ir.ui.view,arch_db:vme_belgie.vme_association_view_form_compliance
 msgid "EPC gemene delen toevoegen"
 msgstr "Ajouter le PEB des parties communes"
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_fiscal_closing.py:0
+msgid "Een afsluiting begint altijd als concept."
+msgstr "Une clôture commence toujours en brouillon."
 
 #. module: vme_belgie
 #: model_terms:ir.ui.view,arch_db:vme_belgie.vme_association_view_form_compliance
@@ -7322,6 +7412,14 @@ msgstr "Un collaborateur a modifié la valeur lue."
 
 #. module: vme_belgie
 #. odoo-python
+#: code:addons/vme_belgie/models/vme_belcotax.py:0
+msgid ""
+"Een nagekeken of opgeladen overzicht wijzigt niet meer. Zet het eerst terug naar concept."
+msgstr ""
+"Un relevé vérifié ou déposé ne change plus. Remettez-le d'abord en brouillon."
+
+#. module: vme_belgie
+#. odoo-python
 #: code:addons/vme_belgie/models/vme_assembly_online.py:0
 msgid "Een online of schriftelijke stem kan niet meer gewijzigd worden."
 msgstr "Un vote en ligne ou par écrit ne peut plus être modifié."
@@ -7344,6 +7442,12 @@ msgid ""
 "Een ontbrekend of vervallen attest is nog niet beschikbaar bij de syndicus. De bestaande attesten zijn bijgevoegd of op aanvraag beschikbaar."
 msgstr ""
 "Une attestation manquante ou expirée n'est pas encore disponible chez le syndic. Les attestations existantes sont jointes ou disponibles sur demande."
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_belcotax.py:0
+msgid "Een overzicht 281.50 begint altijd als concept."
+msgstr "Un relevé 281.50 commence toujours en brouillon."
 
 #. module: vme_belgie
 #: model_terms:ir.ui.view,arch_db:vme_belgie.report_handover_arrears_document
@@ -7385,6 +7489,14 @@ msgstr "Un compteur ne peut avoir qu'un seul relevé par jour."
 #: model:ir.model.constraint,message:vme_belgie.constraint_vme_meter_unique_name_per_association
 msgid "Een tellernummer kan maar één keer voorkomen binnen de VME."
 msgstr "Un numéro de compteur ne peut figurer qu'une seule fois dans l'ACP."
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_request.py:0
+msgid ""
+"Een veiligheidssleutel of badge geeft toegang tot het gebouw. Daarom kijken we eerst na of de aanvraag echt van u komt. We hebben nodig:"
+msgstr ""
+"Une clé de sécurité ou un badge donne accès à l'immeuble. C'est pourquoi nous vérifions d'abord que la demande vient bien de vous. Nous avons besoin de :"
 
 #. module: vme_belgie
 #: model_terms:ir.actions.act_window,help:vme_belgie.vme_distribution_rule_action
@@ -7539,6 +7651,11 @@ msgstr "Le propriétaire %s n'a pas de lot."
 #: code:addons/vme_belgie/models/vme_migration.py:0
 msgid "Eigenaar %s komt twee keer voor."
 msgstr "Le propriétaire %s figure deux fois."
+
+#. module: vme_belgie
+#: model:ir.model.fields,field_description:vme_belgie.field_vme_request__proof_sender_confirmed
+msgid "Eigenaar bevestigde de aanvraag"
+msgstr "Le propriétaire a confirmé la demande"
 
 #. module: vme_belgie
 #: model_terms:ir.ui.view,arch_db:vme_belgie.vme_bank_line_view_form
@@ -8562,6 +8679,7 @@ msgid "Forfaitaire schadevergoeding volgens het reglement van mede-eigendom"
 msgstr "Indemnité forfaitaire selon le règlement de copropriété"
 
 #. module: vme_belgie
+#: model:ir.model.fields,field_description:vme_belgie.field_vme_belcotax_statement__file_format
 #: model:ir.model.fields,field_description:vme_belgie.field_vme_migration__source_format
 msgid "Formaat"
 msgstr "Format"
@@ -8769,6 +8887,13 @@ msgstr ""
 
 #. module: vme_belgie
 #. odoo-python
+#: code:addons/vme_belgie/models/vme_belcotax.py:0
+msgid "Geen Belcotax-landcode voor %s: vul het land zelf aan in Belcotax-on-web."
+msgstr ""
+"Pas de code pays Belcotax pour %s : complétez vous-même le pays dans Belcotax-on-web."
+
+#. module: vme_belgie
+#. odoo-python
 #: code:addons/vme_belgie/models/account_move_ai.py:0
 msgid "Geen IBAN gelezen: kies zelf de rekening van de leverancier."
 msgstr "Aucun IBAN lu : choisissez vous-même le compte du fournisseur."
@@ -8863,6 +8988,13 @@ msgstr "Aucun contrat."
 #: model:ir.model.fields.selection,name:vme_belgie.selection__vme_migration__ai_state__none
 msgid "Geen documenten"
 msgstr "Pas de documents"
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_belcotax.py:0
+msgid "Geen e-mailadres voor de contactpersoon (uw gebruiker of het kantoor)."
+msgstr ""
+"Pas d'adresse e-mail pour la personne de contact (votre utilisateur ou le bureau)."
 
 #. module: vme_belgie
 #. odoo-python
@@ -10173,6 +10305,12 @@ msgstr ""
 
 #. module: vme_belgie
 #. odoo-python
+#: code:addons/vme_belgie/models/vme_belcotax.py:0
+msgid "Het adres van de VME is onvolledig."
+msgstr "L'adresse de l'ACP est incomplète."
+
+#. module: vme_belgie
+#. odoo-python
 #: code:addons/vme_belgie/models/vme_syndic.py:0
 msgid "Het agendapunt over de herbenoeming is niet aangenomen."
 msgstr "Le point de l'ordre du jour sur le renouvellement n'a pas été adopté."
@@ -10241,6 +10379,12 @@ msgstr ""
 #: code:addons/vme_belgie/wizard/vme_meter_import_wizard.py:0
 msgid "Het bestand is leeg."
 msgstr "Le fichier est vide."
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_belcotax.py:0
+msgid "Het bestand voldoet niet aan het schema van Belcotax-on-web: %s"
+msgstr "Le fichier ne respecte pas le schéma de Belcotax-on-web : %s"
 
 #. module: vme_belgie
 #: model:ir.model.fields,help:vme_belgie.field_vme_payment_batch__due_until
@@ -10421,6 +10565,12 @@ msgstr "Le mandat de %s est révoqué."
 #: code:addons/vme_belgie/models/vme_council.py:0
 msgid "Het mandaat van %s loopt niet."
 msgstr "Le mandat de %s n'est pas en cours."
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_belcotax.py:0
+msgid "Het ondernemingsnummer van de VME ontbreekt of klopt niet."
+msgstr "Le numéro d'entreprise de l'ACP manque ou est incorrect."
 
 #. module: vme_belgie
 #. odoo-python
@@ -11399,6 +11549,12 @@ msgid "Is geen PDF en wordt niet in het archief bewaard."
 msgstr "N'est pas un PDF et n'est pas conservé dans les archives."
 
 #. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_belcotax.py:0
+msgid "JSON Lines (nieuwe Belcotax-on-web)"
+msgstr "JSON Lines (nouveau Belcotax-on-web)"
+
+#. module: vme_belgie
 #: model:ir.model.fields,field_description:vme_belgie.field_vme_annual_statement_wizard__year
 #: model:ir.model.fields,field_description:vme_belgie.field_vme_assembly__year
 #: model:ir.model.fields,field_description:vme_belgie.field_vme_assembly_item__year
@@ -11505,6 +11661,11 @@ msgstr "Budget annuel du fonds de roulement"
 #: model_terms:ir.ui.view,arch_db:vme_belgie.vme_association_view_list_portfolio_cycle
 msgid "Jaarcyclus"
 msgstr "Cycle annuel"
+
+#. module: vme_belgie
+#: model:ir.model.fields,field_description:vme_belgie.field_vme_association__cycle_sync_date
+msgid "Jaarcyclus bijgewerkt op"
+msgstr "Cycle annuel mis à jour le"
 
 #. module: vme_belgie
 #: model:ir.model.fields,field_description:vme_belgie.field_vme_association__cycle_start_date
@@ -12870,6 +13031,11 @@ msgid "Locatie"
 msgstr "Emplacement"
 
 #. module: vme_belgie
+#: model:ir.model.fields,field_description:vme_belgie.field_vme_fiscal_closing__lock_date_before
+msgid "Lock Date Before"
+msgstr "Date de verrouillage avant"
+
+#. module: vme_belgie
 #: model_terms:ir.ui.view,arch_db:vme_belgie.supplier_card_content
 msgid "Looptijd"
 msgstr "Durée"
@@ -13822,10 +13988,12 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:vme_belgie.vme_assembly_convocation_view_form
 msgid ""
 "Niets wordt automatisch verstuurd: \"Versturen\" opent een e-mail met de oproeping, het\n"
-"                        volmachtformulier en de jaarafrekening, die u nakijkt en zelf verstuurt."
+"                        volmachtformulier en de jaarafrekening, die u nakijkt en zelf verstuurt. Zonder schriftelijk\n"
+"                        akkoord van de eigenaar voor e-mail gaat de oproeping aangetekend."
 msgstr ""
 "Rien n'est envoyé automatiquement : \"Envoyer\" ouvre un e-mail avec la convocation, le\n"
-"                        formulaire de procuration et le décompte annuel, que vous vérifiez et envoyez vous-même."
+"                        formulaire de procuration et le décompte annuel, que vous vérifiez et envoyez vous-même. Sans accord\n"
+"                        écrit du propriétaire pour l'e-mail, la convocation part par recommandé."
 
 #. module: vme_belgie
 #: model:ir.model.fields.selection,name:vme_belgie.selection__vme_meter_import_wizard__state__draft
@@ -14794,6 +14962,12 @@ msgstr "Numéro d'entreprise"
 #: code:addons/vme_belgie/models/vme_belcotax.py:0
 msgid "Ondernemingsnummer klopt niet (controlegetal)."
 msgstr "Le numéro d'entreprise est incorrect (chiffre de contrôle)."
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_belcotax.py:0
+msgid "Ondernemingsnummer of btw-nummer ontbreekt."
+msgstr "Le numéro d'entreprise ou de TVA manque."
 
 #. module: vme_belgie
 #. odoo-python
@@ -16208,6 +16382,13 @@ msgstr ""
 "                    facture et la validez vous-même."
 
 #. module: vme_belgie
+#: model:ir.model.fields,help:vme_belgie.field_vme_assembly_convocation__channel
+msgid ""
+"Per e-mail alleen als de eigenaar schriftelijk akkoord gaf (veld Akkoord oproeping per e-mail op de contactpersoon); anders aangetekend."
+msgstr ""
+"Par e-mail uniquement si le propriétaire a donné son accord écrit (champ Accord convocation par e-mail sur la personne de contact) ; sinon par recommandé."
+
+#. module: vme_belgie
 #: model:ir.model.fields,field_description:vme_belgie.field_vme_communication__channel_summary
 msgid "Per kanaal"
 msgstr "Par canal"
@@ -16230,7 +16411,6 @@ msgid "Per maand"
 msgstr "Par mois"
 
 #. module: vme_belgie
-#: model_terms:ir.ui.view,arch_db:vme_belgie.vme_assembly_convocation_view_form
 #: model_terms:ir.ui.view,arch_db:vme_belgie.vme_collection_reminder_view_form
 #: model_terms:ir.ui.view,arch_db:vme_belgie.vme_collection_reminder_view_list
 msgid "Per post verstuurd"
@@ -18040,6 +18220,12 @@ msgstr ""
 "Planifié : activités futures."
 
 #. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_fiscal_closing.py:0
+msgid "Status en overdracht van een afsluiting wijzigen alleen via de knoppen."
+msgstr "Le statut et le report d'une clôture ne changent que via les boutons."
+
+#. module: vme_belgie
 #: model:ir.model.fields,field_description:vme_belgie.field_vme_request__portal_state
 msgid "Status in het portaal"
 msgstr "Statut dans le portail"
@@ -18413,6 +18599,13 @@ msgstr "Texte de la décision pour le procès-verbal"
 #: model_terms:ir.ui.view,arch_db:vme_belgie.report_syndic_posting_document
 msgid "Telefoon"
 msgstr "Téléphone"
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_belcotax.py:0
+msgid "Telefoon, e-mailadres of ondernemingsnummer van de afzender (%s) ontbreekt."
+msgstr ""
+"Le téléphone, l'adresse e-mail ou le numéro d'entreprise de l'expéditeur (%s) manque."
 
 #. module: vme_belgie
 #: model:ir.model,name:vme_belgie.model_vme_meter
@@ -20237,6 +20430,7 @@ msgid "Verzekeringspolissen"
 msgstr "Polices d'assurance"
 
 #. module: vme_belgie
+#: model:ir.model.fields,field_description:vme_belgie.field_vme_assembly_convocation__channel
 #: model:ir.model.fields,field_description:vme_belgie.field_vme_communication_log__communication_id
 #: model:ir.model.fields,field_description:vme_belgie.field_vme_registered_mail__provider
 msgid "Verzending"
@@ -20479,6 +20673,11 @@ msgstr "Aucune attestation des parties communes n'est requise pour cet immeuble.
 #: model:ir.model.fields,help:vme_belgie.field_vme_assembly__subject
 msgid "Voor een buitengewone AV, bv. Laadpalen in de garage"
 msgstr "Pour une AG extraordinaire, p. ex. Bornes de recharge dans le garage"
+
+#. module: vme_belgie
+#: model:ir.model.fields,help:vme_belgie.field_vme_belcotax_line__vat
+msgid "Voor een buitenlands bedrijf zonder Belgisch ondernemingsnummer."
+msgstr "Pour une société étrangère sans numéro d'entreprise belge."
 
 #. module: vme_belgie
 #. odoo-python
@@ -20950,6 +21149,11 @@ msgid "Waarschuwing"
 msgstr "Avertissement"
 
 #. module: vme_belgie
+#: model:ir.model.fields,field_description:vme_belgie.field_vme_belcotax_statement__file_warning
+msgid "Waarschuwing bestand"
+msgstr "Avertissement fichier"
+
+#. module: vme_belgie
 #: model:ir.model.fields,field_description:vme_belgie.field_vme_association__council_warning
 msgid "Waarschuwing raad"
 msgstr "Avertissement conseil"
@@ -21024,12 +21228,12 @@ msgstr "Quoi"
 #: model_terms:ir.ui.view,arch_db:vme_belgie.res_partner_view_form_belcotax
 msgid ""
 "Wat de VME op de facturen van een 281.50-plichtige leverancier betaalt, komt in het\n"
-"                            overzicht onder VME &gt; Fiches 281.50. Voor een bedrijf komt het ondernemingsnummer uit het\n"
-"                            veld KBO of btw-nummer."
+"                            overzicht onder VME &gt; Fiches 281.50. Het ondernemingsnummer komt uit het veld KBO of\n"
+"                            btw-nummer, ook voor een zelfstandige met een vrij beroep."
 msgstr ""
 "Ce que l'ACP paie sur les factures d'un fournisseur soumis à la fiche 281.50 figure dans le\n"
-"                            relevé sous ACP &gt; Fiches 281.50. Pour une entreprise, le numéro d'entreprise provient du\n"
-"                            champ BCE ou numéro de TVA."
+"                            relevé sous ACP &gt; Fiches 281.50. Le numéro d'entreprise provient du champ BCE ou\n"
+"                            numéro de TVA, aussi pour un indépendant exerçant une profession libérale."
 
 #. module: vme_belgie
 #: model_terms:ir.ui.view,arch_db:vme_belgie.vme_damage_claim_view_form
@@ -21403,9 +21607,10 @@ msgid "Wordt overgenomen in de inlichtingen aan de notaris bij elke verkoop."
 msgstr "Repris dans les informations au notaire lors de chaque vente."
 
 #. module: vme_belgie
-#: model_terms:ir.ui.view,arch_db:vme_belgie.vme_belcotax_statement_view_form
-msgid "XML voor Belcotax downloaden"
-msgstr "Télécharger le XML pour Belcotax"
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_belcotax.py:0
+msgid "XML (Belcotax-on-web tot inkomsten 2025)"
+msgstr "XML (Belcotax-on-web jusqu'aux revenus 2025)"
 
 #. module: vme_belgie
 #: model:ir.model.fields,field_description:vme_belgie.field_vme_belcotax_statement__xml_filename
@@ -21460,6 +21665,13 @@ msgid ""
 "Zet bovenaan rechts het bedrijf %s aan om de documenten te openen of apart te bevestigen."
 msgstr ""
 "Activez la société %s en haut à droite pour ouvrir les documents ou les valider séparément."
+
+#. module: vme_belgie
+#: model_terms:ir.ui.view,arch_db:vme_belgie.vme_assembly_convocation_view_form
+msgid ""
+"Zet de oproeping in het register van aangetekende zendingen. Geef ze daarna af bij de post."
+msgstr ""
+"Inscrivez la convocation dans le registre des envois recommandés. Remettez-la ensuite à la poste."
 
 #. module: vme_belgie
 #: model:ir.model.fields,field_description:vme_belgie.field_vme_document__portal_visible
