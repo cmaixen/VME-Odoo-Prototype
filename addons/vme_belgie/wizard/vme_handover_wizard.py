@@ -116,6 +116,7 @@ class VmeHandoverWizard(models.TransientModel):
             if not wizard.association_id or not wizard.handover_date:
                 wizard.statement_year = wizard.handover_date.year if wizard.handover_date else False
                 continue
+            wizard.association_id.check_access("read")  # read as superuser below, only for a VME of the user
             last = self.env["account.move.line"].sudo().search([
                 ("company_id", "=", wizard.association_id.sudo().company_id.id), ("parent_state", "=", "posted"),
                 ("date", "<=", wizard.handover_date)], order="date desc", limit=1)
@@ -149,7 +150,12 @@ class VmeHandoverWizard(models.TransientModel):
     # --- Collecting ---
 
     def _handover_data(self):
-        """Everything in the package, read as superuser for a VME the user may read."""
+        """Everything in the package, read as superuser for a VME the user may read.
+
+        A VME staff member needs no accounting rights for the handover (C-D1): the record rule on
+        vme.association limits it to the VMEs of his companies, and everything below is searched within
+        that one VME or its company. The auditor is refused in _build_package (check_not_auditor).
+        """
         self.ensure_one()
         self.association_id.check_access("read")
         vme = self.association_id.sudo()

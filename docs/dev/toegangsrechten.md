@@ -51,6 +51,7 @@ Nagekeken zonder lek: het portaal (eigendommen, documenten, provisies, afrekenin
 Bewust zo gelaten:
 - **Partners zijn gedeeld.** Een medewerker met een deel van de VME's ziet de contactkaarten van eigenaars uit andere VME's in de contactenlijst, maar niet hun eigendommen, provisies of documenten. Afscherming van partners per VME vraagt een eigen regel op `res.partner` en raakt Odoo's eigen schermen; dat is voor later.
 - **De bedrijvenkiezer filtert de VME-lijsten niet**, de boekhouding wel (Odoo-standaard).
+- **Het overdrachtspakket vraagt geen boekhoudrechten (C-D1).** Een VME-medewerker zonder boekhoudgroep maakt het pakket voor een VME van zijn companies: `vme.handover.wizard` roept `check_access("read")` op de VME aan (de company-regel) en leest daarna met sudo, alleen binnen die VME of haar company. Een VME buiten zijn companies geeft een AccessError, de commissaris wordt geweigerd (`check_not_auditor`). Het zip-bestand blijft als bijlage op de VME staan, leesbaar voor de medewerkers van die VME. Tests: `test_staff_without_accounting_rights`, `test_auditor_cannot_build_a_package`.
 
 ## Niets vertrekt vanzelf (review november 2026)
 

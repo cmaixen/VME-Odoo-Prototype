@@ -219,6 +219,32 @@ class TestHandover(TransactionCase):
         self.assertIn(vat.with_company(company).code, rows[0]["omschrijving"])
         self.assertTrue(any("wachtrekening" in warning for warning in data["warnings"]))
 
+    def test_staff_without_accounting_rights(self):
+        """C-D1: a VME staff member without accounting rights builds the package for the VMEs of his companies."""
+        main = self.env.ref("base.main_company")
+        staff = self.env["res.users"].with_context(no_reset_password=True).create({
+            "name": "Medewerker Overdracht", "login": "medewerker.overdracht@example.com",
+            "group_ids": [Command.set([self.env.ref("base.group_user").id])],
+            "company_id": main.id, "company_ids": [Command.set((main | self.vme.company_id).ids)],
+        })
+        self.assertFalse(staff.has_group("account.group_account_invoice"))
+        wizard = self.env["vme.handover.wizard"].with_user(staff).with_company(main).create({
+            "association_id": self.vme.id, "handover_date": date(2027, 3, 31)})
+        self.assertIn("lopende werken", wizard.summary_html)
+        action = wizard.action_build_package()
+        attachment = self.env["ir.attachment"].browse(int(action["url"].split("/")[3].split("?")[0]))
+        tables = self._tables(attachment.raw)
+        self.assertTrue(tables["openingsbalans"])
+        self.assertTrue(tables["eigenaars"])
+        # Not for a VME outside his companies.
+        stranger = self.env["res.users"].with_context(no_reset_password=True).create({
+            "name": "Medewerker Ander Kantoor", "login": "medewerker.ander@example.com",
+            "group_ids": [Command.set([self.env.ref("base.group_user").id])],
+            "company_id": main.id, "company_ids": [Command.set(main.ids)],
+        })
+        with self.assertRaises(AccessError):
+            self._wizard().with_user(stranger)._build_package()
+
     def test_auditor_cannot_build_a_package(self):
         auditor = self.env["res.users"].with_context(no_reset_password=True).create({
             "name": "Commissaris Esdoorn", "login": "commissaris.esdoorn@example.com",
