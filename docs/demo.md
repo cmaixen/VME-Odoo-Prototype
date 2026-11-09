@@ -2,7 +2,7 @@
 
 Eén verhaal voor een pilotsyndicus of een investeerder. Het is begin november 2026 bij een syndicus met drie fictieve gebouwen. Een eigenaar meldt een lek, een leverancier mailt een factuur, er liggen offertes voor de gevel, de provisies en de AV's van 2027 moeten klaar, en aan het eind ziet de eigenaar zijn jaarafrekening in het portaal. Rode draad: **de software zet alles klaar, een mens beslist.**
 
-Elke stap is nagekeken op een verse database met demodata en demohistoriek (7 november 2026). De bedragen hieronder gelden voor die volgorde.
+Elke stap is nagekeken op een verse database met demodata en demohistoriek (7 november 2026); de bedragen zijn op 9 november 2026 opnieuw nagerekend. Ze gelden voor de volgorde hieronder.
 
 > Alle gebouwen, eigenaars, bedragen en rekeningnummers zijn verzonnen. De Belgische regels zijn nog niet juridisch nagekeken.
 
@@ -138,8 +138,8 @@ In de map van het project, met Docker (OrbStack) aan.
 ### 7. De jaarafrekening 2026 (1,5 minuut)
 
 1. **VME > VME's > Residentie Linde**, knop **Jaarafrekening** (jaar 2026).
-2. Bovenaan de **controle** in het groen: de som van alle aandelen (18.816,80 €) is gelijk aan de geboekte kosten, inclusief de liftfactuur van daarnet.
-3. In de tabel: Eigenaar Linde A1 krijgt 547,83 € terug, A3 heeft nog 432 € provisies open staan, en de verkoper en de koper van A5 (verkocht op 1 juli) hebben elk hun eigen afrekening, pro rata hun dagen.
+2. Bovenaan de **controle** in het groen: de som van alle aandelen (20.616,80 €) is gelijk aan de geboekte kosten, inclusief de liftfactuur van daarnet.
+3. In de tabel: Eigenaar Linde A1 krijgt 411,03 € terug, A3 heeft nog 432 € provisies open staan, en de verkoper en de koper van A5 (verkocht op 1 juli) hebben elk hun eigen afrekening, pro rata hun dagen.
 4. **Afdrukken (PDF)** en toon één pagina: kosten per sleutel, provisies, saldo, reservekapitaal apart, detail per factuur.
 
 > Zeg: "De afrekening die u nu een week kost, staat klaar zodra de laatste factuur geboekt is, tot op de cent en ook bij een verkoop midden in het jaar."
@@ -150,7 +150,7 @@ In de map van het project, met Docker (OrbStack) aan.
 
 1. Venster 2 (Eigenaar Linde A1): herlaad **Mijn account** en klik op **Mijn mede-eigendom**, dan **Residentie Linde**.
 2. Toon kort: zijn kavels A1 en G1, de volgende AV met de agenda, de stand van werk- en reservekapitaal, de provisies van 2026 en de nieuwe oproep van 2027 (stap 5), en de documenten van het gebouw.
-3. Klik op **Jaarafrekening 2026 voorlopig**: *Saldo in uw voordeel 547,83 €*, en onderaan in de facturen *Keuringsdienst Voorbeeld vzw, KD-2026-1105*, zijn aandeel 7,84 €: de mail van de leverancier van zeven minuten geleden.
+3. Klik op **Jaarafrekening 2026 voorlopig**: *Saldo in uw voordeel 411,03 €*, en onderaan in de facturen *Keuringsdienst Voorbeeld vzw, KD-2026-1105*, zijn aandeel 7,84 €: de mail van de leverancier van zeven minuten geleden.
 4. Vertel erbij: hij ziet nooit een ander gebouw of een andere kavel, en de verkoper van A5 ziet niets meer van na de verkoop.
 
 > Zeg: "Van de mail van de leverancier tot de afrekening bij de eigenaar: niemand heeft iets overgetikt, en niets is vertrokken zonder een klik van uw medewerker."
@@ -165,7 +165,7 @@ Doe deze blokken na stap 8; ze veranderen niets aan de bedragen van het scenario
 
 1. **Facturatie > Leveranciers > Leveranciersfacturen > Nieuw** (bedrijf Residentie Linde). Leverancier **Brandbeveiliging Voorbeeld BV** (kies de fictieve bovenaan, niet een resultaat van "Zoek wereldwijd"), factuurdatum vandaag, kostperiode 01/01/2026 tot 31/12/2026, lijn *Jaarlijks onderhoud brandblussers 2026*, 350 € met 21% btw.
 2. Kies in de lijn de **Verdeelsleutel** *Algemene sleutel* en klik op **Verdeel over eigenaars**: 423,50 € over 13 eigenaars; de verkoper en de koper van A5 krijgen elk hun dagen.
-3. Terug naar de factuur, **Bevestigen**. De jaarafrekening wordt 19.240,30 €; A1 krijgt dan 515,64 € terug.
+3. Terug naar de factuur, **Bevestigen**. De jaarafrekening wordt 21.040,30 €; A1 krijgt dan 378,84 € terug.
 
 > Zeg: "Geen Excel meer: btw is voor de VME een kost, en de verdeling klopt tot op de cent."
 
@@ -201,7 +201,7 @@ Te weinig aanwezigen voor het quorum? Zet enkele eigenaars op "Aanwezig" in de a
 3. **Resultaat en overdracht**: werkkapitaal 0,00 € na de afrekening, het reservekapitaal gaat naar 2027.
 4. Benadruk: alles is een concept. **Alles bevestigen** boekt, maar verstuurt niets. **Boekjaar afsluiten** (alleen voor een beheerder) vergrendelt 2026. Doe dat in de demo niet, of heropen meteen: anders komen nieuwe facturen in 2027 terecht.
 
-Op een verse database zonder het scenario hierboven waren het 13 concept-creditnota's, samen 4.334,51 €. Na stap 3 en blok A liggen de bedragen anders.
+Na stap 3 en blok A zijn het 12 concept-creditnota's, samen 1.991,97 €, en één concept-factuur van 98,76 € aan de verkoper van A5. Op een verse database zonder het scenario: 12 creditnota's, samen 2.612,06 €, en een factuur van 77,55 €.
 
 > Zeg: "De afrekening wordt geboekt met één klik van uw medewerker, en het jaar gaat dicht zonder dat er iets vertrekt."
 

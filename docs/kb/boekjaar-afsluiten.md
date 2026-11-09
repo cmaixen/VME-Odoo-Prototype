@@ -40,10 +40,10 @@ Na het laden van de demohistoriek opent u **Residentie Linde**, klikt u op **Boe
 
 - Eén controle staat in het rood: "Leveranciersfacturen van 2026 in concept: 1". Het is de ereloonfactuur van de syndicus voor september (1.066,49 €). Klik op de link onder de controle, kijk de factuur na en klik op **Bevestigen**: ze wordt meteen over de eigenaars verdeeld. Ga terug naar de afsluiting.
 - Nu zijn de controles groen. Alleen "Het boekjaar 2026 loopt nog" is een oranje waarschuwing, want de demo speelt in november 2026.
-- **Afrekening voorbereiden** maakt 13 concept-creditnota's, samen 4.334,51 €. Alle eigenaars krijgen geld terug: de vier provisieoproepen van 2026 zijn gevraagd, maar de kosten lopen pas tot november.
-- **Eigenaar Linde A1** krijgt 474,62 € terug.
-- **Eigenaar Linde A3** betaalde de vierde oproep (432 €) niet. Die blijft een open factuur. Zijn creditnota (450,02 €) gaat alleen over het verschil tussen zijn kosten en de gevraagde provisies.
-- Kavel **A5** is op 1 juli verkocht. Verkoper en koper krijgen elk een eigen creditnota voor hun deel van het jaar: 104,25 € en 351,67 €.
+- **Afrekening voorbereiden** maakt 12 concept-creditnota's, samen 2.612,06 €, en één concept-factuur van 77,55 €. Bijna alle eigenaars krijgen geld terug: de vier provisieoproepen van 2026 zijn gevraagd, maar de kosten lopen pas tot november.
+- **Eigenaar Linde A1** krijgt 337,82 € terug.
+- **Eigenaar Linde A3** betaalde de vierde oproep (432 €) niet. Die blijft een open factuur. Zijn creditnota (320,42 €) gaat alleen over het verschil tussen zijn kosten en de gevraagde provisies.
+- Kavel **A5** is op 1 juli verkocht. Verkoper en koper krijgen elk een eigen afrekening voor hun deel van het jaar. De verkoper betaalde de oproepen van het eerste halfjaar, maar in die maanden viel de factuur van Advies Voorbeeld BV (1.800 €): hij krijgt een factuur van 77,55 €. De koper krijgt een creditnota van 351,67 €.
 - Op **Resultaat en overdracht** is het resultaat van het werkkapitaal na de afrekening 0,00 €. Het reservekapitaal van 2.400,00 € gaat volledig over naar 2027.
 
 Staat bovenaan rechts een ander bedrijf dan Residentie Linde, dan toont het tabblad de documenten als tabel. Zet het bedrijf op Residentie Linde om ze te openen.
