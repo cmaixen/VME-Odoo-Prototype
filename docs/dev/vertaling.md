@@ -79,6 +79,7 @@ Belgische juridische termen (Burgerlijk Wetboek, boek 3, titel 4, Franse versie)
 | afsluiting van het boekjaar, overdracht (van het resultaat) | clôture de l'exercice, report | |
 | fiche 281.50, verkrijger, inkomstenjaar | fiche 281.50, bénéficiaire, année des revenus | Belcotax |
 | overzicht 281.50, opladen in Belcotax-on-web, proefupload | relevé 281.50, déposer dans Belcotax-on-web, dépôt de test | |
+| doorrekening (van een kost aan een eigenaar), ten laste van | refacturation, à charge de | |
 | aangetekend, akkoord (oproeping) per e-mail | par recommandé, accord (convocation) par e-mail | art. 3.87 §3 C. civ. |
 | dossierbeheerder, mijn werk vandaag | gestionnaire de dossier, mon travail du jour | |
 | offerte | offre | |

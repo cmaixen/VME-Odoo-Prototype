@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 19.0-20261102\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-09 15:02+0000\n"
+"POT-Creation-Date: 2026-11-09 15:50+0000\n"
 "PO-Revision-Date: 2026-11-06 08:33+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -286,6 +286,12 @@ msgstr "%(item)s lot %(lot)s (demande %(name)s), imputé à titre privé"
 #: code:addons/vme_belgie/models/vme_request.py:0
 msgid "%(item)s voor kavel %(lot)s"
 msgstr "%(item)s pour le lot %(lot)s"
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_syndic.py:0
+msgid "%(kind)s %(vme)s%(lots)s (%(date)s), btw inbegrepen"
+msgstr "%(kind)s %(vme)s%(lots)s (%(date)s), TVA comprise"
 
 #. module: vme_belgie
 #. odoo-python
@@ -979,6 +985,12 @@ msgstr ", propriétaire du/des lot(s)"
 #: model_terms:ir.ui.view,arch_db:vme_belgie.report_assembly_convocation_document
 msgid ", geeft volmacht aan"
 msgstr ", donne procuration à"
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_syndic.py:0
+msgid ", kavel %s"
+msgstr ", lot %s"
 
 #. module: vme_belgie
 #: model_terms:ir.ui.view,arch_db:vme_belgie.financial_statements_body
@@ -5970,6 +5982,13 @@ msgstr ""
 "Les documents attendent la lecture IA. Elle prépare une proposition ; rien n'est encore créé."
 
 #. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_syndic.py:0
+msgid "De doorrekening %s is al bevestigd; pas ze aan met een creditnota."
+msgstr ""
+"La refacturation %s est déjà confirmée ; corrigez-la par une note de crédit."
+
+#. module: vme_belgie
 #: model_terms:ir.ui.view,arch_db:vme_belgie.vme_communication_view_form
 msgid ""
 "De e-mails, sms'en en pushberichten worden nu verstuurd en de brieven en aangetekende zendingen klaargezet. Doorgaan?"
@@ -6249,6 +6268,12 @@ msgid ""
 "De portefeuille toont een signaal als de achterstallen van alle eigenaars samen hoger zijn."
 msgstr ""
 "Le portefeuille affiche un signal lorsque les arriérés de tous les propriétaires réunis dépassent ce montant."
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_syndic.py:0
+msgid "De prestatie %s wordt niet aangerekend."
+msgstr "La prestation %s n'est pas facturée."
 
 #. module: vme_belgie
 #: model_terms:ir.ui.view,arch_db:vme_belgie.vme_provision_call_run_view_form
@@ -6719,6 +6744,13 @@ msgid "Deze herinnering is al verstuurd of geannuleerd."
 msgstr "Ce rappel a déjà été envoyé ou annulé."
 
 #. module: vme_belgie
+#: model:ir.model.fields,help:vme_belgie.field_account_move_line__vme_recharge_partner_id
+msgid ""
+"Deze lijn wordt niet verdeeld over de eigenaars: de VME rekent ze door aan deze persoon."
+msgstr ""
+"Cette ligne n'est pas répartie entre les propriétaires : l'ACP la refacture à cette personne."
+
+#. module: vme_belgie
 #: model_terms:ir.ui.view,arch_db:vme_belgie.vme_cycle_step_view_search
 msgid "Deze maand"
 msgstr "Ce mois-ci"
@@ -7148,6 +7180,30 @@ msgstr "Transféré vers le dossier sinistre %s."
 #: model:ir.model.fields,field_description:vme_belgie.field_vme_collection__forward_date
 msgid "Doorgestuurd op"
 msgstr "Transféré le"
+
+#. module: vme_belgie
+#: model:ir.model.fields,field_description:vme_belgie.field_vme_service_line__recharge_invoice_id
+msgid "Doorrekening"
+msgstr "Refacturation"
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_syndic.py:0
+msgid ""
+"Doorrekening aan %(partner)s klaargezet als concept (%(amount)s). Kijk ze na, bevestig ze en verstuur ze aan %(partner)s."
+msgstr ""
+"Refacturation à %(partner)s préparée en brouillon (%(amount)s). Vérifiez-la, confirmez-la et envoyez-la à %(partner)s."
+
+#. module: vme_belgie
+#: model_terms:ir.ui.view,arch_db:vme_belgie.vme_service_line_view_form
+msgid "Doorrekening klaarzetten"
+msgstr "Préparer la refacturation"
+
+#. module: vme_belgie
+#: model:ir.model.fields,field_description:vme_belgie.field_vme_sale_file__recharge_invoice_id
+#: model_terms:ir.ui.view,arch_db:vme_belgie.vme_sale_file_view_form_recharge
+msgid "Doorrekening verkoper"
+msgstr "Refacturation au vendeur"
 
 #. module: vme_belgie
 #: model_terms:ir.ui.view,arch_db:vme_belgie.vme_collection_view_form
@@ -8462,6 +8518,13 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:vme_belgie.view_move_form_vme_fee
 msgid "Factuur in de VME"
 msgstr "Facture dans l'ACP"
+
+#. module: vme_belgie
+#: model:ir.model.fields,help:vme_belgie.field_vme_service_line__recharge_invoice_id
+msgid ""
+"Factuur van de VME aan wie de kost draagt; ze blijft een concept tot een medewerker ze bevestigt."
+msgstr ""
+"Facture de l'ACP à la personne qui supporte le coût ; elle reste en brouillon jusqu'à ce qu'un collaborateur la confirme."
 
 #. module: vme_belgie
 #: model:ir.model.fields,field_description:vme_belgie.field_vme_cost_allocation__invoice_date
@@ -10619,6 +10682,7 @@ msgstr ""
 #. odoo-python
 #: code:addons/vme_belgie/models/vme_collection.py:0
 #: code:addons/vme_belgie/models/vme_request.py:0
+#: code:addons/vme_belgie/models/vme_syndic.py:0
 msgid "Het rekeningstelsel van %s is niet volledig."
 msgstr "Le plan comptable de %s n'est pas complet."
 
@@ -13937,6 +14001,12 @@ msgstr "Sans objet"
 #: code:addons/vme_belgie/models/vme_cycle.py:0
 msgid "Niet van toepassing."
 msgstr "Sans objet."
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_syndic.py:0
+msgid "Niet verdeeld: deze kosten zijn ten laste van %s."
+msgstr "Non réparti : ces frais sont à charge de %s."
 
 #. module: vme_belgie
 #: model_terms:ir.ui.view,arch_db:vme_belgie.vme_contract_evaluation_view_search
@@ -18663,6 +18733,11 @@ msgid "Tellers"
 msgstr "Compteurs"
 
 #. module: vme_belgie
+#: model:ir.model.fields,field_description:vme_belgie.field_account_move_line__vme_recharge_partner_id
+msgid "Ten laste van"
+msgstr "À charge de"
+
+#. module: vme_belgie
 #: model:ir.model.fields,field_description:vme_belgie.field_vme_damage_claim__net_cost
 msgid "Ten laste van de VME"
 msgstr "À charge de l'ACP"
@@ -21095,6 +21170,12 @@ msgstr "Indiquez le budget des travaux."
 #: code:addons/vme_belgie/models/vme_portal_requests.py:0
 msgid "Vul het onderwerp in."
 msgstr "Indiquez l'objet."
+
+#. module: vme_belgie
+#. odoo-python
+#: code:addons/vme_belgie/models/vme_syndic.py:0
+msgid "Vul in aan wie de prestatie %s doorgerekend wordt."
+msgstr "Indiquez à qui la prestation %s est refacturée."
 
 #. module: vme_belgie
 #. odoo-python
