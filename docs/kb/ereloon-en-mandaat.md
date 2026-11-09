@@ -38,7 +38,7 @@ In de chatter van het dossier ziet u dat de prestatie geregistreerd is. Elke bro
 
 Een andere prestatie (bv. een extra vergadering met de raad) voegt u zelf toe via **VME > Syndicus > Prestaties > Nieuw**. Wilt u een prestatie niet aanrekenen, vink dan **Niet aanrekenen** aan.
 
-Bij een verkoopdossier vult Odoo **Door te rekenen aan** in met de verkoper: de kosten van de inlichtingen aan de notaris zijn voor hem. Het doorrekenen aan de verkoper gebeurt nog niet vanzelf.
+Bij een verkoopdossier vult Odoo **Door te rekenen aan** in met de verkoper: de kosten van de inlichtingen aan de notaris zijn voor hem. Odoo zet meteen een conceptfactuur van de VME aan de verkoper klaar, en op de factuur in de VME telt die lijn niet mee in de verdeling over de eigenaars. Hoe dat gaat, leest u in [Verkoop van een kavel](verkoop-notaris.md#hoe-reken-ik-de-kosten-door-aan-de-verkoper).
 
 ## Hoe maak ik de ereloonfacturen?
 

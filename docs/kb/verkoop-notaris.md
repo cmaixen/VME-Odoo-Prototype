@@ -1,6 +1,6 @@
 # Verkoop van een kavel: inlichtingen aan de notaris
 
-Wordt een appartement of garage verkocht, dan vraagt de notaris de syndicus om inlichtingen: hoeveel reservekapitaal er is, of de verkoper nog iets verschuldigd is, welke werken beslist zijn, en of er procedures lopen. De wet geeft u daarvoor een vaste termijn. Odoo stelt het antwoord voor u samen uit de boekhouding en de beslissingen van de AV, bewaakt de termijn, en zet bij de akte de kavel op naam van de koper.
+Wordt een appartement of garage verkocht, dan vraagt de notaris de syndicus om inlichtingen: hoeveel reservekapitaal er is, of de verkoper nog iets verschuldigd is, welke werken beslist zijn, en of er procedures lopen. De wet geeft u daarvoor een vaste termijn. Odoo stelt het antwoord voor u samen uit de boekhouding en de beslissingen van de AV, bewaakt de termijn, zet de factuur voor de kosten van de inlichtingen aan de verkoper klaar, en zet bij de akte de kavel op naam van de koper.
 
 ## Wanneer moet ik antwoorden?
 
@@ -45,6 +45,19 @@ Klopt iets niet, pas het dan aan waar het vandaan komt (een betaling, een beslis
 
 Komt de tweede vraag binnen, vul dan **Tweede vraag ontvangen op** in. Odoo zet het dossier op "Tweede vraag ontvangen", maakt een nieuwe taak van 30 dagen, en u beantwoordt met **Antwoord tweede vraag (PDF)**.
 
+## Hoe reken ik de kosten door aan de verkoper?
+
+Voor de inlichtingen aan de notaris rekent uw kantoor een vergoeding aan (de prijs "Verkoopdossier en inlichtingen notaris" in de beheerovereenkomst). Die kost is voor de verkoper, niet voor de VME. Odoo regelt dat zo:
+
+1. Bij **Antwoord eerste vraag (PDF)** registreert Odoo de prestatie, met de verkoper bij **Door te rekenen aan**.
+2. Tegelijk zet Odoo in de VME een **conceptfactuur aan de verkoper** klaar, voor het bedrag dat de VME aan uw kantoor betaalt, btw inbegrepen (de VME kan de btw niet terugvorderen). In de chatter van het dossier staat een bericht, en bovenaan het dossier verschijnt de knop **Doorrekening verkoper**.
+3. Open de factuur met die knop, kijk ze na en klik op **Bevestigen**. Verstuur ze daarna zelf aan de verkoper met **Verzenden** (of bezorg ze aan de notaris, die ze kan inhouden op de verkoopprijs). Odoo verstuurt niets vanzelf.
+4. Met uw volgende ereloonfactuur komt de prestatie op de factuur aan de VME. In de leveranciersfactuur die Odoo daarvoor in de VME klaarzet, staat die lijn **ten laste van** de verkoper: ze wordt niet verdeeld over de eigenaars en komt niet in de jaarafrekening. Na beide facturen blijft er voor de VME niets van over.
+
+De verkoper betaalt op de rekening van het werkkapitaal, met de mededeling van de factuur. Betaalt hij niet, dan komt de factuur vanzelf in de opvolging van onbetaalde facturen.
+
+**Voorbeeld in de demo:** beantwoord in Residentie Linde de eerste vraag van het verkoopdossier van A3 en G3. Odoo zet een conceptfactuur van 285,62 euro klaar voor Eigenaar Linde A3 (236,05 euro zonder btw, plus 21% btw), op de rekening 416100 Door te rekenen privékosten. Bevestigt u daarna de ereloonfactuur van het vierde kwartaal en de leveranciersfactuur in de VME, dan staat die lijn op de leveranciersfactuur "ten laste van" Eigenaar Linde A3 en verdeelt Odoo alleen de rest over de eigenaars.
+
 ## Wat gebeurt er bij de akte?
 
 1. Vul de **datum van de akte** en de **koper** in.
@@ -63,6 +76,15 @@ Ja. De achterstallen zijn die van de verkoper in deze VME, voor al zijn kavels. 
 
 **Kan ik een dossier annuleren als de verkoop niet doorgaat?**
 Ja, met **Annuleren**. De open taken worden afgesloten en de eigendom verandert niet.
+
+**Ik wil de verkoper een ander bedrag aanrekenen.**
+Pas de **eenheidsprijs** van de prestatie aan (**VME > Syndicus > Prestaties**), zolang de factuur aan de verkoper nog een concept is: Odoo past de factuur mee aan. Vinkt u **Niet aanrekenen** aan, dan annuleert Odoo de conceptfactuur.
+
+**Er staat geen factuur voor de verkoper klaar.**
+Dat gebeurt als de VME geen beheerovereenkomst heeft of de prijs nog nul was (bv. omdat het indexcijfer ontbrak). Vul de prijs in op de prestatie en klik op **Doorrekening klaarzetten**.
+
+**De factuur aan de verkoper is al bevestigd en het bedrag klopt niet.**
+Maak een creditnota op die factuur, zoals bij elke andere factuur.
 
 **De akte werd verleden voor ik de tweede vraag beantwoordde.**
 U kunt **Akte verleden** ook dan gebruiken; Odoo vraagt een extra bevestiging.

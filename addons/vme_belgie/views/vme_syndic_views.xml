@@ -124,6 +124,7 @@
                 <field name="name"/>
                 <field name="source_name" optional="show"/>
                 <field name="recharge_partner_id" optional="hide"/>
+                <field name="recharge_invoice_id" optional="hide"/>
                 <field name="amount" sum="Totaal"/>
                 <field name="state" widget="badge" decoration-info="state == 'to_invoice'"
                        decoration-success="state == 'invoiced'" decoration-muted="state == 'no_charge'"/>
@@ -140,6 +141,8 @@
             <form>
                 <header>
                     <button name="action_open_source" type="object" string="Bron openen" invisible="not res_model"/>
+                    <button name="action_prepare_recharge_invoice" type="object" string="Doorrekening klaarzetten"
+                            invisible="not recharge_partner_id or recharge_invoice_id or no_charge"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
@@ -157,6 +160,7 @@
                             <field name="amount"/>
                             <field name="no_charge" readonly="state == 'invoiced'"/>
                             <field name="recharge_partner_id"/>
+                            <field name="recharge_invoice_id" invisible="not recharge_invoice_id"/>
                             <field name="source_name" invisible="not res_model"/>
                             <field name="invoice_id" invisible="not invoice_id"/>
                             <field name="res_model" invisible="1"/>
@@ -357,6 +361,23 @@
         </field>
     </record>
 
+    <!-- Sale file: the invoice that recharges the costs of the information to the seller -->
+    <record id="vme_sale_file_view_form_recharge" model="ir.ui.view">
+        <field name="name">vme.sale.file.form.recharge</field>
+        <field name="model">vme.sale.file</field>
+        <field name="inherit_id" ref="vme_sale_file_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/div[hasclass('oe_title')]" position="before">
+                <div class="oe_button_box" name="button_box">
+                    <field name="recharge_invoice_id" invisible="1"/>
+                    <button name="action_open_recharge_invoice" type="object" class="oe_stat_button"
+                            icon="fa-file-text-o" string="Doorrekening verkoper" invisible="not recharge_invoice_id"
+                            groups="account.group_account_invoice"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
     <!-- Invoice form: link between the fee invoice of the office and the bill in the VME -->
     <record id="view_move_form_vme_fee" model="ir.ui.view">
         <field name="name">account.move.form.vme.fee</field>
@@ -370,6 +391,10 @@
                         string="Factuur in de VME" invisible="not vme_fee_bill_id"/>
                 <button name="action_open_vme_fee_bill" type="object" class="oe_stat_button" icon="fa-exchange"
                         string="Ereloonfactuur syndicus" invisible="not vme_fee_invoice_id"/>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/list/field[@name='account_id']" position="after">
+                <field name="vme_recharge_partner_id" optional="show" readonly="1"
+                       column_invisible="parent.move_type not in ('in_invoice', 'in_refund') or not parent.vme_fee_invoice_id"/>
             </xpath>
             <xpath expr="//group[@id='header_right_group']" position="inside">
                 <field name="vme_fee_agreement_id" invisible="not vme_fee_agreement_id" readonly="1"/>
