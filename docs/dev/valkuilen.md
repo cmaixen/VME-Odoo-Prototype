@@ -152,6 +152,7 @@ Gevonden bij het doorlopen van `docs/demo.md` op een verse database:
 
 ## Demovideo (november 2026)
 
+- **De video van Playwright loopt niet op de klok.** Tijdstippen die je tijdens de opname met `time.time()` noteert, schuiven in de WebM tot enkele seconden op. Lijn geluid niet uit op de klok van de opname, maar op een markering in beeld (`tools/demo_video/align.py`).
 - **Twee fictieve leveranciers met hetzelfde btw-nummer.** De demodata van de fiches 281.50 gaf Advies Voorbeeld BV het btw-nummer BE0000000889 van Keuringsdienst Voorbeeld vzw. Odoo koppelt een Peppol-factuur op btw-nummer, dus de liftfactuur van stap 3 kwam bij Advies terecht, zonder liftsleutel en zonder verdeling. Advies heeft nu BE0000003067. Geef elke fictieve leverancier een eigen nummer (`grep -rhoE "BE0[0-9]{9}" addons ai docs` toont de gebruikte).
 
 ## Bekende problemen (nog open)
