@@ -1,0 +1,32 @@
+# Overlay for docker-compose.yml: an isolated Odoo for recording the demo video.
+# Use with: docker compose -p vme-video -f docker-compose.yml -f tools/demo_video/compose.video.yml ...
+# Own project name, database (vme_video) and port (8695), so the demo server on 8069 is untouched.
+services:
+  odoo:
+    command: ["--db-filter=^vme_video$"]
+    ports: !override
+      - "8695:8069"
+    restart: "no"
+  db:
+    restart: "no"
+
+  # Chromium with Playwright, only started with "run" by record.sh.
+  recorder:
+    build: tools/demo_video
+    image: vme-video-recorder
+    profiles: ["video"]
+    depends_on:
+      - odoo
+    working_dir: /work
+    volumes:
+      - .:/work  # relative to docker-compose.yml: the project root
+    environment:
+      ODOO_URL: http://odoo:8069
+      ODOO_DB: vme_video
+
+# Docker's default address pools run out with many compose projects; use a fixed subnet.
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 10.219.61.0/24
