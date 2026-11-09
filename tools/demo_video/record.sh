@@ -2,8 +2,8 @@
 # Rebuild the demo video from scratch: fresh database, AI drafts, recording, MP4.
 #   tools/demo_video/record.sh            # everything, about 15 minutes
 #   SKIP_BUILD=1 tools/demo_video/record.sh   # reuse vme_video_fresh from an earlier build (about 9 minutes)
-# With ELEVENLABS_API_KEY in tools/demo_video/.env the voice-over is generated first (voice.py);
-# without it the video has captions only.
+# The voice-over is generated first, with the engine of VOICE_ENGINE in tools/demo_video/.env
+# (default: the macOS voice Ellen); see docs/dev/demo-video.md.
 # Result: build/demo_video/quotis-demo.mp4 and quotis-promo.mp4 (outside git). See docs/dev/demo-video.md.
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
@@ -18,11 +18,15 @@ if [[ -z "${SKIP_BUILD:-}" ]]; then
     "$DC" exec -T db dropdb -U odoo --if-exists vme_video_fresh
     "$DC" exec -T db createdb -U odoo -T vme_video vme_video_fresh
 fi
-if grep -qE '^ELEVENLABS_API_KEY=.+' "$HERE/.env" 2>/dev/null; then
-    python3 "$HERE/voice.py"
-else
-    echo "Geen ELEVENLABS_API_KEY in $HERE/.env: video zonder voice-over." >&2
-fi
+# Voice-over: VOICE_ENGINE in tools/demo_video/.env (say, the default; elevenlabs; connector; none).
+ENGINE="$(grep -E '^VOICE_ENGINE=' "$HERE/.env" 2>/dev/null | cut -d= -f2 | tr -d ' "')"
+case "${ENGINE:-say}" in
+    say) python3 "$HERE/voice_say.py" ;;
+    elevenlabs) python3 "$HERE/voice.py" ;;
+    connector) python3 "$HERE/voice_connector.py" manifest ;;  # clips made beforehand via the connector
+    none) rm -f "$OUT/voice/manifest.json" ;;
+    *) echo "Onbekende VOICE_ENGINE: $ENGINE (say, elevenlabs, connector of none)" >&2; exit 1 ;;
+esac
 "$DC" build recorder
 "$HERE/reset_db.sh"
 

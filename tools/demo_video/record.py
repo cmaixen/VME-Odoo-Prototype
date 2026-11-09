@@ -48,6 +48,12 @@ class Recorder:
         self.timeline = []
         self.t0 = time.time()
         self.voice_until = 0.0
+        self.mark = None
+
+    def apply_mark(self):
+        """The sync marker of overlay.js; put back after a page load on another origin."""
+        if self.mark is not None:
+            self.page.evaluate("(n) => window.__vmeMark && window.__vmeMark(n)", self.mark)
 
     def wait_voice(self, extra=0.0):
         rest = self.voice_until + extra - time.time()
@@ -58,6 +64,8 @@ class Recorder:
         """Start the clip of `key` now (in video time), if there is one."""
         clip = self.voice.get(key)
         if clip:
+            self.mark = len(self.timeline)
+            self.apply_mark()
             now = time.time()
             self.timeline.append({"t": round(now - self.t0, 3), "key": key, "file": clip["file"],
                                   "duration": clip["duration"]})
@@ -106,6 +114,7 @@ class Recorder:
         except PlaywrightTimeout:
             pass  # Odoo's bus keeps a long poll open; the page is usable anyway
         self.page.wait_for_timeout(400)
+        self.apply_mark()
 
     def action(self, xmlid, suffix=""):
         self.goto(f"/odoo/action-{xmlid}{suffix}")
@@ -179,12 +188,14 @@ CARD_CSS = """
 
 
 def title_card(rec, title, subtitle, lines, footer, seconds, voice=None):
+    rec.wait_voice(0.3)  # the last sentence of the previous step ends before the card appears
     body = "".join(f"<p>{html.escape(line)}</p>" for line in lines)
     rec.page.set_content(
         f"<html><head><style>{CARD_CSS}</style></head><body><h1>{html.escape(title)}</h1>"
         f"<h2>{html.escape(subtitle)}</h2>{body}<small>{html.escape(footer)}</small></body></html>"
     )
     rec.ensure_overlay()
+    rec.apply_mark()
     rec.say("")
     rec.page.mouse.move(1900, 1070)
     rec.hold(0.6)
@@ -588,7 +599,7 @@ def block_e_outlook(rec):
         html { background: #dfe5ec; }
         body { width: 930px; min-height: 100vh; margin: 0 auto !important; background: #fff;
                box-shadow: 0 0 24px rgba(0, 0, 0, .18); }
-        body > *:not(#vme-caption):not(#vme-cursor):not(#vme-click) { zoom: 1.45; }
+        body > *:not(#vme-caption):not(#vme-cursor):not(#vme-click):not(#vme-mark) { zoom: 1.45; }
     """)
     rec.page.wait_for_timeout(2000)
     rec.say("Het paneel naast de mail in Outlook, hier als voorbeeld in de browser.", 2)

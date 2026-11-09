@@ -13,7 +13,8 @@ import sys
 import tempfile
 from pathlib import Path
 
-from make_video import TRIM, VOICE_DIR, duration
+import align
+from make_video import HIDE_MARK, TRIM, VOICE_DIR, duration
 
 LEAD = 0.4   # seconds of picture before the voice starts
 TAIL = 0.5   # and after it ends
@@ -40,7 +41,7 @@ def cut(video, start, length, clip, offset, target):
     delay = int(offset * 1000)
     audio = (f"[1:a]aformat=sample_rates=48000:channel_layouts=stereo,adelay={delay}:all=1,"
              f"apad,atrim=0:{length:.2f},afade=t=out:st={length - FADE:.2f}:d={FADE}[a]")
-    picture = (f"[0:v]fps=25,scale=1920:1080,fade=t=in:st=0:d={FADE},"
+    picture = (f"[0:v]fps=25,scale=1920:1080,{HIDE_MARK},fade=t=in:st=0:d={FADE},"
                f"fade=t=out:st={length - FADE:.2f}:d={FADE},format=yuv420p[v]")
     subprocess.run([
         "ffmpeg", "-v", "error", "-y", "-ss", f"{start:.2f}", "-t", f"{length:.2f}", "-i", str(video),
@@ -53,8 +54,8 @@ def main(raw, target):
     raw, target = Path(raw), Path(target)
     manifest = json.loads((VOICE_DIR / "manifest.json").read_text())
     videos = {name: next((raw / name).glob("*.webm")) for name in ("1_staff", "2_owner", "3_extra")}
-    timelines = {name: {item["key"]: item for item in json.loads((raw / name / "timeline.json").read_text())}
-                 for name in videos}
+    timelines = {name: {item["key"]: item for item in align.load(raw, name, video)}
+                 for name, video in videos.items()}
     parts = []
     with tempfile.TemporaryDirectory() as tmp:
         def add(video, start, length, key, offset):
@@ -69,11 +70,11 @@ def main(raw, target):
             item = timelines[name].get(key)
             if not item:
                 sys.exit(f"{name}: geen opname van {key[:60]!r}; neem opnieuw op met voice-over.")
-            add(videos[name], item["t"] - LEAD, item["duration"] + LEAD + TAIL, key, LEAD)
+            add(videos[name], item["v"] - LEAD, item["duration"] + LEAD + TAIL, key, LEAD)
         # Closing card: Quotis and "de software zet alles klaar, een mens beslist".
         outro_item = timelines["3_extra"]["#outro"]
         outro = manifest["#promo_outro"]["duration"]
-        add(videos["3_extra"], outro_item["t"] - 0.4, outro + 2.0, "#promo_outro", 0.5)
+        add(videos["3_extra"], outro_item["v"] - 0.4, outro + 2.0, "#promo_outro", 0.5)
 
         listing = Path(tmp) / "parts.txt"
         listing.write_text("".join(f"file '{p}'\n" for p in parts))
