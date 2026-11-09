@@ -168,3 +168,9 @@ Stappen die tegelijk op aparte branches gebouwd worden, botsen soms zonder dat g
 - **Iedereen toegang geven tot een nieuwe company.** De demo van `vme_rentmeester` gaf alle interne gebruikers toegang tot het rentmeesterkantoor, ook de commissaris van de rekeningen, die alleen zijn eigen VME mag zien. Sla gebruikers uit `group_vme_auditor` over.
 
 Na het samenvoegen van meerdere branches: altijd de volledige testsuite van beide modules draaien, niet alleen die van de eigen stap.
+
+## `check_company` en de bedrijvenkiezer
+
+- `check_company=True` doet alleen iets als het model zelf een `company_id` heeft en `_check_company_auto = True` staat; een gerelateerd opgeslagen `company_id` (via `association_id`) volstaat. Op `res.partner.bank` werkt het niet (geen company): gebruik een constraint op de partner.
+- De record rule van `account.move` volgt de companies die in de bedrijvenkiezer aan staan, niet `user.company_ids`. Code die facturen van een VME zoekt of eraan koppelt (ook een Many2many naar facturen), werkt met `with_company(vme.company_id)`; anders ziet een medewerker met een andere VME actief niets of krijgt hij een AccessError (Belcotax, C-F4).
+

@@ -91,6 +91,7 @@ def notice_state(deadline, today):
 
 class VmeContract(models.Model):
     _name = "vme.contract"
+    _check_company_auto = True
     _description = "Contract van een VME"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "association_id, notice_deadline, name"
@@ -109,7 +110,7 @@ class VmeContract(models.Model):
         help="Bij een conciërge: het sociaal secretariaat dat de loonkosten factureert.",
     )
     installation_id = fields.Many2one(
-        "vme.installation", string="Installatie", index=True,
+        "vme.installation", string="Installatie", index=True, check_company=True,
         domain="[('association_id', '=', association_id)]",
         help="Optioneel: de installatie waarvoor dit een onderhoudscontract is.",
     )
@@ -352,6 +353,7 @@ class VmeContract(models.Model):
 
 class VmeContractEvaluation(models.Model):
     _name = "vme.contract.evaluation"
+    _check_company_auto = True
     _description = "Jaarlijkse evaluatie van een contract"
     _order = "date desc, id desc"
 
@@ -370,7 +372,8 @@ class VmeContractEvaluation(models.Model):
         string="Voorstel", required=True, default="continue",
     )
     assembly_id = fields.Many2one(
-        "vme.assembly", string="Voorgelegd op AV", domain="[('association_id', '=', association_id)]"
+        "vme.assembly", string="Voorgelegd op AV", domain="[('association_id', '=', association_id)]",
+        check_company=True,
     )
     note = fields.Text(string="Toelichting")
 

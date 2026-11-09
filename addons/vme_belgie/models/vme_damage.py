@@ -179,6 +179,7 @@ class VmeInsurancePolicy(models.Model):
 
 class VmeDamageClaim(models.Model):
     _name = "vme.damage.claim"
+    _check_company_auto = True
     _description = "Schadedossier"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "report_date desc, id desc"
@@ -203,14 +204,15 @@ class VmeDamageClaim(models.Model):
     mail_reference = fields.Char(string="Referentie mail", copy=False, index=True,
                                  help="Message-ID van de mail waaruit de melding komt.")
     description = fields.Text(string="Omschrijving")
-    lot_ids = fields.Many2many("vme.lot", string="Betrokken kavels", domain="[('association_id', '=', association_id)]")
+    lot_ids = fields.Many2many("vme.lot", string="Betrokken kavels", domain="[('association_id', '=', association_id)]",
+                               check_company=True)
     common_parts = fields.Boolean(string="Gemene delen beschadigd")
     cause = fields.Char(string="Vermoedelijke oorzaak")
 
     # Insurance
     policy_id = fields.Many2one(
         "vme.insurance.policy", string="Polis", compute="_compute_policy_id", store=True, readonly=False,
-        domain="[('association_id', '=', association_id)]", tracking=True)
+        domain="[('association_id', '=', association_id)]", tracking=True, check_company=True)
     insurer_id = fields.Many2one(related="policy_id.insurer_id", string="Verzekeraar")
     deductible = fields.Monetary(related="policy_id.deductible", string="Vrijstelling")
     declaration_deadline = fields.Date(string="Aangifte uiterlijk", compute="_compute_deadlines", store=True)
@@ -434,5 +436,5 @@ class AccountMove(models.Model):
     _inherit = "account.move"
 
     vme_damage_claim_id = fields.Many2one(
-        "vme.damage.claim", string="Schadedossier", index=True, copy=False,
+        "vme.damage.claim", string="Schadedossier", index=True, copy=False, check_company=True,
         domain="[('company_id', '=', company_id), ('state', 'not in', %s)]" % (CLOSED_STATES,))

@@ -268,6 +268,7 @@ class VmeInstallation(models.Model):
 
 class VmeInspection(models.Model):
     _name = "vme.inspection"
+    _check_company_auto = True
     _description = "Keuringsverslag"
     _order = "date desc, id desc"
 
@@ -286,7 +287,7 @@ class VmeInspection(models.Model):
     report = fields.Binary(string="Verslag (PDF)", attachment=True)
     report_filename = fields.Char(string="Bestandsnaam verslag")
     remark_ids = fields.One2many("vme.inspection.remark", "inspection_id", string="Opmerkingen")
-    move_id = fields.Many2one("account.move", string="Factuur", ondelete="set null", index=True)
+    move_id = fields.Many2one("account.move", string="Factuur", ondelete="set null", index=True, check_company=True)
     note = fields.Text(string="Notitie")
 
     _unique_move = models.Constraint(

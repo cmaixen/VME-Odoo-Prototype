@@ -69,3 +69,41 @@ class TestCheckCompany(TransactionCase):
                 "association_id": self.vme_a.id, "partner_id": owner.id, "partner_bank_id": bank_b.id,
                 "reference": "VME-COMPANY-1",
             })
+
+    # Damage claims, installations and contracts
+
+    def test_damage_claim_links_of_another_vme(self):
+        insurer = self.env["res.partner"].create({"name": "Verzekeraar Company", "is_company": True})
+        policy_b = self.env["vme.insurance.policy"].create({
+            "association_id": self.vme_b.id, "name": "Brandverzekering B", "policy_type": "building",
+            "insurer_id": insurer.id, "policy_number": "BR-COMPANY-B"})
+        claim_a = self.env["vme.damage.claim"].create({
+            "association_id": self.vme_a.id, "name": "Waterschade A", "event_date": date(2026, 11, 1)})
+        with self.assertRaises(UserError):
+            claim_a.lot_ids = self.lot_b
+        with self.assertRaises(UserError):
+            claim_a.policy_id = policy_b
+        claim_b = self.env["vme.damage.claim"].create({
+            "association_id": self.vme_b.id, "name": "Waterschade B", "event_date": date(2026, 11, 1)})
+        with self.assertRaises(UserError):
+            self._bill(self.vme_a).vme_damage_claim_id = claim_b
+
+    def test_inspection_invoice_of_another_vme(self):
+        installation_a = self.env["vme.installation"].create({
+            "association_id": self.vme_a.id, "name": "Lift A", "installation_type": "elevator"})
+        with self.assertRaises(UserError):
+            self.env["vme.inspection"].create({
+                "installation_id": installation_a.id, "date": date(2026, 6, 1), "move_id": self._bill(self.vme_b).id})
+
+    def test_contract_links_of_another_vme(self):
+        installation_b = self.env["vme.installation"].create({
+            "association_id": self.vme_b.id, "name": "Lift B", "installation_type": "elevator"})
+        contract_a = self.env["vme.contract"].create({
+            "association_id": self.vme_a.id, "name": "Onderhoud lift A", "partner_id": self.supplier.id,
+            "contract_type": "maintenance"})
+        with self.assertRaises(UserError):
+            contract_a.installation_id = installation_b
+        assembly_b = self.env["vme.assembly"].create({"association_id": self.vme_b.id, "year": 2027})
+        with self.assertRaises(UserError):
+            self.env["vme.contract.evaluation"].create({
+                "contract_id": contract_a.id, "date": date(2026, 11, 1), "assembly_id": assembly_b.id})
